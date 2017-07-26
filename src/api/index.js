@@ -120,7 +120,8 @@ function processArguments(argv) {
 }
 
 function main(argv) {
-  return argv.action(processArguments(argv));
+  const options = processArguments(argv);
+  return options.action(options);
 }
 
 export default main;
