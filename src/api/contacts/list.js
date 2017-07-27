@@ -4,7 +4,10 @@ const google = require('googleapis');
 
 module.exports = async function list() {
   const jwtClient = await generateJWT('rarebeauty@soho.sg');
-  const people = google.people({ version: 'v1', auth: jwtClient });
+  const people = google.people({
+    version: 'v1',
+    auth: jwtClient,
+  });
 
   return new Promise((res, rej) => {
     people.people.connections.list(
@@ -19,7 +22,7 @@ module.exports = async function list() {
         }
         // console.log(me);
         // console.log(JSON.stringify(me, null, 2));
-        const final = me.connections.map((one, index) => ({
+        const contacts = me.connections.map((one, index) => ({
           id: index,
           name:
             one &&
@@ -32,8 +35,13 @@ module.exports = async function list() {
             .replace(/\s/g, ''),
           resourceName: one.resourceName,
         }));
-        // console.log(JSON.stringify(final, null, 2));
-        final.sort((a, b) => a.name.localeCompare(b.name));
+
+        contacts.sort((a, b) => (a.name && a.name.localeCompare(b.name)) || 0);
+
+        const final = [];
+        contacts.forEach(item => {
+          if (item.name && item.mobile) final[final.length] = item;
+        });
         res(final);
       },
     );

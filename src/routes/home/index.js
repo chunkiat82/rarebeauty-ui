@@ -18,8 +18,11 @@ async function action({ fetch }) {
     }),
   });
   const { data } = await resp.json();
-  // console.log(data);
-  if (!data) throw new Error('Failed to load the contact feed.');
+
+  // console.log(data.contact);
+
+  if (!data || !data.contact)
+    throw new Error('Failed to load the contact feed.');
   return {
     chunks: ['home'],
     title: 'Rare Beauty Professional',

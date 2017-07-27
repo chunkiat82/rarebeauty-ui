@@ -21,6 +21,8 @@ import FontIcon from 'material-ui/FontIcon';
 
 import s from './Home.css';
 
+const listOfServices = ['Full Set', 'Touch Up', 'Facial', 'Waxing'];
+
 const iconStyles = {
   marginRight: 24,
 };
@@ -39,7 +41,7 @@ class Home extends React.Component {
   state = {
     dataSource: [],
     values: [],
-    services: ['Full Set', 'Touch Up', 'Facial', 'Waxing'],
+    services: [],
     slider: 75,
   };
 
@@ -55,18 +57,6 @@ class Home extends React.Component {
     this.setState({ slider: value });
   };
 
-  // menuItems(values) {
-  //   return names.map(name =>
-  //     <MenuItem
-  //       key={name}
-  //       insetChildren
-  //       checked={values && values.indexOf(name) > -1}
-  //       value={name}
-  //       primaryText={name}
-  //     />,
-  //   );
-  // }
-
   render() {
     const { services } = this.state;
     return (
@@ -80,7 +70,11 @@ class Home extends React.Component {
               fullWidth
             >
               {this.props.contact.map(item =>
-                <MenuItem value={1} primaryText={item.name} />,
+                <MenuItem
+                  value={item.resourceName}
+                  key={item.resourceName}
+                  primaryText={item.name}
+                />,
               )}
             </SelectField>
             <DatePicker hintText="Date" autoOk fullWidth />
@@ -98,7 +92,7 @@ class Home extends React.Component {
             />
             <p>
               <span>
-                {'The value of this slider is: '}
+                {'Duration: '}
               </span>
               <span>
                 {this.state.slider}
@@ -111,7 +105,18 @@ class Home extends React.Component {
               onChange={this.handleChangeService}
               fullWidth
             >
-              {this.menuItems(services)}
+              {listOfServices.map(name =>
+                <MenuItem
+                  key={name}
+                  insetChildren
+                  checked={
+                    this.state.services &&
+                    this.state.services.indexOf(name) > -1
+                  }
+                  value={name}
+                  primaryText={name}
+                />,
+              )}
             </SelectField>
           </div>
         </div>
