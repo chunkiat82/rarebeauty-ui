@@ -19,8 +19,11 @@ async function action({ fetch }) {
   });
   const { data } = await resp.json();
 
-  async function createCalendar(data) {
-    const resp = await fetch('/graphql', {
+  async function createCalendar() {
+    // console.log(`state=${JSON.stringify(input)}`);
+
+    // const createdCalendar =
+    await fetch('/graphql', {
       body: JSON.stringify({
         query: `mutation($name: String!) {
           createEvent(name:$name) {

@@ -1,5 +1,5 @@
+// https://medium.com/@HurricaneJames/graphql-mutations-fb3ad5ae73c4
 /**
- /**
  * React Starter Kit (https://www.reactstarterkit.com/)
  *
  * Copyright © 2014-present Kriasoft, LLC. All rights reserved.
@@ -8,20 +8,49 @@
  * LICENSE.txt file in the root directory of this source tree.
  */
 
-import { GraphQLList as List } from 'graphql';
+import {
+  GraphQLObjectType as ObjectType,
+  GraphQLString as StringType,
+  GraphQLInt as IntegerType,
+} from 'graphql';
 import EventType from '../types/EventType';
 import api from '../../api';
 
-// medium.com/@HurricaneJames/graphql-mutations-fb3ad5ae73c4
-const events = {
-  type: EventMutationType,
-  async resolve(request) {
-    console.log('oh yeah!!!!!!!!!!!!!!');
-    console.log(request);
-    return [
-      { name: 'Raymond', mobile: '93663631', services: 'XXX', duration: 75 },
-    ];
-  },
-};
+const MutationEvent = new ObjectType({
+  name: 'MutationEvent',
+  fields: () => ({
+    createEvent: {
+      type: EventType,
+      args: {
+        start: {
+          type: StringType,
+        },
+        name: {
+          type: StringType,
+        },
+        mobile: {
+          type: StringType,
+        },
+        services: {
+          type: StringType,
+        },
+        duration: {
+          type: IntegerType,
+        },
+      },
+      async resolve(value, { name, mobile, services, start, duration }) {
+        await api({
+          action: 'calendarCreate',
+          name,
+          start,
+          mobile,
+          services,
+          duration,
+        });
+        return { name, start, mobile, services, duration };
+      },
+    },
+  }),
+});
 
-export default events;
+export default MutationEvent;

@@ -17,7 +17,7 @@ import news from './queries/news';
 import contact from './queries/contact';
 import event from './queries/event';
 
-import mutationEvent from './types/MutationEventType';
+import mutationEvent from './mutations/event';
 
 const schema = new Schema({
   query: new ObjectType({

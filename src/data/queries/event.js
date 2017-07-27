@@ -10,13 +10,14 @@
 
 import { GraphQLList as List } from 'graphql';
 import EventType from '../types/EventType';
-import api from '../../api';
+// import api from '../../api';
 
 const events = {
   type: new List(EventType),
   async resolve() {
     // items = await api({ action: 'listContacts' });
-    return items;
+    // return items;
+    return [];
   },
 };
 

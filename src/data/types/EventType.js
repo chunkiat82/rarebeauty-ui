@@ -19,6 +19,7 @@ const EventType = new ObjectType({
   fields: {
     name: { type: new NonNull(StringType) },
     mobile: { type: new NonNull(StringType) },
+    start: { type: new NonNull(StringType) },
     services: { type: StringType },
     duration: { type: new NonNull(IntegerType) },
   },

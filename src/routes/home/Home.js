@@ -20,8 +20,6 @@ import Slider from 'material-ui/Slider';
 import FontIcon from 'material-ui/FontIcon';
 import RaisedButton from 'material-ui/RaisedButton';
 import AutoComplete from 'material-ui/AutoComplete';
-
-import matchSorter from 'match-sorter';
 import s from './Home.css';
 
 const listOfServices = [
@@ -49,28 +47,25 @@ class Home extends React.Component {
         resourceName: PropTypes.string.isRequired,
       }),
     ).isRequired,
+    post: PropTypes.function.isRequired,
   };
 
   state = {
-    names: [],
-    values: [],
-    services: [],
     slider: 75,
   };
 
-  handleUpdateInput = value => {
-    this.setState({
-      names: matchSorter(this.props.contact, value, {
-        keys: ['mobile', 'name'],
-      }).map(obj => obj.name),
-    });
+  handleNewRequest = (inputString, index) => {
+    this.setState({ index, ...inputString });
   };
 
-  handleChange = (event, index, name) => this.setState({ name });
-  handleChangeService = (event, index, services) => this.setState({ services });
-  handleSlider = (event, value) => {
+  handleServiceChange = (event, index, services) => this.setState({ services });
+
+  handleSliderChange = (event, value) => {
     this.setState({ slider: value });
   };
+
+  handleDateChange = (something, dateChosen) => this.setState({ dateChosen });
+  handleTimeChange = (something, timeChosen) => this.setState({ timeChosen });
 
   render() {
     const { services } = this.state;
@@ -80,27 +75,29 @@ class Home extends React.Component {
           <div className={s.container}>
             <AutoComplete
               hintText="Type anything"
-              dataSource={this.state.names}
-              onUpdateInput={this.handleUpdateInput}
+              dataSource={this.props.contact}
+              dataSourceConfig={{ text: 'name', value: 'name' }}
+              onUpdateInput={this.handleNameChange}
+              onNewRequest={this.handleNewRequest}
               floatingLabelText="Name"
+              filter={AutoComplete.fuzzyFilter}
               fullWidth
             />
-            {/* <SelectField
-              floatingLabelText="Name"
-              value={this.state.name}
-              onChange={this.handleChange}
+            <DatePicker
+              hintText="Date"
+              autoOk
               fullWidth
-            >
-              {this.props.contact.map(item =>
-                <MenuItem
-                  value={item.resourceName}
-                  key={item.resourceName}
-                  primaryText={item.name}
-                />,
-              )}
-            </SelectField> */}
-            <DatePicker hintText="Date" autoOk fullWidth />
-            <TimePicker autoOk hintText="Time" minutesStep={5} fullWidth />
+              onChange={this.handleDateChange}
+              value={this.state.dateChosen}
+            />
+            <TimePicker
+              autoOk
+              hintText="Time"
+              minutesStep={5}
+              onChange={this.handleTimeChange}
+              fullWidth
+              value={this.state.timeChosen}
+            />
             <FontIcon className="material-icons" style={iconStyles}>
               schedule
             </FontIcon>
@@ -110,7 +107,7 @@ class Home extends React.Component {
               value={this.state.slider}
               min={5}
               max={500}
-              onChange={this.handleSlider}
+              onChange={this.handleSliderChange}
             />
             <p>
               <span>
@@ -124,7 +121,7 @@ class Home extends React.Component {
               multiple
               hintText="Services"
               value={services}
-              onChange={this.handleChangeService}
+              onChange={this.handleServiceChange}
               fullWidth
             >
               {listOfServices.map(name =>
@@ -144,7 +141,7 @@ class Home extends React.Component {
               label="Create Appointment"
               primary
               fullWidth
-              onClick={() => this.props.post()}
+              onClick={() => this.props.post(this.state)}
             />
           </div>
         </div>
