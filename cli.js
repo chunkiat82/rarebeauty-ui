@@ -27,6 +27,10 @@ async function calendarList() {
                         event.extendedProperties.shared &&
                         event.extendedProperties.shared.mobile) ||
                     '0',
+                    (event.extendedProperties &&
+                        event.extendedProperties.shared &&
+                        event.extendedProperties.shared.reminded) ||
+                    'false'
                 );
             }
         }
@@ -70,18 +74,26 @@ async function remindCustomers(options) {
         if (events.length === 0) {
             // console.log('No reminder events found.');
         } else {
-            // console.log('Upcoming events for the half day');
+            console.log('Upcoming events for tomorrow');
             for (let i = 0; i < events.length; i += 1) {
                 const event = events[i];
-                sms({
-                    name: event.summary,
-                    mobile:
-                    (event.extendedProperties &&
-                        event.extendedProperties.shared &&
-                        event.extendedProperties.shared.mobile) ||
-                    -1,
-                    event,
-                });
+                if (!(event.extendedProperties &&
+                    event.extendedProperties.shared &&
+                    event.extendedProperties.shared.reminded)) {
+                    sms({
+                        name: event.summary,
+                        mobile:
+                        (event.extendedProperties &&
+                            event.extendedProperties.shared &&
+                            event.extendedProperties.shared.mobile) ||
+                        -1,
+                        event,
+                    }, (message) => {
+                        console.log(message.sid + "-" + event.summary);
+                        calendarPatch(Object.assign({}, options, { reminded: true }));
+                    });
+                }
+
                 // break;
             }
         }

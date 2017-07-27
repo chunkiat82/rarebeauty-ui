@@ -19,7 +19,21 @@ async function action({ fetch }) {
   });
   const { data } = await resp.json();
 
-  // console.log(data.contact);
+  async function createCalendar(data) {
+    const resp = await fetch('/graphql', {
+      body: JSON.stringify({
+        query: `mutation($name: String!) {
+          createEvent(name:$name) {
+            name
+            mobile
+            services
+            duration
+          }
+        }`,
+        variables: `{ "name": "hello world" }`,
+      }),
+    });
+  }
 
   if (!data || !data.contact)
     throw new Error('Failed to load the contact feed.');
@@ -28,7 +42,7 @@ async function action({ fetch }) {
     title: 'Rare Beauty Professional',
     component: (
       <Layout>
-        <Home contact={data.contact} />
+        <Home contact={data.contact} post={createCalendar} />
       </Layout>
     ),
   };

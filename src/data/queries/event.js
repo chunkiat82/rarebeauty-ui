@@ -9,24 +9,15 @@
  */
 
 import { GraphQLList as List } from 'graphql';
-// import fetch from 'isomorphic-fetch';
-import ContactType from '../types/ContactType';
+import EventType from '../types/EventType';
 import api from '../../api';
 
-let items = [
-  {
-    name: 'Raymond',
-    mobile: '93663631',
-    resourceName: 'people/c9054502601102741848',
-  },
-];
-
-const contacts = {
-  type: new List(ContactType),
+const events = {
+  type: new List(EventType),
   async resolve() {
-    items = await api({ action: 'listContacts' });
+    // items = await api({ action: 'listContacts' });
     return items;
   },
 };
 
-export default contacts;
+export default events;

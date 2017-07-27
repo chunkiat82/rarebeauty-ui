@@ -2,7 +2,7 @@ const generateJWT = require('../utilities/jwt');
 const google = require('googleapis');
 
 module.exports = function patch(options) {
-  const { calendarId, eventId, mobile, services } = options;
+  const { calendarId, eventId, mobile, services, reminded } = options;
 
   if (!calendarId || !eventId) {
     return new Promise((res, rej) => {
@@ -21,11 +21,27 @@ module.exports = function patch(options) {
         resource: {},
       },
     );
+
     if (mobile) {
       patchObject.resource.extendedProperties = {
         shared: { mobile },
       };
     }
+
+    if (reminded) {
+      if (
+        patchObject.resource.extendedProperties &&
+        patchObject.resource.extendedProperties.shared
+      ) {
+        patchObject.resource.extendedProperties.shared.reminded =
+          reminded === 'true';
+      } else {
+        patchObject.resource.extendedProperties = {
+          shared: { reminded },
+        };
+      }
+    }
+
     if (services) {
       patchObject.resource.description = services;
     }

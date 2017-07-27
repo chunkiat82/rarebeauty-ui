@@ -10,16 +10,18 @@
 import {
   GraphQLObjectType as ObjectType,
   GraphQLString as StringType,
+  GraphQLInt as IntegerType,
   GraphQLNonNull as NonNull,
 } from 'graphql';
 
-const ContactItemType = new ObjectType({
-  name: 'ContactItem',
+const EventType = new ObjectType({
+  name: 'Event',
   fields: {
     name: { type: new NonNull(StringType) },
     mobile: { type: new NonNull(StringType) },
-    resourceName: { type: StringType },
+    services: { type: StringType },
+    duration: { type: new NonNull(IntegerType) },
   },
 });
 
-export default ContactItemType;
+export default EventType;

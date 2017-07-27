@@ -15,6 +15,9 @@ import {
 import me from './queries/me';
 import news from './queries/news';
 import contact from './queries/contact';
+import event from './queries/event';
+
+import mutationEvent from './types/MutationEventType';
 
 const schema = new Schema({
   query: new ObjectType({
@@ -23,8 +26,10 @@ const schema = new Schema({
       me,
       news,
       contact,
+      event,
     },
   }),
+  mutation: mutationEvent,
 });
 
 export default schema;

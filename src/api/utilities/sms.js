@@ -7,7 +7,7 @@ const moment = require('moment');
 const FROM = 'RareBeauty';
 const REPLY_MOBILE = '+6590349137';
 const TEST_MOBILE = '+6593663631';
-module.exports = function sendReminder(options) {
+module.exports = function sendReminder(options, callback) {
   const { name, event, test } = options;
   let { mobile } = options;
 
@@ -22,11 +22,12 @@ module.exports = function sendReminder(options) {
     // console.log(mobile);
     const startDate = moment(event.start.dateTime).format('DD-MMM');
     const startTime = moment(event.start.dateTime).format('hh:mm a');
-    client.messages.create({
-      body: `Hi ${name},\n\nGentle reminder for your appt on ${startDate} at ${startTime}.\n\nAny changes, reply to ${REPLY_MOBILE}`,
-      to: mobile,
-      from: FROM,
-    });
-    // .then(message => console.log(message.sid));
+    client.messages
+      .create({
+        body: `Hi ${name},\n\nGentle reminder for your appt on ${startDate} at ${startTime}.\n\nAny changes, reply to ${REPLY_MOBILE}`,
+        to: mobile,
+        from: FROM,
+      })
+      .then(callback);
   }
 };
