@@ -13,6 +13,6 @@ RUN yarn install --production --no-progress
 COPY ./build .
 
 RUN echo "Asia/Singapore" > /etc/timezone
-RUN dpkg-reconfigure -f noninteractive tzdata
+RUN date
 
 CMD [ "node", "server.js" ]
