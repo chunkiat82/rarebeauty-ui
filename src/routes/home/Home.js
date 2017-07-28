@@ -56,16 +56,10 @@ class Home extends React.Component {
     slider: 75,
   };
 
-  handleNewRequest = (inputString, index) => {
+  handleNewRequest = (inputString, index) =>
     this.setState({ index, ...inputString });
-  };
-
   handleServiceChange = (event, index, services) => this.setState({ services });
-
-  handleSliderChange = (event, value) => {
-    this.setState({ slider: value });
-  };
-
+  handleSliderChange = (event, value) => this.setState({ slider: value });
   handleDateChange = (something, dateChosen) => this.setState({ dateChosen });
   handleTimeChange = (something, timeChosen) => this.setState({ timeChosen });
 
@@ -83,6 +77,7 @@ class Home extends React.Component {
               floatingLabelText="Name"
               filter={AutoComplete.fuzzyFilter}
               fullWidth
+              searchText={this.state.name}
             />
             <AutoComplete
               hintText="Type anything"
@@ -154,14 +149,21 @@ class Home extends React.Component {
               fullWidth
               onClick={() => {
                 this.props.post(this.state);
-                this.setState({ open: true });
+                this.setState({
+                  open: true,
+                  name: '',
+                  duration: 75,
+                  mobile: '',
+                  timeChosen: {},
+                  dateChosen: {},
+                  services: [],
+                });
               }}
             />
             <Snackbar
               open={this.state.open}
               message="Appointment added to your calendar"
               autoHideDuration={4000}
-              onRequestClose={this.handleRequestClose}
               bodyStyle={{ backgroundColor: '#373277' }}
             />
           </div>
