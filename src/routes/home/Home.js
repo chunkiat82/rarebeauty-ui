@@ -20,6 +20,7 @@ import Slider from 'material-ui/Slider';
 import FontIcon from 'material-ui/FontIcon';
 import RaisedButton from 'material-ui/RaisedButton';
 import AutoComplete from 'material-ui/AutoComplete';
+import Snackbar from 'material-ui/Snackbar';
 import s from './Home.css';
 
 const listOfServices = [
@@ -51,6 +52,7 @@ class Home extends React.Component {
   };
 
   state = {
+    open: false,
     slider: 75,
   };
 
@@ -141,7 +143,17 @@ class Home extends React.Component {
               label="Create Appointment"
               primary
               fullWidth
-              onClick={() => this.props.post(this.state)}
+              onClick={() => {
+                this.props.post(this.state);
+                this.setState({ open: true });
+              }}
+            />
+            <Snackbar
+              open={this.state.open}
+              message="Appointment added to your calendar"
+              autoHideDuration={4000}
+              onRequestClose={this.handleRequestClose}
+              bodyStyle={{ backgroundColor: '#373277' }}
             />
           </div>
         </div>
