@@ -12,4 +12,7 @@ RUN yarn install --production --no-progress
 # Copy application files
 COPY ./build .
 
+RUN sudo echo "Asia/Singapore" > /etc/timezone
+RUN sudo dpkg-reconfigure -f noninteractive tzdata
+
 CMD [ "node", "server.js" ]
