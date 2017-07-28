@@ -15,6 +15,5 @@ COPY ./build .
 RUN apk add -U tzdata
 RUN cp /usr/share/zoneinfo/Asia/Singapore /etc/localtime
 RUN echo "Asia/Singapore" > /etc/timezone
-RUN apk del tzdata
 
 CMD [ "node", "server.js" ]
