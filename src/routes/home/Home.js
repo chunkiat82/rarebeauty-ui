@@ -79,11 +79,20 @@ class Home extends React.Component {
               hintText="Type anything"
               dataSource={this.props.contact}
               dataSourceConfig={{ text: 'name', value: 'name' }}
-              onUpdateInput={this.handleNameChange}
               onNewRequest={this.handleNewRequest}
               floatingLabelText="Name"
               filter={AutoComplete.fuzzyFilter}
               fullWidth
+            />
+            <AutoComplete
+              hintText="Type anything"
+              dataSource={this.props.contact}
+              dataSourceConfig={{ text: 'mobile', value: 'mobile' }}
+              onNewRequest={this.handleNewRequest}
+              floatingLabelText="Mobile"
+              filter={AutoComplete.fuzzyFilter}
+              fullWidth
+              searchText={this.state.mobile}
             />
             <DatePicker
               hintText="Date"
