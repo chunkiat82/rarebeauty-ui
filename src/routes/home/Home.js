@@ -37,6 +37,7 @@ const listOfServices = [
 
 const iconStyles = {
   marginRight: 24,
+  verticalAlign: 'middle',
 };
 
 class Home extends React.Component {
@@ -104,9 +105,17 @@ class Home extends React.Component {
               fullWidth
               value={this.state.timeChosen}
             />
-            <FontIcon className="material-icons" style={iconStyles}>
-              schedule
-            </FontIcon>
+            <p>
+              <FontIcon className="material-icons" style={iconStyles}>
+                schedule
+              </FontIcon>
+              <span>
+                {'Duration: '}
+              </span>
+              <span>
+                {this.state.slider}
+              </span>
+            </p>
             <Slider
               defaultValue={75}
               step={5}
@@ -115,14 +124,6 @@ class Home extends React.Component {
               max={500}
               onChange={this.handleSliderChange}
             />
-            <p>
-              <span>
-                {'Duration: '}
-              </span>
-              <span>
-                {this.state.slider}
-              </span>
-            </p>
             <SelectField
               multiple
               hintText="Services"

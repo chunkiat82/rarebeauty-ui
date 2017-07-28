@@ -45,6 +45,12 @@ const MutationEvent = new ObjectType({
         value,
         { name, mobile, resourceName, services, start, duration },
       ) {
+        // console.log(`resourceName=${resourceName}`);
+        // if (resourceName === "") {
+        //   await api({ action: 'contactCreate', name, mobile });
+        // }
+
+        // resourceName not passed in yet
         await api({
           action: 'calendarCreate',
           name,

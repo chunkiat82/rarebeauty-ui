@@ -88,9 +88,9 @@ async function remindCustomers(options) {
                             event.extendedProperties.shared.mobile) ||
                         -1,
                         event,
-                    }, (message) => {
+                    }, async (message) => {
                         console.log(message.sid + "-" + event.summary);
-                        calendarPatch(Object.assign({}, options, { reminded: true }));
+                        await calendarPatch(Object.assign({}, options, { reminded: true }));
                     });
                 }
 

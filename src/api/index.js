@@ -10,25 +10,6 @@ const sms = require('./utilities/sms');
 async function calendarList() {
   try {
     const events = await listEvents({ calendarId: 'rarebeauty@soho.sg' });
-    // if (events.length === 0) {
-    //   // console.log('No upcoming events found.');
-    // } else {
-    //   // console.log(`Upcoming events (${events.length}):`);
-    //   for (let i = 0; i < events.length; i += 1) {
-    //     const event = events[i];
-    //     // const start = event.start.dateTime || event.start.date;
-    //     // console.log(
-    //     //     '%s - %s - %s - %s',
-    //     //     start,
-    //     //     event.summary,
-    //     //     event.id,
-    //     //     (event.extendedProperties &&
-    //     //         event.extendedProperties.shared &&
-    //     //         event.extendedProperties.shared.mobile) ||
-    //     //     '0',
-    //     // );
-    //   }
-    // }
     return events;
   } catch (err) {
     throw err;

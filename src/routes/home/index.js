@@ -17,7 +17,7 @@ async function createCalendar(fetch, input) {
     slider: duration,
     name,
     mobile,
-    resourceName,
+    resourceName = '',
     timeChosen,
     dateChosen,
     services,
@@ -26,11 +26,11 @@ async function createCalendar(fetch, input) {
   const dateInput = moment(dateChosen).format('YYYYMMDD');
   const timeInput = moment(timeChosen).format('HHmm');
 
-  // console.log(`dateInput=${dateInput} timeInput=${timeInput}`);
+  // console.log(`dateInput=${dateInput} timeInput=${timeInput} resourceName=${resourceName}`);
 
   const resp = await fetch('/graphql', {
     body: JSON.stringify({
-      query: `mutation($name: String!, $mobile:String!, $resourceName:String!, $start:String!, $services:String!, $duration:Int!) {
+      query: `mutation($name: String!, $mobile:String!, $resourceName:String, $start:String!, $services:String!, $duration:Int!) {
           createEvent(name:$name, mobile:$mobile, resourceName:$resourceName, start:$start, services:$services, duration:$duration ) {
             name
             mobile
