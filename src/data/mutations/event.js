@@ -37,8 +37,14 @@ const MutationEvent = new ObjectType({
         duration: {
           type: IntegerType,
         },
+        resourceName: {
+          type: StringType,
+        },
       },
-      async resolve(value, { name, mobile, services, start, duration }) {
+      async resolve(
+        value,
+        { name, mobile, resourceName, services, start, duration },
+      ) {
         await api({
           action: 'calendarCreate',
           name,
@@ -46,8 +52,9 @@ const MutationEvent = new ObjectType({
           mobile,
           services,
           duration,
+          resourceName,
         });
-        return { name, start, mobile, services, duration };
+        return { name, start, mobile, services, duration, resourceName };
       },
     },
   }),

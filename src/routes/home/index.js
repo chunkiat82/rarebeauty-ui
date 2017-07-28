@@ -8,10 +8,54 @@
  */
 
 import React from 'react';
+import moment from 'moment';
 import Home from './Home';
 import Layout from '../../components/Layout';
 
-async function action({ fetch }) {
+async function createCalendar(fetch, input) {
+  const {
+    slider: duration,
+    name,
+    mobile,
+    resourceName,
+    timeChosen,
+    dateChosen,
+    services,
+  } = input;
+
+  const dateInput = moment(dateChosen).format('YYYYMMDD');
+  const timeInput = moment(timeChosen).format('HHmm');
+
+  // console.log(`dateInput=${dateInput} timeInput=${timeInput}`);
+
+  const resp = await fetch('/graphql', {
+    body: JSON.stringify({
+      query: `mutation($name: String!, $mobile:String!, $resourceName:String!, $start:String!, $services:String!, $duration:Int!) {
+          createEvent(name:$name, mobile:$mobile, resourceName:$resourceName, start:$start, services:$services, duration:$duration ) {
+            name
+            mobile
+            start
+            services
+            duration
+          }
+        }`,
+      variables: JSON.stringify({
+        name,
+        mobile,
+        resourceName,
+        start: `${dateInput}T${timeInput}`,
+        services,
+        duration,
+      }),
+    }),
+  });
+
+  const { data } = await resp.json();
+
+  return data;
+}
+
+async function listContacts(fetch) {
   const resp = await fetch('/graphql', {
     body: JSON.stringify({
       query: '{contact{name,mobile,resourceName}}',
@@ -19,24 +63,11 @@ async function action({ fetch }) {
   });
   const { data } = await resp.json();
 
-  async function createCalendar() {
-    // console.log(`state=${JSON.stringify(input)}`);
+  return data;
+}
 
-    // const createdCalendar =
-    await fetch('/graphql', {
-      body: JSON.stringify({
-        query: `mutation($name: String!) {
-          createEvent(name:$name) {
-            name
-            mobile
-            services
-            duration
-          }
-        }`,
-        variables: `{ "name": "hello world" }`,
-      }),
-    });
-  }
+async function action({ fetch }) {
+  const data = await listContacts(fetch);
 
   if (!data || !data.contact)
     throw new Error('Failed to load the contact feed.');
@@ -45,7 +76,10 @@ async function action({ fetch }) {
     title: 'Rare Beauty Professional',
     component: (
       <Layout>
-        <Home contact={data.contact} post={createCalendar} />
+        <Home
+          contact={data.contact}
+          post={input => createCalendar(fetch, input)}
+        />
       </Layout>
     ),
   };

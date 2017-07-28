@@ -47,7 +47,7 @@ class Home extends React.Component {
         resourceName: PropTypes.string.isRequired,
       }),
     ).isRequired,
-    post: PropTypes.function.isRequired,
+    post: PropTypes.func.isRequired,
   };
 
   state = {
