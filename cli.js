@@ -1,7 +1,7 @@
 const argv = require('yargs').argv;
 const moment = require('moment');
 const listEvents = require('./src/api/calendar/list');
-const createEvent = require('./src/api/calendar/create');
+const calendarCreate = require('./src/api/calendar/create');
 const patchEvent = require('./src/api/calendar/patch');
 const reminderList = require('./src/api/reminder/list');
 const contactLists = require('./src/api/contacts/list');
@@ -41,10 +41,10 @@ async function calendarList() {
     }
 }
 
-async function calendarCreate(options) {
+async function createCalendar(options) {
     // node index --action=calendarCreate --name=Raymond Ho --mobile=12345678 --start=20170730T1130 --duration=105 --services=ELFS,HLW
     try {
-        const event = await createEvent(
+        const event = await calendarCreate(
             Object.assign({}, options, { calendarId: 'rarebeauty@soho.sg' }),
         );
         // console.log(event);
@@ -107,6 +107,7 @@ async function remindCustomers(options) {
 async function listContacts() {
     try {
         const contacts = await contactLists();
+        console.log(contacts);
         return contacts;
     } catch (err) {
         throw err;
@@ -116,6 +117,7 @@ async function listContacts() {
 async function createContact(options) {
     try {
         const contact = await contactCreate(options);
+        console.log(contact);
         return contact;
     } catch (err) {
         throw err;
@@ -124,7 +126,7 @@ async function createContact(options) {
 
 const functions = {
     calendarList,
-    calendarCreate,
+    createCalendar,
     calendarPatch,
     remindCustomers,
     listContacts,

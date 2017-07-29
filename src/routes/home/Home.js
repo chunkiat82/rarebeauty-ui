@@ -10,7 +10,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import withStyles from 'isomorphic-style-loader/lib/withStyles';
-// import AutoComplete from 'material-ui/AutoComplete';
 import DatePicker from 'material-ui/DatePicker';
 import TimePicker from 'material-ui/TimePicker';
 import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
@@ -22,6 +21,7 @@ import RaisedButton from 'material-ui/RaisedButton';
 import AutoComplete from 'material-ui/AutoComplete';
 import Snackbar from 'material-ui/Snackbar';
 import s from './Home.css';
+import './InjectTap';
 
 const listOfServices = [
   'Full Set',
@@ -79,6 +79,9 @@ class Home extends React.Component {
         <div className={s.root}>
           <div className={s.container}>
             <AutoComplete
+              ref={c => {
+                this.nameAC = c;
+              }}
               hintText="Type anything"
               dataSource={this.props.contact}
               dataSourceConfig={{ text: 'name', value: 'name' }}
@@ -90,6 +93,9 @@ class Home extends React.Component {
               searchText={this.state.name}
             />
             <AutoComplete
+              ref={c => {
+                this.mobileAC = c;
+              }}
               hintText="Type anything"
               dataSource={this.props.contact}
               dataSourceConfig={{ text: 'mobile', value: 'mobile' }}
@@ -173,13 +179,20 @@ class Home extends React.Component {
                   dateChosen: {},
                   services: [],
                 });
+                this.nameAC.setState({ searchText: '' });
+                this.mobileAC.setState({ searchText: '' });
+                setTimeout(() => this.nameAC.focus(), 200);
+                setTimeout(() => this.setState({ open: false }), 2000);
               }}
             />
             <Snackbar
               open={this.state.open}
-              message="Appointment added to your calendar"
-              autoHideDuration={4000}
-              bodyStyle={{ backgroundColor: '#373277' }}
+              message="Appointment Added"
+              bodyStyle={{
+                backgroundColor: '#373277',
+                paddingBottom: 28,
+                paddingTop: 28,
+              }}
             />
           </div>
         </div>
@@ -187,5 +200,4 @@ class Home extends React.Component {
     );
   }
 }
-
 export default withStyles(s)(Home);

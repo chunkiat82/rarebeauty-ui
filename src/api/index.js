@@ -1,6 +1,6 @@
 const moment = require('moment');
 const listEvents = require('./calendar/list');
-const createEvent = require('./calendar/create');
+const calendarCreate = require('./calendar/create');
 const patchEvent = require('./calendar/patch');
 const reminderList = require('./reminder/list');
 const contactLists = require('./contacts/list');
@@ -17,10 +17,10 @@ async function calendarList() {
   }
 }
 
-async function calendarCreate(options) {
+async function createCalendar(options) {
   // node index --action=calendarCreate --name=Raymond Ho --mobile=12345678 --start=20170730T1130 --duration=105 --services=ELFS,HLW
   try {
-    const event = await createEvent(
+    const event = await calendarCreate(
       Object.assign({}, options, { calendarId: 'rarebeauty@soho.sg' }),
     );
     // console.log(event);
@@ -92,7 +92,7 @@ async function createContact(options) {
 
 const functions = {
   calendarList,
-  calendarCreate,
+  createCalendar,
   calendarPatch,
   remindCustomers,
   listContacts,
@@ -113,6 +113,7 @@ function processArguments(argv) {
 
 function main(argv) {
   const options = processArguments(argv);
+  // console.log(`options=${options.action}`);
   return options.action(options);
 }
 
