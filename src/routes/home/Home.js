@@ -26,13 +26,18 @@ import s from './Home.css';
 const listOfServices = [
   'Full Set',
   'Touch Up',
-  'Facial',
+  'Radiance Facial',
   'Full Leg Waxing',
   'Half Leg Waxing',
   'Full Arm Waxing',
   'Half Arm Waxing',
   'Under Arm Waxing',
   'Full Face Waxing',
+  'Lower Lip Waxing',
+  'Eyebrow Threading',
+  'Lower Lip Threading',
+  'Upper Lip Threading',
+  'Full Face Threading',
 ];
 
 const iconStyles = {
@@ -64,6 +69,9 @@ class Home extends React.Component {
   handleDateChange = (something, dateChosen) => this.setState({ dateChosen });
   handleTimeChange = (something, timeChosen) => this.setState({ timeChosen });
 
+  handleUpdateName = nameInput => this.setState({ nameInput });
+  handleUpdateMobile = mobileInput => this.setState({ mobileInput });
+
   render() {
     const { services } = this.state;
     return (
@@ -75,6 +83,7 @@ class Home extends React.Component {
               dataSource={this.props.contact}
               dataSourceConfig={{ text: 'name', value: 'name' }}
               onNewRequest={this.handleNewRequest}
+              onUpdateInput={this.handleUpdateName}
               floatingLabelText="Name"
               filter={AutoComplete.fuzzyFilter}
               fullWidth
@@ -86,6 +95,7 @@ class Home extends React.Component {
               dataSourceConfig={{ text: 'mobile', value: 'mobile' }}
               onNewRequest={this.handleNewRequest}
               floatingLabelText="Mobile"
+              onUpdateInput={this.handleUpdateMobile}
               filter={AutoComplete.fuzzyFilter}
               fullWidth
               searchText={this.state.mobile}
@@ -149,7 +159,11 @@ class Home extends React.Component {
               primary
               fullWidth
               onClick={() => {
-                this.props.post(this.state);
+                const inputs = Object.assign({}, this.state);
+                inputs.mobile = inputs.mobile || inputs.mobileInput;
+                inputs.name = inputs.name || inputs.nameInput;
+
+                this.props.post(inputs);
                 this.setState({
                   open: true,
                   name: '',

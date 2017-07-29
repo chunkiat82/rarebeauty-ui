@@ -1,50 +1,42 @@
-// const generateJWT = require('../utilities/jwt');
-// const google = require('googleapis');
+// https://developers.google.com/apis-explorer/?hl=en_US#p/
+const generateJWT = require('../utilities/jwt');
+const google = require('googleapis');
 
-// module.exports = function create(options) {
-//   const {
-//     name,
-//     mobile,
-//     startDT,
-//     endDT,
-//     duration,
-//     services,
-//     calendarId,
-//   } = options;
+module.exports = async function create({ first, last, mobile }) {
+  const jwtClient = await generateJWT('rarebeauty@soho.sg');
+  const people = google.people({
+    version: 'v1',
+    auth: jwtClient,
+  });
 
-//   if (!name || !mobile) {
-//     return new Promise((res, rej) => {
-//       rej('no contact created');
-//     });
-//   }
+  // console.log(`${first} ${last} ${mobile}`);
 
-//   return new Promise(async (res, rej) => {
-//     const jwtClient = await generateJWT('rarebeauty@soho.sg');
-//     const calendar = google.calendar({ version: 'v3', auth: jwtClient });
-//     calendar.events.insert(
-//       {
-//         calendarId,
-//         resource: {
-//           start: { dateTime: startDT },
-//           end: { dateTime: endDT },
-//           summary: name,
-//           location: 'Home',
-//           status: 'confirmed',
-//           extendedProperties: {
-//             shared: { mobile, reminded: false },
-//           },
-//           description: services,
-//         },
-//       },
-//       (err, event) => {
-//         if (err) {
-//           // console.log(
-//           //   `There was an error contacting the Calendar service: ${err}`,
-//           // );
-//           rej(err);
-//         }
-//         res(event);
-//       },
-//     );
-//   });
-// };
+  return new Promise((res, rej) => {
+    people.people.createContact(
+      {
+        resource: {
+          names: [
+            {
+              givenName: first,
+              familyName: last,
+            },
+          ],
+          phoneNumbers: [
+            {
+              value: `${mobile}`,
+              type: 'mobile',
+            },
+          ],
+        },
+      },
+      (err, me) => {
+        // console.log(err || me);
+        if (err) {
+          rej(err);
+        } else {
+          res(me);
+        }
+      },
+    );
+  });
+};

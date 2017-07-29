@@ -4,6 +4,7 @@ const createEvent = require('./calendar/create');
 const patchEvent = require('./calendar/patch');
 const reminderList = require('./reminder/list');
 const contactLists = require('./contacts/list');
+const contactCreate = require('./contacts/create');
 
 const sms = require('./utilities/sms');
 
@@ -80,12 +81,22 @@ async function listContacts() {
   }
 }
 
+async function createContact(options) {
+  try {
+    const contact = await contactCreate(options);
+    return contact;
+  } catch (err) {
+    throw err;
+  }
+}
+
 const functions = {
   calendarList,
   calendarCreate,
   calendarPatch,
   remindCustomers,
   listContacts,
+  createContact,
 };
 
 function processArguments(argv) {

@@ -6,6 +6,8 @@ module.exports = function list(options) {
   const { calendarId } = options;
   const tomorrow = moment().startOf('day').add(1, 'days');
   const endTomorrow = moment(tomorrow).add(24, 'hours').subtract(1, 'seconds');
+  // console.log(tomorrow.toISOString());
+  // console.log(endTomorrow.toISOString());
 
   return new Promise(async (res, rej) => {
     const jwtClient = await generateJWT();

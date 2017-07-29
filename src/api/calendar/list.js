@@ -7,10 +7,11 @@ module.exports = function list(options) {
   return new Promise(async (res, rej) => {
     const jwtClient = await generateJWT();
     const calendar = google.calendar({ version: 'v3', auth: jwtClient });
+    const timeMin = moment().subtract(1, 'hours').toISOString();
     calendar.events.list(
       {
         calendarId,
-        timeMin: moment().subtract(1, 'hours').toISOString(),
+        timeMin,
         // maxResults: 20,
         singleEvents: true,
         orderBy: 'startTime',

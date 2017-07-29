@@ -5,6 +5,7 @@ const createEvent = require('./src/api/calendar/create');
 const patchEvent = require('./src/api/calendar/patch');
 const reminderList = require('./src/api/reminder/list');
 const contactLists = require('./src/api/contacts/list');
+const contactCreate = require('./src/api/contacts/create');
 
 const sms = require('./src/api/utilities/sms');
 
@@ -46,7 +47,7 @@ async function calendarCreate(options) {
         const event = await createEvent(
             Object.assign({}, options, { calendarId: 'rarebeauty@soho.sg' }),
         );
-        console.log(event);
+        // console.log(event);
         return event;
     } catch (err) {
         throw err;
@@ -59,7 +60,7 @@ async function calendarPatch(options) {
         const event = await patchEvent(
             Object.assign({}, options, { calendarId: 'rarebeauty@soho.sg' }),
         );
-        console.log(event);
+        // console.log(event);
         return event;
     } catch (err) {
         throw err;
@@ -77,9 +78,11 @@ async function remindCustomers(options) {
             console.log('Upcoming events for tomorrow');
             for (let i = 0; i < events.length; i += 1) {
                 const event = events[i];
-                if (!(event.extendedProperties &&
-                    event.extendedProperties.shared &&
-                    event.extendedProperties.shared.reminded)) {
+                // console.log(event);
+                if (event.extendedProperties &&
+                    event.extendedProperties.shared && (
+                    event.extendedProperties.shared.reminded === 'false' || 
+                    event.extendedProperties.shared.reminded === false)) {
                     sms({
                         name: event.summary,
                         mobile:
@@ -90,11 +93,9 @@ async function remindCustomers(options) {
                         event,
                     }, async (message) => {
                         console.log(message.sid + "-" + event.summary);
-                        await calendarPatch(Object.assign({}, options, { reminded: true }));
+                        await calendarPatch(Object.assign({}, options, { eventId: event.id, reminded: true }));
                     });
                 }
-
-                // break;
             }
         }
         return events;
@@ -112,12 +113,22 @@ async function listContacts() {
     }
 }
 
+async function createContact(options) {
+    try {
+        const contact = await contactCreate(options);
+        return contact;
+    } catch (err) {
+        throw err;
+    }
+}
+
 const functions = {
     calendarList,
     calendarCreate,
     calendarPatch,
     remindCustomers,
     listContacts,
+    createContact
 };
 
 function processArguments(argv) {

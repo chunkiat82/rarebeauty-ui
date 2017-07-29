@@ -22,10 +22,10 @@ const MutationEvent = new ObjectType({
     createEvent: {
       type: EventType,
       args: {
-        start: {
+        name: {
           type: StringType,
         },
-        name: {
+        start: {
           type: StringType,
         },
         mobile: {
@@ -45,12 +45,25 @@ const MutationEvent = new ObjectType({
         value,
         { name, mobile, resourceName, services, start, duration },
       ) {
+        let finalResourceName = resourceName;
         // console.log(`resourceName=${resourceName}`);
-        // if (resourceName === "") {
-        //   await api({ action: 'contactCreate', name, mobile });
-        // }
 
-        // resourceName not passed in yet
+        if (resourceName === '') {
+          const firstLast = name.split(' ');
+          const first = firstLast[0];
+          const last = firstLast[1] || '';
+          // console.log('first=${first} last = ${last}');
+          const res = await api({
+            action: 'contactCreate',
+            first,
+            last,
+            mobile,
+          });
+          finalResourceName = res.resourceName;
+        }
+
+        // console.log(`finalResourceName=${finalResourceName}`);
+
         await api({
           action: 'calendarCreate',
           name,
@@ -58,7 +71,7 @@ const MutationEvent = new ObjectType({
           mobile,
           services,
           duration,
-          resourceName,
+          finalResourceName,
         });
         return { name, start, mobile, services, duration, resourceName };
       },
