@@ -14,27 +14,33 @@ module.exports = async function list() {
       {
         resourceName: 'people/me',
         personFields: 'names,phoneNumbers',
+        pageSize: 2000, // future problem
       },
       (err, me) => {
         if (err) {
           rej(err);
           return;
         }
-        // console.log(me);
+        // console.log(me.connections.length);
         // console.log(JSON.stringify(me, null, 2));
-        const contacts = me.connections.map((one, index) => ({
-          id: index,
-          name:
-            one &&
-            one.names &&
-            one.names.length > 0 &&
-            one.names[0].displayName,
-          mobile: ((one.phoneNumbers &&
-            (one.phoneNumbers[0].canonicalForm || one.phoneNumbers[0].value)) ||
-            '0')
-            .replace(/\s/g, ''),
-          resourceName: one.resourceName,
-        }));
+        const contacts = me.connections.map((one, index) => {
+          const obj = {
+            id: index,
+            name:
+              one &&
+              one.names &&
+              one.names.length > 0 &&
+              one.names[0].displayName,
+            mobile: ((one.phoneNumbers &&
+              (one.phoneNumbers[0].canonicalForm ||
+                one.phoneNumbers[0].value)) ||
+              '0')
+              .replace(/\s/g, ''),
+            resourceName: one.resourceName,
+          };
+          obj.display = `${obj.name} - ${obj.mobile}`;
+          return obj;
+        });
 
         contacts.sort((a, b) => (a.name && a.name.localeCompare(b.name)) || 0);
 

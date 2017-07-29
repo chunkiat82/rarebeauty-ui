@@ -60,7 +60,7 @@ async function createCalendar(fetch, input) {
 async function listContacts(fetch) {
   const resp = await fetch('/graphql', {
     body: JSON.stringify({
-      query: '{contact{name,mobile,resourceName}}',
+      query: '{contact{name,mobile,display,resourceName}}',
     }),
   });
   const { data } = await resp.json();

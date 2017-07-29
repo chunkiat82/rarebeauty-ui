@@ -17,6 +17,7 @@ const ContactType = new ObjectType({
   name: 'Contact',
   fields: {
     name: { type: new NonNull(StringType) },
+    display: { type: new NonNull(StringType) },
     mobile: { type: new NonNull(StringType) },
     resourceName: { type: StringType },
   },

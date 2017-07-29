@@ -84,7 +84,7 @@ class Home extends React.Component {
               }}
               hintText="Type anything"
               dataSource={this.props.contact}
-              dataSourceConfig={{ text: 'name', value: 'name' }}
+              dataSourceConfig={{ text: 'display', value: 'name' }}
               onNewRequest={this.handleNewRequest}
               onUpdateInput={this.handleUpdateName}
               floatingLabelText="Name"

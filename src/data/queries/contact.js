@@ -13,18 +13,10 @@ import { GraphQLList as List } from 'graphql';
 import ContactType from '../types/ContactType';
 import api from '../../api';
 
-let items = [
-  {
-    name: 'Raymond',
-    mobile: '93663631',
-    resourceName: 'people/c9054502601102741848',
-  },
-];
-
 const contacts = {
   type: new List(ContactType),
   async resolve() {
-    items = await api({ action: 'listContacts' });
+    const items = await api({ action: 'listContacts' });
     return items;
   },
 };
