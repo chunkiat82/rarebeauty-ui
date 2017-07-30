@@ -65,7 +65,9 @@ class Home extends React.Component {
 
   handleNewRequest = (inputString, index) =>
     this.setState({ index, nameInput: '', mobileInput: '', ...inputString });
-  handleServiceChange = (event, index, services) => this.setState({ services });
+  handleServiceChange = (event, index, services) => {
+    this.setState({ services });
+  };
   handleSliderChange = (event, value) => this.setState({ slider: value });
   handleDateChange = (something, dateChosen) => this.setState({ dateChosen });
   handleTimeChange = (something, timeChosen) => this.setState({ timeChosen });
@@ -118,6 +120,7 @@ class Home extends React.Component {
             />
             <TimePicker
               autoOk
+              format="24hr"
               hintText="Time"
               minutesStep={5}
               onChange={this.handleTimeChange}
@@ -164,6 +167,9 @@ class Home extends React.Component {
               )}
             </SelectField>
             <RaisedButton
+              ref={c => {
+                this.submitBtn = c;
+              }}
               label="Create Appointment"
               primary
               fullWidth

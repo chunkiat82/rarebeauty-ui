@@ -1,3 +1,4 @@
+const fs = require('fs');
 const argv = require('yargs').argv;
 const moment = require('moment');
 const listEvents = require('./src/api/calendar/list');
@@ -7,11 +8,14 @@ const reminderList = require('./src/api/reminder/list');
 const contactLists = require('./src/api/contacts/list');
 const contactCreate = require('./src/api/contacts/create');
 
-const sms = require('./src/api/utilities/sms');
 
-async function calendarList() {
+const { sendReminder: sms } = require('./src/api/utilities/sms');
+
+async function calendarList(options) {
+
+    const finalOptions = Object.assign({ calendarId: 'rarebeauty@soho.sg'}, options);
     try {
-        const events = await listEvents({ calendarId: 'rarebeauty@soho.sg' });
+        const events = await listEvents(finalOptions);
         if (events.length === 0) {
             // console.log('No upcoming events found.');
         } else {
@@ -35,6 +39,7 @@ async function calendarList() {
                 );
             }
         }
+        // fs.writeFileSync('./data.json', JSON.stringify(events, null, 2), 'utf-8');
         return events;
     } catch (err) {
         throw err;
@@ -81,8 +86,8 @@ async function remindCustomers(options) {
                 // console.log(event);
                 if (event.extendedProperties &&
                     event.extendedProperties.shared && (
-                    event.extendedProperties.shared.reminded === 'false' || 
-                    event.extendedProperties.shared.reminded === false)) {
+                        event.extendedProperties.shared.reminded === 'false' ||
+                        event.extendedProperties.shared.reminded === false)) {
                     sms({
                         name: event.summary,
                         mobile:

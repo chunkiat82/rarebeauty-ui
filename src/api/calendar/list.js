@@ -3,11 +3,11 @@ const google = require('googleapis');
 const moment = require('moment');
 
 module.exports = function list(options) {
-  const { calendarId } = options;
+  const { calendarId, timeStart } = options;
   return new Promise(async (res, rej) => {
     const jwtClient = await generateJWT();
     const calendar = google.calendar({ version: 'v3', auth: jwtClient });
-    const timeMin = moment().subtract(1, 'hours').toISOString();
+    const timeMin = timeStart || moment().subtract(1, 'hours').toISOString();
     calendar.events.list(
       {
         calendarId,
