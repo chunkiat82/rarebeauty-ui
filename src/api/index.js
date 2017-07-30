@@ -6,7 +6,7 @@ const reminderList = require('./reminder/list');
 const contactLists = require('./contacts/list');
 const contactCreate = require('./contacts/create');
 
-const sms = require('./utilities/sms');
+const { sendReminder } = require('./utilities/sms');
 
 async function calendarList() {
   try {
@@ -54,7 +54,7 @@ async function remindCustomers(options) {
       // console.log('Upcoming events for the half day');
       for (let i = 0; i < events.length; i += 1) {
         const event = events[i];
-        sms({
+        sendReminder({
           name: event.summary,
           mobile:
             (event.extendedProperties &&

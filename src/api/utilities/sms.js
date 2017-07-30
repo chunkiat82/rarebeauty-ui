@@ -7,7 +7,7 @@ const moment = require('moment');
 const FROM = 'RareBeauty';
 const REPLY_MOBILE = '+6590349137';
 const TEST_MOBILE = '+6593663631';
-module.exports = function sendReminder(options, callback) {
+function sendReminder(options, callback) {
   const { name, event, test } = options;
   let { mobile } = options;
 
@@ -30,4 +30,31 @@ module.exports = function sendReminder(options, callback) {
       })
       .then(callback);
   }
+}
+
+function sendMessage(options, callback) {
+  const { message, test } = options;
+  let { mobile } = options;
+
+  if (!mobile.startsWith('+65')) {
+    mobile = `+65${mobile}`;
+  }
+  if (test) {
+    mobile = TEST_MOBILE;
+  }
+
+  if (mobile.length === 11) {
+    client.messages
+      .create({
+        body: `${message}\n\nAny changes, reply to ${REPLY_MOBILE}`,
+        to: mobile,
+        from: FROM,
+      })
+      .then(callback);
+  }
+}
+
+module.exports = {
+  sendReminder,
+  sendMessage,
 };

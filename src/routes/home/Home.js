@@ -26,6 +26,7 @@ import './InjectTap';
 const listOfServices = [
   'Full Set',
   'Touch Up',
+  'Removal',
   'Radiance Facial',
   'Full Leg Waxing',
   'Half Leg Waxing',
@@ -63,17 +64,19 @@ class Home extends React.Component {
   };
 
   handleNewRequest = (inputString, index) =>
-    this.setState({ index, ...inputString });
+    this.setState({ index, nameInput: '', mobileInput: '', ...inputString });
   handleServiceChange = (event, index, services) => this.setState({ services });
   handleSliderChange = (event, value) => this.setState({ slider: value });
   handleDateChange = (something, dateChosen) => this.setState({ dateChosen });
   handleTimeChange = (something, timeChosen) => this.setState({ timeChosen });
-
-  handleUpdateName = nameInput => this.setState({ nameInput });
-  handleUpdateMobile = mobileInput => this.setState({ mobileInput });
+  handleUpdateName = nameInput =>
+    this.setState({ nameInput, resourceName: '' });
+  handleUpdateMobile = mobileInput =>
+    this.setState({ mobileInput, resourceName: '' });
 
   render() {
     const { services } = this.state;
+    // console.log(this.state);
     return (
       <MuiThemeProvider>
         <div className={s.root}>
@@ -166,8 +169,8 @@ class Home extends React.Component {
               fullWidth
               onClick={() => {
                 const inputs = Object.assign({}, this.state);
-                inputs.mobile = inputs.mobile || inputs.mobileInput;
-                inputs.name = inputs.name || inputs.nameInput;
+                inputs.mobile = inputs.mobileInput || inputs.mobile;
+                inputs.name = inputs.nameInput || inputs.name;
 
                 this.props.post(inputs);
                 this.setState({
@@ -178,6 +181,9 @@ class Home extends React.Component {
                   timeChosen: {},
                   dateChosen: {},
                   services: [],
+                  nameInput: '',
+                  mobileInput: '',
+                  resourceName: '',
                 });
                 this.nameAC.setState({ searchText: '' });
                 this.mobileAC.setState({ searchText: '' });
