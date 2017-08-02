@@ -32,7 +32,7 @@ function sendReminder(options, callback) {
   }
 }
 
-function sendMessage(options, callback) {
+function sendMessage(options, callback, err) {
   const { message, test } = options;
   let { mobile } = options;
 
@@ -50,7 +50,8 @@ function sendMessage(options, callback) {
         to: mobile,
         from: FROM,
       })
-      .then(callback);
+      .then(callback)
+      .catch(err);
   }
 }
 

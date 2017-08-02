@@ -8,18 +8,35 @@ const reminderList = require('./src/api/reminder/list');
 const contactLists = require('./src/api/contacts/list');
 const contactCreate = require('./src/api/contacts/create');
 
-
 const { sendReminder: sms } = require('./src/api/utilities/sms');
 
+// var couchbase = require('couchbase')
+// var cluster = new couchbase.Cluster('couchbase://localhost/');
+// var bucket = cluster.openBucket('default');
+// var N1qlQuery = couchbase.N1qlQuery;
+// var rp = require('request-promise');
+
+function postToES(body) {
+    var options = {
+        method: 'POST',
+        uri: 'http://localhost:9200/rarebeauty/events/' + body.id,
+        body,
+        json: true // Automatically stringifies the body to JSON
+    };
+
+    return rp(options);
+}
 async function calendarList(options) {
 
-    const finalOptions = Object.assign({ calendarId: 'rarebeauty@soho.sg'}, options);
+    // start of time --timeStart=2017-01-01T00:00:00Z 
+    const finalOptions = Object.assign({ calendarId: 'rarebeauty@soho.sg' }, options);
     try {
         const events = await listEvents(finalOptions);
         if (events.length === 0) {
             // console.log('No upcoming events found.');
         } else {
-            // console.log(`Upcoming events (${events.length}):`);
+            // bucket.manager().createPrimaryIndex(function () {
+            console.log(`Upcoming events (${events.length}):`);
             for (let i = 0; i < events.length; i += 1) {
                 const event = events[i];
                 const start = event.start.dateTime || event.start.date;
@@ -37,7 +54,15 @@ async function calendarList(options) {
                         event.extendedProperties.shared.reminded) ||
                     'false'
                 );
+                // bucket.upsert(`event:${event.id}`, event, () => { });
+                try {
+                    // const body = await postToES(event);
+                    // console.log(body);
+                } catch (err) {
+                    console.log(err);
+                }
             }
+            // });
         }
         // fs.writeFileSync('./data.json', JSON.stringify(events, null, 2), 'utf-8');
         return events;
@@ -88,7 +113,9 @@ async function remindCustomers(options) {
                     event.extendedProperties.shared && (
                         event.extendedProperties.shared.reminded === 'false' ||
                         event.extendedProperties.shared.reminded === false)) {
-                    sms({
+
+                    console.log(event);
+                    await sms({
                         name: event.summary,
                         mobile:
                         (event.extendedProperties &&
@@ -99,6 +126,8 @@ async function remindCustomers(options) {
                     }, async (message) => {
                         console.log(message.sid + "-" + event.summary);
                         await calendarPatch(Object.assign({}, options, { eventId: event.id, reminded: true }));
+                    }, async (err) => {
+                        console.log(err);
                     });
                 }
             }
@@ -150,9 +179,14 @@ function processArguments(argv) {
     });
 }
 
-function main(argv) {
+async function main(argv) {
     const options = processArguments(argv);
-    return options.action(options);
+    const results = await options.action(options);
+    // process.exit(0);
 }
 
-main(argv);
+try {
+    main(argv);
+} catch (err) {
+    console.log(err);
+}
