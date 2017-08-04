@@ -1,30 +1,25 @@
-const generateJWT = require('../utilities/jwt');
+const generateJWT = require('../../utilities/jwt');
 const google = require('googleapis');
 
 module.exports = function create(options) {
-  const { calendarId, address, id } = options;
+  const { calendarId, resourceId, id } = options;
 
   return new Promise(async (res, rej) => {
     const jwtClient = await generateJWT();
     const calendar = google.calendar({ version: 'v3', auth: jwtClient });
-    calendar.events.watch(
+    calendar.channels.stop(
       {
         calendarId,
         resource: {
           id,
-          token: 'anythingbutme',
-          type: 'web_hook',
-          address,
-          params: {
-            ttl: 1314000,
-          },
+          resourceId,
         },
       },
-      (err, event) => {
+      (err, response) => {
         if (err) {
           rej(err);
         }
-        res(event);
+        res(response);
       },
     );
   });

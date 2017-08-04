@@ -108,8 +108,12 @@ app.use(
 );
 
 app.use('/events/calendar', async (req, res) => {
-  // console.log(req);
-  res.send(req);
+  try {
+    console.log(req);
+  } catch (err) {
+    console.log(err);
+  }
+  res.send(200);
 });
 
 //

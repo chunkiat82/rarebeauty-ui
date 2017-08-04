@@ -7,7 +7,8 @@ const patchEvent = require('./src/api/calendar/patch');
 const reminderList = require('./src/api/reminder/list');
 const contactLists = require('./src/api/contacts/list');
 const contactCreate = require('./src/api/contacts/create');
-const watchEvent = require('./src/api/calendar/watch');
+const calendarWatch = require('./src/api/calendar/watch');
+const calendarWatchStop = require('./src/api/calendar/watch/stop');
 
 const { sendReminder: sms } = require('./src/api/utilities/sms');
 
@@ -205,10 +206,28 @@ async function watchCalendar(options) {
     const finalOptions = Object.assign({}, options, {
         calendarId: 'rarebeauty@soho.sg',
         address: 'https://rarebeauty.soho.sg/events/calendar',
-        id: 'anythingintheworld'+Date.now()
+        id: 'anythingintheworld'
     });
     try {
-        const response = await watchEvent(finalOptions);
+        const response = await calendarWatch(finalOptions);
+        console.log(response);
+        return response;
+    } catch (err) {
+        console.log(err);
+        throw err;
+
+    }
+}
+
+async function stopWatchCalendar(options) {
+
+    const finalOptions = Object.assign({}, options, {
+        calendarId: 'rarebeauty@soho.sg',
+        id: 'anythingintheworld',
+        resourceId:'7kUO96Be7gwvDBulEetjGAHV9O8'
+    });
+    try {
+        const response = await calendarWatchStop(finalOptions);
         console.log(response);
         return response;
     } catch (err) {
@@ -226,7 +245,8 @@ const functions = {
     listContacts,
     createContact,
     calendarSyncToDB,
-    watchCalendar
+    watchCalendar,
+    stopWatchCalendar
 };
 
 function processArguments(argv) {
