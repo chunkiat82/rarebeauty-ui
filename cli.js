@@ -11,39 +11,24 @@ const contactCreate = require('./src/api/contacts/create');
 const { sendReminder: sms } = require('./src/api/utilities/sms');
 
 const couchbase = require('couchbase');
-// var cluster = new couchbase.Cluster('couchbase://localhost/');
-// var bucket = cluster.openBucket('default');
-// var N1qlQuery = couchbase.N1qlQuery;
-// var rp = require('request-promise');
 
-// function postToES(body) {
-//     var options = {
-//         method: 'POST',
-//         uri: 'http://localhost:9200/rarebeauty/events/' + body.id,
-//         body,
-//         json: true // Automatically stringifies the body to JSON
-//     };
-
-//     return rp(options);
-// }
 function upsertDatabase(bucket, event) {
     return new Promise((res, rej) => {
         bucket.upsert(`event:${event.id}`, event, (err, result) => { if (err) { rej(err) } else { res(result) } });
     });
 }
 
-async function calendarSyncToDB(options) {
+async function calendarSyncToDB() {
     const cluster = new couchbase.Cluster('couchbase://172.17.0.1/');
     const bucket = cluster.openBucket('default');
     // start of time --timeStart=2017-01-01T00:00:00Z 
-    const finalOptions = Object.assign({ calendarId: 'rarebeauty@soho.sg' }, options);
+    const finalOptions = Object.assign({ calendarId: 'rarebeauty@soho.sg', timeStart: '2017-01-01T00:00:00Z' });
     try {
         const events = await listEvents(finalOptions);
         if (events.length === 0) {
             // console.log('No upcoming events found.');
         } else {
-            bucket.manager().createPrimaryIndex(async function () {
-                // bucket.manager().createPrimaryIndex(function () {
+            bucket.manager().createPrimaryIndex(async function () {                
                 console.log(`Upcoming events (${events.length}):`);
                 for (let i = 0; i < events.length; i += 1) {
                     const event = events[i];
@@ -68,9 +53,9 @@ async function calendarSyncToDB(options) {
                         console.log(err);
                     }
                 }
+                bucket.shutdown();
             });
-        }
-        // fs.writeFileSync('./data.json', JSON.stringify(events, null, 2), 'utf-8');
+        }        
         return events;
     } catch (err) {
         throw err;
@@ -81,7 +66,7 @@ async function calendarSyncToDB(options) {
 
 async function calendarList(options) {
 
-    const finalOptions = Object.assign({ calendarId: 'rarebeauty@soho.sg', timeStart: '2017-01-01T00:00:00Z' });
+    const finalOptions = Object.assign({ calendarId: 'rarebeauty@soho.sg' }, options);
     try {
         const events = await listEvents(finalOptions);
         if (events.length === 0) {
@@ -91,19 +76,23 @@ async function calendarList(options) {
             console.log(`Upcoming events (${events.length}):`);
             for (let i = 0; i < events.length; i += 1) {
                 const event = events[i];
-                const start = event.start.dateTime || event.start.date;
-
-                // bucket.upsert(`event:${event.id}`, event, () => { });
-                try {
-                    // const body = await postToES(event);
-                    // console.log(body);
-                } catch (err) {
-                    console.log(err);
-                }
-            }
-            // });
-        }
-        // fs.writeFileSync('./data.json', JSON.stringify(events, null, 2), 'utf-8');
+                const start = event.start.dateTime || event.start.date;                
+                console.log(
+                    '%s - %s - %s - %s',
+                    start,
+                    event.summary,
+                    event.id,
+                    (event.extendedProperties &&
+                        event.extendedProperties.shared &&
+                        event.extendedProperties.shared.mobile) ||
+                    '0',
+                    (event.extendedProperties &&
+                        event.extendedProperties.shared &&
+                        event.extendedProperties.shared.reminded) ||
+                    'false'
+                );
+            }            
+        }        
         return events;
     } catch (err) {
         throw err;
