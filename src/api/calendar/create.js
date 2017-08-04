@@ -31,9 +31,9 @@ module.exports = function create(options) {
           location: 'Home',
           status: 'confirmed',
           extendedProperties: {
-            shared: { mobile, reminded: false },
+            shared: { mobile, reminded: false, services },
           },
-          description: services,
+          description: services.join(','),
         },
       },
       (err, event) => {

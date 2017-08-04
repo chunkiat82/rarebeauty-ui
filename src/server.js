@@ -107,6 +107,11 @@ app.use(
   })),
 );
 
+app.use('/events/*', async (req, res) => {
+  console.log(req.body);
+  res.send('hello world');
+});
+
 //
 // Register server-side rendering middleware
 // -----------------------------------------------------------------------------

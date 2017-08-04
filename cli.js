@@ -7,6 +7,7 @@ const patchEvent = require('./src/api/calendar/patch');
 const reminderList = require('./src/api/reminder/list');
 const contactLists = require('./src/api/contacts/list');
 const contactCreate = require('./src/api/contacts/create');
+const watchEvent = require('./src/api/calendar/watch');
 
 const { sendReminder: sms } = require('./src/api/utilities/sms');
 
@@ -19,16 +20,18 @@ function upsertDatabase(bucket, event) {
 }
 
 async function calendarSyncToDB() {
-    const cluster = new couchbase.Cluster('couchbase://172.17.0.1/');
+    const cluster = new couchbase.Cluster('couchbase://rarebeauty.soho.sg/');
     const bucket = cluster.openBucket('default');
+    // bucket.operationTimeout=500*1000;
     // start of time --timeStart=2017-01-01T00:00:00Z 
     const finalOptions = Object.assign({ calendarId: 'rarebeauty@soho.sg', timeStart: '2017-01-01T00:00:00Z' });
+    const promises = []
     try {
         const events = await listEvents(finalOptions);
         if (events.length === 0) {
             // console.log('No upcoming events found.');
         } else {
-            bucket.manager().createPrimaryIndex(async function () {                
+            bucket.manager().createPrimaryIndex(async function () {
                 console.log(`Upcoming events (${events.length}):`);
                 for (let i = 0; i < events.length; i += 1) {
                     const event = events[i];
@@ -48,14 +51,22 @@ async function calendarSyncToDB() {
                         'false'
                     );
                     try {
-                        await upsertDatabase(bucket, event);
+                        promises[promises.length] = upsertDatabase(bucket, event);
                     } catch (err) {
                         console.log(err);
                     }
                 }
-                bucket.shutdown();
+                try {
+                    await Promise.all(promises);
+                    bucket.disconnect();
+                } catch (err) {
+                    console.log(err);
+                    throw err;
+                }
+
+
             });
-        }        
+        }
         return events;
     } catch (err) {
         throw err;
@@ -76,7 +87,8 @@ async function calendarList(options) {
             console.log(`Upcoming events (${events.length}):`);
             for (let i = 0; i < events.length; i += 1) {
                 const event = events[i];
-                const start = event.start.dateTime || event.start.date;                
+                const start = event.start.dateTime || event.start.date;
+                console.log(JSON.stringify(event, null, 2));
                 console.log(
                     '%s - %s - %s - %s',
                     start,
@@ -91,8 +103,8 @@ async function calendarList(options) {
                         event.extendedProperties.shared.reminded) ||
                     'false'
                 );
-            }            
-        }        
+            }
+        }
         return events;
     } catch (err) {
         throw err;
@@ -172,6 +184,7 @@ async function listContacts() {
         console.log(contacts);
         return contacts;
     } catch (err) {
+        console.log(err);
         throw err;
     }
 }
@@ -182,7 +195,26 @@ async function createContact(options) {
         console.log(contact);
         return contact;
     } catch (err) {
+        console.log(err);
         throw err;
+    }
+}
+
+async function watchCalendar(options) {
+
+    const finalOptions = Object.assign({}, options, {
+        calendarId: 'rarebeauty@soho.sg',
+        address: 'https://rarebeauty.soho.sg/events/calendar',
+        id: 'anythingintheworld'
+    });
+    try {
+        const response = await watchEvent(finalOptions);
+        console.log(response);
+        return response;
+    } catch (err) {
+        console.log(err);
+        throw err;
+
     }
 }
 
@@ -193,7 +225,8 @@ const functions = {
     remindCustomers,
     listContacts,
     createContact,
-    calendarSyncToDB
+    calendarSyncToDB,
+    watchCalendar
 };
 
 function processArguments(argv) {

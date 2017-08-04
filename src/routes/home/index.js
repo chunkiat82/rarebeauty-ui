@@ -32,7 +32,7 @@ async function createCalendar(fetch, input) {
 
   const resp = await fetch('/graphql', {
     body: JSON.stringify({
-      query: `mutation($name: String!, $mobile:String!, $resourceName:String, $start:String!, $services:String!, $duration:Int!) {
+      query: `mutation($name: String!, $mobile:String!, $resourceName:String, $start:String!, $services:Array<String>!, $duration:Int!) {
           createEvent(name:$name, mobile:$mobile, resourceName:$resourceName, start:$start, services:$services, duration:$duration ) {
             name
             mobile
