@@ -28,6 +28,7 @@ const listOfServices = [
   'Touch Up',
   'Removal',
   'Radiance Facial',
+  'Brazilian Waxing',
   'Full Leg Waxing',
   'Half Leg Waxing',
   'Full Arm Waxing',
