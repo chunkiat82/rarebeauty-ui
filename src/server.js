@@ -107,9 +107,9 @@ app.use(
   })),
 );
 
-app.use('/events/*', async (req, res) => {
-  console.log(req.body);
-  res.send('hello world');
+app.use('/events/calendar', async (req, res) => {
+  // console.log(req);
+  res.send(req);
 });
 
 //

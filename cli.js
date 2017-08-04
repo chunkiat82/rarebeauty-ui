@@ -205,7 +205,7 @@ async function watchCalendar(options) {
     const finalOptions = Object.assign({}, options, {
         calendarId: 'rarebeauty@soho.sg',
         address: 'https://rarebeauty.soho.sg/events/calendar',
-        id: 'anythingintheworld'
+        id: 'anythingintheworld'+Date.now()
     });
     try {
         const response = await watchEvent(finalOptions);
