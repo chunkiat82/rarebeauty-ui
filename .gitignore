@@ -33,4 +33,4 @@ yarn-error.log*
 **/keys/**
 
 # some temp data
-data**
+data.json
