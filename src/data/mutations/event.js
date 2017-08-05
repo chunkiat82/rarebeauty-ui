@@ -12,9 +12,11 @@ import {
   GraphQLObjectType as ObjectType,
   GraphQLString as StringType,
   GraphQLInt as IntegerType,
+  GraphQLList as ListType,
 } from 'graphql';
 import EventType from '../types/EventType';
 import api from '../../api';
+import db from '../database';
 
 const MutationEvent = new ObjectType({
   name: 'MutationEvent',
@@ -32,7 +34,7 @@ const MutationEvent = new ObjectType({
           type: StringType,
         },
         services: {
-          type: StringType,
+          type: new ListType(StringType),
         },
         duration: {
           type: IntegerType,
@@ -46,7 +48,7 @@ const MutationEvent = new ObjectType({
         { name, mobile, resourceName, services, start, duration },
       ) {
         let finalResourceName = resourceName;
-        // console.log(`name=${name} mobile=${mobile}`);
+        // console.log(`services=${services}`);
 
         if (resourceName === '' || resourceName === undefined) {
           const firstLast = name.split(' ');
@@ -63,16 +65,22 @@ const MutationEvent = new ObjectType({
         }
 
         // console.log(`finalResourceName=${finalResourceName}`);
-
-        await api({
-          action: 'createCalendar',
-          name,
-          start,
-          mobile,
-          services,
-          duration,
-          finalResourceName,
-        });
+        try {
+          const event = await api({
+            action: 'createCalendar',
+            name,
+            start,
+            mobile,
+            services,
+            duration,
+            finalResourceName,
+          });
+          // console.log(`event.id=${event.id}`);
+          await db.upsert(`event:${event.id}`, event);
+        } catch (err) {
+          // console.log(err);
+          throw err;
+        }
         return { name, start, mobile, services, duration, resourceName };
       },
     },

@@ -9,34 +9,29 @@ const contactLists = require('./src/api/contacts/list');
 const contactCreate = require('./src/api/contacts/create');
 const calendarWatch = require('./src/api/calendar/watch');
 const calendarWatchStop = require('./src/api/calendar/watch/stop');
+const generateJWT = require('./src/api/utilities/jwt');
 
 const { sendReminder: sms } = require('./src/api/utilities/sms');
+const { getSyncToken, setSyncToken } = require('./src/api/utilities/token');
 
-const couchbase = require('couchbase');
+async function calendarList(options) {
 
-function upsertDatabase(bucket, event) {
-    return new Promise((res, rej) => {
-        bucket.upsert(`event:${event.id}`, event, (err, result) => { if (err) { rej(err) } else { res(result) } });
-    });
-}
+    const syncToken = await getSyncToken();
 
-async function calendarSyncToDB() {
-    const cluster = new couchbase.Cluster('couchbase://rarebeauty.soho.sg/');
-    const bucket = cluster.openBucket('default');
-    // bucket.operationTimeout=500*1000;
-    // start of time --timeStart=2017-01-01T00:00:00Z 
-    const finalOptions = Object.assign({ calendarId: 'rarebeauty@soho.sg', timeStart: '2017-01-01T00:00:00Z' });
-    const promises = []
+    const finalOptions = Object.assign({ calendarId: 'rarebeauty@soho.sg', syncToken }, options);
     try {
         const events = await listEvents(finalOptions);
+        // console.log(response);
         if (events.length === 0) {
-            // console.log('No upcoming events found.');
+            console.log('No changed events found.');
         } else {
-            bucket.manager().createPrimaryIndex(async function () {
-                console.log(`Upcoming events (${events.length}):`);
-                for (let i = 0; i < events.length; i += 1) {
-                    const event = events[i];
+            // bucket.manager().createPrimaryIndex(function () {
+            console.log(`Upcoming events (${events.length}):`);
+            for (let i = 0; i < events.length; i += 1) {
+                const event = events[i];
+                if (event.start) {
                     const start = event.start.dateTime || event.start.date;
+                    // console.log(JSON.stringify(event, null, 2));
                     console.log(
                         '%s - %s - %s - %s',
                         start,
@@ -51,59 +46,9 @@ async function calendarSyncToDB() {
                             event.extendedProperties.shared.reminded) ||
                         'false'
                     );
-                    try {
-                        promises[promises.length] = upsertDatabase(bucket, event);
-                    } catch (err) {
-                        console.log(err);
-                    }
+                } else {
+                    console.error(event);
                 }
-                try {
-                    await Promise.all(promises);
-                    bucket.disconnect();
-                } catch (err) {
-                    console.log(err);
-                    throw err;
-                }
-
-
-            });
-        }
-        return events;
-    } catch (err) {
-        throw err;
-    }
-}
-
-
-
-async function calendarList(options) {
-
-    const finalOptions = Object.assign({ calendarId: 'rarebeauty@soho.sg' }, options);
-    try {
-        const events = await listEvents(finalOptions);
-        if (events.length === 0) {
-            // console.log('No upcoming events found.');
-        } else {
-            // bucket.manager().createPrimaryIndex(function () {
-            console.log(`Upcoming events (${events.length}):`);
-            for (let i = 0; i < events.length; i += 1) {
-                const event = events[i];
-                const start = event.start.dateTime || event.start.date;
-                console.log(JSON.stringify(event, null, 2));
-                console.log(
-                    '%s - %s - %s - %s',
-                    start,
-                    event.summary,
-                    event.id,
-                    (event.extendedProperties &&
-                        event.extendedProperties.shared &&
-                        event.extendedProperties.shared.mobile) ||
-                    '0',
-                    (event.extendedProperties &&
-                        event.extendedProperties.shared &&
-                        event.extendedProperties.shared.reminded) ||
-                    'false'
-                );
             }
         }
         return events;
@@ -224,7 +169,7 @@ async function stopWatchCalendar(options) {
     const finalOptions = Object.assign({}, options, {
         calendarId: 'rarebeauty@soho.sg',
         id: 'anythingintheworld',
-        resourceId:'7kUO96Be7gwvDBulEetjGAHV9O8'
+        resourceId: '7kUO96Be7gwvDBulEetjGAHV9O8'
     });
     try {
         const response = await calendarWatchStop(finalOptions);
@@ -237,6 +182,36 @@ async function stopWatchCalendar(options) {
     }
 }
 
+
+
+function getObject(bucket, id) {
+    return new Promise((res, rej) => {
+        bucket.get(id, function (err, result) {
+            if (err) {
+                rej(err);
+            } else {
+                res(result);
+            }
+        });
+    });
+
+}
+
+
+
+function setObject(bucket, id, obj) {
+    return new Promise((res, rej) => {
+        bucket.upsert(id, obj, function (err, result) {
+            if (err) {
+                rej(err);
+            } else {
+                res(result);
+            }
+        });
+    });
+
+}
+
 const functions = {
     calendarList,
     createCalendar,
@@ -244,9 +219,10 @@ const functions = {
     remindCustomers,
     listContacts,
     createContact,
-    calendarSyncToDB,
     watchCalendar,
-    stopWatchCalendar
+    stopWatchCalendar,
+    getSyncToken,
+    setSyncToken
 };
 
 function processArguments(argv) {

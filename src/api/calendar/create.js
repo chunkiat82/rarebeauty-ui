@@ -31,16 +31,27 @@ module.exports = function create(options) {
           location: 'Home',
           status: 'confirmed',
           extendedProperties: {
-            shared: { mobile, reminded: false, services },
+            shared: { mobile, reminded: false, services: services.join(',') },
           },
-          description: services.join(','),
+          attendees: [
+            {
+              displayName: name,
+              comment: mobile,
+              email: `${mobile.substring(
+                mobile.length - 8,
+              )}@rarebeauty.soho.sg`,
+            },
+          ],
+          description: `Services: ${services.join(
+            ',',
+          )}\n\nURL: https://rarebeauty.soho.sg/calendar/event/id`,
         },
       },
       (err, event) => {
         if (err) {
-          // console.log(
-          //   `There was an error contacting the Calendar service: ${err}`,
-          // );
+          console.log(
+            `There was an error contacting the Calendar service: ${err}`,
+          );
           rej(err);
         }
         res(event);
