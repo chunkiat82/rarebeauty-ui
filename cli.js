@@ -16,16 +16,12 @@ const { getSyncToken, setSyncToken } = require('./src/api/utilities/token');
 
 async function calendarList(options) {
 
-    const syncToken = await getSyncToken();
-
-    const finalOptions = Object.assign({ calendarId: 'rarebeauty@soho.sg', syncToken }, options);
+    const finalOptions = Object.assign({ calendarId: 'rarebeauty@soho.sg' }, options);
     try {
         const events = await listEvents(finalOptions);
-        // console.log(response);
         if (events.length === 0) {
             console.log('No changed events found.');
         } else {
-            // bucket.manager().createPrimaryIndex(function () {
             console.log(`Upcoming events (${events.length}):`);
             for (let i = 0; i < events.length; i += 1) {
                 const event = events[i];
@@ -89,9 +85,9 @@ async function remindCustomers(options) {
             Object.assign({}, options, { calendarId: 'rarebeauty@soho.sg' }),
         );
         if (events.length === 0) {
-            // console.log('No reminder events found.');
+            console.log('No reminder events found.');
         } else {
-            console.log('Upcoming events for tomorrow');
+            console.log(`Upcoming events for tomorrow ${events.length}`);
             for (let i = 0; i < events.length; i += 1) {
                 const event = events[i];
                 // console.log(event);
