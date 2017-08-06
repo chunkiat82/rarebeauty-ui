@@ -13,6 +13,11 @@ export async function get(id) {
   return obj;
 }
 
+export async function remove(id) {
+  const obj = await runOperation(deleteObject, { id });
+  return obj;
+}
+
 async function runOperation(operation, options) {
   const bucket = cluster.openBucket('default');
   let res = null;
@@ -38,6 +43,19 @@ function getObject(bucket, options) {
   });
 }
 
+function deleteObject(bucket, options) {
+  const { id } = options;
+  return new Promise((res, rej) => {
+    bucket.remove(id, (err, result) => {
+      if (err) {
+        rej(err);
+      } else {
+        res(result);
+      }
+    });
+  });
+}
+
 function setObject(bucket, options) {
   const { id, doc } = options;
   return new Promise((res, rej) => {
@@ -53,4 +71,5 @@ function setObject(bucket, options) {
 export default {
   upsert,
   get,
+  remove,
 };

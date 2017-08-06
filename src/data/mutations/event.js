@@ -76,7 +76,6 @@ const MutationEvent = new ObjectType({
             finalResourceName,
           });
           // console.log(`event.id=${event.id}`);
-          await db.upsert(`event:${event.id}`, event);
         } catch (err) {
           // console.log(err);
           throw err;

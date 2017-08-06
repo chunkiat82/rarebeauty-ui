@@ -1,20 +1,46 @@
 const moment = require('moment');
-const listEvents = require('./calendar/list');
+
+import listEvents from './calendar/list';
+import listDeltaEvents from './calendar/listDelta';
+
 const calendarCreate = require('./calendar/create');
 const patchEvent = require('./calendar/patch');
+
 const reminderList = require('./reminder/list');
 const contactLists = require('./contacts/list');
 const contactCreate = require('./contacts/create');
 
 const { sendReminder } = require('./utilities/sms');
 
-async function calendarList() {
+async function generateAsyncFunction(func, options) {
   try {
-    const events = await listEvents({ calendarId: 'rarebeauty@soho.sg' });
+    const response = await func(Object.freeze(options));
+    return response;
+  } catch (err) {
+    throw err;
+  }
+}
+
+async function calendarList(options) {
+  try {
+    console.log(`listEvents=${typeof listEvents}`);
+    console.log(`listDeltaEvents=${typeof listDeltaEvents}`);
+    const events = await listEvents(
+      Object.assign({ calendarId: 'rarebeauty@soho.sg' }, options),
+    );
     return events;
   } catch (err) {
     throw err;
   }
+}
+
+function calendarListDelta(options) {
+  console.log(`listEvents=${typeof listEvents}`);
+  console.log(`listDeltaEvents=${typeof listDeltaEvents}`);
+  return generateAsyncFunction(
+    listDeltaEvents,
+    Object.assign({ calendarId: 'rarebeauty@soho.sg' }, options),
+  );
 }
 
 async function createCalendar(options) {
@@ -97,6 +123,7 @@ const functions = {
   remindCustomers,
   listContacts,
   createContact,
+  calendarListDelta,
 };
 
 function processArguments(argv) {
