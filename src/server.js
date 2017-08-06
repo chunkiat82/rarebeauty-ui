@@ -29,7 +29,7 @@ import models from './data/models';
 import schema from './data/schema';
 import assets from './assets.json'; // eslint-disable-line import/no-unresolved
 import config from './config';
-import { handleCalendarWebhooks } from './hooks';
+// import { handleCalendarWebhooks } from './hooks';
 
 const app = express();
 
@@ -109,7 +109,7 @@ app.use(
 );
 
 app.use('/events/calendar', async (req, res) => {
-  handleCalendarWebhook(req.headers);
+  // handleCalendarWebhook(req.headers);
   res.send(200);
 });
 
