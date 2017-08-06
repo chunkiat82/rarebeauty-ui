@@ -66,7 +66,7 @@ const MutationEvent = new ObjectType({
 
         // console.log(`finalResourceName=${finalResourceName}`);
         try {
-          const event = await api({
+          const { event, uuid } = await api({
             action: 'createCalendar',
             name,
             start,
@@ -75,12 +75,13 @@ const MutationEvent = new ObjectType({
             duration,
             finalResourceName,
           });
+          await db.upsert(`app:${uuid}`, { id: uuid, eventId: event.id });
           // console.log(`event.id=${event.id}`);
+          return { name, start, mobile, services, duration, resourceName };
         } catch (err) {
           // console.log(err);
           throw err;
         }
-        return { name, start, mobile, services, duration, resourceName };
       },
     },
   }),

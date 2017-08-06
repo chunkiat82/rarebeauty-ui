@@ -1,5 +1,6 @@
 const generateJWT = require('../utilities/jwt');
 const google = require('googleapis');
+const uuidv1 = require('uuid/v1');
 
 module.exports = function create(options) {
   const {
@@ -21,6 +22,7 @@ module.exports = function create(options) {
   return new Promise(async (res, rej) => {
     const jwtClient = await generateJWT();
     const calendar = google.calendar({ version: 'v3', auth: jwtClient });
+    const uuid = uuidv1();
     calendar.events.insert(
       {
         calendarId,
@@ -31,7 +33,12 @@ module.exports = function create(options) {
           location: 'Home',
           status: 'confirmed',
           extendedProperties: {
-            shared: { mobile, reminded: false, services: services.join(',') },
+            shared: {
+              mobile,
+              reminded: false,
+              services: services.join(','),
+              uuid,
+            },
           },
           attendees: [
             {
@@ -42,9 +49,9 @@ module.exports = function create(options) {
               )}@rarebeauty.soho.sg`,
             },
           ],
-          description: `Services: ${services.join(
+          description: `${services.join(
             ',',
-          )}\n\nURL: https://rarebeauty.soho.sg/calendar/event/id`,
+          )}\n\https://rarebeauty.soho.sg/calendar/event/${uuid}`,
         },
       },
       (err, event) => {
@@ -54,7 +61,7 @@ module.exports = function create(options) {
           );
           rej(err);
         }
-        res(event);
+        res({ event, uuid });
       },
     );
   });

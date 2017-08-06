@@ -1,4 +1,5 @@
 import { get, upsert } from '../../data/database';
+import moment from 'moment';
 /**
  * return string nextSyncToken
  */
@@ -17,7 +18,7 @@ export async function getSyncToken() {
 export async function setSyncToken(options) {
   const { syncToken } = options;
   try {
-    await upsert('syncToken:calendar', { syncToken });
+    await upsert('syncToken:calendar', { syncToken, lastUpdated: moment() });
   } catch (err) {
     throw err;
   }

@@ -1,13 +1,10 @@
 const generateJWT = require('../utilities/jwt');
 const google = require('googleapis');
-const moment = require('moment');
 const couchbase = require('couchbase');
-const { getSyncToken, setSyncToken } = require('../utilities/token');
 
 export default function listDelta(options) {
   return new Promise(async (res, rej) => {
-    const { calendarId } = options;
-    const syncToken = await getSyncToken();
+    const { calendarId, syncToken } = options;
     const jwtClient = await generateJWT();
     const calendar = google.calendar({ version: 'v3', auth: jwtClient });
     calendar.events.list(
@@ -21,16 +18,8 @@ export default function listDelta(options) {
           // console.log(`The API returned an error: ${err}`);
           rej(err);
         } else {
-          console.log(response);
-
-          // save only when there is nextSyncToken otherwise it screws others
-          if (response.nextSyncToken) {
-            await setSyncToken({
-              syncToken: response.nextSyncToken,
-              lastUpdated: moment(),
-            });
-          }
-          res(response.items);
+          // console.log(response);
+          res(response);
         }
       },
     );

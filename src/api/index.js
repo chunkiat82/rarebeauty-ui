@@ -23,8 +23,6 @@ async function generateAsyncFunction(func, options) {
 
 async function calendarList(options) {
   try {
-    console.log(`listEvents=${typeof listEvents}`);
-    console.log(`listDeltaEvents=${typeof listDeltaEvents}`);
     const events = await listEvents(
       Object.assign({ calendarId: 'rarebeauty@soho.sg' }, options),
     );
@@ -35,8 +33,6 @@ async function calendarList(options) {
 }
 
 function calendarListDelta(options) {
-  console.log(`listEvents=${typeof listEvents}`);
-  console.log(`listDeltaEvents=${typeof listDeltaEvents}`);
   return generateAsyncFunction(
     listDeltaEvents,
     Object.assign({ calendarId: 'rarebeauty@soho.sg' }, options),

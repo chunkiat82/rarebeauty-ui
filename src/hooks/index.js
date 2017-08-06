@@ -1,12 +1,22 @@
 import api from './../api';
+import moment from 'moment';
 import db from '../data/database';
 
+const { getSyncToken, setSyncToken } = require('../api/utilities/token');
+
 export async function handleCalendarWebhook(headers) {
-  const changes = await api({
+  // headers not used
+  const syncToken = await getSyncToken(headers);
+  const response = await api({
     action: 'calendarListDelta',
+    syncToken,
   });
 
+  const { items: changes, nextSyncToken } = response;
+
   changes.forEach(item => {
+    if (item.id.indexOf('_') === 0) return;
+
     if (item.status === 'cancelled') {
       handleCancel(item);
     } else if (item.status === 'confirmed') {
@@ -16,8 +26,14 @@ export async function handleCalendarWebhook(headers) {
     }
   });
 
-  // handle cancel
-  // handle change
+  // save only when there is nextSyncToken otherwise it screws others
+  if (nextSyncToken) {
+    await setSyncToken({
+      syncToken: nextSyncToken,
+      lastUpdated: moment(),
+    });
+  }
+
   console.log(changes);
 }
 
