@@ -40,11 +40,12 @@ async function handleCancel(item) {
 }
 
 async function handleUpsert(item) {
-  if (item.id.indexOf('_') !== 0) {
-    await db.upsert(`event:${item.id}`, item);
-  } else {
-    console.log(`item.id =${item.id} ignored`);
+  if (item.creator.email === 'rarebeauty@soho.sg') {
+    console.log('-----THIS APPOINTMENT NOT CREATED BY THE APP---');
+    console,log(item);
+    return;
   }
+  await db.upsert(`event:${item.id}`, item);
 }
 
 const functionToCall = {
