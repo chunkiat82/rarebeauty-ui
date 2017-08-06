@@ -15,14 +15,12 @@ export async function handleCalendarWebhook(headers) {
   const { items: changes, nextSyncToken } = response;
 
   changes.forEach(item => {
-    if (item.id.indexOf('_') === 0) return;
-
     if (item.status === 'cancelled') {
       handleCancel(item);
     } else if (item.status === 'confirmed') {
       handleUpsert(item);
     } else {
-      console.log('unhandled status');
+      console.log(`unhandled status-${item.id}`);
     }
   });
 
