@@ -116,29 +116,33 @@ async function remindCustomers(options) {
             event.extendedProperties.shared.reminded === false)
         ) {
           console.log(event);
-          await sms(
-            {
-              name: event.summary,
-              mobile:
-                (event.extendedProperties &&
-                  event.extendedProperties.shared &&
-                  event.extendedProperties.shared.mobile) ||
-                -1,
-              event,
-            },
-            async message => {
-              console.log(`${message.sid}-${event.summary}`);
-              await calendarPatch(
-                Object.assign({}, options, {
-                  eventId: event.id,
-                  reminded: true,
-                }),
-              );
-            },
-            async err => {
-              console.log(err);
-            },
-          );
+          try {
+            await sms(
+              {
+                name: event.summary,
+                mobile:
+                  (event.extendedProperties &&
+                    event.extendedProperties.shared &&
+                    event.extendedProperties.shared.mobile) ||
+                  -1,
+                event,
+              },
+              async message => {
+                console.log(`${message.sid}-${event.summary}`);
+                await calendarPatch(
+                  Object.assign({}, options, {
+                    eventId: event.id,
+                    reminded: true,
+                  }),
+                );
+              },
+              async err => {
+                console.log(err);
+              },
+            );
+          } catch (err) {
+            console.log(err);
+          }
         }
       }
     }
