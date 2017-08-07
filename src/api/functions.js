@@ -132,6 +132,7 @@ async function remindCustomers(options) {
                 await calendarPatch(
                   Object.assign({}, options, {
                     eventId: event.id,
+                    calendarId: 'rarebeauty@soho.sg',
                     reminded: true,
                   }),
                 );
