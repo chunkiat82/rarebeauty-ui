@@ -9,8 +9,6 @@ module.exports = async function create({ first, last, mobile }) {
     auth: jwtClient,
   });
 
-  // console.log(`${first} ${last} ${mobile}`);
-
   return new Promise((res, rej) => {
     people.people.createContact(
       {

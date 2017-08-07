@@ -2,7 +2,7 @@ const generateJWT = require('../utilities/jwt');
 const google = require('googleapis');
 const moment = require('moment');
 
-module.exports = function list(options) {
+export default function list(options) {
   const { calendarId, timeStart, orderBy } = options;
   return new Promise(async (res, rej) => {
     const jwtClient = await generateJWT();
@@ -25,4 +25,4 @@ module.exports = function list(options) {
       },
     );
   });
-};
+}
