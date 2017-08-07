@@ -9,7 +9,7 @@
 
 import React from 'react';
 import moment from 'moment';
-import Home from './Home';
+import Appointment from './Appointment';
 import Layout from '../../components/Layout';
 
 async function createCalendar(fetch, input) {
@@ -70,11 +70,11 @@ async function action({ fetch }) {
   if (!data || !data.contact)
     throw new Error('Failed to load the contact feed.');
   return {
-    chunks: ['home'],
+    chunks: ['appointment'],
     title: 'Rare Beauty Professional',
     component: (
       <Layout>
-        <Home
+        <Appointment
           contact={data.contact}
           post={input => createCalendar(fetch, input)}
         />
