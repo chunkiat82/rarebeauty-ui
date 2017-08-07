@@ -134,8 +134,11 @@ app.get('*', async (req, res, next) => {
         baseUrl: config.api.serverUrl,
         cookie: req.headers.cookie,
       }),
+      userAgent: req.headers['user-agent'],
     };
+    // console.log(` req.userAgent=${ req.userAgent}`);
 
+    // route.component will have this context too
     const route = await router.resolve({
       ...context,
       path: req.path,
