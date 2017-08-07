@@ -24,12 +24,8 @@ class Layout extends React.Component {
   };
 
   render() {
-    const context = {};
-    if (this.props.userAgent) {
-      context.userAgent = this.props.userAgent;
-    }
     return (
-      <MuiThemeProvider muiTheme={getMuiTheme(context)}>
+      <MuiThemeProvider muiTheme={getMuiTheme({ userAgent: this.props.userAgent })}>
         <div>
           <Header />
           {this.props.children}
