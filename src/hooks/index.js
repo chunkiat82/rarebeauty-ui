@@ -8,19 +8,44 @@ export async function handleCalendarWebhook(headers) {
   // headers not used
   const syncToken = await getSyncToken(headers);
   const response = await api({
-    action: 'calendarListDelta',
+    action: 'listDeltaEvents',
     syncToken,
   });
 
-  const { items: changes, nextSyncToken } = response;
+  const { items: events, nextSyncToken } = response;
 
-  changes.forEach(item => {
+  console.log(`Upcoming Changed events (${events.length}):`);
+  events.forEach(item => {
     if (item.status === 'cancelled') {
       handleCancel(item);
     } else if (item.status === 'confirmed') {
       handleUpsert(item);
     } else {
       console.log(`unhandled status-${item.id}`);
+    }
+
+    // temp loggin
+    const event = item;
+    if (event.start) {
+      const start = event.start.dateTime || event.start.date;
+      console.log(
+        '%s - %s - %s - %s',
+        start,
+        event.summary,
+        event.id,
+        (event.extendedProperties &&
+          event.extendedProperties.shared &&
+          event.extendedProperties.shared.mobile) ||
+          '0',
+        (event.extendedProperties &&
+          event.extendedProperties.shared &&
+          event.extendedProperties.shared.reminded) ||
+          'false',
+      );
+    } else {
+      console.log(
+        `event start date missing for - ${event.summary} ${event.status}`,
+      );
     }
   });
 
@@ -32,7 +57,7 @@ export async function handleCalendarWebhook(headers) {
     });
   }
 
-  console.log(changes);
+  console.log(events);
 }
 
 async function handleCancel(item) {

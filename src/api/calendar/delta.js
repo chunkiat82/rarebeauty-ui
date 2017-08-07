@@ -1,26 +1,25 @@
-const generateJWT = require('../utilities/jwt');
 const google = require('googleapis');
-const moment = require('moment');
+const generateJWT = require('../utilities/jwt');
+const { getSyncToken, setSyncToken } = require('../utilities/token');
 
-export default function list(options) {
-  const { calendarId, timeStart, orderBy } = options;
+export default async function getDelta(options) {
   return new Promise(async (res, rej) => {
+    const syncToken = await getSyncToken();
+    const { calendarId } = options;
+
     const jwtClient = await generateJWT();
     const calendar = google.calendar({ version: 'v3', auth: jwtClient });
-    const timeMin = timeStart || moment().subtract(1, 'hours').toISOString();
     calendar.events.list(
       {
         calendarId,
-        timeMin,
-        maxResults: 250,
         singleEvents: true,
-        orderBy: orderBy || 'startTime',
+        syncToken,
       },
       async (err, response) => {
         if (err) {
           rej(err);
         } else {
-          res(response.items);
+          res(response);
         }
       },
     );

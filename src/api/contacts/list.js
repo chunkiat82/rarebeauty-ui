@@ -2,7 +2,7 @@
 const generateJWT = require('../utilities/jwt');
 const google = require('googleapis');
 
-module.exports = async function list() {
+export default async function list() {
   const jwtClient = await generateJWT('rarebeauty@soho.sg');
   const people = google.people({
     version: 'v1',
@@ -52,4 +52,4 @@ module.exports = async function list() {
       },
     );
   });
-};
+}

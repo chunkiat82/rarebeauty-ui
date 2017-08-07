@@ -67,7 +67,7 @@ const MutationEvent = new ObjectType({
         // console.log(`finalResourceName=${finalResourceName}`);
         try {
           const { event, uuid } = await api({
-            action: 'createCalendar',
+            action: 'createEvent',
             name,
             start,
             mobile,
