@@ -13,6 +13,8 @@ module.exports = function create(options) {
     calendarId,
   } = options;
 
+  // console.log(options);
+
   if (!name || !mobile || !startDT || !endDT || !duration || !services) {
     return new Promise((res, rej) => {
       rej('no event created');
@@ -23,6 +25,7 @@ module.exports = function create(options) {
     const jwtClient = await generateJWT();
     const calendar = google.calendar({ version: 'v3', auth: jwtClient });
     const uuid = uuidv1();
+    console.log('i was here');
     calendar.events.insert(
       {
         calendarId,

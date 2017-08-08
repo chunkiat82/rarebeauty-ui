@@ -11,7 +11,7 @@ import React from 'react';
 import moment from 'moment';
 import Appointment from './Appointment';
 import Layout from '../../components/Layout';
-import { listOfServices } from '../../data/database/services';
+import { listOfServices, mapOfServices} from '../../data/database/services';
 
 async function createCalendar(fetch, input) {
   const {
@@ -19,13 +19,13 @@ async function createCalendar(fetch, input) {
     name,
     mobile,
     resourceName = '',
-    timeChosen,
-    dateChosen,
-    services,
+    startDate,
+    startTime,
+    serviceIds,
   } = input;
 
-  const dateInput = moment(dateChosen).format('YYYYMMDD');
-  const timeInput = moment(timeChosen).format('HHmm');
+  const dateInput = moment(startDate).format('YYYYMMDD');
+  const timeInput = moment(startTime).format('HHmm');
 
   const resp = await fetch('/graphql', {
     body: JSON.stringify({
@@ -43,7 +43,7 @@ async function createCalendar(fetch, input) {
         mobile,
         resourceName,
         start: `${dateInput}T${timeInput}`,
-        services,
+        services: serviceIds,
         duration,
       }),
     }),
@@ -76,6 +76,7 @@ async function action({ fetch }) {
       <Layout>
         <Appointment
           listOfServices={listOfServices}
+          mapOfServices={mapOfServices}
           contact={data.contact}
           post={input => createCalendar(fetch, input)}
         />

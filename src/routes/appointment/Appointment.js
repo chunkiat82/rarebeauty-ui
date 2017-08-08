@@ -190,9 +190,7 @@ class Appointment extends React.Component {
             hintText="Discount"
             floatingLabelText="Discount"
             onChange={this.handleDiscountChange}
-            defaultValue={0}
-            value={this.state.discount}/>
-            
+            value={this.state.discount}/>        
           <RaisedButton
             ref={c => {
               this.submitBtn = c;
