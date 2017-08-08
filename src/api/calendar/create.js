@@ -36,7 +36,7 @@ module.exports = function create(options) {
             shared: {
               mobile,
               reminded: false,
-              services: services.join(','),
+              services: services.map(item=> item.id).join(','),
               uuid,
             },
           },
@@ -49,9 +49,7 @@ module.exports = function create(options) {
               )}@rarebeauty.soho.sg`,
             },
           ],
-          description: `${services.join(
-            ',',
-          )}\n\https://rarebeauty.soho.sg/calendar/event/${uuid}`,
+          description: `${services.map(item=> item.service).join(',',)}\n\nhttps://rarebeauty.soho.sg/appointment/edit/${uuid}`,
         },
       },
       (err, event) => {

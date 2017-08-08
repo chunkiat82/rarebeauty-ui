@@ -1,3 +1,5 @@
+// https://github.com/kriasoft/react-starter-kit/blob/master/docs/recipes/how-to-implement-routing.md
+
 /**
  * React Starter Kit (https://www.reactstarterkit.com/)
  *

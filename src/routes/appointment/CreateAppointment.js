@@ -11,10 +11,11 @@ import React from 'react';
 import moment from 'moment';
 import Appointment from './Appointment';
 import Layout from '../../components/Layout';
+import { listOfServices } from '../../data/database/services';
 
 async function createCalendar(fetch, input) {
   const {
-    slider: duration,
+    duration,
     name,
     mobile,
     resourceName = '',
@@ -66,15 +67,15 @@ async function listContacts(fetch) {
 
 async function action({ fetch }) {
   const data = await listContacts(fetch);
-
   if (!data || !data.contact)
     throw new Error('Failed to load the contact feed.');
   return {
-    chunks: ['appointment'],
+    chunks: ['appointment-create'],
     title: 'Rare Beauty Professional',
     component: (
       <Layout>
         <Appointment
+          listOfServices={listOfServices}
           contact={data.contact}
           post={input => createCalendar(fetch, input)}
         />

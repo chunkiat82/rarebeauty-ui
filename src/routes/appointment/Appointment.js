@@ -10,6 +10,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import withStyles from 'isomorphic-style-loader/lib/withStyles';
+import TextField from 'material-ui/TextField';
 import DatePicker from 'material-ui/DatePicker';
 import TimePicker from 'material-ui/TimePicker';
 import SelectField from 'material-ui/SelectField';
@@ -21,31 +22,13 @@ import AutoComplete from 'material-ui/AutoComplete';
 import Snackbar from 'material-ui/Snackbar';
 import s from './Appointment.css';
 
-const listOfServices = [
-  'Full Set',
-  'Touch Up',
-  'Removal',
-  'Radiance Facial',
-  'Brazilian Waxing',
-  'Full Leg Waxing',
-  'Half Leg Waxing',
-  'Full Arm Waxing',
-  'Half Arm Waxing',
-  'Under Arm Waxing',
-  'Full Face Waxing',
-  'Lower Lip Waxing',
-  'Eyebrow Threading',
-  'Lower Lip Threading',
-  'Upper Lip Threading',
-  'Full Face Threading',
-];
-
 const iconStyles = {
   marginRight: 24,
   verticalAlign: 'middle',
 };
 
 class Appointment extends React.Component {
+
   static propTypes = {
     contact: PropTypes.arrayOf(
       PropTypes.shape({
@@ -55,38 +38,67 @@ class Appointment extends React.Component {
       }),
     ).isRequired,
     post: PropTypes.func.isRequired,
+    listOfServices: PropTypes.arrayOf(
+      PropTypes.shape({
+        id: PropTypes.string.isRequired,
+        service: PropTypes.string.isRequired,
+        price: PropTypes.number.isRequired
+      })
+    )
   };
 
-  state = {
-    open: false,
-    slider: 75,
-  };
+  componentWillMount() {
+    const { contact, name, mobile, startDate, startTime, duration, serviceIds, resourceName, prices, id, discount} = this.props;
+    const amount = 0;
+    const finalDuration = duration || 75;
+    const finalDiscount = discount || 0;
+    this.setState({
+      contactDS: contact,
+      name,
+      mobile,
+      startDate,
+      startTime,
+      serviceIds,
+      resourceName,
+      prices,
+      notify: false,
+      appId: id,
+      duration: finalDuration,
+      discount: finalDiscount,
+      totalAmount: this.calculateTotal(serviceIds, finalDiscount)
+    });
+  }
 
-  handleNewRequest = (inputString, index) =>
-    this.setState({ index, nameInput: '', mobileInput: '', ...inputString });
-  handleServiceChange = (event, index, services) => {
-    this.setState({ services });
-  };
-  handleSliderChange = (event, value) => this.setState({ slider: value });
-  handleDateChange = (something, dateChosen) => this.setState({ dateChosen });
-  handleTimeChange = (something, timeChosen) => this.setState({ timeChosen });
-  handleUpdateName = nameInput =>
-    this.setState({ nameInput, resourceName: '' });
-  handleUpdateMobile = mobileInput =>
-    this.setState({ mobileInput, resourceName: '' });
+  calculateTotal(serviceIds, discount) {
+    if (!serviceIds) return 0;
+    // console.log(serviceIds);
+    const totalServices = serviceIds.reduce((sum, serviceId) => {
+      console.log(this.props.mapOfServices[serviceId].price);
+      return sum + this.props.mapOfServices[serviceId].price
+    }, 0);
+    return totalServices - discount;
+  }
 
-  render() {
-    const { services } = this.state;
-    // console.log(this.state);
+  handleNewRequest = (inputString, index) => this.setState({ index, nameInput: '', mobileInput: '', ...inputString });
+  handleServiceChange = (event, index, serviceIds) => { this.setState({ serviceIds, totalAmount: this.calculateTotal(serviceIds,this.state.discount)}); };
+  handleSliderChange = (event, value) => this.setState({ duration: value });
+  handleDateChange = (something, dateChosen) => this.setState({ startDate: dateChosen });
+  handleTimeChange = (something, timeChosen) => this.setState({ startTime: timeChosen });
+  handleUpdateName = nameInput => this.setState({ nameInput, resourceName: '' });
+  handleUpdateMobile = mobileInput => this.setState({ mobileInput, resourceName: '' });
+  handleDiscountChange = (event, newDiscount) => this.setState({ discount: newDiscount, totalAmount: this.calculateTotal(this.state.serviceIds, newDiscount)});
+
+  render() {    
     return (
       <div className={s.root}>
+        {/* <span>{this.state.appId}</span> */}
         <div className={s.container}>
           <AutoComplete
             ref={c => {
               this.nameAC = c;
             }}
             hintText="Type anything"
-            dataSource={this.props.contact}
+            dataSource={this.state.contactDS}
             dataSourceConfig={{ text: 'display', value: 'name' }}
             onNewRequest={this.handleNewRequest}
             onUpdateInput={this.handleUpdateName}
@@ -100,7 +112,7 @@ class Appointment extends React.Component {
               this.mobileAC = c;
             }}
             hintText="Type anything"
-            dataSource={this.props.contact}
+            dataSource={this.state.contactDS || []}
             dataSourceConfig={{ text: 'mobile', value: 'mobile' }}
             onNewRequest={this.handleNewRequest}
             floatingLabelText="Mobile"
@@ -114,7 +126,7 @@ class Appointment extends React.Component {
             autoOk
             fullWidth
             onChange={this.handleDateChange}
-            value={this.state.dateChosen}
+            value={this.state.startDate}
           />
           <TimePicker
             autoOk
@@ -123,7 +135,7 @@ class Appointment extends React.Component {
             minutesStep={5}
             onChange={this.handleTimeChange}
             fullWidth
-            value={this.state.timeChosen}
+            value={this.state.startTime}
           />
           <p>
             <FontIcon className="material-icons" style={iconStyles}>
@@ -133,36 +145,54 @@ class Appointment extends React.Component {
               {'Duration: '}
             </span>
             <span>
-              {this.state.slider}
+              {this.state.duration}
             </span>
           </p>
           <Slider
             defaultValue={75}
             step={5}
-            value={this.state.slider}
+            value={this.state.duration}
             min={5}
             max={500}
             onChange={this.handleSliderChange}
           />
+          <p>
+            <FontIcon className="material-icons" style={iconStyles}>
+              attach_money
+            </FontIcon>
+            <span>
+              {'Total Amount: '}
+            </span>
+            <span>
+              {this.state.totalAmount}
+            </span>
+          </p>
           <SelectField
             multiple
             hintText="Services"
-            value={services}
+            value={this.state.serviceIds}
             onChange={this.handleServiceChange}
             fullWidth
           >
-            {listOfServices.map(name =>
+            {this.props.listOfServices.map(item =>
               <MenuItem
-                key={name}
+                key={item.id}
                 insetChildren
                 checked={
-                  this.state.services && this.state.services.indexOf(name) > -1
+                  this.state.serviceIds && this.state.serviceIds.indexOf(item.id) > -1
                 }
-                value={name}
-                primaryText={name}
+                value={item.id}
+                primaryText={`${item.service} - ${item.price}`}
               />,
             )}
           </SelectField>
+          <TextField
+            hintText="Discount"
+            floatingLabelText="Discount"
+            onChange={this.handleDiscountChange}
+            defaultValue={0}
+            value={this.state.discount}/>
+            
           <RaisedButton
             ref={c => {
               this.submitBtn = c;
@@ -177,13 +207,15 @@ class Appointment extends React.Component {
 
               this.props.post(inputs);
               this.setState({
-                open: true,
+                notify: true,
                 name: '',
                 duration: 75,
                 mobile: '',
-                timeChosen: {},
-                dateChosen: {},
-                services: [],
+                startTime: {},
+                startDate: {},
+                serviceIds: [],
+                discount: 0,
+                totalAmount: 0,
                 nameInput: '',
                 mobileInput: '',
                 resourceName: '',
@@ -191,11 +223,11 @@ class Appointment extends React.Component {
               this.nameAC.setState({ searchText: '' });
               this.mobileAC.setState({ searchText: '' });
               setTimeout(() => this.nameAC.focus(), 200);
-              setTimeout(() => this.setState({ open: false }), 2000);
+              setTimeout(() => this.setState({ notify: false }), 2000);
             }}
           />
           <Snackbar
-            open={this.state.open}
+            open={this.state.notify}
             message="Appointment Added"
             bodyStyle={{
               backgroundColor: '#373277',

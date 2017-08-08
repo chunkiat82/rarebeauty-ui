@@ -28,20 +28,20 @@ export async function handleCalendarWebhook(headers) {
     const event = item;
     if (event.start) {
       const start = event.start.dateTime || event.start.date;
-      console.log(
-        '%s - %s - %s - %s',
-        start,
-        event.summary,
-        event.id,
-        (event.extendedProperties &&
-          event.extendedProperties.shared &&
-          event.extendedProperties.shared.mobile) ||
-          '0',
-        (event.extendedProperties &&
-          event.extendedProperties.shared &&
-          event.extendedProperties.shared.reminded) ||
-          'false',
-      );
+      // console.log(
+      //   '%s - %s - %s - %s',
+      //   start,
+      //   event.summary,
+      //   event.id,
+      //   (event.extendedProperties &&
+      //     event.extendedProperties.shared &&
+      //     event.extendedProperties.shared.mobile) ||
+      //     '0',
+      //   (event.extendedProperties &&
+      //     event.extendedProperties.shared &&
+      //     event.extendedProperties.shared.reminded) ||
+      //     'false',
+      // );
     } else {
       console.log(
         `event start date missing for - ${event.summary} ${event.status}`,

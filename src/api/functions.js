@@ -33,19 +33,25 @@ async function listEvents(options) {
         if (event.start) {
           const start = event.start.dateTime || event.start.date;
           // console.log(JSON.stringify(event, null, 2));
+          const description = (event.description && event.description.split('\n')[0] ) || 'No Description'
           console.log(
-            '%s - %s - %s - %s',
+            '%s - %s - %s - %s - %s - %s',
             start,
             event.summary,
             event.id,
+            description,
+            (event.extendedProperties &&
+              event.extendedProperties.shared &&
+              event.extendedProperties.shared.services) ||
+            'no services',
             (event.extendedProperties &&
               event.extendedProperties.shared &&
               event.extendedProperties.shared.mobile) ||
-              '0',
+            '0',
             (event.extendedProperties &&
               event.extendedProperties.shared &&
               event.extendedProperties.shared.reminded) ||
-              'false',
+            'false',
           );
         } else {
           console.error(event);
@@ -121,10 +127,10 @@ async function remindCustomers(options) {
               {
                 name: event.summary,
                 mobile:
-                  (event.extendedProperties &&
-                    event.extendedProperties.shared &&
-                    event.extendedProperties.shared.mobile) ||
-                  -1,
+                (event.extendedProperties &&
+                  event.extendedProperties.shared &&
+                  event.extendedProperties.shared.mobile) ||
+                -1,
                 event,
               },
               async message => {

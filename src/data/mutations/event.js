@@ -17,6 +17,7 @@ import {
 import EventType from '../types/EventType';
 import api from '../../api';
 import db from '../database';
+import { mapOfServices } from '../database/services';
 
 const MutationEvent = new ObjectType({
   name: 'MutationEvent',
@@ -71,7 +72,8 @@ const MutationEvent = new ObjectType({
             name,
             start,
             mobile,
-            services,
+            //these services sent in are objects
+            services: services.map(item => mapOfServices[item]),
             duration,
             finalResourceName,
           });
