@@ -13,7 +13,9 @@ import {
   GraphQLString as StringType,
   GraphQLInt as IntegerType,
   GraphQLList as ListType,
+  GraphQLFloat as FloatType
 } from 'graphql';
+import moment from 'moment';
 import EventType from '../types/EventType';
 import api from '../../api';
 import db from '../database';
@@ -34,19 +36,28 @@ const MutationEvent = new ObjectType({
         mobile: {
           type: StringType,
         },
-        services: {
-          type: new ListType(StringType),
+        serviceIds: {
+          type: new ListType(StringType)
         },
         duration: {
-          type: IntegerType,
+          type: IntegerType
         },
         resourceName: {
-          type: StringType,
+          type: StringType
         },
+        totalAmount: {
+          type: FloatType
+        },
+        additional: {
+          type: FloatType
+        },
+        discount: {
+          type: FloatType
+        }
       },
       async resolve(
         value,
-        { name, mobile, resourceName, services, start, duration },
+        { name, mobile, resourceName, serviceIds, start, duration, totalAmount, additional, discount },
       ) {
         let finalResourceName = resourceName;
         // console.log(`services=${services}`);
@@ -67,19 +78,25 @@ const MutationEvent = new ObjectType({
 
         // console.log(`finalResourceName=${finalResourceName}`);
         try {
+          const services = serviceIds.map(item => mapOfServices[item]);
           const { event, uuid } = await api({
             action: 'createEvent',
             name,
             start,
             mobile,
-            //these services sent in are objects
-            services: services.map(item => mapOfServices[item]),
+            // these services sent in are objects
+            services,
             duration,
             finalResourceName,
+            // these are sent in as floats
+            totalAmount, additional, discount
           });
-          await db.upsert(`app:${uuid}`, { id: uuid, eventId: event.id });
-          // console.log(`event.id=${event.id}`);
-          return { name, start, mobile, services, duration, resourceName };
+          const now = moment();
+          await db.upsert(`appt:${uuid}`, { id: uuid, eventId: event.id, transId: uuid, createdAt: now, lastUpdated: now });
+
+          await db.upsert(`trans:${uuid}`, createTransactionEntry(uuid, services, totalAmount, additional, discount, now));
+          console.log(`uuid=${uuid}`);
+          return { name, start, mobile, serviceIds, duration, resourceName, totalAmount, additional, discount };
         } catch (err) {
           // console.log(err);
           throw err;
@@ -89,4 +106,55 @@ const MutationEvent = new ObjectType({
   }),
 });
 
+function createTransactionEntry(uuid, entries, totalAmount, additional, discount, createdAt) {
+
+  const items = entries.map(entry => {
+    return {
+      "itemId": entry.id, "name": entry.service, "price": entry.price
+    }
+  });
+
+  const services = entries.reduce((sum, entry) => sum + entry.price, 0);
+
+  const entryTemplate = {
+    "id": uuid,
+    items,
+    totalAmount,
+    services: 0,
+    products: 0,
+    additional,
+    discount,
+    createdAt
+  }
+  return entryTemplate;
+}
+
 export default MutationEvent;
+
+// Sample TransactioNtry
+// {
+//     "id": transactionId,
+//     "items": [
+//       {
+//         "itemId": 'service:4',
+//         "name": 'Full Set - Dense',
+//         "price": 60
+//       },
+//       {
+//         "itemId": 'service:5',
+//         "name": 'Eye Mask',
+//         "price": 5
+//       },
+//       {
+//         "itemId": 'service:18',
+//         "name": 'Full Face Threading',
+//         "price": 20
+//       }
+//     ],
+//     "totalAmount": 85,
+//     "services": 85,
+//     "products": 0,
+//     "discount": 0,
+//     "additional": 0,
+//     "createdAt": "2017-08-09T10:45:00+08:00"
+//   };

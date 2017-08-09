@@ -12,6 +12,8 @@ import {
   GraphQLString as StringType,
   GraphQLInt as IntegerType,
   GraphQLNonNull as NonNull,
+  GraphQLFloat as FloatType,
+  GraphQLList as ListType,
 } from 'graphql';
 
 const EventType = new ObjectType({
@@ -20,8 +22,11 @@ const EventType = new ObjectType({
     name: { type: new NonNull(StringType) },
     mobile: { type: new NonNull(StringType) },
     start: { type: new NonNull(StringType) },
-    services: { type: StringType },
+    serviceIds: { type: new ListType(StringType) },
     duration: { type: new NonNull(IntegerType) },
+    totalAmount: { type: FloatType },
+    additional: { type: FloatType },
+    discount: { type: FloatType },
   },
 });
 

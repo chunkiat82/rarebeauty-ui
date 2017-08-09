@@ -24,8 +24,7 @@ module.exports = function create(options) {
   return new Promise(async (res, rej) => {
     const jwtClient = await generateJWT();
     const calendar = google.calendar({ version: 'v3', auth: jwtClient });
-    const uuid = uuidv1();
-    console.log('i was here');
+    const uuid = uuidv1();    
     calendar.events.insert(
       {
         calendarId,

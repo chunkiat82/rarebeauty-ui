@@ -22,6 +22,9 @@ async function createCalendar(fetch, input) {
     startDate,
     startTime,
     serviceIds,
+    totalAmount,
+    additional,
+    discount
   } = input;
 
   const dateInput = moment(startDate).format('YYYYMMDD');
@@ -29,13 +32,16 @@ async function createCalendar(fetch, input) {
 
   const resp = await fetch('/graphql', {
     body: JSON.stringify({
-      query: `mutation($name: String!, $mobile:String!, $resourceName:String, $start:String!, $services:[String]!, $duration:Int!) {
-          createEvent(name:$name, mobile:$mobile, resourceName:$resourceName, start:$start, services:$services, duration:$duration ) {
+      query: `mutation($name: String!, $mobile:String!, $resourceName:String, $start:String!, $serviceIds:[String]!, $duration:Int!, $totalAmount:Float, $additional:Float, $discount:Float) {
+          createEvent(name:$name, mobile:$mobile, resourceName:$resourceName, start:$start, serviceIds:$serviceIds, duration:$duration, totalAmount:$totalAmount, additional:$additional, discount:$discount ) {
             name
             mobile
             start
-            services
+            serviceIds
             duration
+            totalAmount
+            additional
+            discount
           }
         }`,
       variables: JSON.stringify({
@@ -43,8 +49,11 @@ async function createCalendar(fetch, input) {
         mobile,
         resourceName,
         start: `${dateInput}T${timeInput}`,
-        services: serviceIds,
+        serviceIds,
         duration,
+        totalAmount,
+        additional,
+        discount
       }),
     }),
   });
