@@ -20,7 +20,7 @@ const appointment = {
     id: { type: StringType },
   },
   async resolve(obj, args, context) {
-    const key = `app:${args.id}`;
+    const key = `appt:${args.id}`;
     // console.log(`=${key}`);
     const dbObj = await get(key);
     // console.log(JSON.stringify(dbObj.value));

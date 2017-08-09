@@ -8,17 +8,30 @@
  * LICENSE.txt file in the root directory of this source tree.
  */
 
-import { GraphQLList as List } from 'graphql';
+import {
+  GraphQLList as ListType,
+  GraphQLString as StringType
+} from 'graphql';
 import EventType from '../types/EventType';
-// import api from '../../api';
+import { get } from '../database';
 
 const events = {
-  type: new List(EventType),
-  async resolve() {
-    // items = await api({ action: 'listContacts' });
-    // return items;
+  type: new ListType(EventType),
+  args: {
+    id: { type: new ListType(StringType) },
+  },
+  async resolve(obj, args) {
+    if (args.id) {
+      console.log(`args=${args}`);
+      const event = await queryEvent(id[0]);
+      return [event];
+    }
     return [];
   },
 };
+
+function queryEvent(id) {
+  return api({ action: 'getEvent', eventId: id });
+}
 
 export default events;

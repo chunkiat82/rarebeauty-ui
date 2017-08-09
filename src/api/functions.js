@@ -2,10 +2,13 @@ const fs = require('fs');
 const moment = require('moment');
 
 import calendarList from './calendar/list';
+import calendarGet from './calendar/get';
 import calendarDelta from './calendar/delta';
 import contactLists from './contacts/list';
 
+
 const calendarCreate = require('./calendar/create');
+
 const calendarPatch = require('./calendar/patch');
 const reminderList = require('./reminder/list');
 
@@ -33,7 +36,7 @@ async function listEvents(options) {
         if (event.start) {
           const start = event.start.dateTime || event.start.date;
           // console.log(JSON.stringify(event, null, 2));
-          const description = (event.description && event.description.split('\n')[0] ) || 'No Description'
+          const description = (event.description && event.description.split('\n')[0]) || 'No Description'
           console.log(
             '%s - %s - %s - %s - %s - %s',
             start,
@@ -59,6 +62,19 @@ async function listEvents(options) {
       }
     }
     return events;
+  } catch (err) {
+    throw err;
+  }
+}
+
+async function getEvent(options) {
+  const finalOptions = Object.assign(
+    { calendarId: 'rarebeauty@soho.sg' },
+    options,
+  );
+  try {
+    const event = await calendarGet(finalOptions);
+    return event;
   } catch (err) {
     throw err;
   }
@@ -224,6 +240,7 @@ const functions = {
   stopWatchCalendar,
   getSyncToken,
   setSyncToken,
+  getEvent
 };
 
 export default functions;

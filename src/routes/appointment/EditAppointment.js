@@ -65,22 +65,19 @@ async function getAppointment(fetch, apptId) {
     }),
   });
   const { data } = await resp.json();
-  console.log(data);
-
-
-  /// 0ebbad20-7ca8-11e7-8e30-0f09b6bc2a21
-  return { eventId: "vp0b20kiapd3fgjstc7jkn0gvc", transactionId: "vp0b20kiapd3fgjstc7jkn0gvc" };
+  return data.appointment;
 }
 
 async function getEvent(fetch, eventId) {
-  // const resp = await fetch('/graphql', {
-  //   body: JSON.stringify({
-  //     query: '{event{name,mobile,display,resourceName}}',
-  //   }),
-  // });
-  // const { data } = await resp.json();
-  // console.log(data);
-  return {
+  const resp = await fetch('/graphql', {
+    body: JSON.stringify({
+      query: `{event(id: ["${eventId}"]){name,mobile,name}}`,
+    }),
+  });
+  const { data } = await resp.json();
+  console.log(data);
+
+  return (data && data.event) || {
     "kind": "calendar#event",
     "etag": "\"3004489380866000\"",
     "id": eventId,

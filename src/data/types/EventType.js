@@ -19,14 +19,42 @@ import {
 const EventType = new ObjectType({
   name: 'Event',
   fields: {
-    name: { type: new NonNull(StringType) },
-    mobile: { type: new NonNull(StringType) },
-    start: { type: new NonNull(StringType) },
-    serviceIds: { type: new ListType(StringType) },
-    duration: { type: new NonNull(IntegerType) },
-    totalAmount: { type: FloatType },
-    additional: { type: FloatType },
-    discount: { type: FloatType },
+    id: { 
+      type: new NonNull(StringType),
+      resolve(obj) {
+        return obj.id
+      }
+    },
+    name: { 
+      type: new NonNull(StringType),
+      resolve(obj) {
+        return obj.id
+      }
+    },
+    mobile: { 
+      type: new NonNull(StringType),
+      resolve(obj) {
+        return obj.extendedProperties.shared.mobile
+      }
+    },
+    start: { 
+      type: new NonNull(StringType),
+      resolve(obj) {
+        return obj.start.dateTime
+      }
+    },
+    end: { 
+      type: new NonNull(StringType),
+      resolve(obj) {
+        return obj.end.dateTime
+      }
+    },
+    serviceIds: { 
+      type: new ListType(StringType),
+      resolve(obj) {
+        return obj.extendedProperties.shared.services.split[',']
+      }
+    }
   },
 });
 
