@@ -48,10 +48,12 @@ class Appointment extends React.Component {
   };
 
   componentWillMount() {
-    const { contact, name, mobile, startDate, startTime, duration, serviceIds, resourceName, prices, id, discount} = this.props;
+    const { contact, name, mobile, startDate, startTime, duration, serviceIds, resourceName, prices, id, discount, additional } = this.props;
     const amount = 0;
-    const finalDuration = duration || 75;
+    const finalDuration = duration || 0;
     const finalDiscount = discount || 0;
+    const finalAdditional = additional || 0;
+
     this.setState({
       contactDS: contact,
       name,
@@ -65,30 +67,47 @@ class Appointment extends React.Component {
       appId: id,
       duration: finalDuration,
       discount: finalDiscount,
-      totalAmount: this.calculateTotal(serviceIds, finalDiscount)
+      additional: finalAdditional,
+      totalAmount: this.calculateTotal(serviceIds, finalAdditional, finalDiscount)
     });
   }
 
-  calculateTotal(serviceIds, discount) {
+  calculateTotal(serviceIds, additional, discount) {
     if (!serviceIds) return 0;
     // console.log(serviceIds);
     const totalServices = serviceIds.reduce((sum, serviceId) => {
-      console.log(this.props.mapOfServices[serviceId].price);
       return sum + this.props.mapOfServices[serviceId].price
     }, 0);
-    return totalServices - discount;
+    return totalServices + Number(additional) - Number(discount);
+  }
+
+  calculateDuration(serviceIds) {
+    if (!serviceIds) return 0;
+    // console.log(serviceIds);
+    const totalServices = serviceIds.reduce((sum, serviceId) => {
+
+      return sum + this.props.mapOfServices[serviceId].duration
+    }, 0);
+    return totalServices + 5 /* settling in time */ ;
   }
 
   handleNewRequest = (inputString, index) => this.setState({ index, nameInput: '', mobileInput: '', ...inputString });
-  handleServiceChange = (event, index, serviceIds) => { this.setState({ serviceIds, totalAmount: this.calculateTotal(serviceIds,this.state.discount)}); };
+  handleServiceChange = (event, index, serviceIds) => { 
+    this.setState({ 
+      serviceIds, 
+      totalAmount: this.calculateTotal(serviceIds, this.state.additional, this.state.discount), 
+      duration: this.calculateDuration(serviceIds)
+    }) 
+  }
   handleSliderChange = (event, value) => this.setState({ duration: value });
   handleDateChange = (something, dateChosen) => this.setState({ startDate: dateChosen });
   handleTimeChange = (something, timeChosen) => this.setState({ startTime: timeChosen });
   handleUpdateName = nameInput => this.setState({ nameInput, resourceName: '' });
   handleUpdateMobile = mobileInput => this.setState({ mobileInput, resourceName: '' });
-  handleDiscountChange = (event, newDiscount) => this.setState({ discount: newDiscount, totalAmount: this.calculateTotal(this.state.serviceIds, newDiscount)});
+  handleDiscountChange = (event, newDiscount) => this.setState({ discount: newDiscount, totalAmount: this.calculateTotal(this.state.serviceIds, this.state.additional, newDiscount) });
+  handleAdditionalChange = (event, newAdditional) => this.setState({ additional: newAdditional, totalAmount: this.calculateTotal(this.state.serviceIds, newAdditional, this.state.discount) });
 
-  render() {    
+  render() {
     return (
       <div className={s.root}>
         {/* <span>{this.state.appId}</span> */}
@@ -148,11 +167,10 @@ class Appointment extends React.Component {
               {this.state.duration}
             </span>
           </p>
-          <Slider
-            defaultValue={75}
+          <Slider            
             step={5}
             value={this.state.duration}
-            min={5}
+            min={0}
             max={500}
             onChange={this.handleSliderChange}
           />
@@ -187,10 +205,17 @@ class Appointment extends React.Component {
             )}
           </SelectField>
           <TextField
+            hintText="Additional"
+            floatingLabelText="Additional"
+            onChange={this.handleAdditionalChange}
+            value={this.state.additional}
+            fullWidth={true} />
+          <TextField
             hintText="Discount"
             floatingLabelText="Discount"
             onChange={this.handleDiscountChange}
-            value={this.state.discount}/>        
+            value={this.state.discount}
+            fullWidth={true} />
           <RaisedButton
             ref={c => {
               this.submitBtn = c;
@@ -213,6 +238,7 @@ class Appointment extends React.Component {
                 startDate: {},
                 serviceIds: [],
                 discount: 0,
+                additional: 0,
                 totalAmount: 0,
                 nameInput: '',
                 mobileInput: '',

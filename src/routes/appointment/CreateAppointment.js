@@ -11,7 +11,7 @@ import React from 'react';
 import moment from 'moment';
 import Appointment from './Appointment';
 import Layout from '../../components/Layout';
-import { listOfServices, mapOfServices} from '../../data/database/services';
+import { listOfServices, mapOfServices } from '../../data/database/services';
 
 async function createCalendar(fetch, input) {
   const {
