@@ -58,12 +58,28 @@ async function listContacts(fetch) {
 }
 
 async function getAppointment(fetch, apptId) {
+
+  const resp = await fetch('/graphql', {
+    body: JSON.stringify({
+      query: `{appointment(id: "${apptId}"){id, eventId,transId}}`,
+    }),
+  });
+  const { data } = await resp.json();
+  console.log(data);
+
+
   /// 0ebbad20-7ca8-11e7-8e30-0f09b6bc2a21
   return { eventId: "vp0b20kiapd3fgjstc7jkn0gvc", transactionId: "vp0b20kiapd3fgjstc7jkn0gvc" };
 }
 
 async function getEvent(fetch, eventId) {
-
+  // const resp = await fetch('/graphql', {
+  //   body: JSON.stringify({
+  //     query: '{event{name,mobile,display,resourceName}}',
+  //   }),
+  // });
+  // const { data } = await resp.json();
+  // console.log(data);
   return {
     "kind": "calendar#event",
     "etag": "\"3004489380866000\"",
@@ -155,8 +171,8 @@ async function action({ fetch, params }) {
   const name = event.attendees[0].displayName;
   const mobile = event.extendedProperties.shared.mobile;
   const startDate = moment(event.start.dateTime);
-  const endDate = moment(event.end.dateTime);  
-  const duration = Number(moment.duration(endDate - startDate)/60000);
+  const endDate = moment(event.end.dateTime);
+  const duration = Number(moment.duration(endDate - startDate) / 60000);
   const serviceIds = event.extendedProperties.shared.services.split(',');
   const resourceName = 'something';
   const discount = transaction.discount;

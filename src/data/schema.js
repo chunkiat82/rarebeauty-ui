@@ -10,12 +10,14 @@
 import {
   GraphQLSchema as Schema,
   GraphQLObjectType as ObjectType,
+  GraphQLInt as IntType
 } from 'graphql';
 
 import me from './queries/me';
 import news from './queries/news';
 import contact from './queries/contact';
 import event from './queries/event';
+import appointment from './queries/appointment';
 
 import mutationEvent from './mutations/event';
 
@@ -27,6 +29,7 @@ const schema = new Schema({
       news,
       contact,
       event,
+      appointment
     },
   }),
   mutation: mutationEvent,
