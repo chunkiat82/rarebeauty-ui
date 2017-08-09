@@ -7,6 +7,8 @@
  * LICENSE.txt file in the root directory of this source tree.
  */
 // http://www.material-ui.com/#/components/select-field
+import 'moment-duration-format';
+import moment from 'moment';
 import React from 'react';
 import PropTypes from 'prop-types';
 import withStyles from 'isomorphic-style-loader/lib/withStyles';
@@ -21,6 +23,7 @@ import RaisedButton from 'material-ui/RaisedButton';
 import AutoComplete from 'material-ui/AutoComplete';
 import Snackbar from 'material-ui/Snackbar';
 import s from './Appointment.css';
+
 
 const iconStyles = {
   marginRight: 24,
@@ -88,16 +91,16 @@ class Appointment extends React.Component {
 
       return sum + this.props.mapOfServices[serviceId].duration
     }, 0);
-    return totalServices + 5 /* settling in time */ ;
+    return totalServices + 5 /* settling in time */;
   }
 
   handleNewRequest = (inputString, index) => this.setState({ index, nameInput: '', mobileInput: '', ...inputString });
-  handleServiceChange = (event, index, serviceIds) => { 
-    this.setState({ 
-      serviceIds, 
-      totalAmount: this.calculateTotal(serviceIds, this.state.additional, this.state.discount), 
+  handleServiceChange = (event, index, serviceIds) => {
+    this.setState({
+      serviceIds,
+      totalAmount: this.calculateTotal(serviceIds, this.state.additional, this.state.discount),
       duration: this.calculateDuration(serviceIds)
-    }) 
+    })
   }
   handleSliderChange = (event, value) => this.setState({ duration: value });
   handleDateChange = (something, dateChosen) => this.setState({ startDate: dateChosen });
@@ -158,24 +161,6 @@ class Appointment extends React.Component {
           />
           <p>
             <FontIcon className="material-icons" style={iconStyles}>
-              schedule
-            </FontIcon>
-            <span>
-              {'Duration: '}
-            </span>
-            <span>
-              {this.state.duration}
-            </span>
-          </p>
-          <Slider            
-            step={5}
-            value={this.state.duration}
-            min={0}
-            max={500}
-            onChange={this.handleSliderChange}
-          />
-          <p>
-            <FontIcon className="material-icons" style={iconStyles}>
               attach_money
             </FontIcon>
             <span>
@@ -216,6 +201,24 @@ class Appointment extends React.Component {
             onChange={this.handleDiscountChange}
             value={this.state.discount}
             fullWidth={true} />
+          <p>
+            <FontIcon className="material-icons" style={iconStyles}>
+              schedule
+            </FontIcon>
+            <span>
+              {'Duration: '}
+            </span>
+            <span>
+              {moment.duration(this.state.duration, "minutes").format("h [hrs], m [min]")}
+            </span>
+          </p>
+          <Slider
+            step={5}
+            value={this.state.duration}
+            min={0}
+            max={500}
+            onChange={this.handleSliderChange}
+          />
           <RaisedButton
             ref={c => {
               this.submitBtn = c;
@@ -232,7 +235,7 @@ class Appointment extends React.Component {
               this.setState({
                 notify: true,
                 name: '',
-                duration: 75,
+                duration: 0,
                 mobile: '',
                 startTime: {},
                 startDate: {},
