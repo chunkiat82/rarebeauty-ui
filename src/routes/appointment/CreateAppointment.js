@@ -79,6 +79,7 @@ async function action({ fetch }) {
           mapOfServices={mapOfServices}
           contact={data.contact}
           post={input => createCalendar(fetch, input)}
+          buttonText={"Create Appointment"}
         />
       </Layout>
     ),

@@ -47,11 +47,12 @@ class Appointment extends React.Component {
         service: PropTypes.string.isRequired,
         price: PropTypes.number.isRequired
       })
-    )
+    ),
+    buttonText: PropTypes.string.isRequired
   };
 
   componentWillMount() {
-    const { contact, name, mobile, startDate, startTime, duration, serviceIds, resourceName, prices, id, discount, additional } = this.props;
+    const { contact, name, mobile, startDate, startTime, duration, serviceIds, resourceName, totalAmount, id, discount, additional } = this.props;
     const amount = 0;
     const finalDuration = duration || 0;
     const finalDiscount = discount || 0;
@@ -65,7 +66,7 @@ class Appointment extends React.Component {
       startTime,
       serviceIds,
       resourceName,
-      prices,
+      totalAmount,
       notify: false,
       appId: id,
       duration: finalDuration,
@@ -223,7 +224,7 @@ class Appointment extends React.Component {
             ref={c => {
               this.submitBtn = c;
             }}
-            label="Create Appointment"
+            label={this.props.buttonText}
             primary
             fullWidth
             onClick={() => {
