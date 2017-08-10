@@ -18,15 +18,16 @@ import { get } from '../database';
 const events = {
   type: new ListType(EventType),
   args: {
-    id: { type: new ListType(StringType) },
+    id: { type: StringType},
   },
   async resolve(obj, args) {
-    if (args.id) {
-      console.log(`args=${args}`);
-      const event = await queryEvent(id[0]);
-      return [event];
-    }
-    return [];
+    // if (args.id) {
+    //   console.log(`args=${args}`);
+    //   const event = await queryEvent(id[0]);
+    //   return [event];
+    // }
+    // console.log(`args=${args}`);
+    return [{name:'h', mobile:'12341234'}];
   },
 };
 

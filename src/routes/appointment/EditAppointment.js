@@ -68,16 +68,16 @@ async function getAppointment(fetch, apptId) {
   return data.appointment;
 }
 
-async function getEvent(fetch, eventId) {
+async function getEvent(fetch, eventId) {  
   const resp = await fetch('/graphql', {
     body: JSON.stringify({
-      query: `{event(id: ["${eventId}"]){name,mobile,name}}`,
+      query: `{event(id: "${eventId}"){name,mobile}}`,
     }),
   });
   const { data } = await resp.json();
   console.log(data);
 
-  return (data && data.event) || {
+  return {
     "kind": "calendar#event",
     "etag": "\"3004489380866000\"",
     "id": eventId,

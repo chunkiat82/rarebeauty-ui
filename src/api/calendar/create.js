@@ -46,9 +46,7 @@ module.exports = function create(options) {
             {
               displayName: name,
               comment: mobile,
-              email: `${mobile.substring(
-                mobile.length - 8,
-              )}@rarebeauty.soho.sg`,
+              email: `test@soho.sg`,
             },
           ],
           description: `${services.map(item=> item.service).join(',',)}\n\nhttps://rarebeauty.soho.sg/appointment/edit/${uuid}`,
