@@ -12,6 +12,7 @@ import {
   GraphQLList as ListType,
   GraphQLString as StringType
 } from 'graphql';
+import moment from 'moment';
 import EventType from '../types/EventType';
 import { get } from '../database';
 
@@ -27,7 +28,7 @@ const events = {
     //   return [event];
     // }
     // console.log(`args=${args}`);
-    return [{name:'h', mobile:'12341234'}];
+    return [{id:'a',  name:'h', mobile:'12341234', start:moment(), end:moment()}];
   },
 };
 

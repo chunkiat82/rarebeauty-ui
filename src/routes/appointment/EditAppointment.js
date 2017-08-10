@@ -71,7 +71,7 @@ async function getAppointment(fetch, apptId) {
 async function getEvent(fetch, eventId) {  
   const resp = await fetch('/graphql', {
     body: JSON.stringify({
-      query: `{event(id: "${eventId}"){name,mobile}}`,
+      query: `{event(id: "${eventId}"){id,name,mobile,start,end}}`,
     }),
   });
   const { data } = await resp.json();
