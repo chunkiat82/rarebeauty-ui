@@ -16,11 +16,12 @@ import {
   GraphQLList as ListType,
 } from 'graphql';
 
-const EventType = new ObjectType({
+// n ame, mobile, resourceName, serviceIds, start, duration, totalAmount, additional, discount
+const ApptEventTransType = new ObjectType({
   name: 'Event',
   fields: {
     id: {
-      type: new NonNull(StringType),
+      type: StringType,
       resolve(obj) {
         return obj.id;
       },
@@ -58,4 +59,4 @@ const EventType = new ObjectType({
   },
 });
 
-export default EventType;
+export default ApptEventTransType;
