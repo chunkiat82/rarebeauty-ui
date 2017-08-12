@@ -55,7 +55,7 @@ class Home extends React.Component {
                 cellHeight={180}
                 style={styles.gridList}
             >
-                <Subheader>How can I help you, Today? Create An Appointment or show all of them?</Subheader>
+                <Subheader style={{textAlign:'center'}}>How can I help you, Today?</Subheader>
                 {tilesData.map((tile) => (
                     <Link key={tile.link} to={tile.link}>
                         <GridTile
