@@ -164,9 +164,6 @@ class Appointment extends React.Component {
                             attach_money
             </FontIcon>
                         <span>
-                            {'Total Amount: '}
-                        </span>
-                        <span>
                             {this.state.totalAmount}
                         </span>
                     </p>
@@ -205,9 +202,6 @@ class Appointment extends React.Component {
                         <FontIcon className="material-icons" style={iconStyles}>
                             schedule
             </FontIcon>
-                        <span>
-                            {'Duration: '}
-                        </span>
                         <span>
                             {moment.duration(this.state.duration, "minutes").format("h [hrs], m [min]")}
                         </span>

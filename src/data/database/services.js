@@ -24,10 +24,7 @@ const mapOfServices = {
     'service:22': { id: 'service:22', service: 'Others', price: 0, duration: 0 }
 }
 
-const listOfServices = [];
-Object.keys(mapOfServices).map(item => {
-    listOfServices[listOfServices.length] = mapOfServices[item];
-})
+const listOfServices = Object.keys(mapOfServices).map(item =>  mapOfServices[item]);
 // console.log(JSON.stringify(arrays, null, 2));
 
 export { listOfServices, mapOfServices };

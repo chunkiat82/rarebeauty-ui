@@ -17,18 +17,22 @@ import EventType from '../types/EventType';
 import { get } from '../database';
 
 const events = {
-  type: new ListType(EventType),
+  type: EventType,
   args: {
-    id: { type: StringType},
+    id: { type: StringType },
   },
   async resolve(obj, args) {
     // if (args.id) {
-    //   console.log(`args=${args}`);
+    // console.log(`args=${args}`);
     //   const event = await queryEvent(id[0]);
     //   return [event];
-    // }
+    // }/
     // console.log(`args=${args}`);
-    return [{id:'a',  name:'h', mobile:'12341234', start:moment(), end:moment()}];
+    // console.log(`event:${args.id}1`);
+    const event = await get(`event:${args.id}`);
+    // console.log(`event:${args.id}1`);
+    // console.log(event);
+    return event.value;
   },
 };
 

@@ -71,58 +71,13 @@ async function getAppointment(fetch, apptId) {
 async function getEvent(fetch, eventId) {  
   const resp = await fetch('/graphql', {
     body: JSON.stringify({
-      query: `{event(id: "${eventId}"){id,name,mobile,start,end}}`,
+      query: `{event(id: "${eventId}"){id,name,mobile,start,end,services}}`,
     }),
   });
   const { data } = await resp.json();
-  console.log(data);
+  // console.log(JSON.stringify(data, null, 2));
 
-  return {
-    "kind": "calendar#event",
-    "etag": "\"3004489380866000\"",
-    "id": eventId,
-    "status": "confirmed",
-    "htmlLink": "https://www.google.com/calendar/event?eid=dnAwYjIwa2lhcGQzZmdqc3RjN2prbjBndmMgcmFyZWJlYXV0eUBzb2hvLnNn",
-    "created": "2017-08-09T02:11:30.000Z",
-    "updated": "2017-08-09T02:11:30.433Z",
-    "summary": "Michelle Chan",
-    "description": "Touch Up - Dense,Eye Mask,Full Face Threading\n\nhttps://rarebeauty.soho.sg/appointment/edit/0ebbad20-7ca8-11e7-8e30-0f09b6bc2a21",
-    "location": "Home",
-    "creator": {
-      "email": "serviceaccount@rare-beauty-calendar.iam.gserviceaccount.com"
-    },
-    "organizer": {
-      "email": "rarebeauty@soho.sg",
-      "self": true
-    },
-    "start": {
-      "dateTime": "2017-08-09T10:45:00+08:00"
-    },
-    "end": {
-      "dateTime": "2017-08-09T12:00:00+08:00"
-    },
-    "iCalUID": "vp0b20kiapd3fgjstc7jkn0gvc@google.com",
-    "sequence": 0,
-    "attendees": [
-      {
-        "email": "81889366@rarebeauty.soho.sg",
-        "displayName": "Michelle Chan",
-        "responseStatus": "needsAction",
-        "comment": "+6581889366"
-      }
-    ],
-    "extendedProperties": {
-      "shared": {
-        "mobile": "+6581889366",
-        "reminded": "false",
-        "services": "service:4,service:5,service:18",
-        "uuid": "0ebbad20-7ca8-11e7-8e30-0f09b6bc2a21"
-      }
-    },
-    "reminders": {
-      "useDefault": true
-    }
-  };
+  return data;
 }
 
 async function getTransaction(fetch, transactionId) {
@@ -160,17 +115,16 @@ async function getTransaction(fetch, transactionId) {
 async function action({ fetch, params }) {
   const data = await listContacts(fetch);
   const { eventId, transactionId } = await getAppointment(fetch, params.id)
-  const event = await getEvent(fetch, eventId);
+  const { event } = await getEvent(fetch, eventId);
   const transaction = await getTransaction(fetch, transactionId);
   // // console.log(Promise.all);
-  //   const [event, transaction] = Promise.all([eventP, transactionP]);
-  // console.log(event)
-  const name = event.attendees[0].displayName;
-  const mobile = event.extendedProperties.shared.mobile;
-  const startDate = moment(event.start.dateTime);
-  const endDate = moment(event.end.dateTime);
+  //   const [event, transaction] = Promise.all([eventP, transactionP]);  
+  const name = event.name;
+  const mobile = event.mobile;
+  const startDate = moment(event.start);
+  const endDate = moment(event.end);
   const duration = Number(moment.duration(endDate - startDate) / 60000);
-  const serviceIds = event.extendedProperties.shared.services.split(',');
+  const serviceIds = event.services;
   const resourceName = 'something';
   const discount = transaction.discount;
   const additional = transaction.additional;

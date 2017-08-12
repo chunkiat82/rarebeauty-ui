@@ -8,7 +8,7 @@ export async function upsert(id, doc) {
   const obj = await runOperation(setObject, { id, doc });
   return obj;
 }
-export async function get(id) {
+export async function get(id) {  
   const obj = await runOperation(getObject, { id });
   return obj;
 }
@@ -24,7 +24,8 @@ async function runOperation(operation, options) {
   try {
     res = await operation(bucket, options);
   } catch (err) {
-    throw err;
+    console.log(err);
+    throw err;    
   }
   bucket.disconnect();
   return res;

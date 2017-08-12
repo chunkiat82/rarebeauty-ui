@@ -21,24 +21,39 @@ const EventType = new ObjectType({
   fields: {
     id: { 
       type: new NonNull(StringType),
-      resolve(obj, args){
+      resolve(obj) {
         return obj.id
       }
     },
     name: { 
-      type: StringType
+      type: new NonNull(StringType),
+      resolve(obj) {
+        return obj.attendees[0].displayName
+      }
     },
     mobile: { 
-      type: StringType
+      type: new NonNull(StringType),
+      resolve(obj) {
+        return obj.extendedProperties.shared.mobile
+      }
     },
     start: { 
-      type: StringType
+      type: new NonNull(StringType),
+      resolve(obj) {
+        return String(obj.start.dateTime)
+      }
     },
     end: { 
-      type: StringType
+      type: new NonNull(StringType),
+      resolve(obj) {
+        return String(obj.end.dateTime)
+      }
     },
-    serviceIds: { 
-      type: new ListType(StringType)
+    services: {
+      type: new ListType(StringType),
+      resolve(obj) {
+        return obj.extendedProperties.shared.services.split(',')
+      }
     }
   },
 });
