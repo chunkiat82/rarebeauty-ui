@@ -32,7 +32,7 @@ class Header extends React.Component {
               />
             </Link>
             <span className={s.brandTxt}>Rare Beauty</span>
-            <p className={s.bannerDesc}>Create Appointment</p>
+            <p className={s.bannerDesc}>Appointment Management</p>
           </div>
         </div>
       </div>
