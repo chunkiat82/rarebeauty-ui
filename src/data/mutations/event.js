@@ -16,7 +16,7 @@ import {
   GraphQLFloat as FloatType
 } from 'graphql';
 import moment from 'moment';
-import EventType from '../types/EventType';
+import ApptEventTransType from '../types/ApptEventTransType';
 import api from '../../api';
 import db from '../database';
 import { mapOfServices } from '../database/services';

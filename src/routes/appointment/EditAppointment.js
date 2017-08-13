@@ -5,22 +5,22 @@ import Layout from '../../components/Layout';
 import { listOfServices, mapOfServices } from '../../data/database/services';
 
 async function updateCalendar(fetch, input) {
-  const {
+    const {
     slider: duration,
-    name,
-    mobile,
-    resourceName = '',
-    timeChosen,
-    dateChosen,
-    services,
+        name,
+        mobile,
+        resourceName = '',
+        timeChosen,
+        dateChosen,
+        services,
   } = input;
 
-  const dateInput = moment(dateChosen).format('YYYYMMDD');
-  const timeInput = moment(timeChosen).format('HHmm');
+    const dateInput = moment(dateChosen).format('YYYYMMDD');
+    const timeInput = moment(timeChosen).format('HHmm');
 
-  const resp = await fetch('/graphql', {
-    body: JSON.stringify({
-      query: `mutation($id: String!, $name: String!, $mobile:String!, $resourceName:String, $start:String!, $services:[String]!, $duration:Int!, prices:[Float]!) {
+    const resp = await fetch('/graphql', {
+        body: JSON.stringify({
+            query: `mutation($id: String!, $name: String!, $mobile:String!, $resourceName:String, $start:String!, $services:[String]!, $duration:Int!, prices:[Float]!) {
           updateEvent(id:$id name:$name, mobile:$mobile, resourceName:$resourceName, start:$start, services:$services, duration:$duration, prices:$prices ) {
             name
             mobile
@@ -30,138 +30,111 @@ async function updateCalendar(fetch, input) {
             prices
           }
         }`,
-      variables: JSON.stringify({
-        name,
-        mobile,
-        resourceName,
-        start: `${dateInput}T${timeInput}`,
-        services,
-        duration,
-        prices
-      }),
-    }),
-  });
+            variables: JSON.stringify({
+                name,
+                mobile,
+                resourceName,
+                start: `${dateInput}T${timeInput}`,
+                services,
+                duration,
+                prices
+            }),
+        }),
+    });
 
-  const { data } = await resp.json();
+    const { data } = await resp.json();
 
-  return data;
+    return data;
 }
 
 async function listContacts(fetch) {
-  const resp = await fetch('/graphql', {
-    body: JSON.stringify({
-      query: '{contact{name,mobile,display,resourceName}}',
-    }),
-  });
-  const { data } = await resp.json();
-  return data;
+    const resp = await fetch('/graphql', {
+        body: JSON.stringify({
+            query: '{contact{name,mobile,display,resourceName}}',
+        }),
+    });
+    const { data } = await resp.json();
+    return data;
 }
 
 async function getAppointment(fetch, apptId) {
 
-  const resp = await fetch('/graphql', {
-    body: JSON.stringify({
-      query: `{appointment(id: "${apptId}"){id, eventId,transId}}`,
-    }),
-  });
-  const { data } = await resp.json();
-  return data.appointment;
+    const resp = await fetch('/graphql', {
+        body: JSON.stringify({
+            query: `
+            {appointment(id: "${apptId}"){
+                id
+                event { 
+                    name
+                    mobile,
+                    start,
+                    end,
+                    serviceIds
+                }
+                transaction {
+                    items { id, type, name, price },
+                    totalAmount,
+                    service,
+                    product,
+                    discount,
+                    additional
+                } 
+            }}`,
+        }),
+    });
+    const { data } = await resp.json();
+    return data.appointment;
 }
-
-async function getEvent(fetch, eventId) {  
-  const resp = await fetch('/graphql', {
-    body: JSON.stringify({
-      query: `{event(id: "${eventId}"){id,name,mobile,start,end,services}}`,
-    }),
-  });
-  const { data } = await resp.json();
-  // console.log(JSON.stringify(data, null, 2));
-
-  return data;
-}
-
-async function getTransaction(fetch, transactionId) {
-
-  return {
-    "id": transactionId,
-    "items": [
-      {
-        "itemId": 'service:4',
-        "name": 'Full Set - Dense',
-        "price": 60
-      },
-      {
-        "itemId": 'service:5',
-        "name": 'Eye Mask',
-        "price": 5
-      },
-      {
-        "itemId": 'service:18',
-        "name": 'Full Face Threading',
-        "price": 20
-      }
-    ],
-    "totalAmount": 85,
-    "services": 85,
-    "products": 0,
-    "discount": 0,
-    "additional": 0,
-    "createdAt": "2017-08-09T10:45:00+08:00"
-  };
-}
-
-
 
 async function action({ fetch, params }) {
-  const data = await listContacts(fetch);
-  const { eventId, transactionId } = await getAppointment(fetch, params.id)
-  const { event } = await getEvent(fetch, eventId);
-  const transaction = await getTransaction(fetch, transactionId);
-  // // console.log(Promise.all);
-  //   const [event, transaction] = Promise.all([eventP, transactionP]);  
-  const name = event.name;
-  const mobile = event.mobile;
-  const startDate = moment(event.start);
-  const endDate = moment(event.end);
-  const duration = Number(moment.duration(endDate - startDate) / 60000);
-  const serviceIds = event.services;
-  const resourceName = 'something';
-  const discount = transaction.discount;
-  const additional = transaction.additional;
-  const totalAmount = transaction.totalAmount;
+    const data = await listContacts(fetch);
+    const appointment = await getAppointment(fetch, params.id)
+    // // console.log(Promise.all);
+    //   const [event, transaction] = Promise.all([eventP, transactionP]);  
+    const { event, transaction } = appointment;
+    const name = event.name;
+    const mobile = event.mobile;
+    const startDate = moment(event.start);
+    const endDate = moment(event.end);
+    const duration = Number(moment.duration(endDate - startDate) / 60000);
+    const serviceIds = event.serviceIds;
+    const resourceName = 'something';
+    const discount = transaction.discount;
+    const additional = transaction.additional;
+    const totalAmount = transaction.totalAmount;
 
-  // contact, name, mobile, startDate, startTime, duration, serviceIds, resourceName, prices, id, discount, additional
-  // 
+    // contact, name, mobile, startDate, startTime, duration, serviceIds, resourceName, id, discount, additional
+    // 
 
-  if (!data || !data.contact)
-    throw new Error('Failed to load the contact feed.');
+    if (!data || !data.contact)
+        throw new Error('Failed to load the contact feed.');
 
-  return {
-    chunks: ['appointment-edit'],
-    title: 'Rare Beauty Professional',
-    component: (
-      <Layout>
-        <Appointment
-          post={input => updateCalendar(fetch, input)}
-          listOfServices={listOfServices}
-          mapOfServices={mapOfServices}
-          contact={data.contact}
-          name={name}
-          mobile={mobile}
-          startDate={startDate.toDate()}
-          startTime={startDate.toDate()}
-          serviceIds={serviceIds}
-          resourceName={resourceName}
-          discount={discount}
-          additional={additional}
-          totalAmount={totalAmount}
-          duration={duration}
-          buttonText={"Update Appointment"}
-          {...this.props}
-        />
-      </Layout>
-    ),
-  };
+    return {
+        chunks: ['appointment-edit'],
+        title: 'Rare Beauty Professional',
+        component: (
+            <Layout>
+                <Appointment
+                    post={input => updateCalendar(fetch, input)}
+                    listOfServices={listOfServices}
+                    mapOfServices={mapOfServices}
+                    contact={data.contact}
+                    name={name}
+                    mobile={mobile}
+                    startDate={startDate.toDate()}
+                    startTime={startDate.toDate()}
+                    serviceIds={serviceIds}
+                    resourceName={resourceName}
+                    discount={discount}
+                    additional={additional}
+                    totalAmount={totalAmount}
+                    duration={duration}
+                    buttonText={"Update Appointment"}
+                    {...this.props}
+                />
+            </Layout>
+        ),
+    };
 }
 
 export default action;
