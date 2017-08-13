@@ -201,7 +201,7 @@ class Appointment extends React.Component {
                     <p>
                         <FontIcon className="material-icons" style={iconStyles}>
                             schedule
-            </FontIcon>
+                        </FontIcon>
                         <span>
                             {moment.duration(this.state.duration, "minutes").format("h [hrs], m [min]")}
                         </span>
@@ -249,7 +249,7 @@ class Appointment extends React.Component {
                     />
                     <Snackbar
                         open={this.state.notify}
-                        message="Appointment Added"
+                        message={this.props.successMessage}
                         bodyStyle={{
                             backgroundColor: '#373277',
                             paddingBottom: 28,

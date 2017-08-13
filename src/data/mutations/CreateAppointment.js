@@ -73,7 +73,7 @@ export default {
       finalResourceName = res.resourceName;
     }
 
-    // console.log(`finalResourceName=${finalResourceName}`);
+    console.log(`finalResourceName=${finalResourceName}`);
     try {
       const services = serviceIds.map(item => mapOfServices[item]);
       const { event, uuid } = await api({
@@ -107,8 +107,8 @@ export default {
         now,
       );
       await db.upsert(`trans:${uuid}`, transaction);
-      console.log(`uuid=${uuid}`);
-      console.log(`transaction=${JSON.stringify(transaction, null, 2)}`);
+      // console.log(`uuid=${uuid}`);
+      // console.log(`transaction=${JSON.stringify(transaction, null, 2)}`);
       return { id: uuid, event, transaction, createdAt: now, lastUpdated: now };
     } catch (err) {
       // console.log(err);

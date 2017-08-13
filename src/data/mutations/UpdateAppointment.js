@@ -17,12 +17,6 @@ export default {
         id: {
             type: StringType,
         },
-        eventId: {
-            type: StringType,
-        },
-        transId: {
-            type: StringType,
-        },
         name: {
             type: StringType,
         },
@@ -55,8 +49,6 @@ export default {
         value,
         {
             id,
-            eventId,
-            transId,
             name,
             mobile,
             resourceName,
@@ -70,12 +62,21 @@ export default {
     ) {
         // [todo] - what if it's a mobile in the summary
         
-        try {
+        try {            
+            const apptResponse = await db.get(`appt:${id}`);
+            const  { eventId, transId }  = apptResponse.value;
+            
+            // console.log(`eventId=${eventId}`);
+            // console.log(`transId=${transId}`);
             const services = serviceIds.map(item => mapOfServices[item]);
-            const { event } = await api({
+            
+            console.log(`services=${services}`);
+
+            const event = await api({
                 action: 'patchEvent',           
                 eventId,
                 apptId: id, //appointmentId
+                transId,
                 name,
                 start,
                 mobile,
@@ -88,6 +89,7 @@ export default {
                 additional,
                 discount,
             });
+            // console.log(`fullEvent:${JSON.stringify(event)}`);
             const now = moment();
             await db.upsert(`appt:${id}`, {
                 id,

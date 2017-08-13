@@ -10,6 +10,7 @@ export async function upsert(id, doc) {
 }
 export async function get(id) {  
   const obj = await runOperation(getObject, { id });
+  // console.log(obj);
   return obj;
 }
 

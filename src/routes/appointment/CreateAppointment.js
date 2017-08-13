@@ -18,7 +18,7 @@ async function createCalendar(fetch, input) {
     duration,
     name,
     mobile,
-    resourceName = '',
+    resourceName,
     startDate,
     startTime,
     serviceIds,
@@ -36,6 +36,7 @@ async function createCalendar(fetch, input) {
           createAppointment(name:$name, mobile:$mobile, resourceName:$resourceName, start:$start, serviceIds:$serviceIds, duration:$duration, totalAmount:$totalAmount, additional:$additional, discount:$discount ) {
             id
             event { 
+                id,
                 resourceName,
                 name,
                 mobile,
@@ -44,6 +45,7 @@ async function createCalendar(fetch, input) {
                 serviceIds
             }
             transaction {
+                id,
                 items { id, type, name, price },
                 totalAmount,
                 service,
@@ -98,6 +100,7 @@ async function action({ fetch }) {
           contact={data.contact}
           post={input => createCalendar(fetch, input)}
           buttonText={'Create Appointment'}
+          successMessage={'Appointment Added'}
         />
       </Layout>
     ),

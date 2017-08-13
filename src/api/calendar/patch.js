@@ -36,14 +36,7 @@ module.exports = function patch(options) {
                         end: { dateTime: endDT },
                         summary: name,
                         location: 'Home',
-                        status: 'confirmed',
-                        extendedProperties: {
-                            shared: {
-                                services: services.map(item => item.id).join(','),
-                                uuid: apptId,
-                                apptId
-                            },
-                        },
+                        status: 'confirmed',                        
                         attendees: [
                             {
                                 displayName: name,
@@ -57,26 +50,19 @@ module.exports = function patch(options) {
             },
         );
 
-        if (mobile) {
-            patchObject.resource.extendedProperties = {
-                shared: { mobile },
-            };
-        }
+        if (patchObject.resource.extendedProperties === undefined) patchObject.resource.extendedProperties = {};
+        if (patchObject.resource.extendedProperties.shared === undefined ) patchObject.resource.extendedProperties.shared = {};
 
-        if (reminded) {
-            if (
-                patchObject.resource.extendedProperties &&
-                patchObject.resource.extendedProperties.shared
-            ) {
-                patchObject.resource.extendedProperties.shared.reminded =
-                    reminded === 'true';
-            } else {
-                patchObject.resource.extendedProperties = {
-                    shared: { reminded },
-                };
-            }
+        if (mobile) patchObject.resource.extendedProperties.shared.mobile = mobile;
+        if (services) patchObject.resource.extendedProperties.shared.services = services.map(item => item.id).join(',');
+        if (reminded) patchObject.resource.extendedProperties.shared.reminded = reminded;
+        if (apptId) {
+            patchObject.resource.extendedProperties.shared.uuid = apptId;
+            patchObject.resource.extendedProperties.shared.apptId = apptId;
         }
-
+        
+        
+        console.log(`patchObject=${JSON.stringify(patchObject)}`);
         calendar.events.patch(patchObject, (err, event) => {
             if (err) {
                 console.log(
@@ -84,6 +70,7 @@ module.exports = function patch(options) {
                 );
                 rej(err);
             }
+            console.log(`res(event)=${JSON.stringify(event)}`);
             res(event);
         });
     });

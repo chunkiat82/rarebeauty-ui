@@ -10,6 +10,7 @@ module.exports = function create(options) {
         endDT,        
         services,
         calendarId,
+        resourceName
     } = options;
 
     // console.log(options);

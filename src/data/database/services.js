@@ -19,9 +19,8 @@ const mapOfServices = {
     'service:17': { id: 'service:17', service: 'Eyebrow Threading', price: 5, duration: 5 },
     'service:18': { id: 'service:18', service: 'Full Face Threading', price: 20, duration: 30 },
     'service:19': { id: 'service:19', service: 'Upper Lip Threading', price: 3, duration: 5 },
-    'service:20': { id: 'service:20', service: 'Lower Lip Threading', price: 2, duration: 5 },
-    'service:21': { id: 'service:21', service: 'Eye Mask', price: 5, duration: 0 },
-    'service:22': { id: 'service:22', service: 'Others', price: 0, duration: 0 }
+    'service:20': { id: 'service:20', service: 'Lower Lip Threading', price: 2, duration: 5 },    
+    'service:9999': { id: 'service:9999', service: 'Others', price: 0, duration: 0 }
 }
 
 const listOfServices = Object.keys(mapOfServices).map(item =>  mapOfServices[item]);

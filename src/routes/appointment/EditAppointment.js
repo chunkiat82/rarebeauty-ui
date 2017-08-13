@@ -8,8 +8,6 @@ async function upsertAppointment(fetch, input) {
     const {
         duration,
         id,
-        eventId,
-        transId,
         name,
         mobile,
         resourceName,
@@ -19,15 +17,15 @@ async function upsertAppointment(fetch, input) {
         totalAmount,
         additional,
         discount,
-  } = input;
+  } = input;    
 
     const dateInput = moment(startDate).format('YYYYMMDD');
     const timeInput = moment(startTime).format('HHmm');
 
     const resp = await fetch('/graphql', {
         body: JSON.stringify({
-            query: `mutation($id: String!,$eventId: String!,$transId: String!,$name: String!, $mobile:String!, $resourceName:String, $start:String!, $serviceIds:[String]!, $duration:Int!, $totalAmount:Float, $additional:Float, $discount:Float) {
-            updateAppointment(id:$id, eventId:$eventId, transId:$transId, name:$name, mobile:$mobile, resourceName:$resourceName, start:$start, serviceIds:$serviceIds, duration:$duration, totalAmount:$totalAmount, additional:$additional, discount:$discount ) {
+            query: `mutation($id: String!, $name: String!, $mobile:String!, $resourceName:String, $start:String!, $serviceIds:[String]!, $duration:Int!, $totalAmount:Float, $additional:Float, $discount:Float) {
+            updateAppointment(id:$id, name:$name, mobile:$mobile, resourceName:$resourceName, start:$start, serviceIds:$serviceIds, duration:$duration, totalAmount:$totalAmount, additional:$additional, discount:$discount ) {
                 id
                 event { 
                     id,
@@ -50,8 +48,6 @@ async function upsertAppointment(fetch, input) {
             }`,
             variables: JSON.stringify({
                 id,
-                eventId,
-                transId,
                 name,
                 mobile,
                 resourceName,
@@ -86,7 +82,7 @@ async function getAppointment(fetch, apptId) {
         body: JSON.stringify({
             query: `
             {appointment(id: "${apptId}"){
-                id
+                id,
                 event {
                     id,
                     name
@@ -94,7 +90,7 @@ async function getAppointment(fetch, apptId) {
                     start,
                     end,
                     serviceIds
-                }
+                },
                 transaction {
                     id,
                     items { id, type, name, price },
@@ -108,6 +104,7 @@ async function getAppointment(fetch, apptId) {
         }),
     });
     const { data } = await resp.json();
+    // console.log(`data=${JSON.stringify(data, null, 2)}`);
     return data.appointment;
 }
 
@@ -143,7 +140,7 @@ async function action({ fetch, params }) {
             <Layout>
                 <Appointment
                     post={input => upsertAppointment(fetch, Object.assign(
-                        { id: apptId, resourceName, eventId: event.id, transId: transaction.id }, input))}
+                        { id: apptId, resourceName }, input))}
                     listOfServices={listOfServices}
                     mapOfServices={mapOfServices}
                     contact={data.contact}
@@ -157,6 +154,7 @@ async function action({ fetch, params }) {
                     totalAmount={totalAmount}
                     duration={duration}
                     buttonText={"Update Appointment"}
+                    successMessage={'Appointment Updated'}
                     {...this.props}
                 />
             </Layout>
