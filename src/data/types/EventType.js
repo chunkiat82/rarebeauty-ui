@@ -25,6 +25,12 @@ const EventType = new ObjectType({
         return obj.id;
       },
     },
+    resourceName: {
+      type: new NonNull(StringType),
+      resolve(obj) {
+        return obj.extendedProperties.shared.resourceName;
+      },
+    },
     name: {
       type: new NonNull(StringType),
       resolve(obj) {

@@ -36,7 +36,8 @@ async function createCalendar(fetch, input) {
           createAppointment(name:$name, mobile:$mobile, resourceName:$resourceName, start:$start, serviceIds:$serviceIds, duration:$duration, totalAmount:$totalAmount, additional:$additional, discount:$discount ) {
             id
             event { 
-                name
+                resourceName,
+                name,
                 mobile,
                 start,
                 end,

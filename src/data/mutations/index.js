@@ -16,11 +16,13 @@ import {
   GraphQLFloat as FloatType,
 } from 'graphql';
 import createAppointment from './CreateAppointment';
+import updateAppointment from './UpdateAppointment';
 
 const Mutation = new ObjectType({
   name: 'Mutation',
   fields: () => ({
     createAppointment,
+    updateAppointment
   }),
 });
 

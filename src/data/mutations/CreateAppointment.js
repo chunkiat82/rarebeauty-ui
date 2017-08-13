@@ -84,7 +84,7 @@ export default {
         // these services sent in are objects
         services,
         duration,
-        finalResourceName,
+        resourceName:finalResourceName,
         // these are sent in as floats
         totalAmount,
         additional,

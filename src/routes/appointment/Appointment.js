@@ -162,7 +162,7 @@ class Appointment extends React.Component {
                     <p>
                         <FontIcon className="material-icons" style={iconStyles}>
                             attach_money
-            </FontIcon>
+                        </FontIcon>
                         <span>
                             {this.state.totalAmount}
                         </span>
