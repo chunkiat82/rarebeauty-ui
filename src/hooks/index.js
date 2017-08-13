@@ -5,6 +5,9 @@ import db from '../data/database';
 const { getSyncToken, setSyncToken } = require('../api/utilities/token');
 
 export async function handleCalendarWebhook(headers) {
+
+    console.log(`headers=${JSON.stringify(headers, null, 2)}`);
+    console.log('-------------------------------------------------------');
     // headers not used
     const syncToken = await getSyncToken(headers);
     const response = await api({
@@ -67,6 +70,7 @@ async function handleCancel(item) {
         const eventId = item.id;
         const response = await db.get(`event:${eventId}`);
         const event = response.value;
+        console.log(event);
         const apptId = event.extendedProperties.shared.apptId;
         try {
             await db.remove(`event:${eventId}`);
