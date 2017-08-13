@@ -49,7 +49,7 @@ export async function handleCalendarWebhook(headers) {
             // );
         } else {
             console.log(
-                `event start date missing for - ${event.summary} ${event.status}`,
+                `event start date missing for - ${event.id} - ${event.status}`,
             );
         }
     });
@@ -70,12 +70,12 @@ async function handleCancel(item) {
         const eventId = item.id;
         const response = await db.get(`event:${eventId}`);
         const event = response.value;
-        console.log(event);
-        const apptId = event.extendedProperties.shared.apptId;
+        // console.log(event);
+        const apptId = event.extendedProperties.shared.uuid;
         try {
             await db.remove(`event:${eventId}`);
         } catch (e) {
-            console.log('unable to remove event= ' + item.id);
+            console.log('unable to remove event= ' + eventId);
         }
         try {
             await db.remove(`trans:${apptId}`);
