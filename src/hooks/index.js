@@ -16,6 +16,7 @@ export async function handleCalendarWebhook(headers) {
 
   console.log(`Upcoming Changed events (${events.length}):`);
   events.forEach(item => {
+    if (item.summary.indexOf('-') === 0) return;
     if (item.status === 'cancelled') {
       handleCancel(item);
     } else if (item.status === 'confirmed') {
@@ -61,7 +62,24 @@ export async function handleCalendarWebhook(headers) {
 }
 
 async function handleCancel(item) {
-  await db.remove(`event:${item.id}`);
+  try {
+    await db.remove(`event:${item.id}`);
+  } catch (e){
+    console.log('unable to remove event= ' + item.id);
+  }
+
+  try {
+    await db.remove(`trans:${item.extendedProperties.shared.apptId}`);
+  } catch (e){
+    console.log('unable to remove transaction= ' + item.extendedProperties.shared.apptId);
+  }
+
+  try {
+    await db.remove(`appt:${item.extendedProperties.shared.apptId}`);
+  } catch (e){
+    console.log('unable to remove appointment= ' + item.extendedProperties.shared.apptId);
+  }
+  
 }
 
 async function handleUpsert(item) {
