@@ -62,7 +62,7 @@ module.exports = function patch(options) {
         }
         
         
-        console.log(`patchObject=${JSON.stringify(patchObject)}`);
+        // console.log(`patchObject=${JSON.stringify(patchObject)}`);
         calendar.events.patch(patchObject, (err, event) => {
             if (err) {
                 console.log(
@@ -70,7 +70,7 @@ module.exports = function patch(options) {
                 );
                 rej(err);
             }
-            console.log(`res(event)=${JSON.stringify(event)}`);
+            // console.log(`res(event)=${JSON.stringify(event)}`);
             res(event);
         });
     });

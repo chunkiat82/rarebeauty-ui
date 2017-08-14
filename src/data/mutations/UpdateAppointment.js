@@ -70,7 +70,7 @@ export default {
             // console.log(`transId=${transId}`);
             const services = serviceIds.map(item => mapOfServices[item]);
             
-            console.log(`services=${services}`);
+            // console.log(`services=${services}`);
 
             const event = await api({
                 action: 'patchEvent',           
@@ -105,7 +105,7 @@ export default {
                 additional,
                 discount,
                 now,
-                start
+                moment(event.start.dateTime)
             );
             await db.upsert(`trans:${transId}`, transaction);
             // console.log(`id=${id}`);

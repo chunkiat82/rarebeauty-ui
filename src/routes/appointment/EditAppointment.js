@@ -17,7 +17,7 @@ async function upsertAppointment(fetch, input) {
         totalAmount,
         additional,
         discount,
-  } = input;    
+  } = input;
 
     const dateInput = moment(startDate).format('YYYYMMDD');
     const timeInput = moment(startTime).format('HHmm');
@@ -122,9 +122,16 @@ async function action({ fetch, params }) {
     const duration = Number(moment.duration(endDate - startDate) / 60000);
     const serviceIds = event.serviceIds;
     const resourceName = event.resourceName;
-    const discount = transaction.discount;
-    const additional = transaction.additional;
-    const totalAmount = transaction.totalAmount;
+
+    let discount = 0;
+    let additional = 0;
+    let totalAmount = 0;
+    if (transaction) {
+        discount = transaction.discount;
+        additional = transaction.additional;
+        totalAmount = transaction.totalAmount;
+    }
+
 
 
     // contact, name, mobile, startDate, startTime, duration, serviceIds, resourceName, id, discount, additional

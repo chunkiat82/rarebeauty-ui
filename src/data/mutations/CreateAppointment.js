@@ -105,7 +105,7 @@ export default {
                 additional,
                 discount,
                 now,
-                start
+                moment(event.start.dateTime)
             );
             await db.upsert(`trans:${uuid}`, transaction);
             // console.log(`uuid=${uuid}`);
