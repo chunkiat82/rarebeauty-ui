@@ -41,7 +41,7 @@ const tilesData = [
         img: 'images/home/calendar-appointments.png',
         title: 'List Appointments',
         subTitle: 'Upcoming 20',
-        link: '/appointment/list'
+        link: '/appointment'
     }
 ];
 

@@ -23,9 +23,13 @@ const routes = {
       path: '/appointment/create',
       load: () => import(/* webpackChunkName: 'appointment-create' */ './appointment/CreateAppointment'),
     },
-     {
+    {
       path: '/appointment/edit/:id',
       load: () => import(/* webpackChunkName: 'appointment-edit' */ './appointment/EditAppointment'),
+    },
+    {
+      path: '/appointment/',
+      load: () => import(/* webpackChunkName: 'appointment-list' */ './appointment/ListAppointments'),
     },
     {
       path: '/contact',

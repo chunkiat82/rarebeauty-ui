@@ -1,6 +1,6 @@
 import React from 'react';
 import moment from 'moment';
-import Appointment from './Appointment';
+import Appointment from './components/individual';
 import Layout from '../../components/Layout';
 import { listOfServices, mapOfServices } from '../../data/database/services';
 
