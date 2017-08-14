@@ -30,22 +30,19 @@ module.exports = function patch(options) {
                 calendarId,
                 eventId,
                 resource: {
-                    calendarId,
-                    resource: {
-                        start: { dateTime: startDT },
-                        end: { dateTime: endDT },
-                        summary: name,
-                        location: 'Home',
-                        status: 'confirmed',                        
-                        attendees: [
-                            {
-                                displayName: name,
-                                comment: mobile,
-                                email: `test@soho.sg`,
-                            },
-                        ],
-                        description: `${services.map(item => item.service).join(',', )}\n\nhttps://rarebeauty.soho.sg/appointment/edit/${apptId}`,
-                    },
+                    start: { dateTime: startDT },
+                    end: { dateTime: endDT },
+                    summary: name,
+                    location: 'Home',
+                    status: 'confirmed',
+                    attendees: [
+                        {
+                            displayName: name,
+                            comment: mobile,
+                            email: `test@soho.sg`,
+                        },
+                    ],
+                    description: `${services.map(item => item.service).join(',', )}\n\nhttps://rarebeauty.soho.sg/appointment/edit/${apptId}`,
                 },
             },
         );
