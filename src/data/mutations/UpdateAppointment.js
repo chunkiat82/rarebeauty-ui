@@ -105,6 +105,7 @@ export default {
                 additional,
                 discount,
                 now,
+                start
             );
             await db.upsert(`trans:${transId}`, transaction);
             // console.log(`id=${id}`);
@@ -124,6 +125,7 @@ function createTransactionEntry(
     additional,
     discount,
     createdAt,
+    apptDate
 ) {
     const items = entries.map(entry => ({
         id: entry.id,
@@ -143,6 +145,7 @@ function createTransactionEntry(
         additional,
         discount,
         createdAt,
+        apptDate
     };
     return entryTemplate;
 }
