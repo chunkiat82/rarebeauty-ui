@@ -13,62 +13,58 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import withStyles from 'isomorphic-style-loader/lib/withStyles';
 import s from './Appointment.css';
+import history from '../../../history';
 import {
-    Table,
-    TableBody,
-    TableHeader,
-    TableHeaderColumn,
-    TableRow,
-    TableRowColumn,
+  Table,
+  TableBody,
+  TableHeader,
+  TableHeaderColumn,
+  TableRow,
+  TableRowColumn,
 } from 'material-ui/Table';
 
 class AppointmentList extends React.Component {
+  static propTypes = {};
 
-    static propTypes = {
-    }
+  rows(values) {
+    return values.map((value, index) =>
+      <TableRow key={value.id}>
+        <TableRowColumn>
+          {index + 1}
+        </TableRowColumn>
+        <TableRowColumn>
+          {value.name}
+        </TableRowColumn>
+        <TableRowColumn>
+          {moment(value.start).format('DD MMM YYYY hh:mm A')}
+        </TableRowColumn>
+      </TableRow>,
+    );
+  }
 
-    render() {
-        return (
-            <Table>
-                <TableHeader
-                    displaySelectAll={false}
-                    adjustForCheckbox={false}>
-                    <TableRow>
-                        <TableHeaderColumn>ID</TableHeaderColumn>
-                        <TableHeaderColumn>Name</TableHeaderColumn>
-                        <TableHeaderColumn>Status</TableHeaderColumn>
-                    </TableRow>
-                </TableHeader>
-                <TableBody
-                    displayRowCheckbox={false}>
-                    <TableRow>
-                        <TableRowColumn>1</TableRowColumn>
-                        <TableRowColumn>John Smith</TableRowColumn>
-                        <TableRowColumn>Employed</TableRowColumn>
-                    </TableRow>
-                    <TableRow>
-                        <TableRowColumn>2</TableRowColumn>
-                        <TableRowColumn>Randal White</TableRowColumn>
-                        <TableRowColumn>Unemployed</TableRowColumn>
-                    </TableRow>
-                    <TableRow>
-                        <TableRowColumn>3</TableRowColumn>
-                        <TableRowColumn>Stephanie Sanders</TableRowColumn>
-                        <TableRowColumn>Employed</TableRowColumn>
-                    </TableRow>
-                    <TableRow>
-                        <TableRowColumn>4</TableRowColumn>
-                        <TableRowColumn>Steve Brown</TableRowColumn>
-                        <TableRowColumn>Employed</TableRowColumn>
-                    </TableRow>
-                    <TableRow>
-                        <TableRowColumn>5</TableRowColumn>
-                        <TableRowColumn>Christopher Nolan</TableRowColumn>
-                        <TableRowColumn>Unemployed</TableRowColumn>
-                    </TableRow>
-                </TableBody>
-            </Table>
-        );
-    }
+  select(rows) {
+    return row => {
+      const event = rows[row];
+      const to = `/appointment/edit/${event.apptId}`;
+      history.push(to);
+    };
+  }
+
+  render() {
+    return (
+      <Table onRowSelection={this.select(this.props.rows)}>
+        <TableHeader displaySelectAll={false} adjustForCheckbox={false}>
+          <TableRow>
+            <TableHeaderColumn>ID</TableHeaderColumn>
+            <TableHeaderColumn>Name</TableHeaderColumn>
+            <TableHeaderColumn>Status</TableHeaderColumn>
+          </TableRow>
+        </TableHeader>
+        <TableBody displayRowCheckbox={false}>
+          {this.rows(this.props.rows)}
+        </TableBody>
+      </Table>
+    );
+  }
 }
 export default withStyles(s)(AppointmentList);

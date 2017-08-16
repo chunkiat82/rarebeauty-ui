@@ -6,7 +6,6 @@ import calendarGet from './calendar/get';
 import calendarDelta from './calendar/delta';
 import contactLists from './contacts/list';
 
-
 const calendarCreate = require('./calendar/create');
 
 const calendarPatch = require('./calendar/patch');
@@ -27,40 +26,41 @@ async function listEvents(options) {
   );
   try {
     const events = await calendarList(finalOptions);
-    if (events.length === 0) {
-      console.log('No changed events found.');
-    } else {
-      console.log(`Upcoming events (${events.length}):`);
-      for (let i = 0; i < events.length; i += 1) {
-        const event = events[i];
-        if (event.start) {
-          const start = event.start.dateTime || event.start.date;
-          // console.log(JSON.stringify(event, null, 2));
-          const description = (event.description && event.description.split('\n')[0]) || 'No Description'
-          console.log(
-            '%s - %s - %s - %s - %s - %s',
-            start,
-            event.summary,
-            event.id,
-            description,
-            (event.extendedProperties &&
-              event.extendedProperties.shared &&
-              event.extendedProperties.shared.services) ||
-            'no services',
-            (event.extendedProperties &&
-              event.extendedProperties.shared &&
-              event.extendedProperties.shared.mobile) ||
-            '0',
-            (event.extendedProperties &&
-              event.extendedProperties.shared &&
-              event.extendedProperties.shared.reminded) ||
-            'false',
-          );
-        } else {
-          console.error(event);
-        }
-      }
-    }
+
+    // if (events.length === 0) {
+    //   console.log('No changed events found.');
+    // } else {
+    //   console.log(`Upcoming events (${events.length}):`);
+    //   for (let i = 0; i < events.length; i += 1) {
+    //     const event = events[i];
+    //     if (event.start) {
+    //       const start = event.start.dateTime || event.start.date;
+    //       // console.log(JSON.stringify(event, null, 2));
+    //       const description = (event.description && event.description.split('\n')[0]) || 'No Description'
+    //       console.log(
+    //         '%s - %s - %s - %s - %s - %s',
+    //         start,
+    //         event.summary,
+    //         event.id,
+    //         description,
+    //         (event.extendedProperties &&
+    //           event.extendedProperties.shared &&
+    //           event.extendedProperties.shared.services) ||
+    //         'no services',
+    //         (event.extendedProperties &&
+    //           event.extendedProperties.shared &&
+    //           event.extendedProperties.shared.mobile) ||
+    //         '0',
+    //         (event.extendedProperties &&
+    //           event.extendedProperties.shared &&
+    //           event.extendedProperties.shared.reminded) ||
+    //         'false',
+    //       );
+    //     } else {
+    //       console.error(event);
+    //     }
+    //   }
+    // }
     return events;
   } catch (err) {
     throw err;
@@ -143,10 +143,10 @@ async function remindCustomers(options) {
               {
                 name: event.summary,
                 mobile:
-                (event.extendedProperties &&
-                  event.extendedProperties.shared &&
-                  event.extendedProperties.shared.mobile) ||
-                -1,
+                  (event.extendedProperties &&
+                    event.extendedProperties.shared &&
+                    event.extendedProperties.shared.mobile) ||
+                  -1,
                 event,
               },
               async message => {
@@ -240,7 +240,7 @@ const functions = {
   stopWatchCalendar,
   getSyncToken,
   setSyncToken,
-  getEvent
+  getEvent,
 };
 
 export default functions;

@@ -17,6 +17,7 @@ import me from './queries/me';
 import news from './queries/news';
 import contact from './queries/contact';
 import event from './queries/event';
+import events from './queries/events';
 import appointment from './queries/appointment';
 
 import mutations from './mutations';
@@ -29,6 +30,7 @@ const schema = new Schema({
       news,
       contact,
       event,
+      events,
       appointment,
     },
   }),

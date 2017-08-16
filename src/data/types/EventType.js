@@ -61,6 +61,12 @@ const EventType = new ObjectType({
         return obj.extendedProperties.shared.services.split(',');
       },
     },
+    apptId: {
+      type: StringType,
+      resolve(obj) {
+        return obj.extendedProperties.shared.uuid;
+      },
+    },
   },
 });
 

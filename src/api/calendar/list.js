@@ -3,7 +3,7 @@ const google = require('googleapis');
 const moment = require('moment');
 
 export default function list(options) {
-  const { calendarId, timeStart, orderBy } = options;
+  const { calendarId, timeStart, orderBy, maxResults } = options;
   return new Promise(async (res, rej) => {
     const jwtClient = await generateJWT();
     const calendar = google.calendar({ version: 'v3', auth: jwtClient });
@@ -12,7 +12,7 @@ export default function list(options) {
       {
         calendarId,
         timeMin,
-        maxResults: 250,
+        maxResults: maxResults || 250,
         singleEvents: true,
         orderBy: orderBy || 'startTime',
       },
