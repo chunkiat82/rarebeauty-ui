@@ -6,8 +6,8 @@ const { getSyncToken, setSyncToken } = require('../api/utilities/token');
 
 export async function handleCalendarWebhook(headers) {
 
-    console.log(`headers=${JSON.stringify(headers, null, 2)}`);
-    console.log('-------------------------------------------------------');
+    // console.log(`headers=${JSON.stringify(headers, null, 2)}`);
+    // console.log('-------------------------------------------------------');
     // headers not used
     const syncToken = await getSyncToken(headers);
     const response = await api({
@@ -18,13 +18,21 @@ export async function handleCalendarWebhook(headers) {
     const { items: events, nextSyncToken } = response;
 
     console.log(`Upcoming Changed events (${events.length}):`);
-    events.forEach(item => {
+    events.forEach(async (item) => {
         // implement this feature later
         // if (item.summary.indexOf('-') === 0) return; 
         if (item.status === 'cancelled') {
             handleCancel(item);
         } else if (item.status === 'confirmed') {
             handleUpsert(item);
+            try {
+                const uuid = item.extendedProperties.shared.uuid;
+                const trans = await db.get(`trans:${uuid}`);
+                trans.apptDate = moment(item.start.dateTime);
+                await db.upsert(`trans:${uuid}`, transaction);
+            } catch (err) {
+                console.log(err);
+            }
         } else {
             console.log(`unhandled status-${item.id}`);
         }
