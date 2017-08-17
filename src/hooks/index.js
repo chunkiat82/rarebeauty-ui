@@ -27,7 +27,8 @@ export async function handleCalendarWebhook(headers) {
             handleUpsert(item);
             try {
                 const uuid = item.extendedProperties.shared.uuid;
-                const transaction = await db.get(`trans:${uuid}`);
+                const response = await db.get(`trans:${uuid}`);
+                const transaction = response.value;
                 transaction.apptDate = moment(item.start.dateTime);
                 await db.upsert(`trans:${uuid}`, transaction);
             } catch (err) {
