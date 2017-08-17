@@ -14,6 +14,7 @@ import PropTypes from 'prop-types';
 import withStyles from 'isomorphic-style-loader/lib/withStyles';
 import s from './Appointment.css';
 import history from '../../../history';
+import { mapOfServices } from '../../../data/database/services'
 import {
   Table,
   TableBody,
@@ -30,13 +31,14 @@ class AppointmentList extends React.Component {
     return values.map((value, index) =>
       <TableRow key={value.id}>
         <TableRowColumn>
-          {index + 1}
-        </TableRowColumn>
-        <TableRowColumn>
           {value.name}
         </TableRowColumn>
         <TableRowColumn>
-          {moment(value.start).format('DD MMM YYYY hh:mm A')}
+          <p>{moment(value.start).format('DD MMM YYYY')}</p>
+          <p>{moment(value.start).format('hh:mm A')}</p>
+        </TableRowColumn>
+        <TableRowColumn style={{whiteSpace:"wrap", textOverflow:"wrap"}}>
+          {value.serviceIds.map(serviceId => mapOfServices[serviceId].service).join(', ')}
         </TableRowColumn>
       </TableRow>,
     );
@@ -55,9 +57,9 @@ class AppointmentList extends React.Component {
       <Table onRowSelection={this.select(this.props.rows)}>
         <TableHeader displaySelectAll={false} adjustForCheckbox={false}>
           <TableRow>
-            <TableHeaderColumn>ID</TableHeaderColumn>
             <TableHeaderColumn>Name</TableHeaderColumn>
-            <TableHeaderColumn>Status</TableHeaderColumn>
+            <TableHeaderColumn>Date/Time</TableHeaderColumn>
+            <TableHeaderColumn>Services</TableHeaderColumn>
           </TableRow>
         </TableHeader>
         <TableBody displayRowCheckbox={false}>

@@ -13,7 +13,8 @@ async function getEvents(fetch) {
                         mobile,
                         start,
                         end,
-                        apptId
+                        apptId,
+                        serviceIds
                     }
                 }`,
     }),
