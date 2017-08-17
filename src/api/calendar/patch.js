@@ -41,8 +41,7 @@ module.exports = function patch(options) {
                             comment: mobile,
                             email: `test@soho.sg`,
                         },
-                    ],
-                    description: `${services.map(item => item.service).join(',', )}\n\nhttps://rarebeauty.soho.sg/appointment/edit/${apptId}`,
+                    ]
                 },
             },
         );
@@ -51,7 +50,10 @@ module.exports = function patch(options) {
         if (patchObject.resource.extendedProperties.shared === undefined ) patchObject.resource.extendedProperties.shared = {};
 
         if (mobile) patchObject.resource.extendedProperties.shared.mobile = mobile;
-        if (services) patchObject.resource.extendedProperties.shared.services = services.map(item => item.id).join(',');
+        if (services) {
+            patchObject.resource.extendedProperties.shared.services = services.map(item => item.id).join(',');
+            patchObject.description =`${services.map(item => item.service).join(',', )}\n\nhttps://rarebeauty.soho.sg/appointment/edit/${apptId}`;
+        }
         if (reminded) patchObject.resource.extendedProperties.shared.reminded = reminded;
         if (apptId) {
             patchObject.resource.extendedProperties.shared.uuid = apptId;

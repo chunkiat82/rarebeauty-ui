@@ -11,6 +11,7 @@ function processArguments(argv) {
     return Object.assign({}, options, {
         startDT: startDT.toISOString(),
         endDT: endDT.toISOString(),
+        details: true,
         action: functions[argv.action] || functions['listEvents'],
     });
 }
