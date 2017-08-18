@@ -152,7 +152,7 @@ async function remindCustomers(options) {
               async message => {
                 console.log(`${message.sid}-${event.summary}`);
                 await calendarPatch(
-                  Object.assign({}, options, {
+                  Object.assign({}, {
                     eventId: event.id,
                     calendarId: 'rarebeauty@soho.sg',
                     reminded: true,
