@@ -6,8 +6,8 @@ const { getSyncToken, setSyncToken } = require('../api/utilities/token');
 
 export async function handleCalendarWebhook(headers) {
 
-    // console.log(`headers=${JSON.stringify(headers, null, 2)}`);
-    // console.log('-------------------------------------------------------');
+    console.log(`headers=${JSON.stringify(headers, null, 2)}`);
+    console.log('-------------------------------------------------------');
     // headers not used
     const syncToken = await getSyncToken(headers);
     const response = await api({
@@ -21,7 +21,7 @@ export async function handleCalendarWebhook(headers) {
     events.forEach(async (item) => {
         // implement this feature later
         if (item.summary && item.summary.indexOf('-') === 0) return;
-                
+
         if (item.status === 'cancelled') {
             handleCancel(item);
         } else if (item.status === 'confirmed') {
