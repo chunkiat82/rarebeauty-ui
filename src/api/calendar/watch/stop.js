@@ -11,7 +11,7 @@ module.exports = function create(options) {
       {
         calendarId,
         resource: {
-          id,
+          id:'anythingintheworld',
           resourceId,
         },
       },

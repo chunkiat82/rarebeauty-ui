@@ -9,10 +9,9 @@ module.exports = function create(options) {
     const calendar = google.calendar({ version: 'v3', auth: jwtClient });
     calendar.events.watch(
       {
-        calendarId,
-        eventId: _8cpj2gpi89234ba46t13cb9k8kr3iba16gsjgb9j64ok4e9m8co4cdhk74,
+        calendarId,        
         resource: {
-          id,
+          id:'anythingintheworld',
           token: 'anythingbutme',
           type: 'web_hook',
           address,

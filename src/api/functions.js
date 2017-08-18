@@ -18,6 +18,7 @@ const generateJWT = require('./utilities/jwt');
 
 const { sendReminder: sms } = require('./utilities/sms');
 const { getSyncToken, setSyncToken } = require('./utilities/token');
+const { get, upsert } = require('../data/database');
 
 async function listEvents(options) {
   const finalOptions = Object.assign(
@@ -205,6 +206,7 @@ async function watchCalendar(options) {
   try {
     const response = await calendarWatch(finalOptions);
     console.log(response);
+    await upsert('config:watch', { resourceId: response.resourceId });
     return response;
   } catch (err) {
     console.log(err);
@@ -213,14 +215,15 @@ async function watchCalendar(options) {
 }
 
 async function stopWatchCalendar(options) {
+  const response = await get('config:watch');
+  console.log(response)
   const finalOptions = Object.assign({}, options, {
     calendarId: 'rarebeauty@soho.sg',
-    id: 'anythingintheworld',
-    resourceId: '7kUO96Be7gwvDBulEetjGAHV9O8',
+    resourceId: response.value.resourceId
   });
   try {
     const response = await calendarWatchStop(finalOptions);
-    console.log(response);
+    console.log('stopped');
     return response;
   } catch (err) {
     console.log(err);

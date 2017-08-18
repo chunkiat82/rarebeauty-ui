@@ -9,6 +9,13 @@ export async function handleCalendarWebhook(headers) {
     console.log(`headers=${JSON.stringify(headers, null, 2)}`);
     console.log('-------------------------------------------------------');
     // headers not used
+    const configWatch = await db.get("config:watch");
+    if (headers["x-goog-resource-id"] !== configWatch.resourceId) {
+        console.log('need to check this ASAP');
+        return;
+    }
+        
+
     const syncToken = await getSyncToken(headers);
     const response = await api({
         action: 'listDeltaEvents',
@@ -72,7 +79,7 @@ export async function handleCalendarWebhook(headers) {
         });
     }
 
-    console.log(events);
+    // console.log(events);
 }
 
 async function handleCancel(item) {
