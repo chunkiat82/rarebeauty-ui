@@ -20,7 +20,8 @@ export async function handleCalendarWebhook(headers) {
     console.log(`Upcoming Changed events (${events.length}):`);
     events.forEach(async (item) => {
         // implement this feature later
-        // if (item.summary.indexOf('-') === 0) return; 
+        if (item.summary && item.summary.indexOf('-') === 0) return;
+                
         if (item.status === 'cancelled') {
             handleCancel(item);
         } else if (item.status === 'confirmed') {
