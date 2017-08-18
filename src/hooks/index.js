@@ -9,12 +9,16 @@ export async function handleCalendarWebhook(headers) {
     console.log(`headers=${JSON.stringify(headers, null, 2)}`);
     console.log('-------------------------------------------------------');
     // headers not used
-    const configWatch = await db.get("config:watch");
+    const { value: configWatch } = await db.get("config:watch");
+    console.log('-------------------------------------------------------');
+    console.log(headers["x-goog-resource-id"]);
+    console.log(configWatch.resourceId);
+    console.log('-------------------------------------------------------');
     if (headers["x-goog-resource-id"] !== configWatch.resourceId) {
         console.log('need to check this ASAP');
         return;
     }
-        
+
 
     const syncToken = await getSyncToken(headers);
     const response = await api({
