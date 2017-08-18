@@ -6,14 +6,14 @@ const { getSyncToken, setSyncToken } = require('../api/utilities/token');
 
 export async function handleCalendarWebhook(headers) {
 
-    console.log(`headers=${JSON.stringify(headers, null, 2)}`);
-    console.log('-------------------------------------------------------');
+    // console.log(`headers=${JSON.stringify(headers, null, 2)}`);
+    // console.log('-------------------------------------------------------');
     // headers not used
     const { value: configWatch } = await db.get("config:watch");
     console.log('-------------------------------------------------------');
-    console.log(headers["x-goog-resource-id"]);
-    console.log(configWatch.resourceId);
-    console.log('-------------------------------------------------------');
+    // console.log(headers["x-goog-resource-id"]);
+    // console.log(configWatch.resourceId);
+    // console.log('-------------------------------------------------------');
     if (headers["x-goog-resource-id"] !== configWatch.resourceId) {
         console.log('need to check this ASAP');
         return;
@@ -28,7 +28,7 @@ export async function handleCalendarWebhook(headers) {
 
     const { items: events, nextSyncToken } = response;
 
-    console.log(`Upcoming Changed events (${events.length}):`);
+    console.log(`Incoming Changed events (${events.length}):`);
     events.forEach(async (item) => {
         // implement this feature later
         if (item.summary && item.summary.indexOf('-') === 0) return;
