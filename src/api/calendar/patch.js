@@ -21,7 +21,7 @@ function patchHandler(res, rej, calendar, options, eventResponse) {
         resource: eventResponse
     }
 
-    if (startDT) patchObject.resource.start.dateTime = startDT;
+    if (startDT && endDT) patchObject.resource.start.dateTime = startDT;
     if (endDT) patchObject.resource.end.dateTime = endDT;
 
     if (patchObject.resource.extendedProperties === undefined) patchObject.resource.extendedProperties = {};

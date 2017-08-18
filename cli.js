@@ -10,7 +10,7 @@ function processArguments(argv) {
 
     return Object.assign({}, options, {
         startDT: startDT.toISOString(),
-        endDT: endDT.toISOString(),
+        endDT: argv.duration ? endDT.toISOString() : null,
         details: true,
         action: functions[argv.action] || functions['listEvents'],
     });
