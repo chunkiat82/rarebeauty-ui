@@ -143,10 +143,10 @@ async function action({ fetch, params }) {
     component: (
       <Layout>
         <Appointment
-          post={input => {
-            upsertAppointment(
+          post={async (input) => {
+            await upsertAppointment(
               fetch,
-              Object.assign({ id: apptId, resourceName }, input),
+              Object.assign({ id: apptId, resourceName }, input)
             );
             open(location, '_self').close();
           }}
