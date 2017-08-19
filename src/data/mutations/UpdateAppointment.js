@@ -70,7 +70,7 @@ export default {
             // console.log(`transId=${transId}`);
             const services = serviceIds.map(item => mapOfServices[item]);
             
-            // console.log(`services=${services}`);
+            // console.log(`services=${JSON.stringify(services, null ,2)}`);
 
             const event = await api({
                 action: 'patchEvent',           

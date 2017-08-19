@@ -21,21 +21,24 @@ function patchHandler(res, rej, calendar, options, eventResponse) {
         resource: eventResponse
     }
 
-    if (startDT && endDT) patchObject.resource.start.dateTime = startDT;
-    if (endDT) patchObject.resource.end.dateTime = endDT;
+    const resource = patchObject.resource;
 
-    if (patchObject.resource.extendedProperties === undefined) patchObject.resource.extendedProperties = {};
-    if (patchObject.resource.extendedProperties.shared === undefined) patchObject.resource.extendedProperties.shared = {};
+    if (startDT && endDT) resource.start.dateTime = startDT;
+    if (endDT) resource.end.dateTime = endDT;
 
-    if (mobile) patchObject.resource.extendedProperties.shared.mobile = mobile;
+    if (resource.extendedProperties === undefined) resource.extendedProperties = {};
+    if (resource.extendedProperties.shared === undefined) resource.extendedProperties.shared = {};
+
+    if (mobile) resource.extendedProperties.shared.mobile = mobile;
+    
     if (services) {
-        patchObject.resource.extendedProperties.shared.services = services.map(item => item.id).join(',');
-        patchObject.description = `${services.map(item => item.service).join(',', )}\n\nhttps://rarebeauty.soho.sg/appointment/edit/${apptId}`;
+        resource.extendedProperties.shared.services = services.map(item => item.id).join(',');
+        resource.description = `${services.map(item => item.service).join(',', )}\n\nhttps://rarebeauty.soho.sg/appointment/edit/${apptId}`;
     }
-    if (reminded) patchObject.resource.extendedProperties.shared.reminded = reminded;
+    if (reminded) resource.extendedProperties.shared.reminded = reminded;
     if (apptId) {
-        patchObject.resource.extendedProperties.shared.uuid = apptId;
-        patchObject.resource.extendedProperties.shared.apptId = apptId;
+        resource.extendedProperties.shared.uuid = apptId;
+        resource.extendedProperties.shared.apptId = apptId;
     }
 
 
