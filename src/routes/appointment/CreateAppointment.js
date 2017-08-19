@@ -9,6 +9,7 @@
 
 import React from 'react';
 import moment from 'moment';
+import { showLoading, hideLoading } from 'react-redux-loading-bar';
 import Appointment from './components/Individual';
 import Layout from '../../components/Layout';
 import { listOfServices, mapOfServices } from '../../data/database/services';
@@ -85,8 +86,10 @@ async function listContacts(fetch) {
   return data;
 }
 
-async function action({ fetch }) {
+async function action({ fetch, store }) {
+  store.dispatch(showLoading());
   const data = await listContacts(fetch);
+  store.dispatch(hideLoading());
   if (!data || !data.contact)
     throw new Error('Failed to load the contact feed.');
   return {

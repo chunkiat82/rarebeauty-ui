@@ -9,6 +9,7 @@
 
 import React from 'react';
 import withStyles from 'isomorphic-style-loader/lib/withStyles';
+import LoadingBar from 'react-redux-loading-bar'
 import s from './Header.css';
 import Link from '../Link';
 // import Navigation from '../Navigation';
@@ -19,6 +20,7 @@ class Header extends React.Component {
   render() {
     return (
       <div className={s.root}>
+        <LoadingBar/>
         <div className={s.container}>
           {/* <Navigation /> */}
           <div className={s.banner}>

@@ -30,6 +30,8 @@ import router from './router';
 import models from './data/models';
 import schema from './data/schema';
 import assets from './assets.json'; // eslint-disable-line import/no-unresolved
+import configureStore from './store/configureStore';
+import { setRuntimeVariable } from './actions/runtime';
 import config from './config';
 import { handleCalendarWebhook } from './hooks';
 
@@ -122,6 +124,22 @@ app.get('*', async (req, res, next) => {
   try {
     const css = new Set();
 
+    const initialState = {
+      user: req.user || null,
+    };
+
+    const store = configureStore(initialState, {
+      fetch,
+      // I should not use `history` on server.. but how I do redirection? follow universal-router
+    });
+
+    store.dispatch(
+      setRuntimeVariable({
+        name: 'initialNow',
+        value: Date.now(),
+      }),
+    );
+
     // Global (context) variables that can be easily accessed from any React component
     // https://facebook.github.io/react/docs/context.html
     const context = {
@@ -137,6 +155,8 @@ app.get('*', async (req, res, next) => {
         cookie: req.headers.cookie,
       }),
       userAgent: req.headers['user-agent'],
+      store,
+      storeSubscription: null,
     };
     // console.log(` req.userAgent=${ req.userAgent}`);
 
@@ -154,7 +174,7 @@ app.get('*', async (req, res, next) => {
 
     const data = { ...route };
     data.children = ReactDOM.renderToString(
-      <App context={context}>
+      <App context={context} store={store}>
         {route.component}
       </App>,
     );
@@ -166,6 +186,7 @@ app.get('*', async (req, res, next) => {
     data.scripts.push(assets.client.js);
     data.app = {
       apiUrl: config.api.clientUrl,
+      state: context.store.getState(),
     };
 
     const html = ReactDOM.renderToStaticMarkup(<Html {...data} />);

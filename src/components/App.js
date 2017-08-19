@@ -9,6 +9,7 @@
 
 import React from 'react';
 import PropTypes from 'prop-types';
+import { Provider as ReduxProvider } from 'react-redux';
 import './InjectTap';
 
 const ContextType = {
@@ -18,6 +19,7 @@ const ContextType = {
   // Universal HTTP client
   fetch: PropTypes.func.isRequired,
   userAgent: PropTypes.string,
+  ...ReduxProvider.childContextTypes
 };
 
 /**

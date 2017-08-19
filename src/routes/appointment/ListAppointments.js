@@ -1,7 +1,8 @@
 import React from 'react';
-
+import { showLoading, hideLoading } from 'react-redux-loading-bar'
 import Layout from '../../components/Layout';
 import AppointmentList from './components/List';
+
 
 async function getEvents(fetch) {
   const resp = await fetch('/graphql', {
@@ -27,13 +28,15 @@ async function getEvents(fetch) {
   }, []);
 }
 
-async function action({ fetch, params }) {
+async function action({ fetch, params, store }) {
+  store.dispatch(showLoading());
   const events = await getEvents(fetch);
+  store.dispatch(hideLoading());
   return {
     chunks: ['appointment-list'],
     title: 'Rare Beauty Professional',
     component: (
-      <Layout>
+      <Layout>         
         <AppointmentList rows={events} />
       </Layout>
     ),

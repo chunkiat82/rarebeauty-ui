@@ -1,8 +1,10 @@
 import React from 'react';
 import moment from 'moment';
+import { showLoading, hideLoading } from 'react-redux-loading-bar';
 import Appointment from './components/Individual';
 import Layout from '../../components/Layout';
 import { listOfServices, mapOfServices } from '../../data/database/services';
+
 
 async function upsertAppointment(fetch, input) {
   const {
@@ -71,7 +73,7 @@ async function listContacts(fetch) {
     body: JSON.stringify({
       query: '{contact{name,mobile,display,resourceName}}',
     }),
-  });
+  });  
   const { data } = await resp.json();
   return data;
 }
@@ -107,10 +109,14 @@ async function getAppointment(fetch, apptId) {
   return data.appointment;
 }
 
-async function action({ fetch, params }) {
+async function action({ fetch, params, store }) {
   const apptId = params.id;
+
+  store.dispatch(showLoading());
   const data = await listContacts(fetch);
   const appointment = await getAppointment(fetch, apptId);
+  store.dispatch(hideLoading());
+
   // // console.log(Promise.all);
   //   const [event, transaction] = Promise.all([eventP, transactionP]);
   const { event, transaction } = appointment;

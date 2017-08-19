@@ -18,6 +18,8 @@ export default new Router(routes, {
         .then(action => action.default(context, params));
     }
     if (typeof context.route.action === 'function') {
+      // console.log(`context`);
+      // console.log(JSON.stringify(Object.keys(context), null, 2));
       return context.route.action(context, params);
     }
     return null;
