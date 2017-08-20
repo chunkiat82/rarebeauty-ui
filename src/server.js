@@ -20,6 +20,7 @@ import fetch from 'node-fetch';
 import React from 'react';
 import ReactDOM from 'react-dom/server';
 import PrettyError from 'pretty-error';
+import _httpErrorPages from 'http-error-pages';
 import App from './components/App';
 import Html from './components/Html';
 import { ErrorPageWithoutStyle } from './routes/error/ErrorPage';
@@ -56,7 +57,7 @@ app.use(bodyParser.json());
 // Authentication
 // -----------------------------------------------------------------------------
 function checkingUser(req, payload, done) {
-  const secret = config.auth.jwt.secret;  
+  const secret = config.auth.jwt.secret;
   logLogin(payload.data.username, payload);
   // console.log(payload);
   done(null, secret);
@@ -80,13 +81,17 @@ app.use(
 app.use((err, req, res, next) => {
   if (err.name === 'UnauthorizedError') {
     res.clearCookie('token');
-    return res.status(401).send('invalid token...');
+    res.status(401);
+    //return res.status(401).send('Unauthorized Access...Please leave');
+    //handle error pages
+    // return  
   }
+
   // eslint-disable-line no-unused-vars
   if (err instanceof Jwt401Error) {
     console.error('[express-jwt-error]', req.cookies.id_token);
     // `clearCookie`, otherwise user can't use web-app until cookie expires
-    return res.clearCookie('id_token');
+    res.clearCookie('id_token');
   }
   next(err);
 });
@@ -101,29 +106,29 @@ app.use((req, res, next) => {
 
 app.use(passport.initialize());
 
-if (__DEV__) {
-  app.enable('trust proxy');
-}
-app.get(
-  '/login/facebook',
-  passport.authenticate('facebook', {
-    scope: ['email', 'user_location'],
-    session: false,
-  }),
-);
-app.get(
-  '/login/facebook/return',
-  passport.authenticate('facebook', {
-    failureRedirect: '/login',
-    session: false,
-  }),
-  (req, res) => {
-    const expiresIn = 60 * 60 * 24 * 180; // 180 days
-    const token = jwt.sign(req.user, config.auth.jwt.secret, { expiresIn });
-    res.cookie('id_token', token, { maxAge: 1000 * expiresIn, httpOnly: true });
-    res.redirect('/');
-  },
-);
+// if (__DEV__) {
+//   app.enable('trust proxy');
+// }
+// app.get(
+//   '/login/facebook',
+//   passport.authenticate('facebook', {
+//     scope: ['email', 'user_location'],
+//     session: false,
+//   }),
+// );
+// app.get(
+//   '/login/facebook/return',
+//   passport.authenticate('facebook', {
+//     failureRedirect: '/login',
+//     session: false,
+//   }),
+//   (req, res) => {
+//     const expiresIn = 60 * 60 * 24 * 180; // 180 days
+//     const token = jwt.sign(req.user, config.auth.jwt.secret, { expiresIn });
+//     res.cookie('id_token', token, { maxAge: 1000 * expiresIn, httpOnly: true });
+//     res.redirect('/');
+//   },
+// );
 
 //
 // Register API middleware
@@ -226,25 +231,30 @@ app.get('*', async (req, res, next) => {
 //
 // Error handling
 // -----------------------------------------------------------------------------
-const pe = new PrettyError();
-pe.skipNodeFiles();
-pe.skipPackage('express');
+if (__DEV__) {
+  const pe = new PrettyError();
+  pe.skipNodeFiles();
+  pe.skipPackage('express');
 
-// eslint-disable-next-line no-unused-vars
-app.use((err, req, res, next) => {
-  console.error(pe.render(err));
-  const html = ReactDOM.renderToStaticMarkup(
-    <Html
-      title="Internal Server Error"
-      description={err.message}
-      styles={[{ id: 'css', cssText: errorPageStyle._getCss() }]} // eslint-disable-line no-underscore-dangle
-    >
-      {ReactDOM.renderToString(<ErrorPageWithoutStyle error={err} />)}
-    </Html>,
-  );
-  res.status(err.status || 500);
-  res.send(`<!doctype html>${html}`);
-});
+  // eslint-disable-next-line no-unused-vars
+  app.use((err, req, res, next) => {
+    console.error(pe.render(err));
+    const html = ReactDOM.renderToStaticMarkup(
+      <Html
+        title="Internal Server Error_httpErrorPages(app);"
+        description={err.message}
+        styles={[{ id: 'css', cssText: errorPageStyle._getCss() }]} // eslint-disable-line no-underscore-dangle
+      >
+        {ReactDOM.renderToString(<ErrorPageWithoutStyle error={err} />)}
+      </Html>,
+    );
+    res.status(err.status || 500);
+    res.send(`<!doctype html>${html}`);
+  });
+} else {
+  _httpErrorPages(app);
+
+}
 
 //
 // Launch the server
