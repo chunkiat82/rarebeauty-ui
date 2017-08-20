@@ -1,6 +1,6 @@
 const couchbase = require('couchbase');
 
-const cluster = new couchbase.Cluster('couchbase://rarebeauty.soho.sg/');
+const cluster = new couchbase.Cluster('couchbase://172.17.0.1/');
 
 export async function upsert(id, doc) {
   // console.log(id);

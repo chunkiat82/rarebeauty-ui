@@ -125,7 +125,9 @@ function createTransactionEntry(
     additional,
     discount,
     createdAt,
-    apptDate
+    apptDate,
+    name,
+    resourceName
 ) {
     const items = entries.map(entry => ({
         id: entry.id,
@@ -145,7 +147,9 @@ function createTransactionEntry(
         additional,
         discount,
         createdAt,
-        apptDate
+        apptDate,
+        name,
+        resourceName
     };
     return entryTemplate;
 }
