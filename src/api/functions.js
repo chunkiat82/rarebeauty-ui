@@ -233,9 +233,8 @@ async function stopWatchCalendar(options) {
 
 async function generateJWT(options){
   return jwt.sign({
-    exp: Math.floor(Date.now() / 1000) + (60 * 60),
     data: { "username" : options.username || 'baduser' }
-  }, config.auth.jwt.secret);
+  }, config.auth.jwt.secret, { expiresIn: '365d' });
 }
 
 const functions = {
