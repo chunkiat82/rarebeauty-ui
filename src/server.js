@@ -253,7 +253,6 @@ if (__DEV__) {
   });
 } else {
   _httpErrorPages(app);
-
 }
 
 //
