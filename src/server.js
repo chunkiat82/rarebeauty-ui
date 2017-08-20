@@ -34,7 +34,7 @@ import configureStore from './store/configureStore';
 import { setRuntimeVariable } from './actions/runtime';
 import config from './config';
 import { handleCalendarWebhook } from './hooks';
-
+import { logLogin } from './data/database/login';
 const app = express();
 
 //
@@ -55,9 +55,9 @@ app.use(bodyParser.json());
 //
 // Authentication
 // -----------------------------------------------------------------------------
-function checkingUser(req, payload, done){
-  const secret = config.auth.jwt.secret;
-  // console.log(payload.data.username);
+function checkingUser(req, payload, done) {
+  const secret = config.auth.jwt.secret;  
+  logLogin(payload.data.username, payload);
   // console.log(payload);
   done(null, secret);
 };
@@ -66,7 +66,7 @@ app.use(
   expressJwt({
     secret: checkingUser,
     credentialsRequired: true,
-    getToken: function fromHeaderOrQuerystring (req) {
+    getToken: function fromHeaderOrQuerystring(req) {
       if (req.cookies.token) {
         return req.cookies.token;
       } else if (req.query && req.query.token) {
@@ -74,10 +74,10 @@ app.use(
       }
       return null;
     }
-  }).unless({path: ['/events/calendar']})
+  }).unless({ path: ['/events/calendar'] })
 );
 // Error handler for express-jwt
-app.use((err, req, res, next) => {  
+app.use((err, req, res, next) => {
   if (err.name === 'UnauthorizedError') {
     res.clearCookie('token');
     return res.status(401).send('invalid token...');
