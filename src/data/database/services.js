@@ -1,7 +1,7 @@
 const mapOfServices = {
     'service:1': { id: 'service:1', service: 'Full Set - Natural', price: 50, duration: 70 },
     'service:2': { id: 'service:2', service: 'Full Set - Dense', price: 60, duration: 70 },
-    'service:2a': { id: 'service:2a', service: 'Lower Set - Natural', price: 25, duration: 30 },
+    'service:2a': { id: 'service:2a', service: 'Lower Set - Natural', price: 20, duration: 25 },
     'service:3': { id: 'service:3', service: 'Touch Up - Natural', price: 20, duration: 25 },
     'service:4': { id: 'service:4', service: 'Touch Up - Dense', price: 25, duration: 25 },
     'service:5': { id: 'service:5', service: 'Eye Mask', price: 5, duration: 0 },
