@@ -1,6 +1,6 @@
 const couchbase = require('couchbase');
-
-const cluster = new couchbase.Cluster('couchbase://172.17.0.1/');
+const config = require('../../config.js');
+const cluster = new couchbase.Cluster(config.couchbaseUrl);
 
 export async function upsert(id, doc) {
   // console.log(id);
@@ -8,6 +8,7 @@ export async function upsert(id, doc) {
   const obj = await runOperation(setObject, { id, doc });
   return obj;
 }
+
 export async function get(id) {  
   const obj = await runOperation(getObject, { id });
   // console.log(obj);

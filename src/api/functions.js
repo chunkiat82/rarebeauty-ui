@@ -1,6 +1,7 @@
 const fs = require('fs');
 const moment = require('moment');
-
+import jwt from 'jsonwebtoken';
+import config from '../config';
 import calendarList from './calendar/list';
 import calendarGet from './calendar/get';
 import calendarDelta from './calendar/delta';
@@ -14,7 +15,6 @@ const reminderList = require('./reminder/list');
 const contactCreate = require('./contacts/create');
 const calendarWatch = require('./calendar/watch');
 const calendarWatchStop = require('./calendar/watch/stop');
-const generateJWT = require('./utilities/jwt');
 
 const { sendReminder: sms } = require('./utilities/sms');
 const { getSyncToken, setSyncToken } = require('./utilities/token');
@@ -231,6 +231,13 @@ async function stopWatchCalendar(options) {
   }
 }
 
+async function generateJWT(options){
+  return jwt.sign({
+    exp: Math.floor(Date.now() / 1000) + (60 * 60),
+    data: { "username" : options.username || 'baduser' }
+  }, config.auth.jwt.secret);
+}
+
 const functions = {
   listEvents,
   listDeltaEvents,
@@ -244,6 +251,7 @@ const functions = {
   getSyncToken,
   setSyncToken,
   getEvent,
+  generateJWT
 };
 
 export default functions;

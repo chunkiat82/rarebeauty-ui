@@ -105,7 +105,9 @@ export default {
                 additional,
                 discount,
                 now,
-                moment(event.start.dateTime)
+                moment(event.start.dateTime),
+                name,
+                resourceName
             );
             await db.upsert(`trans:${transId}`, transaction);
             // console.log(`id=${id}`);

@@ -55,22 +55,48 @@ app.use(bodyParser.json());
 //
 // Authentication
 // -----------------------------------------------------------------------------
+function checkingUser(req, payload, done){
+  const secret = config.auth.jwt.secret;
+  // console.log(payload.data.username);
+  // console.log(payload);
+  done(null, secret);
+};
+
 app.use(
   expressJwt({
-    secret: config.auth.jwt.secret,
-    credentialsRequired: false,
-    getToken: req => req.cookies.id_token,
-  }),
+    secret: checkingUser,
+    credentialsRequired: true,
+    getToken: function fromHeaderOrQuerystring (req) {
+      if (req.cookies.token) {
+        return req.cookies.token;
+      } else if (req.query && req.query.token) {
+        return req.query.token;
+      }
+      return null;
+    }
+  }).unless({path: ['/events/calendar']})
 );
 // Error handler for express-jwt
-app.use((err, req, res, next) => {
+app.use((err, req, res, next) => {  
+  if (err.name === 'UnauthorizedError') {
+    res.clearCookie('token');
+    return res.status(401).send('invalid token...');
+  }
   // eslint-disable-line no-unused-vars
   if (err instanceof Jwt401Error) {
     console.error('[express-jwt-error]', req.cookies.id_token);
     // `clearCookie`, otherwise user can't use web-app until cookie expires
-    res.clearCookie('id_token');
+    return res.clearCookie('id_token');
   }
   next(err);
+});
+
+app.use((req, res, next) => {
+  if (req.query.token) {
+    const expiresIn = 60 * 60 * 24 * 180; // 180 days
+    res.cookie('token', req.query.token, { maxAge: 1000 * expiresIn, httpOnly: true });
+  }
+  next();
 });
 
 app.use(passport.initialize());

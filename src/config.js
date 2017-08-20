@@ -32,6 +32,9 @@ module.exports = {
   // Database
   databaseUrl: process.env.DATABASE_URL || 'sqlite:database.sqlite',
 
+  // Couchbase
+  couchbaseUrl: process.env.PRODUCTION ? `couchbase://172.17.0.1/` : `couchbase://localhost/`,
+
   // Web analytics
   analytics: {
     // https://analytics.google.com/
