@@ -19,7 +19,7 @@ function processArguments(argv) {
 async function main(argv) {
     const options = processArguments(argv);
     const results = await options.action(options);
-    console.log(results);
+    if (!Array.isArray(results)) console.log(results);
 }
 
 try {

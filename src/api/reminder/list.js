@@ -4,7 +4,7 @@ const moment = require('moment');
 
 module.exports = function list(options) {
   const { calendarId, tomorrow } = options;
-  const start = moment().startOf('day');
+  let start = moment().startOf('day');
   if (tomorrow) {
     start = moment(start).add(1, 'days');
   }
