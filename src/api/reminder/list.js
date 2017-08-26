@@ -3,11 +3,14 @@ const google = require('googleapis');
 const moment = require('moment');
 
 module.exports = function list(options) {
-  const { calendarId } = options;
-  const tomorrow = moment().startOf('day').add(1, 'days');
-  const endTomorrow = moment(tomorrow).add(24, 'hours').subtract(1, 'seconds');
-  // console.log(tomorrow.toISOString());
-  // console.log(endTomorrow.toISOString());
+  const { calendarId, tomorrow } = options;
+  const start = moment().startOf('day');
+  if (tomorrow) {
+    start = moment(start).add(1, 'days');
+  }
+  const end = moment(start).add(24, 'hours').subtract(1, 'seconds');
+  // console.log(start.toISOString());
+  // console.log(end.toISOString());
 
   return new Promise(async (res, rej) => {
     const jwtClient = await generateJWT();
@@ -15,8 +18,8 @@ module.exports = function list(options) {
     calendar.events.list(
       {
         calendarId,
-        timeMin: tomorrow.toISOString(),
-        timeMax: endTomorrow.toISOString(),
+        timeMin: start.toISOString(),
+        timeMax: end.toISOString(),
         singleEvents: true,
         orderBy: 'startTime',
       },

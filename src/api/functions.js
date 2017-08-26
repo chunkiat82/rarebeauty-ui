@@ -138,7 +138,7 @@ async function remindCustomers(options) {
           (event.extendedProperties.shared.reminded === 'false' ||
             event.extendedProperties.shared.reminded === false)
         ) {
-          console.log(event);
+          //console.log(event);
           try {
             await sms(
               {
@@ -151,7 +151,7 @@ async function remindCustomers(options) {
                 event,
               },
               async message => {
-                console.log(`${message.sid}-${event.summary}`);
+                console.log(`${message.sid}-${event.summary}-${event.start.dateTime}`);
                 await calendarPatch(
                   Object.assign({}, {
                     eventId: event.id,

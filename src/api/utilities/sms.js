@@ -24,7 +24,7 @@ function sendReminder(options, callback) {
     const startTime = moment(event.start.dateTime).format('hh:mm a');
     client.messages
       .create({
-        body: `Hi ${name},\n\nGentle reminder for your appt on ${startDate} at ${startTime}.\n\nAny changes, reply to ${REPLY_MOBILE}`,
+        body: `Hi ${name},\n\nGentle reminder for your appt on ${startDate} at ${startTime}.\n\nAny cancellation/changes:\nPlease reply, 1 day prior to this appt, to ${REPLY_MOBILE}`,
         to: mobile,
         from: FROM,
       })
