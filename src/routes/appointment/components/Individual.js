@@ -51,33 +51,31 @@ class Appointment extends React.Component {
     buttonText: PropTypes.string.isRequired,
     name: PropTypes.string,
     mobile: PropTypes.string,
-    startDate: PropTypes.instanceOf(Date),
-    startTime: PropTypes.instanceOf(Date),
+    // startDate: PropTypes.instanceOf(PropTypes.string),
+    // startTime: PropTypes.instanceOf(PropTypes.string),
     duration: PropTypes.number,
     serviceIds: PropTypes.arrayOf(PropTypes.string),
     resourceName: PropTypes.string,
-    id: PropTypes.string,
+    // id: PropTypes.string,
     discount: PropTypes.number,
     additional: PropTypes.number,
-    pastAppointments: PropTypes.arrayOf(
-      PropTypes.shape({
-        id: PropTypes.string,
-      }),
-    ),
-    mapOfServices: PropTypes.arrayOf(
-      PropTypes.shape({
-        price: PropTypes.number,
-        duration: PropTypes.number,
-      }),
-    ),
+    // pastAppointments: PropTypes.arrayOf(
+    //   PropTypes.shape({
+    //     id: PropTypes.string,
+    //   }),
+    // ),
+    // mapOfServices: PropTypes.arrayOf(
+    //   PropTypes.shape({
+    //     price: PropTypes.number,
+    //     duration: PropTypes.number,
+    //   }),
+    // ),
     successMessage: PropTypes.string,
   };
   static defaultProps = {
     successMessage: '',
     name: '',
     mobile: '',
-    startDate: '',
-    startTime: '',
     duration: 0,
     serviceIds: [],
     resourceName: '',
