@@ -1,5 +1,3 @@
-const fs = require('fs');
-const moment = require('moment');
 import jwt from 'jsonwebtoken';
 import config from '../config';
 import calendarList from './calendar/list';
@@ -29,34 +27,36 @@ async function listEvents(options) {
     const events = await calendarList(finalOptions);
 
     if (events.length === 0) {
-      console.log('No changed events found.');
+      // console.log('No changed events found.');
     } else if (options.details) {
-      console.log(`Upcoming events (${events.length}):`);
+      // console.log(`Upcoming events (${events.length}):`);
       for (let i = 0; i < events.length; i += 1) {
         const event = events[i];
         if (event.start) {
-          const start = event.start.dateTime || event.start.date;
+          // const start = event.start.dateTime || event.start.date;
           // console.log(JSON.stringify(event, null, 2));
-          const description = (event.description && event.description.split('\n')[0]) || 'No Description'
-          console.log(
-            '%s - %s - %s - %s - %s - %s',
-            start,
-            event.summary,
-            event.id,
-            description,
-            (event.extendedProperties &&
-              event.extendedProperties.shared &&
-              event.extendedProperties.shared.services) ||
-            'no services',
-            (event.extendedProperties &&
-              event.extendedProperties.shared &&
-              event.extendedProperties.shared.mobile) ||
-            '0',
-            (event.extendedProperties &&
-              event.extendedProperties.shared &&
-              event.extendedProperties.shared.reminded) ||
-            'false',
-          );
+          // const description =
+          //   (event.description && event.description.split('\n')[0]) ||
+          //   'No Description';
+          // console.log(
+          //   '%s - %s - %s - %s - %s - %s',
+          //   start,
+          //   event.summary,
+          //   event.id,
+          //   description,
+          //   (event.extendedProperties &&
+          //     event.extendedProperties.shared &&
+          //     event.extendedProperties.shared.services) ||
+          //     'no services',
+          //   (event.extendedProperties &&
+          //     event.extendedProperties.shared &&
+          //     event.extendedProperties.shared.mobile) ||
+          //     '0',
+          //   (event.extendedProperties &&
+          //     event.extendedProperties.shared &&
+          //     event.extendedProperties.shared.reminded) ||
+          //     'false',
+          // );
         } else {
           console.error(event);
         }
@@ -126,11 +126,10 @@ async function remindCustomers(options) {
       Object.assign({}, options, { calendarId: 'rarebeauty@soho.sg' }),
     );
     if (events.length === 0) {
-      console.log('No reminder events found.');
+      // console.log('No reminder events found.');
     } else {
-      console.log(`Upcoming events for tomorrow ${events.length}`);
-      for (let i = 0; i < events.length; i += 1) {
-        const event = events[i];
+      // console.log(`Upcoming events for tomorrow ${events.length}`);
+      events.forEach(async event => {
         // console.log(event);
         if (
           event.extendedProperties &&
@@ -138,37 +137,47 @@ async function remindCustomers(options) {
           (event.extendedProperties.shared.reminded === 'false' ||
             event.extendedProperties.shared.reminded === false)
         ) {
-          //console.log(event);
+          // console.log(event);
           try {
             await sms(
               {
                 name: event.summary,
                 mobile:
-                (event.extendedProperties &&
-                  event.extendedProperties.shared &&
-                  event.extendedProperties.shared.mobile) ||
-                -1,
+                  (event.extendedProperties &&
+                    event.extendedProperties.shared &&
+                    event.extendedProperties.shared.mobile) ||
+                  -1,
                 event,
               },
               async message => {
-                console.log(`${message.sid}-${event.summary}-${event.start.dateTime}`);
-                await calendarPatch(
-                  Object.assign({}, {
-                    eventId: event.id,
-                    calendarId: 'rarebeauty@soho.sg',
-                    reminded: true,
-                  }),
-                );
+                // console.log(
+                //   `${message.sid}-${event.summary}-${event.start.dateTime}`,
+                // );
+                try {
+                  await calendarPatch(
+                    Object.assign(
+                      {},
+                      {
+                        eventId: event.id,
+                        calendarId: 'rarebeauty@soho.sg',
+                        reminded: true,
+                      },
+                    ),
+                  );
+                } catch (err) {
+                  console.error(err);
+                  console.error(message);
+                }
               },
               async err => {
-                console.log(err);
+                console.error(err);
               },
             );
           } catch (err) {
-            console.log(err);
+            console.error(err);
           }
         }
-      }
+      });
     }
     return events;
   } catch (err) {
@@ -181,7 +190,7 @@ async function listContacts() {
     const contacts = await contactLists();
     return contacts;
   } catch (err) {
-    console.log(err);
+    // console.log(err);
     throw err;
   }
 }
@@ -189,10 +198,10 @@ async function listContacts() {
 async function createContact(options) {
   try {
     const contact = await contactCreate(options);
-    console.log(contact);
+    // console.log(contact);
     return contact;
   } catch (err) {
-    console.log(err);
+    // console.log(err);
     throw err;
   }
 }
@@ -205,36 +214,44 @@ async function watchCalendar(options) {
   });
   try {
     const response = await calendarWatch(finalOptions);
-    console.log(response);
+    // console.log(response);
     await upsert('config:watch', { resourceId: response.resourceId });
     return response;
   } catch (err) {
-    console.log(err);
+    // console.log(err);
     throw err;
   }
 }
 
 async function stopWatchCalendar(options) {
   const response = await get('config:watch');
-  console.log(response)
+  // console.log(response);
   const finalOptions = Object.assign({}, options, {
     calendarId: 'rarebeauty@soho.sg',
-    resourceId: response.value.resourceId
+    resourceId: response.value.resourceId,
   });
   try {
-    const response = await calendarWatchStop(finalOptions);
-    console.log('stopped');
-    return response;
+    const watchStopResponse = await calendarWatchStop(finalOptions);
+    // console.log('stopped');
+    return watchStopResponse;
   } catch (err) {
-    console.log(err);
+    // console.log(err);
     throw err;
   }
 }
 
-async function generateJWT(options){
-  return jwt.sign({
-    data: { "username" : options.username || 'baduser' }
-  }, config.auth.jwt.secret, { expiresIn: '365d' });
+async function generateJWT(options) {
+  return jwt.sign(
+    {
+      data: { username: options.username || 'baduser' },
+    },
+    config.auth.jwt.secret,
+    { expiresIn: '365d' },
+  );
+}
+
+async function listCustomerAppointments(options) {
+  return listEvents(Object.assign({ maxResults: 3 }, options));
 }
 
 const functions = {
@@ -250,7 +267,8 @@ const functions = {
   getSyncToken,
   setSyncToken,
   getEvent,
-  generateJWT
+  generateJWT,
+  listCustomerAppointments,
 };
 
 export default functions;

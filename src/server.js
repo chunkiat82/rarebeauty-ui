@@ -15,7 +15,7 @@ import cookieParser from 'cookie-parser';
 import bodyParser from 'body-parser';
 import expressJwt, { UnauthorizedError as Jwt401Error } from 'express-jwt';
 import expressGraphQL from 'express-graphql';
-import jwt from 'jsonwebtoken';
+// import jwt from 'jsonwebtoken';
 import fetch from 'node-fetch';
 import React from 'react';
 import ReactDOM from 'react-dom/server';
@@ -36,6 +36,7 @@ import { setRuntimeVariable } from './actions/runtime';
 import config from './config';
 import { handleCalendarWebhook } from './hooks';
 import { logLogin } from './data/database/login';
+
 const app = express();
 
 //
@@ -61,48 +62,54 @@ function checkingUser(req, payload, done) {
   logLogin(payload.data.username, payload);
   // console.log(payload);
   done(null, secret);
-};
+}
 
-app.use(
-  expressJwt({
-    secret: checkingUser,
-    credentialsRequired: true,
-    getToken: function fromHeaderOrQuerystring(req) {
-      if (req.cookies.token) {
-        return req.cookies.token;
-      } else if (req.query && req.query.token) {
-        return req.query.token;
-      }
-      return null;
+if (!__DEV__) {
+  app.use(
+    expressJwt({
+      secret: checkingUser,
+      credentialsRequired: true,
+      getToken: function fromHeaderOrQuerystring(req) {
+        if (req.cookies.token) {
+          return req.cookies.token;
+        } else if (req.query && req.query.token) {
+          return req.query.token;
+        }
+        return null;
+      },
+    }).unless({ path: ['/events/calendar'] }),
+  );
+  // Error handler for express-jwt
+
+  app.use((err, req, res, next) => {
+    if (err.name === 'UnauthorizedError') {
+      res.clearCookie('token');
+      res.status(401);
+      // return res.status(401).send('Unauthorized Access...Please leave');
+      // handle error pages
+      // return
     }
-  }).unless({ path: ['/events/calendar'] })
-);
-// Error handler for express-jwt
-app.use((err, req, res, next) => {
-  if (err.name === 'UnauthorizedError') {
-    res.clearCookie('token');
-    res.status(401);
-    //return res.status(401).send('Unauthorized Access...Please leave');
-    //handle error pages
-    // return  
-  }
 
-  // eslint-disable-line no-unused-vars
-  if (err instanceof Jwt401Error) {
-    console.error('[express-jwt-error]', req.cookies.id_token);
-    // `clearCookie`, otherwise user can't use web-app until cookie expires
-    res.clearCookie('id_token');
-  }
-  next(err);
-});
+    // eslint-disable-line no-unused-vars
+    if (err instanceof Jwt401Error) {
+      console.error('[express-jwt-error]', req.cookies.id_token);
+      // `clearCookie`, otherwise user can't use web-app until cookie expires
+      res.clearCookie('id_token');
+    }
+    next(err);
+  });
 
-app.use((req, res, next) => {
-  if (req.query.token) {
-    const expiresIn = 60 * 60 * 24 * 180; // 180 days
-    res.cookie('token', req.query.token, { maxAge: 1000 * expiresIn, httpOnly: true });
-  }
-  next();
-});
+  app.use((req, res, next) => {
+    if (req.query.token) {
+      const expiresIn = 60 * 60 * 24 * 180; // 180 days
+      res.cookie('token', req.query.token, {
+        maxAge: 1000 * expiresIn,
+        httpOnly: true,
+      });
+    }
+    next();
+  });
+}
 
 app.use(passport.initialize());
 

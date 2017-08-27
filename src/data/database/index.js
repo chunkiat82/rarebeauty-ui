@@ -1,33 +1,19 @@
+// ssh sohoe -L 8092:172.17.0.1:8092 -L 8091:172.17.0.1:8091 -L 11207:172.17.0.1:11207  -L 11210:172.17.0.1:11210 -L 8093:172.17.0.1:8093
 const couchbase = require('couchbase');
 const config = require('../../config.js');
+
 const cluster = new couchbase.Cluster(config.couchbaseUrl);
-
-export async function upsert(id, doc) {
-  // console.log(id);
-  // console.log(doc);
-  const obj = await runOperation(setObject, { id, doc });
-  return obj;
-}
-
-export async function get(id) {  
-  const obj = await runOperation(getObject, { id });
-  // console.log(obj);
-  return obj;
-}
-
-export async function remove(id) {
-  const obj = await runOperation(deleteObject, { id });
-  return obj;
-}
+const N1qlQuery = couchbase.N1qlQuery;
 
 async function runOperation(operation, options) {
   const bucket = cluster.openBucket('default');
+  bucket.enableN1ql([config.couchbaseQueryUrl]);
   let res = null;
   try {
     res = await operation(bucket, options);
   } catch (err) {
-    console.log(err);
-    throw err;    
+    console.error(err);
+    throw err;
   }
   bucket.disconnect();
   return res;
@@ -71,8 +57,52 @@ function setObject(bucket, options) {
     });
   });
 }
+
+function queryOperation(bucket, options) {
+  const { queryString } = options;
+
+  // console.log(`queryString1=${queryString}`);
+  // select * from default events where extendedProperties.shared.resourceName='people/c6618236514557043606 limit 0,10';
+  const n1Query = N1qlQuery.fromString(queryString);
+
+  return new Promise((res, rej) => {
+    bucket.query(n1Query, (err, rows) => {
+      if (err) {
+        rej(err);
+      } else {
+        res(rows);
+      }
+    });
+  });
+}
+
+export async function upsert(id, doc) {
+  // console.log(id);
+  // console.log(doc);
+  const obj = await runOperation(setObject, { id, doc });
+  return obj;
+}
+
+export async function get(id) {
+  const obj = await runOperation(getObject, { id });
+  // console.log(obj);
+  return obj;
+}
+
+export async function remove(id) {
+  const obj = await runOperation(deleteObject, { id });
+  return obj;
+}
+
+export async function query(queryString) {
+  // https://developer.couchbase.com/documentation/server/4.1/sdks/node-2.0/n1ql-queries.html
+  const obj = await runOperation(queryOperation, { queryString });
+  return obj;
+}
+
 export default {
   upsert,
   get,
   remove,
+  query,
 };
