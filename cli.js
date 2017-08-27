@@ -19,7 +19,53 @@ function processArguments(argv) {
 async function main(argv) {
     const options = processArguments(argv);
     const results = await options.action(options);
-    if (!Array.isArray(results)) console.log(results);
+    if (!Array.isArray(results) || argv.details) {
+        if (results[0].start) {
+            println(results);
+        } else {
+            console.log(JSON.stringify(results, null, 2));
+        }
+
+    }
+}
+
+function println(events) {
+    if (events.length === 0) {
+        console.log('No changed events found.');
+    } else {
+        console.log(`Upcoming events (${events.length}):`);
+        for (let i = 0; i < events.length; i += 1) {
+            const event = events[i];
+            if (event.summary.indexOf('-') === 0 ) continue;
+            if (event.start) {
+                const start = event.start.dateTime || event.start.date;                
+                const description =
+                    (event.description && event.description.split('\n')[0]) ||
+                    'No Description';
+                console.log(
+                    '%s - %s - %s - %s - %s - %s',
+                    start,
+                    event.summary,
+                    event.id,
+                    description,
+                    (event.extendedProperties &&
+                        event.extendedProperties.shared &&
+                        event.extendedProperties.shared.services) ||
+                    'no services',
+                    (event.extendedProperties &&
+                        event.extendedProperties.shared &&
+                        event.extendedProperties.shared.mobile) ||
+                    '0',
+                    (event.extendedProperties &&
+                        event.extendedProperties.shared &&
+                        event.extendedProperties.shared.reminded) ||
+                    'false',
+                );
+            } else {
+                console.error(event);
+            }
+        }
+    }
 }
 
 try {

@@ -25,45 +25,9 @@ async function listEvents(options) {
   );
   try {
     const events = await calendarList(finalOptions);
-
-    if (events.length === 0) {
-      // console.log('No changed events found.');
-    } else if (options.details) {
-      // console.log(`Upcoming events (${events.length}):`);
-      for (let i = 0; i < events.length; i += 1) {
-        const event = events[i];
-        if (event.start) {
-          // const start = event.start.dateTime || event.start.date;
-          // console.log(JSON.stringify(event, null, 2));
-          // const description =
-          //   (event.description && event.description.split('\n')[0]) ||
-          //   'No Description';
-          // console.log(
-          //   '%s - %s - %s - %s - %s - %s',
-          //   start,
-          //   event.summary,
-          //   event.id,
-          //   description,
-          //   (event.extendedProperties &&
-          //     event.extendedProperties.shared &&
-          //     event.extendedProperties.shared.services) ||
-          //     'no services',
-          //   (event.extendedProperties &&
-          //     event.extendedProperties.shared &&
-          //     event.extendedProperties.shared.mobile) ||
-          //     '0',
-          //   (event.extendedProperties &&
-          //     event.extendedProperties.shared &&
-          //     event.extendedProperties.shared.reminded) ||
-          //     'false',
-          // );
-        } else {
-          console.error(event);
-        }
-      }
-    }
     return events;
   } catch (err) {
+    console.error(err);
     throw err;
   }
 }
@@ -77,6 +41,7 @@ async function getEvent(options) {
     const event = await calendarGet(finalOptions);
     return event;
   } catch (err) {
+    console.error(err);
     throw err;
   }
 }
@@ -90,6 +55,7 @@ async function listDeltaEvents(options) {
     const response = await calendarDelta(finalOptions);
     return response;
   } catch (err) {
+    console.error(err);
     throw err;
   }
 }
@@ -103,6 +69,7 @@ async function createEvent(options) {
     // console.log(event);
     return event;
   } catch (err) {
+    console.error(err);
     throw err;
   }
 }
@@ -116,6 +83,7 @@ async function patchEvent(options) {
     // console.log(event);
     return event;
   } catch (err) {
+    console.error(err);
     throw err;
   }
 }
@@ -181,6 +149,7 @@ async function remindCustomers(options) {
     }
     return events;
   } catch (err) {
+    console.error(err);
     throw err;
   }
 }
@@ -190,7 +159,7 @@ async function listContacts() {
     const contacts = await contactLists();
     return contacts;
   } catch (err) {
-    // console.log(err);
+    console.error(err);
     throw err;
   }
 }
@@ -201,7 +170,7 @@ async function createContact(options) {
     // console.log(contact);
     return contact;
   } catch (err) {
-    // console.log(err);
+    console.error(err);
     throw err;
   }
 }
@@ -218,7 +187,7 @@ async function watchCalendar(options) {
     await upsert('config:watch', { resourceId: response.resourceId });
     return response;
   } catch (err) {
-    // console.log(err);
+    console.error(err);
     throw err;
   }
 }
@@ -235,7 +204,7 @@ async function stopWatchCalendar(options) {
     // console.log('stopped');
     return watchStopResponse;
   } catch (err) {
-    // console.log(err);
+    console.error(err);
     throw err;
   }
 }
