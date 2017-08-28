@@ -39,15 +39,16 @@ export async function handleCalendarWebhook(headers) {
             handleUpsert(item);
             try {
                 const uuid = item.extendedProperties.shared.uuid;
+                console.error(`uuid=${uuid}`);
                 const response = await db.get(`trans:${uuid}`);
                 const transaction = response.value;
                 transaction.apptDate = moment(item.start.dateTime);
                 await db.upsert(`trans:${uuid}`, transaction);
             } catch (err) {
-                console.log(err);
+                console.error(err);
             }
         } else {
-            console.log(`unhandled status-${item.id}`);
+            console.error(`unhandled status-${item.id}`);
         }
 
         // temp loggin
@@ -69,7 +70,7 @@ export async function handleCalendarWebhook(headers) {
             //     'false',
             // );
         } else {
-            console.log(
+            console.error(
                 `event start date missing for - ${event.id} - ${event.status}`,
             );
         }

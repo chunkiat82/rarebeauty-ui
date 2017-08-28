@@ -217,43 +217,46 @@ class Appointment extends React.Component {
     if (this.state.pastAppointments && this.state.pastAppointments.length > 0) {
       const pastAppointments = this.state.pastAppointments.reduce(
         (array, appt) => {
+          if (appt ==undefined ) return array;
           // console.log(appt.transaction.items.reduce((array, item) => { return array[0] = String(item.name) }, []));
-          const services = appt.transaction.items
+          const services = appt.transaction && appt.transaction.items
             ? appt.transaction.items.reduce((serviceArray, item) => {
                 serviceArray.push(item.name);
                 return serviceArray;
               }, [])
             : [];
-          array.push(
-            React.createElement(
-              'div',
-              { key: `pastAppt${array.length}` },
-              `${moment(appt.event.start).format(
-                'DD MMM YY - HH:mm',
-              )} - ${services.join(', ')}`,
-            ),
-          );
+          if (services.length > 0){
+            array.push(
+              React.createElement(
+                'div',
+                { key: `pastAppt${array.length}` },
+                `${moment(appt.event.start).format(
+                  'DD MMM YY - HH:mm',
+                )} - ${services.join(', ')}`,
+              ),
+            );
+          }
+
           return array;
         },
         [],
       );
-      return (
-        <div>
-          {pastAppointments}
-        </div>
-      );
+      if (pastAppointments.length >0) {
+        return (
+          <div>
+            {pastAppointments}
+          </div>
+        );
+      } else {
+        return ['No Past Appointments'];
+      }
     }
     return ['No Past Appointments'];
   };
 
   render() {
     return (
-      <div
-        className={s.root}
-        ref={c => {
-          this.rootComponent = c;
-        }}
-      >
+      <div className={s.root} ref={c => { this.rootComponent = c; }}>
         <div className={s.container}>
           <Card
             expanded={this.state.expanded}
