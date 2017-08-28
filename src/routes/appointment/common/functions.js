@@ -1,7 +1,7 @@
 import moment from 'moment';
 
 export function queryPastAppointments(fetch) {
-  return async (personId) => {
+  return async personId => {
     const personResponse = await fetch('/graphql', {
       body: JSON.stringify({
         query: `{person(id: "${personId}")
@@ -32,7 +32,7 @@ export function queryPastAppointments(fetch) {
 }
 
 export function createCalendar(fetch) {
-  return async (input) => {
+  return async input => {
     const {
       duration,
       name,
@@ -208,4 +208,5 @@ export default {
   createCalendar,
   listContacts,
   getAppointment,
+  upsertAppointment,
 };
