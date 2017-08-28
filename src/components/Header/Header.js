@@ -9,22 +9,27 @@
 
 import React from 'react';
 import withStyles from 'isomorphic-style-loader/lib/withStyles';
-import LoadingBar from 'react-redux-loading-bar'
+import LoadingBar from 'react-redux-loading-bar';
+import FloatingActionButton from 'material-ui/FloatingActionButton';
 import s from './Header.css';
-import Link from '../Link';
-// import Navigation from '../Navigation';
 import logoUrl from './logo-small.png';
 import logoUrl2x from './logo-small@2x.png';
+
+import history from '../../history';
 
 class Header extends React.Component {
   render() {
     return (
       <div className={s.root}>
-        <LoadingBar/>
+        <LoadingBar />
         <div className={s.container}>
-          {/* <Navigation /> */}
           <div className={s.banner}>
-            <Link className={s.brand} to="/">
+            <FloatingActionButton
+              mini
+              backgroundColor="#FFF"
+              className={s.verticalMiddle}
+              onClick={() => history.push('/')}
+            >
               <img
                 src={logoUrl}
                 srcSet={`${logoUrl2x} 2x`}
@@ -32,14 +37,12 @@ class Header extends React.Component {
                 height="38"
                 alt="React"
               />
-            </Link>
+            </FloatingActionButton>
             <span className={s.brandTxt}>Rare Beauty</span>
-            <p className={s.bannerDesc}>Appointment Management</p>
           </div>
         </div>
       </div>
     );
   }
 }
-
 export default withStyles(s)(Header);
