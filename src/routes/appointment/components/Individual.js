@@ -378,6 +378,7 @@ class Appointment extends React.Component {
               inputs.mobile = inputs.mobileInput || inputs.mobile;
               inputs.name = inputs.nameInput || inputs.name;
 
+              this.props.showLoading();
               await this.props.post(inputs);
               this.setState({
                 notify: true,
@@ -395,6 +396,7 @@ class Appointment extends React.Component {
                 resourceName: '',
                 pastAppointments: [],
               });
+              this.props.hideLoading();
               this.nameAC.setState({ searchText: '' });
               this.mobileAC.setState({ searchText: '' });
               setTimeout(() => this.nameAC.focus(), 200);

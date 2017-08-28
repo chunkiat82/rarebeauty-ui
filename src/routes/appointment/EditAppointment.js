@@ -11,10 +11,22 @@ import {
   upsertAppointment,
 } from './common/functions';
 
+function show(store) {
+  return () => {
+    store.dispatch(showLoading());
+  };
+}
+
+function hide(store) {
+  return () => {
+    store.dispatch(hideLoading());
+  };
+}
+
 async function action({ fetch, params, store }) {
   const apptId = params.id;
 
-  store.dispatch(showLoading());
+  show(store)();
   const contact = await listContacts(fetch)();
   const appointment = await getAppointment(fetch)(apptId);
 
@@ -38,7 +50,7 @@ async function action({ fetch, params, store }) {
   const pastAppointments = await queryPastAppointments(fetch)(resourceName);
   // console.log(`resourceName=${resourceName}`);
   // console.log(`Edit pastAppointments=${JSON.stringify(pastAppointments)}`);
-  store.dispatch(hideLoading());
+  hide(store)();
 
   if (!contact) throw new Error('Failed to load the contact feed.');
 
@@ -71,6 +83,8 @@ async function action({ fetch, params, store }) {
           resourceName={resourceName}
           buttonText={'Update Appointment'}
           successMessage={'Appointment Updated'}
+          showLoading={show(store)}
+          hideLoading={hide(store)}
           {...this.props}
         />
       </Layout>

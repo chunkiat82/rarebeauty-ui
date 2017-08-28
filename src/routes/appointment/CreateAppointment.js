@@ -10,10 +10,22 @@ import {
   listContacts,
 } from './common/functions';
 
+function show(store) {
+  return () => {
+    store.dispatch(showLoading());
+  };
+}
+
+function hide(store) {
+  return () => {
+    store.dispatch(hideLoading());
+  };
+}
+
 async function action({ fetch, store }) {
-  store.dispatch(showLoading());
+  show(store)();
   const contact = await listContacts(fetch)();
-  store.dispatch(hideLoading());
+  hide(store)();
 
   if (!contact) throw new Error('Failed to load the contact feed.');
 
@@ -30,6 +42,8 @@ async function action({ fetch, store }) {
           post={createCalendar(fetch)}
           buttonText={'Create Appointment'}
           successMessage={'Appointment Added'}
+          showLoading={show(store)}
+          hideLoading={hide(store)}
         />
       </Layout>
     ),
