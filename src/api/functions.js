@@ -1,4 +1,5 @@
 import jwt from 'jsonwebtoken';
+import moment from 'moment';
 import config from '../config';
 import calendarList from './calendar/list';
 import calendarGet from './calendar/get';
@@ -20,10 +21,13 @@ const { get, upsert } = require('../data/database');
 
 async function listEvents(options) {
   const finalOptions = Object.assign(
-    { calendarId: 'rarebeauty@soho.sg' },
+    {
+      calendarId: 'rarebeauty@soho.sg',
+    },
     options,
   );
   try {
+    // console.log(`finalOptions=${JSON.stringify(finalOptions)}`);
     const events = await calendarList(finalOptions);
     return events;
   } catch (err) {
@@ -34,7 +38,9 @@ async function listEvents(options) {
 
 async function getEvent(options) {
   const finalOptions = Object.assign(
-    { calendarId: 'rarebeauty@soho.sg' },
+    {
+      calendarId: 'rarebeauty@soho.sg',
+    },
     options,
   );
   try {
@@ -48,7 +54,9 @@ async function getEvent(options) {
 
 async function listDeltaEvents(options) {
   const finalOptions = Object.assign(
-    { calendarId: 'rarebeauty@soho.sg' },
+    {
+      calendarId: 'rarebeauty@soho.sg',
+    },
     options,
   );
   try {
@@ -64,7 +72,9 @@ async function createEvent(options) {
   // node index --action=calendarCreate --name=Raymond Ho --mobile=12345678 --start=20170730T1130 --duration=105 --services=ELFS,HLW
   try {
     const event = await calendarCreate(
-      Object.assign({}, options, { calendarId: 'rarebeauty@soho.sg' }),
+      Object.assign({}, options, {
+        calendarId: 'rarebeauty@soho.sg',
+      }),
     );
     // console.log(event);
     return event;
@@ -78,7 +88,9 @@ async function patchEvent(options) {
   // node index --action=calendarPatch --eventId=XXX --mobile=11111111 --services=ELFS,HLW
   try {
     const event = await calendarPatch(
-      Object.assign({}, options, { calendarId: 'rarebeauty@soho.sg' }),
+      Object.assign({}, options, {
+        calendarId: 'rarebeauty@soho.sg',
+      }),
     );
     // console.log(event);
     return event;
@@ -91,7 +103,9 @@ async function patchEvent(options) {
 async function remindCustomers(options) {
   try {
     const events = await reminderList(
-      Object.assign({}, options, { calendarId: 'rarebeauty@soho.sg' }),
+      Object.assign({}, options, {
+        calendarId: 'rarebeauty@soho.sg',
+      }),
     );
     if (events.length === 0) {
       // console.log('No reminder events found.');
@@ -184,7 +198,9 @@ async function watchCalendar(options) {
   try {
     const response = await calendarWatch(finalOptions);
     // console.log(response);
-    await upsert('config:watch', { resourceId: response.resourceId });
+    await upsert('config:watch', {
+      resourceId: response.resourceId,
+    });
     return response;
   } catch (err) {
     console.error(err);
@@ -212,15 +228,44 @@ async function stopWatchCalendar(options) {
 async function generateJWT(options) {
   return jwt.sign(
     {
-      data: { username: options.username || 'baduser' },
+      data: {
+        username: options.username || 'baduser',
+      },
     },
     config.auth.jwt.secret,
-    { expiresIn: '365d' },
+    {
+      expiresIn: '365d',
+    },
   );
 }
 
 async function listCustomerAppointments(options) {
-  return listEvents(Object.assign({ maxResults: 3 }, options));
+  return listEvents(
+    Object.assign(
+      {
+        maxResults: 3,
+      },
+      options,
+    ),
+  );
+}
+
+async function remindCustomersTouchUp(options) {
+  const { startDT } = options;
+
+  const twoWeeksAgoStartOfDayDT = moment(startDT)
+    .subtract(11, 'days')
+    .startOf('day');
+  const twoWeeksAgoEndOfDayDT = moment(twoWeeksAgoStartOfDayDT).endOf('day');
+
+  const events = await listEvents(
+    Object.assign(options, {
+      startDT: twoWeeksAgoStartOfDayDT.toISOString(),
+      endDT: twoWeeksAgoEndOfDayDT.toISOString(),
+    }),
+  );
+
+  return events;
 }
 
 const functions = {
@@ -238,6 +283,7 @@ const functions = {
   getEvent,
   generateJWT,
   listCustomerAppointments,
+  remindCustomersTouchUp,
 };
 
 export default functions;
