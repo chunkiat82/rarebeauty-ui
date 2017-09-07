@@ -21,8 +21,8 @@ function processArguments(argv) {
 async function main(argv) {
   const options = processArguments(argv);
   const results = await options.action(options);
-  if (!Array.isArray(results) || argv.details) {
-    if (results.length > 0) {
+  if (results && !Array.isArray(results)) {
+    if (results.length > 0 && argv.details) {
       if (results[0].start) println(results);
     } else {
       console.log('Results is empty');
