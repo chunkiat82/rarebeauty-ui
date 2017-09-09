@@ -294,7 +294,7 @@ async function remindCustomersTouchUp(options) {
 
           console.error(`message=${message}`);
 
-          await sms(Object.assign({}, options, { mobile, message }));
+          //   await sms(Object.assign({}, options, { mobile, message }));
 
           // await calendarPatch({
           //     eventId: event.id,
