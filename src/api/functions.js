@@ -9,13 +9,13 @@ import contactLists from './contacts/list';
 const calendarCreate = require('./calendar/create');
 
 const calendarPatch = require('./calendar/patch');
-const reminderList = require('./reminder/list');
+const calendarDayBefore = require('./calendar/dayBeforeEvents');
 
 const contactCreate = require('./contacts/create');
 const calendarWatch = require('./calendar/watch');
 const calendarWatchStop = require('./calendar/watch/stop');
 
-const { sendReminder: sms } = require('./utilities/sms');
+const { sendMessage: sms } = require('./utilities/sms');
 const { getSyncToken, setSyncToken } = require('./utilities/token');
 const { get, upsert } = require('../data/database');
 
@@ -102,7 +102,7 @@ async function patchEvent(options) {
 
 async function remindCustomers(options) {
   try {
-    const events = await reminderList(
+    const events = await calendarDayBefore(
       Object.assign({}, options, {
         calendarId: 'rarebeauty@soho.sg',
       }),
@@ -110,7 +110,7 @@ async function remindCustomers(options) {
     if (events.length === 0) {
       // console.log('No reminder events found.');
     } else {
-      // console.log(`Upcoming events for tomorrow ${events.length}`);
+      // console.log(`Upcoming events for ${events.length}`);
       events.forEach(async event => {
         // console.log(event);
         if (
@@ -121,40 +121,25 @@ async function remindCustomers(options) {
         ) {
           // console.log(event);
           try {
-            await sms(
-              {
-                name: event.summary,
-                mobile:
-                  (event.extendedProperties &&
-                    event.extendedProperties.shared &&
-                    event.extendedProperties.shared.mobile) ||
-                  -1,
-                event,
-              },
-              async message => {
-                // console.log(
-                //   `${message.sid}-${event.summary}-${event.start.dateTime}`,
-                // );
-                try {
-                  await calendarPatch(
-                    Object.assign(
-                      {},
-                      {
-                        eventId: event.id,
-                        calendarId: 'rarebeauty@soho.sg',
-                        reminded: true,
-                      },
-                    ),
-                  );
-                } catch (err) {
-                  console.error(err);
-                  console.error(message);
-                }
-              },
-              async err => {
-                console.error(err);
-              },
-            );
+            const name = event.summary;
+            const mobile =
+              (event.extendedProperties &&
+                event.extendedProperties.shared &&
+                event.extendedProperties.shared.mobile) ||
+              -1;
+            const startDate = moment(event.start.dateTime).format('DD-MMM');
+            const startTime = moment(event.start.dateTime).format('hh:mm a');
+            const message = `Hi ${name},\n\nGentle reminder for your appt on ${startDate} at ${startTime}.\n\nAny cancellation/changes:\nPlease reply, 1 day prior to this appt, to REPLY_MOBILE`;
+
+            // console.log(`message=${message}`);
+
+            await sms(Object.assign({}, options, { mobile, message }));
+
+            await calendarPatch({
+              eventId: event.id,
+              calendarId: 'rarebeauty@soho.sg',
+              reminded: true,
+            });
           } catch (err) {
             console.error(err);
           }
@@ -253,17 +238,75 @@ async function listCustomerAppointments(options) {
 async function remindCustomersTouchUp(options) {
   const { startDT } = options;
 
-  const twoWeeksAgoStartOfDayDT = moment(startDT)
+  const lastDayForTwoWeeksReminderStartOfDayDT = moment(startDT)
+    .add(2, 'days')
+    .startOf('day');
+
+  const forTwoWeeksReminderStartOfDayDT = moment(startDT)
     .subtract(11, 'days')
     .startOf('day');
-  const twoWeeksAgoEndOfDayDT = moment(twoWeeksAgoStartOfDayDT).endOf('day');
+
+  const forTwoWeeksReminderEndOfDayDT = moment(
+    forTwoWeeksReminderStartOfDayDT,
+  ).endOf('day');
 
   const events = await listEvents(
     Object.assign(options, {
-      startDT: twoWeeksAgoStartOfDayDT.toISOString(),
-      endDT: twoWeeksAgoEndOfDayDT.toISOString(),
+      startDT: forTwoWeeksReminderStartOfDayDT.toISOString(),
+      endDT: forTwoWeeksReminderEndOfDayDT.toISOString(),
     }),
   );
+
+  if (events.length === 0) {
+    // console.log('No reminder events found.');
+  } else {
+    // console.log(`Upcoming events for tomorrow ${events.length}`);
+    events.forEach(async event => {
+      // console.log(event);
+      // console.log(`services=${JSON.stringify(event.extendedProperties.shared.services, null, 2)}`);
+
+      if (
+        event.extendedProperties &&
+        event.extendedProperties.shared &&
+        (event.extendedProperties.shared.touchUpReminded === 'false' ||
+          event.extendedProperties.shared.touchUpReminded === false ||
+          event.extendedProperties.shared.touchUpReminded === undefined)
+      ) {
+        const services = event.extendedProperties.shared.services.split(',');
+
+        // this is full set services which are eligible for touch up
+        if (
+          services.indexOf('service:1') === -1 &&
+          services.indexOf('service:2') === -1
+        )
+          return;
+
+        try {
+          const name = event.summary;
+          const mobile =
+            (event.extendedProperties &&
+              event.extendedProperties.shared &&
+              event.extendedProperties.shared.mobile) ||
+            -1;
+          const message = `Hi ${name},\n\nGentle Reminder.\n\nIf you need touch up, your last eligible day is on ${lastDayForTwoWeeksReminderStartOfDayDT.format(
+            'DD-MMM-YYYY',
+          )}\n\nPlease reply to REPLY_MOBILE to book for your touchup.`;
+
+          console.error(`message=${message}`);
+
+          await sms(Object.assign({}, options, { mobile, message }));
+
+          // await calendarPatch({
+          //     eventId: event.id,
+          //     calendarId: 'rarebeauty@soho.sg',
+          //     touchUpReminded: true,
+          // });
+        } catch (err) {
+          console.error(err);
+        }
+      }
+    });
+  }
 
   return events;
 }

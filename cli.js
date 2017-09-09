@@ -20,12 +20,12 @@ function processArguments(argv) {
 
 async function main(argv) {
   const options = processArguments(argv);
-  const results = await options.action(options);
-  if (results && !Array.isArray(results)) {
+  const results = await options.action(options);  
+  if (results && Array.isArray(results)) {    
     if (results.length > 0 && argv.details) {
       if (results[0].start) println(results);
     } else {
-      console.log('Results is empty');
+      console.log(`Results is ${results}`);
     }
   } else {
     console.log(JSON.stringify(results, null, 2));
@@ -46,7 +46,7 @@ function println(events) {
           (event.description && event.description.split('\n')[0]) ||
           'No Description';
         console.log(
-          '%s - %s - %s - %s - %s - %s',
+          '%s - %s - %s - %s - %s - %s -%s',
           start,
           event.summary,
           event.id,
@@ -63,6 +63,10 @@ function println(events) {
             event.extendedProperties.shared &&
             event.extendedProperties.shared.reminded) ||
           'false',
+          (event.extendedProperties &&
+            event.extendedProperties.shared &&
+            event.extendedProperties.shared.touchUpReminded) ||
+          'false'
         );
       } else {
         console.error(event);
