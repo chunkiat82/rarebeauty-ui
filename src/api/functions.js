@@ -290,7 +290,7 @@ async function remindCustomersTouchUp(options) {
             -1;
           const message = `Hi ${name},\n\nGentle Reminder.\n\nIf you need touch up, your last eligible day is on ${lastDayForTwoWeeksReminderStartOfDayDT.format(
             'DD-MMM-YYYY',
-          )}\n\nPlease reply to REPLY_MOBILE to book for your touchup.`;
+          )}\n\nReply to REPLY_MOBILE to book for your touchup.`;
 
           console.error(`message=${message}`);
 
