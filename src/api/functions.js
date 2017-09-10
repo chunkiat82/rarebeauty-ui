@@ -107,10 +107,12 @@ async function remindCustomers(options) {
         calendarId: 'rarebeauty@soho.sg',
       }),
     );
+    const remindedEvents = [];
     if (events.length === 0) {
       // console.log('No reminder events found.');
     } else {
       // console.log(`Upcoming events for ${events.length}`);
+
       events.forEach(async event => {
         // console.log(event);
         if (
@@ -119,7 +121,7 @@ async function remindCustomers(options) {
           (event.extendedProperties.shared.reminded === 'false' ||
             event.extendedProperties.shared.reminded === false)
         ) {
-          // console.log(event);
+          remindedEvents[remindedEvents.length] = event;
           try {
             const name = event.summary;
             const mobile =
@@ -131,7 +133,7 @@ async function remindCustomers(options) {
             const startTime = moment(event.start.dateTime).format('hh:mm a');
             const message = `Hi ${name},\n\nGentle reminder for your appt on ${startDate} at ${startTime}.\n\nAny cancellation/changes:\nPlease reply, 1 day prior to this appt, to REPLY_MOBILE`;
 
-            // console.log(`message=${message}`);
+            console.error(`message=${message}`);
 
             await sms(Object.assign({}, options, { mobile, message }));
 
@@ -146,7 +148,7 @@ async function remindCustomers(options) {
         }
       });
     }
-    return events;
+    return remindedEvents;
   } catch (err) {
     console.error(err);
     throw err;
@@ -280,7 +282,9 @@ async function remindCustomersTouchUp(options) {
         if (
           services.indexOf('service:1') === -1 &&
           services.indexOf('service:2') === -1
-        ){ return; }
+        ) {
+          return;
+        }
 
         remindedEvents[remindedEvents.length] = event;
 
@@ -295,15 +299,15 @@ async function remindCustomersTouchUp(options) {
             'DD-MMM-YYYY',
           )}\n\nReply to REPLY_MOBILE to book for your touchup.`;
 
-          // console.error(`message=${message}`);
+          console.error(`message=${message}`);
 
-          //   await sms(Object.assign({}, options, { mobile, message }));
+          await sms(Object.assign({}, options, { mobile, message }));
 
-          // await calendarPatch({
-          //     eventId: event.id,
-          //     calendarId: 'rarebeauty@soho.sg',
-          //     touchUpReminded: true,
-          // });
+          await calendarPatch({
+            eventId: event.id,
+            calendarId: 'rarebeauty@soho.sg',
+            touchUpReminded: true,
+          });
         } catch (err) {
           console.error(err);
         }
