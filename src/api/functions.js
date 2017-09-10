@@ -239,11 +239,11 @@ async function remindCustomersTouchUp(options) {
   const { startDT } = options;
 
   const lastDayForTwoWeeksReminderStartOfDayDT = moment(startDT)
-    .add(2, 'days')
+    .add(3, 'days')
     .startOf('day');
 
   const forTwoWeeksReminderStartOfDayDT = moment(startDT)
-    .subtract(11, 'days')
+    .subtract(10, 'days')
     .startOf('day');
 
   const forTwoWeeksReminderEndOfDayDT = moment(
