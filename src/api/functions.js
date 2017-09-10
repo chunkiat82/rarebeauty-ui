@@ -257,6 +257,8 @@ async function remindCustomersTouchUp(options) {
     }),
   );
 
+  const remindedEvents = [];
+
   if (events.length === 0) {
     // console.log('No reminder events found.');
   } else {
@@ -278,8 +280,9 @@ async function remindCustomersTouchUp(options) {
         if (
           services.indexOf('service:1') === -1 &&
           services.indexOf('service:2') === -1
-        )
-          return;
+        ){ return; }
+
+        remindedEvents[remindedEvents.length] = event;
 
         try {
           const name = event.summary;
@@ -292,7 +295,7 @@ async function remindCustomersTouchUp(options) {
             'DD-MMM-YYYY',
           )}\n\nReply to REPLY_MOBILE to book for your touchup.`;
 
-          console.error(`message=${message}`);
+          // console.error(`message=${message}`);
 
           //   await sms(Object.assign({}, options, { mobile, message }));
 
@@ -308,7 +311,7 @@ async function remindCustomersTouchUp(options) {
     });
   }
 
-  return events;
+  return remindedEvents;
 }
 
 const functions = {
