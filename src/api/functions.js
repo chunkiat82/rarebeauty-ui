@@ -295,19 +295,19 @@ async function remindCustomersTouchUp(options) {
               event.extendedProperties.shared &&
               event.extendedProperties.shared.mobile) ||
             -1;
-          const message = `Hi ${name},\n\nGentle Reminder.\n\nIf you need touch up, your last eligible day is on ${lastDayForTwoWeeksReminderStartOfDayDT.format(
+          const message = `Hi ${name},\n\nGentle Reminder.\n\nIf you need lashes touch up, your last eligible day is on ${lastDayForTwoWeeksReminderStartOfDayDT.format(
             'DD-MMM-YYYY',
-          )}\n\nReply to REPLY_MOBILE to book your touchup.`;
+          )}\n\nReply to REPLY_MOBILE to reserve your slot early.`;
 
           console.error(`message=${message}`);
 
-          // await sms(Object.assign({}, options, { mobile, message }));
+          await sms(Object.assign({}, options, { mobile, message }));
 
-          // await calendarPatch({
-          //   eventId: event.id,
-          //   calendarId: 'rarebeauty@soho.sg',
-          //   touchUpReminded: true,
-          // });
+          await calendarPatch({
+            eventId: event.id,
+            calendarId: 'rarebeauty@soho.sg',
+            touchUpReminded: true,
+          });
         } catch (err) {
           console.error(err);
         }
