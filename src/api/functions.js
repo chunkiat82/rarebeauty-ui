@@ -5,6 +5,7 @@ import calendarList from './calendar/list';
 import calendarGet from './calendar/get';
 import calendarDelta from './calendar/delta';
 import contactLists from './contacts/list';
+import { mapOfServices } from '../data/database/services';
 
 const calendarCreate = require('./calendar/create');
 
@@ -279,23 +280,26 @@ async function remindCustomersTouchUp(options) {
         const services = event.extendedProperties.shared.services.split(',');
 
         // this is full set services which are eligible for touch up
-        if (
-          services.indexOf('service:1') === -1 &&
-          services.indexOf('service:2') === -1
-        ) {
+
+        const naturalService = services.indexOf('service:1') > -1;
+        const denseService = services.indexOf('service:2') > -1;
+        if (!naturalService && !denseService) {
           return;
         }
 
         remindedEvents[remindedEvents.length] = event;
 
         try {
+          const lashService = naturalService ? 'service:1' : 'service:2';
+          const followUpService = mapOfServices[lashService].followUp;
+          const followUpPrice = mapOfServices[followUpService].price;
           const name = event.summary;
           const mobile =
             (event.extendedProperties &&
               event.extendedProperties.shared &&
               event.extendedProperties.shared.mobile) ||
             -1;
-          const message = `Hi ${name},\n\nGentle Reminder.\n\nIf you need lashes touch up, your last eligible day is ${lastDayForTwoWeeksReminderStartOfDayDT.format(
+          const message = `Hi ${name},\n\nGentle Reminder.\n\nIf you need lashes touch up ($${followUpPrice}), your last eligible day is ${lastDayForTwoWeeksReminderStartOfDayDT.format(
             'DD-MMM',
           )}\n\nReply to REPLY_MOBILE to reserve your slot early.`;
 
