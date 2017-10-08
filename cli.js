@@ -23,7 +23,11 @@ async function main(argv) {
   const results = await options.action(options);  
   if (results && Array.isArray(results)) {    
     if (results.length > 0 && argv.details) {
-      if (results[0].start) println(results);
+      if (results[0].start) {
+        println(results);
+      }else {
+        console.log(JSON.stringify(results, null, 2));
+      }
     } else {
       console.log(`Results is ${results}`);
     }
