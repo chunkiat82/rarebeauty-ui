@@ -13,6 +13,7 @@ const calendarPatch = require('./calendar/patch');
 const calendarDayBefore = require('./calendar/dayBeforeEvents');
 
 const contactCreate = require('./contacts/create');
+const contactUpdate = require('./contacts/update');
 const calendarWatch = require('./calendar/watch');
 const calendarWatchStop = require('./calendar/watch/stop');
 
@@ -177,6 +178,17 @@ async function createContact(options) {
   }
 }
 
+async function updateContact(options) {
+  try {
+    const contact = await contactUpdate(options);
+    // console.log(contact);
+    return contact;
+  } catch (err) {
+    console.error(err);
+    throw err;
+  }
+}
+
 async function watchCalendar(options) {
   const finalOptions = Object.assign({}, options, {
     calendarId: 'rarebeauty@soho.sg',
@@ -330,6 +342,7 @@ const functions = {
   remindCustomers,
   listContacts,
   createContact,
+  updateContact,
   watchCalendar,
   stopWatchCalendar,
   getSyncToken,
