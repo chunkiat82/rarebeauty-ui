@@ -49,6 +49,8 @@ function patchHandler(res, rej, calendar, options, eventResponse) {
     resource.extendedProperties.shared.apptId = apptId;
   }
 
+  resource.extendedProperties.shared.changed = new Date().getTime();
+
   // console.log(`patchObject=${JSON.stringify(patchObject)}`);
   calendar.events.patch(patchObject, (err, event) => {
     if (err) {
