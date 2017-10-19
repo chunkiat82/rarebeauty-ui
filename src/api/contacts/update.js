@@ -1,4 +1,5 @@
 // https://developers.google.com/apis-explorer/?hl=en_US#p/
+// babel-node cli --action=updateContact --verified=false --resourceName=people/YYY --mobile=XX
 const generateJWT = require('../utilities/jwt');
 const google = require('googleapis');
 
@@ -13,19 +14,24 @@ async function updateContact(
     auth: jwtClient,
   });
 
+  // console.error(`verified=${verified}` !== undefined ? verified : true);
+
   people.people.updateContact(
     {
       resourceName,
-      updatePersonFields: 'phoneNumbers',
+      updatePersonFields: ['phoneNumbers', 'userDefined'],
       resource: {
-        etag: me.tag,
+        etag: me.etag,
         phoneNumbers: [
           {
             value: `${mobile}`,
             type: 'mobile',
-            metadata: {
-              verified: verified !== undefined ? verified : true,
-            },
+          },
+        ],
+        userDefined: [
+          {
+            key: 'mb',
+            value: verified !== undefined ? verified : true,
           },
         ],
       },
@@ -48,6 +54,7 @@ module.exports = async function update(options) {
     people.people.get(
       {
         resourceName,
+        personFields: ['phoneNumbers', 'userDefined'],
       },
       {},
       (err, me) => {
