@@ -2,13 +2,41 @@
 const generateJWT = require('../utilities/jwt');
 const google = require('googleapis');
 
-module.exports = async function update({
-  resourceName,
-  first,
-  last,
-  mobile,
-  verified,
-}) {
+async function updateContact(
+  { resourceName, first, last, mobile, verified, etag },
+  me,
+  cb,
+) {
+  const jwtClient = await generateJWT('rarebeauty@soho.sg');
+  const people = google.people({
+    version: 'v1',
+    auth: jwtClient,
+  });
+
+  people.people.updateContact(
+    {
+      resourceName,
+      updatePersonFields: 'phoneNumbers',
+      resource: {
+        etag: me.tag,
+        phoneNumbers: [
+          {
+            value: `${mobile}`,
+            type: 'mobile',
+            metadata: {
+              verified: verified !== undefined ? verified : true,
+            },
+          },
+        ],
+      },
+    },
+    {},
+    cb,
+  );
+}
+
+module.exports = async function update(options) {
+  const { resourceName } = options;
   const jwtClient = await generateJWT('rarebeauty@soho.sg');
 
   const people = google.people({
@@ -17,50 +45,23 @@ module.exports = async function update({
   });
 
   return new Promise((res, rej) => {
-    people.people.updateContact(
+    people.people.get(
       {
         resourceName,
-        updatePersonFields: 'phoneNumbers',
       },
-      {
-        resource: {
-          person: {
-            etag: '111',
-          },
-          // "etag": "%CAEiDENqMWRhdGNTRTJBPQ==",
-          metadata: {
-            sources: [
-              {
-                type: 'CONTACT',
-                id: '5cd05bf98b8dbf9a',
-                etag: '#Cj1datcSE2A=',
-                updateTime: '2017-10-08T05:53:55.182001Z',
-              },
-            ],
-          },
-          names: [
-            {
-              givenName: first,
-              familyName: last,
-            },
-          ],
-          phoneNumbers: [
-            {
-              value: `${mobile}`,
-              type: 'mobile',
-              metadata: {
-                verified: verified !== undefined ? verified : true,
-              },
-            },
-          ],
-        },
-      },
+      {},
       (err, me) => {
         // console.log(err || me);
         if (err) {
           rej(err);
         } else {
-          res(me);
+          updateContact(options, me, (errUpdate, meUpdate) => {
+            if (errUpdate) {
+              rej(errUpdate);
+            } else {
+              res(meUpdate);
+            }
+          });
         }
       },
     );

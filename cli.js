@@ -22,12 +22,13 @@ async function main(argv) {
   const options = processArguments(argv);
   const results = await options.action(options);  
   if (results && Array.isArray(results)) {    
-    if (results.length > 0 && argv.details) {
+    if (results.length > 0 && argv.details) {      
       if (results[0].start) {
         println(results);
       }else {
         console.log(JSON.stringify(results, null, 2));
       }
+      console.log(`Results Length ${results.length}`);
     } else {
       console.log(`Results is ${results}`);
     }
