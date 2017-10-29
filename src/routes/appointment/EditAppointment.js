@@ -8,7 +8,7 @@ import {
   queryPastAppointments,
   listContacts,
   getAppointment,
-  upsertAppointment,
+  updateAppointment,
 } from './common/functions';
 
 function show(store) {
@@ -61,10 +61,11 @@ async function action({ fetch, params, store }) {
       <Layout>
         <Appointment
           post={async input => {
-            await upsertAppointment(fetch)(
+            await updateAppointment(fetch)(
               Object.assign({ id: apptId, resourceName }, input),
             );
-            open(location, '_self').close();
+            setTimeout(()=>{open(location, '_self').close();}, 100);
+            return { updatedAppointment: true};
           }}
           queryPastAppointments={queryPastAppointments(fetch)}
           pastAppointments={pastAppointments}
@@ -83,6 +84,7 @@ async function action({ fetch, params, store }) {
           resourceName={resourceName}
           buttonText={'Update Appointment'}
           successMessage={'Appointment Updated'}
+          errorMessage={'Appointment Creation Failed'}
           showLoading={show(store)}
           hideLoading={hide(store)}
           {...this.props}

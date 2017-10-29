@@ -71,9 +71,11 @@ class Appointment extends React.Component {
     //   }),
     // ),
     successMessage: PropTypes.string,
+    errorMessage: PropTypes.string,
   };
   static defaultProps = {
     successMessage: '',
+    errorMessage: '',
     name: '',
     mobile: '',
     duration: 0,
@@ -126,6 +128,7 @@ class Appointment extends React.Component {
         finalAdditional,
         finalDiscount,
       ),
+      error: false,
       expanded: pastAppointments && pastAppointments.length > 0,
     });
   }
@@ -217,15 +220,15 @@ class Appointment extends React.Component {
     if (this.state.pastAppointments && this.state.pastAppointments.length > 0) {
       const pastAppointments = this.state.pastAppointments.reduce(
         (array, appt) => {
-          if (appt ==undefined ) return array;
+          if (appt == undefined) return array;
           // console.log(appt.transaction.items.reduce((array, item) => { return array[0] = String(item.name) }, []));
           const services = appt.transaction && appt.transaction.items
             ? appt.transaction.items.reduce((serviceArray, item) => {
-                serviceArray.push(item.name);
-                return serviceArray;
-              }, [])
+              serviceArray.push(item.name);
+              return serviceArray;
+            }, [])
             : [];
-          if (services.length > 0){
+          if (services.length > 0) {
             array.push(
               React.createElement(
                 'div',
@@ -241,7 +244,7 @@ class Appointment extends React.Component {
         },
         [],
       );
-      if (pastAppointments.length >0) {
+      if (pastAppointments.length > 0) {
         return (
           <div>
             {pastAppointments}
@@ -382,33 +385,46 @@ class Appointment extends React.Component {
               inputs.name = inputs.nameInput || inputs.name;
 
               this.props.showLoading();
-              await this.props.post(inputs);
               this.setState({
-                notify: true,
-                name: '',
-                duration: 0,
-                mobile: '',
-                startTime: {},
-                startDate: {},
-                serviceIds: [],
-                discount: 0,
-                additional: 0,
-                totalAmount: 0,
-                nameInput: '',
-                mobileInput: '',
-                resourceName: '',
-                pastAppointments: [],
+                error: false
               });
+              const results = await this.props.post(inputs);
               this.props.hideLoading();
-              this.nameAC.setState({ searchText: '' });
-              this.mobileAC.setState({ searchText: '' });
-              setTimeout(() => this.nameAC.focus(), 200);
+
+              this.setState({
+                notify: true
+              });
+
+              if (results.errors) {
+                this.setState({ error: "Error In Creating Appointment" });
+                console.error("Error In Creating Appointment");
+              } else {
+                this.setState({
+                  name: '',
+                  duration: 0,
+                  mobile: '',
+                  startTime: {},
+                  startDate: {},
+                  serviceIds: [],
+                  discount: 0,
+                  additional: 0,
+                  totalAmount: 0,
+                  nameInput: '',
+                  mobileInput: '',
+                  resourceName: '',
+                  pastAppointments: [],
+                });
+
+                this.nameAC.setState({ searchText: '' });
+                this.mobileAC.setState({ searchText: '' });
+                setTimeout(() => this.nameAC.focus(), 200);
+              }
               setTimeout(() => this.setState({ notify: false }), 2000);
             }}
           />
           <Snackbar
             open={this.state.notify}
-            message={this.props.successMessage}
+            message={this.state.error ? this.props.errorMessage : this.props.successMessage}
             bodyStyle={{
               backgroundColor: '#373277',
               paddingBottom: 28,

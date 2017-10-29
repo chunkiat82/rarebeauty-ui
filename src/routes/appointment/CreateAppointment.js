@@ -42,6 +42,7 @@ async function action({ fetch, store }) {
           post={createCalendar(fetch)}
           buttonText={'Create Appointment'}
           successMessage={'Appointment Added'}
+          errorMessage={'Appointment Creation Failed'}
           showLoading={show(store)}
           hideLoading={hide(store)}
         />

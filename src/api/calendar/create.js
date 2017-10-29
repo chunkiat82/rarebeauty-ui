@@ -111,10 +111,10 @@ export default function create(options) {
         event => event.summary.indexOf('-') !== 0,
       );
       if (filteredEvents.length > 0) {
-        rej('---------------------------');
+        console.error('---------------------------');
         console.error(JSON.stringify(events, null, 2));
-        rej('Overlapping appointment');
-        rej('---------------------------');
+        rej({"error":"Overlapping appointment"});
+        console.error('---------------------------');
         return;
       }
 

@@ -88,9 +88,9 @@ export function createCalendar(fetch) {
       }),
     });
 
-    const { data } = await resp.json();
+    const { data, errors } = await resp.json();
 
-    return data;
+    return { errors , data };
   };
 }
 
@@ -139,7 +139,7 @@ export function getAppointment(fetch) {
     return data.appointment;
   };
 }
-export function upsertAppointment(fetch) {
+export function updateAppointment(fetch) {
   return async input => {
     const {
       duration,
@@ -197,9 +197,9 @@ export function upsertAppointment(fetch) {
       }),
     });
 
-    const { data } = await resp.json();
+    const { data, errors } = await resp.json();
 
-    return data;
+    return  { data, errors };
   };
 }
 
@@ -208,5 +208,5 @@ export default {
   createCalendar,
   listContacts,
   getAppointment,
-  upsertAppointment,
+  updateAppointment,
 };
