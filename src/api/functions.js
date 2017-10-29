@@ -7,7 +7,7 @@ import calendarDelta from './calendar/delta';
 import contactLists from './contacts/list';
 import { mapOfServices } from '../data/database/services';
 
-const calendarCreate = require('./calendar/create');
+import calendarCreate from './calendar/create';
 
 const calendarPatch = require('./calendar/patch');
 const calendarDayBefore = require('./calendar/dayBeforeEvents');
@@ -21,6 +21,7 @@ const { sendMessage: sms } = require('./utilities/sms');
 const { getSyncToken, setSyncToken } = require('./utilities/token');
 const { get, upsert } = require('../data/database');
 
+const NO_MOBILE_NUMBER = '00000000';
 async function listEvents(options) {
   const finalOptions = Object.assign(
     {
@@ -137,7 +138,12 @@ async function remindCustomers(options) {
 
             console.error(`message=${message}`);
 
-            await sms(Object.assign({}, options, { mobile, message }));
+            if (mobile.indexOf(NO_MOBILE_NUMBER) === -1) {
+              await sms(Object.assign({}, options, { mobile, message }));
+              console.error(
+                `${name} not reminded because mobile number is ${mobile}`,
+              );
+            }
 
             await calendarPatch({
               eventId: event.id,
