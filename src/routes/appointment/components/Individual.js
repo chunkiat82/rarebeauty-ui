@@ -426,7 +426,7 @@ class Appointment extends React.Component {
             open={this.state.notify}
             message={this.state.error ? this.props.errorMessage : this.props.successMessage}
             bodyStyle={{
-              backgroundColor: '#373277',
+              backgroundColor: this.state.error ? '#ce1818' : '#373277',
               paddingBottom: 28,
               paddingTop: 28,
             }}
