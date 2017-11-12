@@ -1,20 +1,56 @@
-import api from './../api';
 import moment from 'moment';
-import db from '../data/database';
+import api from './../api';
+import { get, remove, upsert } from '../data/database';
 
 const { getSyncToken, setSyncToken } = require('../api/utilities/token');
+
+async function handleCancel(item) {
+  try {
+    const eventId = item.id;
+    const response = await get(`event:${eventId}`);
+    const event = response.value;
+    // console.log(event);
+    const apptId = event.extendedProperties.shared.uuid;
+    try {
+      await remove(`event:${eventId}`);
+    } catch (e) {
+      console.error(`unable to remove event= ${eventId}`);
+    }
+    try {
+      await remove(`trans:${apptId}`);
+    } catch (e) {
+      console.error(`unable to remove transaction= ${apptId}`);
+    }
+    try {
+      await remove(`appt:${apptId}`);
+    } catch (e) {
+      console.error(`unable to remove appointment= ${apptId}`);
+    }
+  } catch (e) {
+    console.error(`cannot get event-${item.id}`);
+  }
+}
+
+async function handleUpsert(item) {
+  // if (item.creator.email === 'rarebeauty@soho.sg') {
+  //   console.log('-----THIS APPOINTMENT NOT CREATED BY THE APP---');
+  //   console,log(item);
+  //   return;
+  // }
+  await upsert(`event:${item.id}`, item);
+}
 
 export async function handleCalendarWebhook(headers) {
   // console.log(`headers=${JSON.stringify(headers, null, 2)}`);
   // console.log('-------------------------------------------------------');
   // headers not used
-  const { value: configWatch } = await db.get('config:watch');
-  console.log('-------------------------------------------------------');
+  const { value: configWatch } = await get('config:watch');
+  console.error('-------------------------------------------------------');
   // console.log(headers["x-goog-resource-id"]);
   // console.log(configWatch.resourceId);
   // console.log('-------------------------------------------------------');
   if (headers['x-goog-resource-id'] !== configWatch.resourceId) {
-    console.log('need to check this ASAP');
+    console.error('need to check this ASAP');
     return;
   }
 
@@ -25,12 +61,12 @@ export async function handleCalendarWebhook(headers) {
   });
 
   const { items: events, nextSyncToken } = response;
-  console.log('----------------------------------------------');
-  console.log(JSON.stringify(response, null, 2));
-  console.log('----------------------------------------------');
-  console.log(JSON.stringify(response.items, null, 2));
-  console.log('----------------------------------------------');
-  console.log(`Incoming Changed events (${events.length}):`);
+  console.error('----------------------------------------------');
+  console.error(JSON.stringify(response, null, 2));
+  console.error('----------------------------------------------');
+  console.error(JSON.stringify(response.items, null, 2));
+  console.error('----------------------------------------------');
+  console.error(`Incoming Changed events (${events.length}):`);
   events.forEach(async item => {
     // implement this feature later
     if (
@@ -39,6 +75,18 @@ export async function handleCalendarWebhook(headers) {
     )
       return;
 
+    // if item is more than 7 days old return
+    if (item && item.start && item.start.dateTime) {
+      const apptDateMT = moment(item.start.dateTime);
+      const currentMT = moment();
+      const appDays = moment.duration(apptDateMT, 'days');
+      const currentDays = moment.duration(currentMT, 'days');
+      console.error(`apptDateMT=${apptDateMT}`);
+      console.error(`currentDays=${currentDays}`);
+      console.error(`difference=${currentDays - appDays}`);
+      if (currentDays - appDays > 7) return;
+    }
+
     if (item.status === 'cancelled') {
       handleCancel(item);
     } else if (item.status === 'confirmed') {
@@ -46,10 +94,10 @@ export async function handleCalendarWebhook(headers) {
       try {
         const uuid = item.extendedProperties.shared.uuid;
         console.error(`uuid=${uuid}`);
-        const response = await db.get(`trans:${uuid}`);
-        const transaction = response.value;
+        const transResponse = await get(`trans:${uuid}`);
+        const transaction = transResponse.value;
         transaction.apptDate = moment(item.start.dateTime);
-        await db.upsert(`trans:${uuid}`, transaction);
+        await upsert(`trans:${uuid}`, transaction);
       } catch (err) {
         console.error(err);
       }
@@ -60,7 +108,7 @@ export async function handleCalendarWebhook(headers) {
     // temp loggin
     const event = item;
     if (event.start) {
-      const start = event.start.dateTime || event.start.date;
+      //   const start = event.start.dateTime || event.start.date;
       // console.log(
       //   '%s - %s - %s - %s',
       //   start,
@@ -92,46 +140,5 @@ export async function handleCalendarWebhook(headers) {
 
   // console.log(events);
 }
-
-async function handleCancel(item) {
-  try {
-    const eventId = item.id;
-    const response = await db.get(`event:${eventId}`);
-    const event = response.value;
-    // console.log(event);
-    const apptId = event.extendedProperties.shared.uuid;
-    try {
-      await db.remove(`event:${eventId}`);
-    } catch (e) {
-      console.log(`unable to remove event= ${eventId}`);
-    }
-    try {
-      await db.remove(`trans:${apptId}`);
-    } catch (e) {
-      console.log(`unable to remove transaction= ${apptId}`);
-    }
-    try {
-      await db.remove(`appt:${apptId}`);
-    } catch (e) {
-      console.log(`unable to remove appointment= ${apptId}`);
-    }
-  } catch (e) {
-    console.log(`cannot get event-${item.id}`);
-  }
-}
-
-async function handleUpsert(item) {
-  // if (item.creator.email === 'rarebeauty@soho.sg') {
-  //   console.log('-----THIS APPOINTMENT NOT CREATED BY THE APP---');
-  //   console,log(item);
-  //   return;
-  // }
-  await db.upsert(`event:${item.id}`, item);
-}
-
-const functionToCall = {
-  cancelled: handleCancel,
-  confirmed: handleUpsert,
-};
 
 export default handleCalendarWebhook;
