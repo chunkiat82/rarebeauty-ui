@@ -68,6 +68,9 @@ function checkingUser(req, payload, done) {
 
 if (__DEV__) {
   const myFilter = function(req) {
+    console.error(req.url.indexOf('/public/appointment/confirm/') === 0);
+    console.error(req.url);
+
     if (
       req.url.indexOf('/public/appointment/confirm/') === 0 ||
       /\/events\/calendar/.test(req.url)
