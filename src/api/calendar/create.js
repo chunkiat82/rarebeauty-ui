@@ -52,7 +52,7 @@ function createAppointment(calendar, options) {
           end: { dateTime: endDT },
           summary: name,
           location: 'Home',
-          status: 'confirmed',
+          status: 'tentative',
           extendedProperties: {
             shared: {
               mobile,
@@ -113,7 +113,7 @@ export default function create(options) {
       if (filteredEvents.length > 0) {
         console.error('---------------------------');
         console.error(JSON.stringify(events, null, 2));
-        rej({"error":"Overlapping appointment"});
+        rej({ error: 'Overlapping appointment' });
         console.error('---------------------------');
         return;
       }

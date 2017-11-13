@@ -54,6 +54,7 @@ function println(events) {
           '%s - %s - %s - %s - %s - %s -%s',
           start,
           event.summary,
+          event.status,
           event.id,
           description,
           (event.extendedProperties &&
