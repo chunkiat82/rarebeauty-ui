@@ -12,6 +12,7 @@ function patchHandler(res, rej, calendar, options, eventResponse) {
     reminded,
     touchUpReminded,
     apptId,
+    status,
   } = options;
 
   const patchObject = {
@@ -40,9 +41,17 @@ function patchHandler(res, rej, calendar, options, eventResponse) {
       .map(item => item.service)
       .join(',')}\n\nhttps://rarebeauty.soho.sg/appointment/edit/${apptId}`;
   }
-  if (reminded) resource.extendedProperties.shared.reminded = reminded;
-  if (touchUpReminded)
+  if (reminded) {
+    resource.extendedProperties.shared.reminded = reminded;
+  }
+
+  if (touchUpReminded) {
     resource.extendedProperties.shared.touchUpReminded = touchUpReminded;
+  }
+
+  if (status) {
+    resource.status = status;
+  }
 
   if (apptId) {
     resource.extendedProperties.shared.uuid = apptId;

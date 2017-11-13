@@ -37,6 +37,8 @@ import config from './config';
 import { handleCalendarWebhook } from './hooks';
 import { logLogin } from './data/database/login';
 
+import API from './api/';
+
 const app = express();
 
 //
@@ -155,9 +157,11 @@ app.use('/events/calendar', async (req, res) => {
   res.sendStatus(200);
 });
 
-app.use('/public/appointment/confirm', async (req, res) => {
-  console.log(`req.query.eventId=${req.query.eventId}`);
+app.use('/public/appointment/confirm/:eventId', async (req, res) => {
+  const { eventId } = req.params;
+  console.error(`req.params.eventId=${eventId}`);
   // do something here to update to confirm
+  await API({ action: 'patchEvent', status: 'confirmed', eventId });
   res.sendStatus(200);
 });
 
