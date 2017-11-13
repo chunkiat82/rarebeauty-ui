@@ -79,7 +79,9 @@ if (!__DEV__) {
         }
         return null;
       },
-    }).unless({ path: ['/events/calendar'] }),
+    }).unless({
+      path: ['/events/calendar', /\/public\/appointment\/confirm*/],
+    }),
   );
   // Error handler for express-jwt
 
