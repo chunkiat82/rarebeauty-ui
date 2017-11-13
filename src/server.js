@@ -69,12 +69,11 @@ function checkingUser(req, payload, done) {
 if (__DEV__) {
   const myFilter = function(req) {
     if (
-      /\/events\/calendar/.test(req.url) ||
-      /\/public\/appointment\/confirm\/.*/.test(req.url)
+      req.url.indexOf('/public/appointment/confirm/') === 0 ||
+      /\/events\/calendar/.test(req.url)
     ) {
       return true;
     }
-
     return false;
   };
 
