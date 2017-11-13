@@ -66,7 +66,18 @@ function checkingUser(req, payload, done) {
   done(null, secret);
 }
 
-if (!__DEV__) {
+if (__DEV__) {
+  const myFilter = function(req) {
+    if (
+      /\/events\/calendar/.test(req.url) ||
+      /\/public\/appointment\/confirm\/.*/.test(req.url)
+    ) {
+      return true;
+    }
+
+    return false;
+  };
+
   app.use(
     expressJwt({
       secret: checkingUser,
@@ -79,9 +90,7 @@ if (!__DEV__) {
         }
         return null;
       },
-    }).unless({
-      path: [/\/events\/calendar/, /\/public\/appointment\/confirm\/.*/],
-    }),
+    }).unless(myFilter),
   );
   // Error handler for express-jwt
 
