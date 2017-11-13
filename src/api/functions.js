@@ -88,7 +88,7 @@ async function createEvent(options) {
 }
 
 async function patchEvent(options) {
-  // node index --action=calendarPatch --eventId=XXX --mobile=11111111 --services=ELFS,HLW
+  // node index --action=patchEvent --eventId=XXX --mobile=11111111 --services=ELFS,HLW
   try {
     const event = await calendarPatch(
       Object.assign({}, options, {
@@ -257,14 +257,18 @@ async function listCustomerAppointments(options) {
 }
 
 async function remindCustomersTouchUp(options) {
-  const { startDT } = options;
+  const { startDT, daysBefore } = options;
 
+  const daysBeforeFinal = daysBefore || 3; // default 3 days before end of touch up
+  const daysBeforeTouchUpFinal = 14 - daysBeforeFinal; // 2 weeks for touchup period
+
+  // 5 days before the last day for touch up
   const lastDayForTwoWeeksReminderStartOfDayDT = moment(startDT)
-    .add(3, 'days')
+    .add(daysBeforeFinal, 'days')
     .startOf('day');
 
   const forTwoWeeksReminderStartOfDayDT = moment(startDT)
-    .subtract(10, 'days')
+    .subtract(daysBeforeTouchUpFinal, 'days')
     .startOf('day');
 
   const forTwoWeeksReminderEndOfDayDT = moment(
