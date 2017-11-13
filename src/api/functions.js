@@ -8,6 +8,7 @@ import contactLists from './contacts/list';
 import { mapOfServices } from '../data/database/services';
 
 import calendarCreate from './calendar/create';
+import urlCreate from './urlshortener/create';
 
 const calendarPatch = require('./calendar/patch');
 const calendarDayBefore = require('./calendar/dayBeforeEvents');
@@ -134,22 +135,25 @@ async function remindCustomers(options) {
               -1;
             const startDate = moment(event.start.dateTime).format('DD-MMM');
             const startTime = moment(event.start.dateTime).format('hh:mm a');
-            const message = `<Auto Reminder> Appt on ${startDate} at ${startTime}.\n\nAny changes:\nPlease reply now to REPLY_MOBILE`;
+            const shortURL = await urlCreate({
+              longURL: `https://rarebeauty.soho.sg/public/appointment/confirm/${event.id}`,
+            });
+            const message = `<Reminder>Appt on ${startDate} at ${startTime}.\n\nAny changes, please reply now to REPLY_MOBILE\n\nOtherwise click ${shortURL.id} to confirm your appt`;
 
             console.error(`message=${message}`);
 
             if (mobile.indexOf(NO_MOBILE_NUMBER) === -1) {
-              await sms(Object.assign({}, options, { mobile, message }));
+              // await sms(Object.assign({}, options, { mobile, message }));
               console.error(
                 `${name} not reminded because mobile number is ${mobile}`,
               );
             }
 
-            await calendarPatch({
-              eventId: event.id,
-              calendarId: 'rarebeauty@soho.sg',
-              reminded: true,
-            });
+            // await calendarPatch({
+            //   eventId: event.id,
+            //   calendarId: 'rarebeauty@soho.sg',
+            //   reminded: true,
+            // });
           } catch (err) {
             console.error(err);
           }
@@ -344,6 +348,11 @@ async function remindCustomersTouchUp(options) {
   return remindedEvents;
 }
 
+async function createShortURL(options) {
+  const shortURL = await urlCreate(options);
+  return [shortURL];
+}
+
 const functions = {
   listEvents,
   listDeltaEvents,
@@ -361,6 +370,7 @@ const functions = {
   generateJWT,
   listCustomerAppointments,
   remindCustomersTouchUp,
+  createShortURL,
 };
 
 export default functions;

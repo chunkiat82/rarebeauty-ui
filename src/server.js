@@ -162,7 +162,10 @@ app.use('/public/appointment/confirm/:eventId', async (req, res) => {
   console.error(`req.params.eventId=${eventId}`);
   // do something here to update to confirm
   await API({ action: 'patchEvent', status: 'confirmed', eventId });
-  res.sendStatus(200);
+  res.status(200);
+  res.send(
+    `<!doctype html><html><body style="background-color:#373277"><h1><center><span style="color:white">Your Appointment is confirmed!</span></center></h1></body></html>`,
+  );
 });
 
 //
