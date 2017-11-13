@@ -14,7 +14,7 @@ import PropTypes from 'prop-types';
 import withStyles from 'isomorphic-style-loader/lib/withStyles';
 import s from './Appointment.css';
 import history from '../../../history';
-import { mapOfServices } from '../../../data/database/services'
+import { mapOfServices } from '../../../data/database/services';
 import {
   Table,
   TableBody,
@@ -23,6 +23,14 @@ import {
   TableRow,
   TableRowColumn,
 } from 'material-ui/Table';
+
+const stylesRed = {
+  color: 'red',
+};
+
+const stylesGreen = {
+  color: 'green',
+};
 
 class AppointmentList extends React.Component {
   static propTypes = {};
@@ -34,11 +42,24 @@ class AppointmentList extends React.Component {
           {value.name}
         </TableRowColumn>
         <TableRowColumn>
-          <p>{moment(value.start).format('DD MMM YYYY')}</p>
-          <p>{moment(value.start).format('hh:mm A')}</p>
+          <p>
+            {moment(value.start).format('DD MMM YYYY')}
+          </p>
+          <p>
+            {moment(value.start).format('hh:mm A')}
+          </p>
+          <p>
+            <span
+              style={value.status === 'confirmed' ? stylesGreen : stylesRed}
+            >
+              {value.status}
+            </span>
+          </p>
         </TableRowColumn>
-        <TableRowColumn style={{whiteSpace:"wrap", textOverflow:"wrap"}}>
-          {value.serviceIds.map(serviceId => mapOfServices[serviceId].service).join(', ')}
+        <TableRowColumn style={{ whiteSpace: 'wrap', textOverflow: 'wrap' }}>
+          {value.serviceIds
+            .map(serviceId => mapOfServices[serviceId].service)
+            .join(', ')}
         </TableRowColumn>
       </TableRow>,
     );

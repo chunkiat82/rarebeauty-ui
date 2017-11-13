@@ -10,9 +10,9 @@
 import {
   GraphQLObjectType as ObjectType,
   GraphQLString as StringType,
-  GraphQLInt as IntegerType,
+  // GraphQLInt as IntegerType,
   GraphQLNonNull as NonNull,
-  GraphQLFloat as FloatType,
+  // GraphQLFloat as FloatType,
   GraphQLList as ListType,
 } from 'graphql';
 
@@ -23,6 +23,12 @@ const EventType = new ObjectType({
       type: new NonNull(StringType),
       resolve(obj) {
         return obj.id;
+      },
+    },
+    status: {
+      type: new NonNull(StringType),
+      resolve(obj) {
+        return obj.status;
       },
     },
     resourceName: {

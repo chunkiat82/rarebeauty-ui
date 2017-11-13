@@ -155,6 +155,12 @@ app.use('/events/calendar', async (req, res) => {
   res.sendStatus(200);
 });
 
+app.use('/public/appointment/confirm', async (req, res) => {
+  console.log(`req.query.eventId=${req.query.eventId}`);
+  // do something here to update to confirm
+  res.sendStatus(200);
+});
+
 //
 // Register server-side rendering middleware
 // -----------------------------------------------------------------------------
