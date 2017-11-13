@@ -143,17 +143,17 @@ async function remindCustomers(options) {
             console.error(`message=${message}`);
 
             if (mobile.indexOf(NO_MOBILE_NUMBER) === -1) {
-              // await sms(Object.assign({}, options, { mobile, message }));
+              await sms(Object.assign({}, options, { mobile, message }));
               console.error(
                 `${name} not reminded because mobile number is ${mobile}`,
               );
             }
 
-            // await calendarPatch({
-            //   eventId: event.id,
-            //   calendarId: 'rarebeauty@soho.sg',
-            //   reminded: true,
-            // });
+            await calendarPatch({
+              eventId: event.id,
+              calendarId: 'rarebeauty@soho.sg',
+              reminded: true,
+            });
           } catch (err) {
             console.error(err);
           }
