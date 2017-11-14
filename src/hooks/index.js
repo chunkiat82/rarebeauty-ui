@@ -89,7 +89,7 @@ export async function handleCalendarWebhook(headers) {
 
     if (item.status === 'cancelled') {
       handleCancel(item);
-    } else if (item.status === 'confirmed') {
+    } else if (item.status === 'confirmed' || item.status === 'tentative') {
       handleUpsert(item);
       try {
         const uuid = item.extendedProperties.shared.uuid;
