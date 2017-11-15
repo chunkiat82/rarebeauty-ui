@@ -9,6 +9,7 @@ import { mapOfServices } from '../data/database/services';
 
 import calendarCreate from './calendar/create';
 import urlCreate from './urlshortener/create';
+import contactGet from './contacts/get';
 
 const calendarPatch = require('./calendar/patch');
 const calendarDayBefore = require('./calendar/dayBeforeEvents');
@@ -146,6 +147,7 @@ async function remindCustomers(options) {
 
             if (mobile.indexOf(NO_MOBILE_NUMBER) === -1) {
               await sms(Object.assign({}, options, { mobile, message }));
+            } else {
               console.error(
                 `${name} not reminded because mobile number is ${mobile}`,
               );
@@ -193,6 +195,17 @@ async function createContact(options) {
 async function updateContact(options) {
   try {
     const contact = await contactUpdate(options);
+    // console.log(contact);
+    return contact;
+  } catch (err) {
+    console.error(err);
+    throw err;
+  }
+}
+
+async function getContact(options) {
+  try {
+    const contact = await contactGet(options);
     // console.log(contact);
     return contact;
   } catch (err) {
@@ -364,6 +377,7 @@ const functions = {
   listContacts,
   createContact,
   updateContact,
+  getContact,
   watchCalendar,
   stopWatchCalendar,
   getSyncToken,

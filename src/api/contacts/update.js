@@ -4,7 +4,7 @@ const generateJWT = require('../utilities/jwt');
 const google = require('googleapis');
 
 async function updateContact(
-  { resourceName, first, last, mobile, verified, etag },
+  { resourceName, first, last, mobile, validPhone, etag },
   me,
   cb,
 ) {
@@ -15,26 +15,36 @@ async function updateContact(
   });
 
   // console.error(`verified=${verified}` !== undefined ? verified : true);
+  const defaultResource = {
+    etag: me.etag,
+    phoneNumbers: me.phoneNumbers,
+    userDefined: me.userDefined,
+  };
+
+  if (mobile) {
+    defaultResource.phoneNumbers = [
+      {
+        value: `${mobile}`,
+        type: 'mobile',
+      },
+    ];
+  }
+
+  if (validPhone) {
+    // possible
+    defaultResource.userDefined = [
+      {
+        key: 'validPhone',
+        value: validPhone !== undefined ? validPhone : true,
+      },
+    ];
+  }
 
   people.people.updateContact(
     {
       resourceName,
       updatePersonFields: ['phoneNumbers', 'userDefined'],
-      resource: {
-        etag: me.etag,
-        phoneNumbers: [
-          {
-            value: `${mobile}`,
-            type: 'mobile',
-          },
-        ],
-        userDefined: [
-          {
-            key: 'mb',
-            value: verified !== undefined ? verified : true,
-          },
-        ],
-      },
+      resource: defaultResource,
     },
     {},
     cb,

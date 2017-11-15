@@ -39,6 +39,7 @@ function createAppointment(calendar, options) {
     services,
     calendarId,
     resourceName,
+    reminded,
   } = options;
 
   return new Promise(async (res, rej) => {
@@ -56,7 +57,7 @@ function createAppointment(calendar, options) {
           extendedProperties: {
             shared: {
               mobile,
-              reminded: false,
+              reminded: reminded !== undefined ? reminded : false,
               services: services.map(item => item.id).join(','),
               uuid,
               resourceName,
@@ -103,7 +104,7 @@ export default function create(options) {
     const calendar = google.calendar({ version: 'v3', auth: jwtClient });
 
     if (force) {
-      const { event, uuid } = await createAppointment(calendar.options);
+      const { event, uuid } = await createAppointment(calendar, options);
       res({ event, uuid });
     } else {
       const events = await findExistingAppointments(calendar, options);
