@@ -3,7 +3,7 @@ import React from 'react';
 import { showLoading, hideLoading } from 'react-redux-loading-bar';
 import Appointment from './components/Individual';
 import Layout from '../../components/Layout';
-import { listOfServices, mapOfServices } from '../../data/database/services';
+import { astListOfServices, listOfServices, mapOfServices } from '../../data/database/services';
 import {
   queryPastAppointments,
   createCalendar,
@@ -35,6 +35,7 @@ async function action({ fetch, store }) {
     component: (
       <Layout>
         <Appointment
+          astListOfServices={astListOfServices}
           listOfServices={listOfServices}
           mapOfServices={mapOfServices}
           queryPastAppointments={queryPastAppointments(fetch)}

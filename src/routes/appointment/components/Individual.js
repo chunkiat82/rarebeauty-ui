@@ -328,16 +328,16 @@ class Appointment extends React.Component {
             onChange={this.handleServiceChange}
             fullWidth
           >
-            {this.props.listOfServices.map(item =>
+            {this.props.astListOfServices.map(item =>
               <MenuItem
-                key={item.id}
+                key={item.value.id}
                 insetChildren
                 checked={
                   this.state.serviceIds &&
-                  this.state.serviceIds.indexOf(item.id) > -1
+                  this.state.serviceIds.indexOf(item.value.id) > -1
                 }
-                value={item.id}
-                primaryText={`${item.service} - ${item.price}`}
+                value={item.value.id}
+                primaryText={`${item.value.service} - ${item.value.price}`}
               />,
             )}
           </SelectField>

@@ -9,7 +9,7 @@ import moment from 'moment';
 import AppointmentType from '../types/AppointmentType';
 import api from '../../api';
 import { upsert } from '../database';
-import { mapOfServices } from '../database/services';
+import { mapOfServices, astListOfServices} from '../database/services';
 
 function createTransactionEntry(
   uuid,
@@ -106,7 +106,9 @@ export default {
     }
 
     try {
-      const services = serviceIds.map(item => mapOfServices[item]);
+      const services = serviceIds.map(serviceId => mapOfServices[serviceId]);
+
+      services.map(service => astListOfServices.get(services.index));
 
       // get finalResourceName here
       const person = await api({
