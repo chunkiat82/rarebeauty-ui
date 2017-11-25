@@ -1,3 +1,4 @@
+import AST from 'auto-sorting-array';
 import {
   GraphQLString as StringType,
   GraphQLInt as IntegerType,
@@ -8,7 +9,6 @@ import moment from 'moment';
 import AppointmentType from '../types/AppointmentType';
 import api from '../../api';
 import { get, upsert } from '../database';
-import { mapOfServices } from '../database/services';
 
 function createTransactionEntry(
   transId,
@@ -103,9 +103,19 @@ export default {
 
       // console.log(`eventId=${eventId}`);
       // console.log(`transId=${transId}`);
-      const services = serviceIds.map(item => mapOfServices[item]);
+
+      /* need to abstract this logic */
+      const response = await get(`config:services`);
+      const listOfServices = response.value.services;
+      const astServices = new AST(listOfServices, 'id');
+
+      const services = serviceIds.map(item => astServices.getByKey(item));
 
       // console.log(`services=${JSON.stringify(services, null ,2)}`);
+
+      upsert(`config:services`, {
+        services: astServices.getArray(),
+      });
 
       const event = await api({
         action: 'patchEvent',

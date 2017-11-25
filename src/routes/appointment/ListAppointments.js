@@ -3,6 +3,8 @@ import { showLoading, hideLoading } from 'react-redux-loading-bar';
 import Layout from '../../components/Layout';
 import AppointmentList from './components/List';
 
+import { getServices } from './common/functions';
+
 async function getEvents(fetch) {
   const resp = await fetch('/graphql', {
     body: JSON.stringify({
@@ -33,13 +35,15 @@ async function getEvents(fetch) {
 async function action({ fetch, params, store }) {
   store.dispatch(showLoading());
   const events = await getEvents(fetch);
+  const services = await getServices(fetch)();
   store.dispatch(hideLoading());
+
   return {
     chunks: ['appointment-list'],
     title: 'Rare Beauty Professional',
     component: (
       <Layout>
-        <AppointmentList rows={events} />
+        <AppointmentList rows={events} services={services} />
       </Layout>
     ),
   };

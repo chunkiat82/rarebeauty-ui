@@ -8,13 +8,6 @@
  */
 // http://www.material-ui.com/#/components/select-field
 import 'moment-duration-format';
-import moment from 'moment';
-import React from 'react';
-import PropTypes from 'prop-types';
-import withStyles from 'isomorphic-style-loader/lib/withStyles';
-import s from './Appointment.css';
-import history from '../../../history';
-import { mapOfServices } from '../../../data/database/services';
 import {
   Table,
   TableBody,
@@ -23,6 +16,13 @@ import {
   TableRow,
   TableRowColumn,
 } from 'material-ui/Table';
+import PropTypes from 'prop-types';
+import moment from 'moment';
+import React from 'react';
+// import PropTypes from 'prop-types';
+import withStyles from 'isomorphic-style-loader/lib/withStyles';
+import s from './Appointment.css';
+import history from '../../../history';
 
 const stylesRed = {
   color: 'red',
@@ -33,10 +33,13 @@ const stylesGreen = {
 };
 
 class AppointmentList extends React.Component {
-  static propTypes = {};
+  static propTypes = {
+    rows: PropTypes.array.isRequired,
+    services: PropTypes.array.isRequired,
+  };
 
   rows(values) {
-    return values.map((value, index) =>
+    return values.map((value /* ,index*/) =>
       <TableRow key={value.id}>
         <TableRowColumn>
           {value.name}
@@ -58,7 +61,7 @@ class AppointmentList extends React.Component {
         </TableRowColumn>
         <TableRowColumn style={{ whiteSpace: 'wrap', textOverflow: 'wrap' }}>
           {value.serviceIds
-            .map(serviceId => mapOfServices[serviceId].service)
+            .map(serviceId => this.props.services.peekByKey(serviceId).service)
             .join(', ')}
         </TableRowColumn>
       </TableRow>,

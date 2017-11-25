@@ -1,3 +1,4 @@
+import AST from 'auto-sorting-array';
 import {
   //   GraphQLObjectType as ObjectType,
   GraphQLString as StringType,
@@ -8,8 +9,7 @@ import {
 import moment from 'moment';
 import AppointmentType from '../types/AppointmentType';
 import api from '../../api';
-import { upsert } from '../database';
-import { mapOfServices } from '../database/services';
+import { get, upsert } from '../database';
 
 function createTransactionEntry(
   uuid,
@@ -106,7 +106,23 @@ export default {
     }
 
     try {
-      const services = serviceIds.map(item => mapOfServices[item]);
+      /* need to abstract this logic */
+      const response = await get(`config:services`);
+      const listOfServices = response.value.services;
+      const astServices = new AST(listOfServices, 'id');
+
+      const services = serviceIds.map(serviceId =>
+        // console.log(`serviceId=${serviceId}`);
+        astServices.getByKey(serviceId),
+      );
+      // console.error('i was here');
+      // console.error(services);
+      // console.error(astServices.getArray());
+
+      upsert(`config:services`, {
+        services: astServices.getArray(),
+      });
+      /* end of abstraction */
 
       // get finalResourceName here
       const person = await api({

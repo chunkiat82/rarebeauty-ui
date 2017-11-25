@@ -3,12 +3,12 @@ import moment from 'moment';
 import { showLoading, hideLoading } from 'react-redux-loading-bar';
 import Appointment from './components/Individual';
 import Layout from '../../components/Layout';
-import { listOfServices, mapOfServices } from '../../data/database/services';
 import {
   queryPastAppointments,
   listContacts,
   getAppointment,
   updateAppointment,
+  getServices,
 } from './common/functions';
 
 function show(store) {
@@ -48,6 +48,7 @@ async function action({ fetch, params, store }) {
     totalAmount = transaction.totalAmount;
   }
   const pastAppointments = await queryPastAppointments(fetch)(resourceName);
+  const services = await getServices(fetch)();
   // console.log(`resourceName=${resourceName}`);
   // console.log(`Edit pastAppointments=${JSON.stringify(pastAppointments)}`);
   hide(store)();
@@ -64,13 +65,14 @@ async function action({ fetch, params, store }) {
             await updateAppointment(fetch)(
               Object.assign({ id: apptId, resourceName }, input),
             );
-            setTimeout(()=>{open(location, '_self').close();}, 100);
-            return { updatedAppointment: true};
+            setTimeout(() => {
+              open(location, '_self').close();
+            }, 100);
+            return { updatedAppointment: true };
           }}
           queryPastAppointments={queryPastAppointments(fetch)}
           pastAppointments={pastAppointments}
-          listOfServices={listOfServices}
-          mapOfServices={mapOfServices}
+          services={services}
           contact={contact}
           name={name}
           mobile={mobile}

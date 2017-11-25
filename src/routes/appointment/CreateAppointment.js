@@ -3,11 +3,11 @@ import React from 'react';
 import { showLoading, hideLoading } from 'react-redux-loading-bar';
 import Appointment from './components/Individual';
 import Layout from '../../components/Layout';
-import { listOfServices, mapOfServices } from '../../data/database/services';
 import {
   queryPastAppointments,
   createCalendar,
   listContacts,
+  getServices,
 } from './common/functions';
 
 function show(store) {
@@ -24,10 +24,13 @@ function hide(store) {
 
 async function action({ fetch, store }) {
   show(store)();
-  const contact = await listContacts(fetch)();
+  const contacts = await listContacts(fetch)();
+  const services = await getServices(fetch)();
+  // console.log(services);
   hide(store)();
 
-  if (!contact) throw new Error('Failed to load the contact feed.');
+  if (!contacts && !services)
+    throw new Error('Failed to load the contacts or services.');
 
   return {
     chunks: ['appointment-create'],
@@ -35,10 +38,9 @@ async function action({ fetch, store }) {
     component: (
       <Layout>
         <Appointment
-          listOfServices={listOfServices}
-          mapOfServices={mapOfServices}
+          services={services}
           queryPastAppointments={queryPastAppointments(fetch)}
-          contact={contact}
+          contact={contacts}
           post={createCalendar(fetch)}
           buttonText={'Create Appointment'}
           successMessage={'Appointment Added'}

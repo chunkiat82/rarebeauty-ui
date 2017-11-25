@@ -1,11 +1,11 @@
 import jwt from 'jsonwebtoken';
 import moment from 'moment';
+import AST from 'auto-sorting-array';
 import config from '../config';
 import calendarList from './calendar/list';
 import calendarGet from './calendar/get';
 import calendarDelta from './calendar/delta';
 import contactLists from './contacts/list';
-import { mapOfServices } from '../data/database/services';
 
 import calendarCreate from './calendar/create';
 import urlCreate from './urlshortener/create';
@@ -307,6 +307,12 @@ async function remindCustomersTouchUp(options) {
     // console.log('No reminder events found.');
   } else {
     // console.log(`Upcoming events for tomorrow ${events.length}`);
+    /* need to abstract this logic */
+    const response = await get(`config:services`);
+    const listOfServices = response.value.services;
+    // const mapOfServices = convertToMap(listOfServices);
+    const services = new AST(listOfServices, 'id');
+
     events.forEach(async event => {
       // console.log(event);
       // console.log(`services=${JSON.stringify(event.extendedProperties.shared.services, null, 2)}`);
@@ -318,12 +324,14 @@ async function remindCustomersTouchUp(options) {
           event.extendedProperties.shared.touchUpReminded === false ||
           event.extendedProperties.shared.touchUpReminded === undefined)
       ) {
-        const services = event.extendedProperties.shared.services.split(',');
+        const inputServices = event.extendedProperties.shared.services.split(
+          ',',
+        );
 
         // this is full set services which are eligible for touch up
 
-        const naturalService = services.indexOf('service:1') > -1;
-        const denseService = services.indexOf('service:2') > -1;
+        const naturalService = inputServices.indexOf('service:1') > -1;
+        const denseService = inputServices.indexOf('service:2') > -1;
         if (!naturalService && !denseService) {
           return;
         }
@@ -332,8 +340,8 @@ async function remindCustomersTouchUp(options) {
 
         try {
           const lashService = naturalService ? 'service:1' : 'service:2';
-          const followUpService = mapOfServices[lashService].followUp;
-          const followUpPrice = mapOfServices[followUpService].price;
+          const followUpService = services.peekByKey(lashService).followUp;
+          const followUpPrice = services.peekByKey(followUpService).price;
           const name = event.summary;
           const mobile =
             (event.extendedProperties &&

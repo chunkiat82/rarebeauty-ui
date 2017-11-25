@@ -7,6 +7,7 @@
  * LICENSE.txt file in the root directory of this source tree.
  */
 // http://www.material-ui.com/#/components/select-field
+import AST from 'auto-sorting-array';
 import 'moment-duration-format';
 import moment from 'moment';
 import React from 'react';
@@ -41,13 +42,15 @@ class Appointment extends React.Component {
     ).isRequired,
     post: PropTypes.func.isRequired,
     queryPastAppointments: PropTypes.func.isRequired,
-    listOfServices: PropTypes.arrayOf(
-      PropTypes.shape({
-        id: PropTypes.string.isRequired,
-        service: PropTypes.string.isRequired,
-        price: PropTypes.number.isRequired,
-      }).isRequired,
-    ).isRequired,
+    // listOfServices: PropTypes.arrayOf(
+    //   PropTypes.shape({
+    //     id: PropTypes.string.isRequired,
+    //     service: PropTypes.string.isRequired,
+    //     price: PropTypes.number.isRequired,
+    //     duration: PropTypes.number.isRequired
+    //   }).isRequired,
+    // ).isRequired,
+    services: PropTypes.instanceOf(AST),
     buttonText: PropTypes.string.isRequired,
     name: PropTypes.string,
     mobile: PropTypes.string,
@@ -72,6 +75,9 @@ class Appointment extends React.Component {
     // ),
     successMessage: PropTypes.string,
     errorMessage: PropTypes.string,
+    startDate: PropTypes.string.isRequired,
+    startTime: PropTypes.string.isRequired,
+    id: PropTypes.string,
   };
   static defaultProps = {
     successMessage: '',
@@ -85,7 +91,8 @@ class Appointment extends React.Component {
     discount: 0,
     additional: 0,
     pastAppointments: {},
-    mapOfServices: {},
+    services: {},
+    // mapOfServices: {},
   };
 
   componentWillMount() {
@@ -135,9 +142,8 @@ class Appointment extends React.Component {
 
   calculateTotal(serviceIds, additional, discount) {
     if (!serviceIds) return 0;
-    // console.log(serviceIds);
     const totalServices = serviceIds.reduce(
-      (sum, serviceId) => sum + this.props.mapOfServices[serviceId].price,
+      (sum, serviceId) => sum + this.props.services.peekByKey(serviceId).price,
       0,
     );
     return totalServices + Number(additional) - Number(discount);
@@ -145,9 +151,9 @@ class Appointment extends React.Component {
 
   calculateDuration(serviceIds) {
     if (!serviceIds) return 0;
-    // console.log(serviceIds);
     const totalServices = serviceIds.reduce(
-      (sum, serviceId) => sum + this.props.mapOfServices[serviceId].duration,
+      (sum, serviceId) =>
+        sum + this.props.services.peekByKey(serviceId).duration,
       0,
     );
     return totalServices + 5 /* settling in time */;
@@ -220,14 +226,15 @@ class Appointment extends React.Component {
     if (this.state.pastAppointments && this.state.pastAppointments.length > 0) {
       const pastAppointments = this.state.pastAppointments.reduce(
         (array, appt) => {
-          if (appt == undefined) return array;
+          if (appt === undefined) return array;
           // console.log(appt.transaction.items.reduce((array, item) => { return array[0] = String(item.name) }, []));
-          const services = appt.transaction && appt.transaction.items
-            ? appt.transaction.items.reduce((serviceArray, item) => {
-              serviceArray.push(item.name);
-              return serviceArray;
-            }, [])
-            : [];
+          const services =
+            appt.transaction && appt.transaction.items
+              ? appt.transaction.items.reduce((serviceArray, item) => {
+                  serviceArray.push(item.name);
+                  return serviceArray;
+                }, [])
+              : [];
           if (services.length > 0) {
             array.push(
               React.createElement(
@@ -250,16 +257,20 @@ class Appointment extends React.Component {
             {pastAppointments}
           </div>
         );
-      } else {
-        return ['No Past Appointments'];
       }
+      return ['No Past Appointments'];
     }
     return ['No Past Appointments'];
   };
 
   render() {
     return (
-      <div className={s.root} ref={c => { this.rootComponent = c; }}>
+      <div
+        className={s.root}
+        ref={c => {
+          this.rootComponent = c;
+        }}
+      >
         <div className={s.container}>
           <Card
             expanded={this.state.expanded}
@@ -328,18 +339,20 @@ class Appointment extends React.Component {
             onChange={this.handleServiceChange}
             fullWidth
           >
-            {this.props.listOfServices.map(item =>
-              <MenuItem
-                key={item.id}
-                insetChildren
-                checked={
-                  this.state.serviceIds &&
-                  this.state.serviceIds.indexOf(item.id) > -1
-                }
-                value={item.id}
-                primaryText={`${item.service} - ${item.price}`}
-              />,
-            )}
+            {this.props.services
+              .getArray()
+              .map(item =>
+                <MenuItem
+                  key={item.id}
+                  insetChildren
+                  checked={
+                    this.state.serviceIds &&
+                    this.state.serviceIds.indexOf(item.id) > -1
+                  }
+                  value={item.id}
+                  primaryText={`${item.service} - ${item.price}`}
+                />,
+              )}
           </SelectField>
           <TextField
             hintText="Additional"
@@ -386,18 +399,18 @@ class Appointment extends React.Component {
 
               this.props.showLoading();
               this.setState({
-                error: false
+                error: false,
               });
               const results = await this.props.post(inputs);
               this.props.hideLoading();
 
               this.setState({
-                notify: true
+                notify: true,
               });
 
               if (results.errors) {
-                this.setState({ error: "Error In Creating Appointment" });
-                console.error("Error In Creating Appointment");
+                this.setState({ error: 'Error In Creating Appointment' });
+                console.error('Error In Creating Appointment');
               } else {
                 this.setState({
                   name: '',
@@ -424,7 +437,11 @@ class Appointment extends React.Component {
           />
           <Snackbar
             open={this.state.notify}
-            message={this.state.error ? this.props.errorMessage : this.props.successMessage}
+            message={
+              this.state.error
+                ? this.props.errorMessage
+                : this.props.successMessage
+            }
             bodyStyle={{
               backgroundColor: this.state.error ? '#ce1818' : '#373277',
               paddingBottom: 28,

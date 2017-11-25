@@ -1,4 +1,7 @@
 import moment from 'moment';
+import AST from 'auto-sorting-array';
+
+let services = null;
 
 export function queryPastAppointments(fetch) {
   return async personId => {
@@ -90,7 +93,7 @@ export function createCalendar(fetch) {
 
     const { data, errors } = await resp.json();
 
-    return { errors , data };
+    return { errors, data };
   };
 }
 
@@ -199,7 +202,42 @@ export function updateAppointment(fetch) {
 
     const { data, errors } = await resp.json();
 
-    return  { data, errors };
+    return { data, errors };
+  };
+}
+
+function listServices(fetch) {
+  return async () => {
+    const resp = await fetch('/graphql', {
+      body: JSON.stringify({
+        query: `
+          {
+              services {
+                id,
+                service,
+                duration,
+                price,
+                followUp,
+                count
+              }
+          }
+        `,
+      }),
+    });
+    const { data } = await resp.json();
+
+    return data.services;
+  };
+}
+
+// uses some weak cache
+export function getServices(fetch) {
+  return async () => {
+    if (services === null) {
+      const responseServices = await listServices(fetch)();
+      services = new AST(responseServices, 'id');
+    }
+    return services;
   };
 }
 
@@ -209,4 +247,5 @@ export default {
   listContacts,
   getAppointment,
   updateAppointment,
+  getServices,
 };
