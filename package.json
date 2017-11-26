@@ -8,7 +8,7 @@
   },
   "browserslist": [">1%", "last 4 versions", "Firefox ESR", "not ie < 9"],
   "dependencies": {
-    "auto-sorting-array": "4.0.2",
+    "auto-sorting-array": "4.5.0",
     "babel-polyfill": "^6.23.0",
     "babel-preset-react-native": "^3.0.0",
     "bluebird": "^3.5.0",

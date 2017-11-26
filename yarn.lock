@@ -362,9 +362,9 @@ asynckit@^0.4.0:
   version "0.4.0"
   resolved "https://registry.yarnpkg.com/asynckit/-/asynckit-0.4.0.tgz#c79ed97f7f34cb8f2ba1bc9790bcc366474b4b79"
 
-auto-sorting-array@4.0.2:
-  version "4.0.2"
-  resolved "https://registry.yarnpkg.com/auto-sorting-array/-/auto-sorting-array-4.0.2.tgz#6205e3e65f0035c50621504d564a24c11dcbaa7f"
+auto-sorting-array@4.5.0:
+  version "4.5.0"
+  resolved "https://registry.yarnpkg.com/auto-sorting-array/-/auto-sorting-array-4.5.0.tgz#1e5d6fbec91f6aa9fda108fb3eeabac86fd43bdd"
 
 autoprefixer@^6.0.0, autoprefixer@^6.3.1:
   version "6.7.7"

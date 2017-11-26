@@ -75,9 +75,9 @@ class Appointment extends React.Component {
     // ),
     successMessage: PropTypes.string,
     errorMessage: PropTypes.string,
-    startDate: PropTypes.string.isRequired,
-    startTime: PropTypes.string.isRequired,
-    id: PropTypes.string,
+    // startDate: PropTypes.string.isRequired,
+    // startTime: PropTypes.string.isRequired,
+    // id: PropTypes.string,
   };
   static defaultProps = {
     successMessage: '',
@@ -394,6 +394,9 @@ class Appointment extends React.Component {
             fullWidth
             onClick={async () => {
               const inputs = Object.assign({}, this.state);
+              delete inputs.contactDS;
+              delete inputs.pastAppointments;
+
               inputs.mobile = inputs.mobileInput || inputs.mobile;
               inputs.name = inputs.nameInput || inputs.name;
 
