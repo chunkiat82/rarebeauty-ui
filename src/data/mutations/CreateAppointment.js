@@ -138,7 +138,8 @@ export default {
           obj => obj.key === 'validPhone',
         );
         // this is the business logic
-        reminded = validPhoneArray[0].value === 'false';
+        /* i think we must check the whole array */
+        reminded = validPhoneArray[0] && validPhoneArray[0].value === 'false';
       }
 
       const { event, uuid } = await api({
@@ -178,7 +179,7 @@ export default {
       // console.log(`transaction=${JSON.stringify(transaction, null, 2)}`);
       return { id: uuid, event, transaction, createdAt: now, lastUpdated: now };
     } catch (err) {
-      // console.log(err);
+      console.error(err);
       throw err;
     }
   },
