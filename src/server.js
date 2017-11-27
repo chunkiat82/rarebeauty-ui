@@ -67,18 +67,18 @@ function checkingUser(req, payload, done) {
 }
 
 if (!__DEV__) {
-  const myFilter = function(req) {
-    console.error(req.url.indexOf('/public/appointment/confirm/') === 0);
-    console.error(req.url);
+  // const myFilter = function(req) {
+  //   console.error(req.url.indexOf('/public/appointment/confirm/') === 0);
+  //   console.error(req.url);
 
-    if (
-      req.url.indexOf('/public/appointment/confirm/') === 0 ||
-      /\/events\/calendar/.test(req.url)
-    ) {
-      return true;
-    }
-    return false;
-  };
+  //   if (
+  //     req.url.indexOf('/public/appointment/confirm/') === 0 ||
+  //     /\/events\/calendar/.test(req.url)
+  //   ) {
+  //     return true;
+  //   }
+  //   return false;
+  // };
 
   app.use(
     expressJwt({
@@ -92,7 +92,13 @@ if (!__DEV__) {
         }
         return null;
       },
-    }).unless(myFilter),
+    }).unless({
+      path: [
+        /\/public\/appointment\/confirm*/,
+        '/events/calendar/',
+        '/general/location/',
+      ],
+    }),
   );
   // Error handler for express-jwt
 

@@ -21,15 +21,18 @@ const routes = {
     },
     {
       path: '/appointment/create',
-      load: () => import(/* webpackChunkName: 'appointment-create' */ './appointment/CreateAppointment'),
+      load: () =>
+        import(/* webpackChunkName: 'appointment-create' */ './appointment/CreateAppointment'),
     },
     {
       path: '/appointment/edit/:id',
-      load: () => import(/* webpackChunkName: 'appointment-edit' */ './appointment/EditAppointment'),
+      load: () =>
+        import(/* webpackChunkName: 'appointment-edit' */ './appointment/EditAppointment'),
     },
     {
       path: '/appointment/',
-      load: () => import(/* webpackChunkName: 'appointment-list' */ './appointment/ListAppointments'),
+      load: () =>
+        import(/* webpackChunkName: 'appointment-list' */ './appointment/ListAppointments'),
     },
     {
       path: '/contact',
@@ -54,6 +57,11 @@ const routes = {
     {
       path: '/admin',
       load: () => import(/* webpackChunkName: 'admin' */ './admin'),
+    },
+    {
+      path: '/general/location',
+      load: () =>
+        import(/* webpackChunkName: 'general-location' */ './general/location'),
     },
 
     // Wildcard routes, e.g. { path: '*', ... } (must go last)
