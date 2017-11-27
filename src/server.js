@@ -95,8 +95,9 @@ if (!__DEV__) {
     }).unless({
       path: [
         /\/public\/appointment\/confirm*/,
-        '/events/calendar/',
-        '/general/location/',
+        '/events/calendar',
+        '/general/location',
+        /\/general\/confirmation*/,
       ],
     }),
   );

@@ -63,6 +63,11 @@ const routes = {
       load: () =>
         import(/* webpackChunkName: 'general-location' */ './general/location'),
     },
+    {
+      path: '/general/confirmation/:id',
+      load: () =>
+        import(/* webpackChunkName: 'general-confirmation' */ './general/confirmation'),
+    },
 
     // Wildcard routes, e.g. { path: '*', ... } (must go last)
     {
