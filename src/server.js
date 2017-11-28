@@ -90,6 +90,7 @@ if (!__DEV__) {
         '/events/calendar',
         '/general/location',
         /\/general\/confirmation*/,
+        /\/assets*/,
       ],
     }),
   );

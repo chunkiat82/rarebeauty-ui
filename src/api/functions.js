@@ -137,7 +137,7 @@ async function remindCustomers(options) {
             const startDate = moment(event.start.dateTime).format('DD-MMM');
             const startTime = moment(event.start.dateTime).format('hh:mm a');
             const shortURL = await urlCreate({
-              longURL: `https://rarebeauty.soho.sg/public/appointment/confirm/${event.id}`,
+              longURL: `https://rarebeauty.soho.sg/general/confirmation/${event.id}`,
             });
             const message = `<Reminder>Appt on ${startDate} at ${startTime}.\n\nAny changes, please reply now to REPLY_MOBILE\n\nOtherwise click ${shortURL.id} to confirm your appt`;
 
