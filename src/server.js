@@ -13,31 +13,22 @@ import path from 'path';
 import express from 'express';
 import cookieParser from 'cookie-parser';
 import bodyParser from 'body-parser';
-import expressJwt, { UnauthorizedError as Jwt401Error } from 'express-jwt';
+import expressJwt from 'express-jwt';
 import expressGraphQL from 'express-graphql';
 // import jwt from 'jsonwebtoken';
-import fetch from 'node-fetch';
-import React from 'react';
-import ReactDOM from 'react-dom/server';
 import PrettyError from 'pretty-error';
 import _httpErrorPages from 'http-error-pages';
-import App from './components/App';
-import Html from './components/Html';
-import { ErrorPageWithoutStyle } from './routes/error/ErrorPage';
-import errorPageStyle from './routes/error/ErrorPage.css';
-import createFetch from './createFetch';
+
 import passport from './passport';
-import router from './router';
 import models from './data/models';
 import schema from './data/schema';
-import assets from './assets.json'; // eslint-disable-line import/no-unresolved
-import configureStore from './store/configureStore';
-import { setRuntimeVariable } from './actions/runtime';
-import config from './config';
+
 import { handleCalendarWebhook } from './hooks';
 import { logLogin } from './data/database/login';
-
+import { reactMiddleware, reactErrorMiddleware } from './reactMiddleware';
 import API from './api/';
+
+import config from './config';
 
 const app = express();
 
@@ -61,8 +52,9 @@ app.use(bodyParser.json());
 // -----------------------------------------------------------------------------
 function checkingUser(req, payload, done) {
   const secret = config.auth.jwt.secret;
-  logLogin(payload.data.username, payload);
-  // console.log(payload);
+  if (payload.data) {
+    logLogin(payload.data.username, payload);
+  }
   done(null, secret);
 }
 
@@ -103,23 +95,7 @@ if (!__DEV__) {
   );
   // Error handler for express-jwt
 
-  app.use((err, req, res, next) => {
-    if (err.name === 'UnauthorizedError') {
-      res.clearCookie('token');
-      res.status(401);
-      // return res.status(401).send('Unauthorized Access...Please leave');
-      // handle error pages
-      // return
-    }
-
-    // eslint-disable-line no-unused-vars
-    if (err instanceof Jwt401Error) {
-      console.error('[express-jwt-error]', req.cookies.id_token);
-      // `clearCookie`, otherwise user can't use web-app until cookie expires
-      res.clearCookie('id_token');
-    }
-    next(err);
-  });
+  app.use(reactErrorMiddleware);
 
   app.use((req, res, next) => {
     if (req.query.token) {
@@ -179,8 +155,6 @@ app.use('/events/calendar', async (req, res) => {
 
 app.use('/public/appointment/confirm/:eventId', async (req, res) => {
   const { eventId } = req.params;
-  console.error(`req.params.eventId=${eventId}`);
-  // do something here to update to confirm
   await API({ action: 'patchEvent', status: 'confirmed', eventId });
   res.status(200);
   res.send(
@@ -188,85 +162,22 @@ app.use('/public/appointment/confirm/:eventId', async (req, res) => {
   );
 });
 
+app.use('/general/confirmation/:eventId', async (req, res, next) => {
+  const { eventId } = req.params;
+
+  if (eventId === 'images') return;
+
+  const event = await API({ action: 'getEvent', eventId });
+  req.data = { event };
+  await API({ action: 'patchEvent', status: 'confirmed', eventId });
+
+  reactMiddleware(req, res, next);
+});
+
 //
 // Register server-side rendering middleware
 // -----------------------------------------------------------------------------
-app.get('*', async (req, res, next) => {
-  try {
-    const css = new Set();
-
-    const initialState = {
-      user: req.user || null,
-    };
-
-    const store = configureStore(initialState, {
-      fetch,
-      // I should not use `history` on server.. but how I do redirection? follow universal-router
-    });
-
-    store.dispatch(
-      setRuntimeVariable({
-        name: 'initialNow',
-        value: Date.now(),
-      }),
-    );
-
-    // Global (context) variables that can be easily accessed from any React component
-    // https://facebook.github.io/react/docs/context.html
-    const context = {
-      // Enables critical path CSS rendering
-      // https://github.com/kriasoft/isomorphic-style-loader
-      insertCss: (...styles) => {
-        // eslint-disable-next-line no-underscore-dangle
-        styles.forEach(style => css.add(style._getCss()));
-      },
-      // Universal HTTP client
-      fetch: createFetch(fetch, {
-        baseUrl: config.api.serverUrl,
-        cookie: req.headers.cookie,
-      }),
-      userAgent: req.headers['user-agent'],
-      store,
-      storeSubscription: null,
-    };
-    // console.log(` req.userAgent=${ req.userAgent}`);
-
-    // route.component will have this context too
-    const route = await router.resolve({
-      ...context,
-      path: req.path,
-      query: req.query,
-    });
-
-    if (route.redirect) {
-      res.redirect(route.status || 302, route.redirect);
-      return;
-    }
-
-    const data = { ...route };
-    data.children = ReactDOM.renderToString(
-      <App context={context} store={store}>
-        {route.component}
-      </App>,
-    );
-    data.styles = [{ id: 'css', cssText: [...css].join('') }];
-    data.scripts = [assets.vendor.js];
-    if (route.chunks) {
-      data.scripts.push(...route.chunks.map(chunk => assets[chunk].js));
-    }
-    data.scripts.push(assets.client.js);
-    data.app = {
-      apiUrl: config.api.clientUrl,
-      state: context.store.getState(),
-    };
-
-    const html = ReactDOM.renderToStaticMarkup(<Html {...data} />);
-    res.status(route.status || 200);
-    res.send(`<!doctype html>${html}`);
-  } catch (err) {
-    next(err);
-  }
-});
+app.get('*', reactMiddleware);
 
 //
 // Error handling
@@ -277,20 +188,7 @@ if (__DEV__) {
   pe.skipPackage('express');
 
   // eslint-disable-next-line no-unused-vars
-  app.use((err, req, res, next) => {
-    console.error(pe.render(err));
-    const html = ReactDOM.renderToStaticMarkup(
-      <Html
-        title="Internal Server Error_httpErrorPages(app);"
-        description={err.message}
-        styles={[{ id: 'css', cssText: errorPageStyle._getCss() }]} // eslint-disable-line no-underscore-dangle
-      >
-        {ReactDOM.renderToString(<ErrorPageWithoutStyle error={err} />)}
-      </Html>,
-    );
-    res.status(err.status || 500);
-    res.send(`<!doctype html>${html}`);
-  });
+  app.use(reactErrorMiddleware);
 } else {
   _httpErrorPages(app);
 }

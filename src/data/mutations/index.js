@@ -1,3 +1,5 @@
+import { GraphQLObjectType as ObjectType } from 'graphql';
+
 import createAppointment from './CreateAppointment';
 import updateAppointment from './UpdateAppointment';
 import updateEventStatus from './UpdateEventStatus';

@@ -1,14 +1,11 @@
-import AST from 'auto-sorting-array';
 import {
   GraphQLString as StringType,
-  GraphQLInt as IntegerType,
-  GraphQLList as ListType,
-  GraphQLFloat as FloatType,
+  // GraphQLInt as IntegerType,
+  // GraphQLList as ListType,
+  // GraphQLFloat as FloatType,
 } from 'graphql';
-import moment from 'moment';
 import EventStatusType from '../types/EventStatusType';
-import api from '../../api';
-import { get, upsert } from '../database';
+import API from '../../api';
 
 export default {
   type: EventStatusType,
@@ -22,6 +19,7 @@ export default {
   },
   async resolve(value, { id, status }) {
     try {
+      await API({ action: 'patchEvent', status: 'confirmed', eventId: id });
       return { id, status };
     } catch (err) {
       console.error(err);

@@ -8,6 +8,7 @@
  */
 
 import React from 'react';
+import moment from 'moment';
 import PropTypes from 'prop-types';
 import withStyles from 'isomorphic-style-loader/lib/withStyles';
 import s from './Confirmation.css';
@@ -18,21 +19,26 @@ class Confirmation extends React.Component {
   };
 
   render() {
-    const errors = this.props.errors;
+    const { errors, event } = this.props;
+    // console.log(JSON.stringify(event));
+
+    const message = `Your appointment on ${moment(event.start.dateTime).format(
+      'LLLL',
+    )} is confirmed`;
 
     return (
       <div className={s.root}>
         <div className={s.container}>
-          <h1>
+          <h2>
             <center>
-              <span style="color:white">
-                {errors ? 'There is error!' : 'Your Appointment is confirmed!'}
+              <span>
+                {errors ? 'There is error!' : message}
               </span>
             </center>
-          </h1>
-          <h4 className={s.textCenter}>
+          </h2>
+          <h3 className={s.textCenter}>
             {this.props.title}
-          </h4>
+          </h3>
           <iframe
             style={{
               width: 600,
