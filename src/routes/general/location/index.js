@@ -16,7 +16,7 @@ const address = 'Blk 987B Jurong West Street 93 #12-569 S(642987)';
 function action() {
   return {
     chunks: ['general-location'],
-    address,
+    title: 'Rare Beauty Professional',
     component: (
       <Layout>
         <Register title={address} />

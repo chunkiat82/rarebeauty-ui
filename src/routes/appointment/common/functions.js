@@ -28,9 +28,7 @@ export function queryPastAppointments(fetch) {
 
     const { data: personData } = await personResponse.json();
 
-    // console.log(personData);
-
-    return personData.person.appointments;
+    return personData.person ? personData.person.appointments : [];
   };
 }
 
