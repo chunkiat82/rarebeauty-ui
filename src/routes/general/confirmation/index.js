@@ -18,7 +18,7 @@ async function action({ fetch, params, store }) {
 
   return {
     chunks: ['general-confirmation'],
-    address,
+    title: 'Rare Beauty Professional',
     component: (
       <Layout>
         <Confirmation title={address} event={event} />

@@ -41,8 +41,8 @@ class Confirmation extends React.Component {
           </h3>
           <iframe
             style={{
-              width: 600,
-              height: 450,
+              width: 320,
+              height: 240,
               frameborder: 0,
               style: 'border:0',
             }}
