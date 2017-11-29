@@ -8,7 +8,7 @@
  */
 
 import React from 'react';
-import Layout from '../../../components/Layout';
+import Layout from '../../../components/PublicLayout';
 import Confirmation from './Confirmation';
 
 const address = 'Blk 987B Jurong West Street 93 #12-569 S(642987)';
