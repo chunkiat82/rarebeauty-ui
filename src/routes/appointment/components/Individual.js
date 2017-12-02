@@ -23,6 +23,7 @@ import FontIcon from 'material-ui/FontIcon';
 import RaisedButton from 'material-ui/RaisedButton';
 import AutoComplete from 'material-ui/AutoComplete';
 import Snackbar from 'material-ui/Snackbar';
+import Toggle from 'material-ui/Toggle';
 import { Card, CardText } from 'material-ui/Card';
 import s from './Appointment.css';
 
@@ -384,6 +385,14 @@ class Appointment extends React.Component {
             min={0}
             max={500}
             onChange={this.handleSliderChange}
+          />
+          <Toggle
+            label="Send appointment details to customer (only for creation now)"
+            labelPosition="right"
+            style={{ marginBottom: 16 }}
+            onToggle={(event, isInputChecked) => {
+              this.setState({ toBeInformed: isInputChecked });
+            }}
           />
           <RaisedButton
             ref={c => {

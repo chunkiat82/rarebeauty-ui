@@ -40,6 +40,7 @@ function createAppointment(calendar, options) {
     calendarId,
     resourceName,
     reminded,
+    informed,
   } = options;
 
   return new Promise(async (res, rej) => {
@@ -58,6 +59,7 @@ function createAppointment(calendar, options) {
             shared: {
               mobile,
               reminded: reminded !== undefined ? reminded : false,
+              informed: informed !== undefined ? informed : false,
               services: services.map(item => item.id).join(','),
               uuid,
               resourceName,

@@ -45,6 +45,7 @@ export function createCalendar(fetch) {
       totalAmount,
       additional,
       discount,
+      toBeInformed,
     } = input;
 
     const dateInput = moment(startDate).format('YYYYMMDD');
@@ -52,8 +53,8 @@ export function createCalendar(fetch) {
 
     const resp = await fetch('/graphql', {
       body: JSON.stringify({
-        query: `mutation($name: String!, $mobile:String!, $resourceName:String, $start:String!, $serviceIds:[String]!, $duration:Int!, $totalAmount:Float, $additional:Float, $discount:Float) {
-                    createAppointment(name:$name, mobile:$mobile, resourceName:$resourceName, start:$start, serviceIds:$serviceIds, duration:$duration, totalAmount:$totalAmount, additional:$additional, discount:$discount ) {
+        query: `mutation($name: String!, $mobile:String!, $resourceName:String, $start:String!, $serviceIds:[String]!, $duration:Int!, $totalAmount:Float, $additional:Float, $discount:Float, $toBeInformed:Boolean) {
+                    createAppointment(name:$name, mobile:$mobile, resourceName:$resourceName, start:$start, serviceIds:$serviceIds, duration:$duration, totalAmount:$totalAmount, additional:$additional, discount:$discount, toBeInformed:$toBeInformed ) {
                         id
                         event { 
                             id,
@@ -62,7 +63,8 @@ export function createCalendar(fetch) {
                             mobile,
                             start,
                             end,
-                            serviceIds
+                            serviceIds,
+                            informed
                         }
                         transaction {
                             id,
@@ -85,6 +87,7 @@ export function createCalendar(fetch) {
           totalAmount,
           additional,
           discount,
+          toBeInformed,
         }),
       }),
     });

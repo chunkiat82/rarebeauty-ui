@@ -13,6 +13,7 @@ import {
   // GraphQLInt as IntegerType,
   GraphQLNonNull as NonNull,
   // GraphQLFloat as FloatType,
+  GraphQLBoolean as BooleanType,
   GraphQLList as ListType,
 } from 'graphql';
 
@@ -71,6 +72,12 @@ const EventType = new ObjectType({
       type: StringType,
       resolve(obj) {
         return obj.extendedProperties.shared.uuid;
+      },
+    },
+    informed: {
+      type: BooleanType,
+      resolve(obj) {
+        return obj.extendedProperties.shared.informed;
       },
     },
   },

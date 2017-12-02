@@ -24,10 +24,16 @@ const { getSyncToken, setSyncToken } = require('./utilities/token');
 const { get, upsert } = require('../data/database');
 
 const NO_MOBILE_NUMBER = '00000000';
+const calendarId = 'rarebeauty@soho.sg';
+const confirmationURL = 'https://rarebeauty.soho.sg/general/confirmation/';
+const reservationURL = 'https://rarebeauty.soho.sg/general/reservation/';
+const webHookURL = 'https://rarebeauty.soho.sg/events/calendar';
+const webHookId = 'anythingintheworld';
+
 async function listEvents(options) {
   const finalOptions = Object.assign(
     {
-      calendarId: 'rarebeauty@soho.sg',
+      calendarId,
     },
     options,
   );
@@ -44,7 +50,7 @@ async function listEvents(options) {
 async function getEvent(options) {
   const finalOptions = Object.assign(
     {
-      calendarId: 'rarebeauty@soho.sg',
+      calendarId,
     },
     options,
   );
@@ -60,7 +66,7 @@ async function getEvent(options) {
 async function listDeltaEvents(options) {
   const finalOptions = Object.assign(
     {
-      calendarId: 'rarebeauty@soho.sg',
+      calendarId,
     },
     options,
   );
@@ -76,13 +82,13 @@ async function listDeltaEvents(options) {
 async function createEvent(options) {
   // node index --action=calendarCreate --name=Raymond Ho --mobile=12345678 --start=20170730T1130 --duration=105 --services=ELFS,HLW
   try {
-    const event = await calendarCreate(
+    const { event, uuid } = await calendarCreate(
       Object.assign({}, options, {
-        calendarId: 'rarebeauty@soho.sg',
+        calendarId,
       }),
     );
-    // console.log(event);
-    return event;
+    const finalEvent = await informReservationToCustomer({ eventId: event.id });
+    return { event: finalEvent, uuid };
   } catch (err) {
     console.error(err);
     throw err;
@@ -94,10 +100,64 @@ async function patchEvent(options) {
   try {
     const event = await calendarPatch(
       Object.assign({}, options, {
-        calendarId: 'rarebeauty@soho.sg',
+        calendarId,
       }),
     );
     // console.log(event);
+    return event;
+  } catch (err) {
+    console.error(err);
+    throw err;
+  }
+}
+
+async function informReservationToCustomer(options) {
+  const finalOptions = Object.assign(
+    {
+      calendarId,
+    },
+    options,
+  );
+  try {
+    const event = await calendarGet(finalOptions);
+    // console.log(event);
+    if (
+      event.extendedProperties &&
+      event.extendedProperties.shared &&
+      (event.extendedProperties.shared.informed === 'false' ||
+        event.extendedProperties.shared.informed === false)
+    ) {
+      try {
+        const name = event.summary;
+        const mobile =
+          (event.extendedProperties &&
+            event.extendedProperties.shared &&
+            event.extendedProperties.shared.mobile) ||
+          -1;
+        const startDate = moment(event.start.dateTime).format('DD-MMM');
+        const startTime = moment(event.start.dateTime).format('hh:mm a');
+        const shortURL = await urlCreate({
+          longURL: `${reservationURL}${event.id}`,
+        });
+        const message = `Your appt with Rare Beauty on ${startDate} at ${startTime} is reserved.\n\nClick ${shortURL.id} to view address/details`;
+
+        console.error(`message=${message}`);
+
+        if (mobile.indexOf(NO_MOBILE_NUMBER) === -1) {
+          await sms(Object.assign({}, options, { mobile, message }));
+        } else {
+          console.error(`${name} not sent because mobile number is ${mobile}`);
+        }
+
+        await calendarPatch({
+          eventId: event.id,
+          calendarId,
+          informed: true,
+        });
+      } catch (err) {
+        console.error(`informReservationToCustomer-${err}`);
+      }
+    }
     return event;
   } catch (err) {
     console.error(err);
@@ -109,7 +169,7 @@ async function remindCustomers(options) {
   try {
     const events = await calendarDayBefore(
       Object.assign({}, options, {
-        calendarId: 'rarebeauty@soho.sg',
+        calendarId,
       }),
     );
     const remindedEvents = [];
@@ -137,7 +197,7 @@ async function remindCustomers(options) {
             const startDate = moment(event.start.dateTime).format('DD-MMM');
             const startTime = moment(event.start.dateTime).format('hh:mm a');
             const shortURL = await urlCreate({
-              longURL: `https://rarebeauty.soho.sg/general/confirmation/${event.id}`,
+              longURL: `${confirmationURL}${event.id}`,
             });
             const message = `<Reminder>Appt on ${startDate} at ${startTime}.\n\nAny changes, please reply now to REPLY_MOBILE\n\nOtherwise click ${shortURL.id} to confirm your appt`;
 
@@ -155,7 +215,7 @@ async function remindCustomers(options) {
 
             await calendarPatch({
               eventId: event.id,
-              calendarId: 'rarebeauty@soho.sg',
+              calendarId,
               reminded: true,
             });
           } catch (err) {
@@ -216,9 +276,9 @@ async function getContact(options) {
 
 async function watchCalendar(options) {
   const finalOptions = Object.assign({}, options, {
-    calendarId: 'rarebeauty@soho.sg',
-    address: 'https://rarebeauty.soho.sg/events/calendar',
-    id: 'anythingintheworld',
+    calendarId,
+    address: webHookURL,
+    id: webHookId,
   });
   try {
     const response = await calendarWatch(finalOptions);
@@ -237,7 +297,7 @@ async function stopWatchCalendar(options) {
   const response = await get('config:watch');
   // console.log(response);
   const finalOptions = Object.assign({}, options, {
-    calendarId: 'rarebeauty@soho.sg',
+    calendarId,
     resourceId: response.value.resourceId,
   });
   try {
@@ -358,7 +418,7 @@ async function remindCustomersTouchUp(options) {
 
           await calendarPatch({
             eventId: event.id,
-            calendarId: 'rarebeauty@soho.sg',
+            calendarId,
             touchUpReminded: true,
           });
         } catch (err) {
@@ -382,6 +442,7 @@ const functions = {
   createEvent,
   patchEvent,
   getEvent,
+  informReservationToCustomer,
   remindCustomers,
   listContacts,
   createContact,

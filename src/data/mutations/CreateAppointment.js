@@ -5,6 +5,7 @@ import {
   GraphQLInt as IntegerType,
   GraphQLList as ListType,
   GraphQLFloat as FloatType,
+  GraphQLBoolean as BooleanType,
 } from 'graphql';
 import moment from 'moment';
 import AppointmentType from '../types/AppointmentType';
@@ -73,6 +74,9 @@ export default {
     discount: {
       type: FloatType,
     },
+    toBeInformed: {
+      type: BooleanType,
+    },
   },
   async resolve(
     value,
@@ -86,6 +90,7 @@ export default {
       totalAmount,
       additional,
       discount,
+      toBeInformed,
     },
   ) {
     let finalResourceName = resourceName;
@@ -156,6 +161,11 @@ export default {
         additional,
         discount,
         reminded,
+        informed: !!(
+          toBeInformed === undefined ||
+          toBeInformed === 'false' ||
+          toBeInformed === false
+        ),
       });
       const now = moment();
       await upsert(`appt:${uuid}`, {
