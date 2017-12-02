@@ -1,4 +1,4 @@
-export default function event(state = {}, action) {
+export default function common(state = {}, action) {
   switch (action.type) {
     default:
       return state;

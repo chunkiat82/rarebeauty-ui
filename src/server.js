@@ -169,8 +169,18 @@ app.use('/general/confirmation/:eventId', async (req, res, next) => {
   if (eventId === 'images') return;
 
   const event = await API({ action: 'getEvent', eventId });
-  req.data = { event };
+  req.data = { event, workAddress: config.app.workAddress };
   await API({ action: 'patchEvent', status: 'confirmed', eventId });
+
+  reactMiddleware(req, res, next);
+});
+
+app.use('/general/reservation/:eventId', async (req, res, next) => {
+  const { eventId } = req.params;
+
+  if (eventId === 'images') return;
+  const event = await API({ action: 'getEvent', eventId });
+  req.data = { event, workAddress: config.app.workAddress };
 
   reactMiddleware(req, res, next);
 });

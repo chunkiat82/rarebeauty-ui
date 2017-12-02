@@ -13,7 +13,7 @@ import Layout from '../../../components/PublicLayout';
 import MapAndMessage from '../common/mapAndMessage';
 
 async function action({ fetch, params, store }) {
-  const { event, workAddress } = store.getState();
+  const { event, address } = store.getState();
 
   return {
     chunks: ['general-confirmation'],
@@ -21,8 +21,8 @@ async function action({ fetch, params, store }) {
     component: (
       <Layout>
         <MapAndMessage
-          address={workAddress}
-          message={`Thank you, see you on ${moment(event.start.dateTime).format(
+          address={address}
+          message={`Slot reserved on ${moment(event.start.dateTime).format(
             'LLLL',
           )}`}
         />

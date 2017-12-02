@@ -10,24 +10,35 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import withStyles from 'isomorphic-style-loader/lib/withStyles';
-import s from './Register.css';
+import s from './mapAndMessage.css';
 
-class Register extends React.Component {
+class MapAndMessage extends React.Component {
   static propTypes = {
-    title: PropTypes.string.isRequired,
+    address: PropTypes.string.isRequired,
+    message: PropTypes.string.isRequired,
+    errors: PropTypes.string,
   };
 
   render() {
+    const { errors, message, address } = this.props;
+
     return (
       <div className={s.root}>
         <div className={s.container}>
-          <h4 className={s.textCenter}>
-            {this.props.title}
-          </h4>
+          <h2>
+            <center>
+              <span>
+                {errors ? 'There is error!' : message}
+              </span>
+            </center>
+          </h2>
+          <h3 className={s.textCenter}>
+            {address}
+          </h3>
           <iframe
             style={{
-              width: 600,
-              height: 450,
+              width: 320,
+              height: 240,
               frameborder: 0,
               style: 'border:0',
             }}
@@ -41,4 +52,4 @@ class Register extends React.Component {
   }
 }
 
-export default withStyles(s)(Register);
+export default withStyles(s)(MapAndMessage);

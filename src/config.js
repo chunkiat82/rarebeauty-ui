@@ -8,6 +8,7 @@
  */
 
 /* eslint-disable max-len */
+const keys = require('./api/keys/google.json');
 
 if (process.env.BROWSER) {
   throw new Error(
@@ -72,5 +73,9 @@ module.exports = {
         process.env.TWITTER_CONSUMER_SECRET ||
         'KTZ6cxoKnEakQCeSpZlaUCJWGAlTEBJj0y2EMkUBujA7zWSvaQ',
     },
+  },
+
+  app: {
+    workAddress: keys.work_address,
   },
 };

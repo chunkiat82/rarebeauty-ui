@@ -59,14 +59,15 @@ const routes = {
       load: () => import(/* webpackChunkName: 'admin' */ './admin'),
     },
     {
-      path: '/general/location',
-      load: () =>
-        import(/* webpackChunkName: 'general-location' */ './general/location'),
-    },
-    {
       path: '/general/confirmation/:id',
       load: () =>
         import(/* webpackChunkName: 'general-confirmation' */ './general/confirmation'),
+    },
+
+    {
+      path: '/general/reservation/:id',
+      load: () =>
+        import(/* webpackChunkName: 'general-reservation' */ './general/reservation'),
     },
 
     // Wildcard routes, e.g. { path: '*', ... } (must go last)
