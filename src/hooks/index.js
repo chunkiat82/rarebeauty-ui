@@ -84,7 +84,10 @@ export async function handleCalendarWebhook(headers) {
       console.error(`apptDateMT=${apptDateMT}`);
       console.error(`currentDays=${currentDays}`);
       console.error(`difference=${currentDays - appDays}`);
-      if (currentDays - appDays > 7) return;
+      if (currentDays - appDays > 7) {
+        console.error(`item more than 7 days wants changes =${item.id}`);
+        return;
+      }
     }
 
     if (item.status === 'cancelled') {
