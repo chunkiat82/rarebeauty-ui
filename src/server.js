@@ -8,7 +8,6 @@
  * This source code is licensed under the MIT license found in the
  * LICENSE.txt file in the root directory of this source tree.
  */
-import noBots from 'express-nobots';
 import path from 'path';
 import express from 'express';
 import cookieParser from 'cookie-parser';
@@ -58,6 +57,15 @@ function checkingUser(req, payload, done) {
   done(null, secret);
 }
 
+app.use((req, res, next) => {
+  if (req.headers['from'] === 'googlebot(at)googlebot.com') {
+    return res.status(401).json({
+      message: 'Unathorized Access'
+    });
+  }
+  return next();
+});
+
 if (!__DEV__) {
   // const myFilter = function(req) {
   //   console.error(req.url.indexOf('/public/appointment/confirm/') === 0);
@@ -71,7 +79,8 @@ if (!__DEV__) {
   //   }
   //   return false;
   // };
-  app.use(noBots({ block: true }));
+  
+
   app.use(
     expressJwt({
       secret: checkingUser,
