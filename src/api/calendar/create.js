@@ -2,6 +2,7 @@ import google from 'googleapis';
 import moment from 'moment';
 import uuidv1 from 'uuid/v1';
 import generateJWT from '../utilities/jwt';
+import { byPersonCount as getAppointmentsCountByPerson } from '../appointments/person';
 
 function findExistingAppointments(calendar, options) {
   const { calendarId, startDT, endDT } = options;
@@ -46,13 +47,19 @@ function createAppointment(calendar, options) {
   return new Promise(async (res, rej) => {
     const uuid = uuidv1();
 
+    const {
+      count: countOfExistingAppointments,
+    } = await getAppointmentsCountByPerson({ id: resourceName });
+    // const countOfExistingAppointments = 0;
     calendar.events.insert(
       {
         calendarId,
         resource: {
           start: { dateTime: startDT },
           end: { dateTime: endDT },
-          summary: name,
+          summary: `${name} (${countOfExistingAppointments > 0
+            ? countOfExistingAppointments
+            : 'FIRST'})`,
           location: 'Home',
           status: 'tentative',
           extendedProperties: {

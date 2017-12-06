@@ -2,7 +2,7 @@ import moment from 'moment';
 import { get, query } from '../../data/database';
 import { get as getAppointment } from '../../data/database/appointment';
 
-function byPerson(options) {
+export function byPerson(options) {
   const { limit, id } = options;
   // console.log(options);
   return new Promise(async (res, rej) => {
@@ -41,4 +41,23 @@ function byPerson(options) {
     }
   });
 }
+
+export function byPersonCount(options) {
+  const { id } = options;
+  // console.log(options);
+  return new Promise(async (res, rej) => {
+    try {
+      const queryString = `select count(*) from default event where extendedProperties.shared.resourceName='${id}'`;
+      // console.log(queryString);
+      const counts = await query(queryString);
+
+      const { $1: count } = counts[0];
+      //   console.log(`count=${count}`);
+      res({ count });
+    } catch (err) {
+      rej(err);
+    }
+  });
+}
+
 export default byPerson;
