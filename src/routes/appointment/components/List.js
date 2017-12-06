@@ -55,7 +55,9 @@ class AppointmentList extends React.Component {
             <span
               style={value.status === 'confirmed' ? stylesGreen : stylesRed}
             >
-              {value.status}
+              {value.status === 'confirmed'
+                ? `${value.status} - ${value.confirmed}`
+                : `${value.status}`}
             </span>
           </p>
         </TableRowColumn>

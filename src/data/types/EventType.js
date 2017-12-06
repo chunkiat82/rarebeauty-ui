@@ -80,6 +80,12 @@ const EventType = new ObjectType({
         return obj.extendedProperties.shared.informed;
       },
     },
+    confirmed: {
+      type: StringType,
+      resolve(obj) {
+        return obj.extendedProperties.shared.confirmed;
+      },
+    },
   },
 });
 

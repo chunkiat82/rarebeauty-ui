@@ -8,6 +8,7 @@
  * This source code is licensed under the MIT license found in the
  * LICENSE.txt file in the root directory of this source tree.
  */
+import moment from 'moment';
 import path from 'path';
 import express from 'express';
 import cookieParser from 'cookie-parser';
@@ -58,9 +59,9 @@ function checkingUser(req, payload, done) {
 }
 
 app.use((req, res, next) => {
-  if (req.headers['from'] === 'googlebot(at)googlebot.com') {
+  if (req.headers.from === 'googlebot(at)googlebot.com') {
     return res.status(401).json({
-      message: 'Unathorized Access'
+      message: 'Unathorized Access',
     });
   }
   return next();
@@ -79,7 +80,6 @@ if (!__DEV__) {
   //   }
   //   return false;
   // };
-  
 
   app.use(
     expressJwt({

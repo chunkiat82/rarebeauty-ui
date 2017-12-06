@@ -16,7 +16,7 @@ import Html from './components/Html';
 export const reactMiddleware = async (req, res, next) => {
   try {
     const css = new Set();
-    console.error(req.headers);
+    // console.error(req.headers);
     // not sure if this is a good idea???
     req.url = req.originalUrl;
 

@@ -17,7 +17,8 @@ async function getEvents(fetch) {
                         start,
                         end,
                         apptId,
-                        serviceIds
+                        serviceIds,
+                        confirmed
                     }
                 }`,
     }),

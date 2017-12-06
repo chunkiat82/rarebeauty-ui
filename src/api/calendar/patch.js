@@ -13,6 +13,7 @@ function patchHandler(res, rej, calendar, options, eventResponse) {
     touchUpReminded,
     apptId,
     status,
+    confirmed,
   } = options;
 
   const patchObject = {
@@ -56,6 +57,10 @@ function patchHandler(res, rej, calendar, options, eventResponse) {
   if (apptId) {
     resource.extendedProperties.shared.uuid = apptId;
     resource.extendedProperties.shared.apptId = apptId;
+  }
+
+  if (confirmed) {
+    resource.extendedProperties.shared.confirmed = confirmed;
   }
 
   resource.extendedProperties.shared.changed = new Date().getTime();

@@ -14,7 +14,6 @@ import MapAndMessage from '../common/mapAndMessage';
 
 async function action({ fetch, params, store }) {
   const { event, workAddress } = store.getState();
-
   return {
     chunks: ['general-confirmation'],
     title: 'Rare Beauty Professional',
