@@ -4,6 +4,9 @@ import uuidv1 from 'uuid/v1';
 import generateJWT from '../utilities/jwt';
 import { byPersonCount as getAppointmentsCountByPerson } from '../appointments/person';
 
+const EDIT_URL = 'https://rarebeauty.soho.sg/appointment/edit';
+const TEST_EMAIL = `test@soho.sg`;
+
 function findExistingAppointments(calendar, options) {
   const { calendarId, startDT, endDT } = options;
 
@@ -76,12 +79,12 @@ function createAppointment(calendar, options) {
             {
               displayName: name,
               comment: mobile,
-              email: `test@soho.sg`,
+              email: TEST_EMAIL,
             },
           ],
           description: `${services
             .map(item => item.service)
-            .join(',')}\n\nhttps://rarebeauty.soho.sg/appointment/edit/${uuid}`,
+            .join(',')}\n\n${EDIT_URL}/${uuid}`,
         },
       },
       (err, event) => {

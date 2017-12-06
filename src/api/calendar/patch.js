@@ -14,6 +14,7 @@ function patchHandler(res, rej, calendar, options, eventResponse) {
     apptId,
     status,
     confirmed,
+    shortURL,
   } = options;
 
   const patchObject = {
@@ -57,6 +58,10 @@ function patchHandler(res, rej, calendar, options, eventResponse) {
   if (apptId) {
     resource.extendedProperties.shared.uuid = apptId;
     resource.extendedProperties.shared.apptId = apptId;
+  }
+
+  if (shortURL) {
+    resource.extendedProperties.shared.shortURL = shortURL;
   }
 
   if (confirmed) {

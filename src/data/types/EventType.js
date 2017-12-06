@@ -86,6 +86,12 @@ const EventType = new ObjectType({
         return obj.extendedProperties.shared.confirmed;
       },
     },
+    shortURL: {
+      type: StringType,
+      resolve(obj) {
+        return obj.extendedProperties.shared.shortURL;
+      },
+    },
   },
 });
 

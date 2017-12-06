@@ -155,6 +155,7 @@ async function informReservationToCustomer(options) {
           eventId: event.id,
           calendarId,
           informed: true,
+          shortURL: shortURL.id,
         });
       } catch (err) {
         console.error(`informReservationToCustomer-${err}`);

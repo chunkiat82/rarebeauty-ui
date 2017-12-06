@@ -42,7 +42,11 @@ class AppointmentList extends React.Component {
     return values.map((value /* ,index*/) =>
       <TableRow key={value.id}>
         <TableRowColumn>
-          {value.name}
+          {value.shortURL
+            ? <a href={value.shortURL} target="_blank">
+                {' '}{value.name}
+              </a>
+            : value.name}
         </TableRowColumn>
         <TableRowColumn>
           <p>

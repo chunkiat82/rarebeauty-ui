@@ -18,7 +18,8 @@ async function getEvents(fetch) {
                         end,
                         apptId,
                         serviceIds,
-                        confirmed
+                        confirmed,
+                        shortURL
                     }
                 }`,
     }),
