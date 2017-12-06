@@ -11,7 +11,7 @@ export async function get(id) {
 
   appt.event = eventResponse.value;
   appt.transaction = transactionResponse.value;
-
+  // console.log(`appt=${JSON.stringify(appt, null, 2)}`);
   return appt;
 }
 

@@ -11,6 +11,8 @@ import calendarCreate from './calendar/create';
 import urlCreate from './urlshortener/create';
 import contactGet from './contacts/get';
 
+import appointmentsByPerson from './appointments/person';
+
 const calendarPatch = require('./calendar/patch');
 const calendarDayBefore = require('./calendar/dayBeforeEvents');
 
@@ -436,6 +438,11 @@ async function createShortURL(options) {
   return [shortURL];
 }
 
+async function getAppointmentsByPerson(options) {
+  const appointments = await appointmentsByPerson(options);
+  return appointments;
+}
+
 const functions = {
   listEvents,
   listDeltaEvents,
@@ -456,6 +463,7 @@ const functions = {
   listCustomerAppointments,
   remindCustomersTouchUp,
   createShortURL,
+  getAppointmentsByPerson,
 };
 
 export default functions;
