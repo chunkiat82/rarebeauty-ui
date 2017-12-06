@@ -166,7 +166,7 @@ class Appointment extends React.Component {
     const { resourceName } = inputString;
     // console.log(`resourceName=${resourceName}`);
     const appointments = await this.props.queryPastAppointments(resourceName);
-    console.log(`appointments=${JSON.stringify(appointments)}`);
+    // console.log(`appointments=${JSON.stringify(appointments)}`);
     // console.log(`expanded=${appointments && appointments.length > 0}`);
     this.setState({
       index,
@@ -438,6 +438,7 @@ class Appointment extends React.Component {
                   mobileInput: '',
                   resourceName: '',
                   pastAppointments: [],
+                  toBeInformed: false,
                 });
 
                 this.nameAC.setState({ searchText: '' });
