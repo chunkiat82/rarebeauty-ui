@@ -207,9 +207,9 @@ async function remindCustomers(options) {
               const shortURL = await urlCreate({
                 longURL: `${confirmationURL}${event.id}`,
               });
-              message = `<Reminder>Appt on ${startDate}-${startTime}.\n\nAny changes, msg to REPLY_MOBILE by 12pm.\n\nOtherwise click ${shortURL.id} to confirm now`;
+              message = `<Reminder>Appt on ${startDate} ${startTime}.\n\nAny changes, msg to REPLY_MOBILE by 12pm.\n\nOtherwise click ${shortURL.id} to confirm now`;
             } else {
-              message = `<Reminder>Appt on ${startDate}-${startTime}.\n\nFor last minute cancellation, msg to REPLY_MOBILE.`;
+              message = `<Reminder>Appt on ${startDate} ${startTime}.\n\nFor last minute cancellation, msg to REPLY_MOBILE.\n\nOtherwise see you later`;
             }
 
             // const message = `<Reminder>Appt on ${startDate} at ${startTime}.\n\nAny changes, please reply now to REPLY_MOBILE.`;
