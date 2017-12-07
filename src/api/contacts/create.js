@@ -1,9 +1,14 @@
 // https://developers.google.com/apis-explorer/?hl=en_US#p/
-const generateJWT = require('../utilities/jwt');
-const google = require('googleapis');
 
-module.exports = async function create({ first, last, mobile }) {
-  const jwtClient = await generateJWT('rarebeauty@soho.sg');
+import google from 'googleapis';
+import { get as getConfig } from '../utilities/configs';
+
+const generateJWT = require('../utilities/jwt');
+
+const WORK_EMAIL = getConfig('work_email');
+
+export default async function create({ first, last, mobile }) {
+  const jwtClient = await generateJWT(WORK_EMAIL);
   const people = google.people({
     version: 'v1',
     auth: jwtClient,
@@ -37,4 +42,4 @@ module.exports = async function create({ first, last, mobile }) {
       },
     );
   });
-};
+}

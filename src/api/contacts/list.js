@@ -1,9 +1,14 @@
 // https://developers.google.com/apis-explorer/?hl=en_US#p/
+
+import google from 'googleapis';
+import { get as getConfig } from '../utilities/configs';
+
 const generateJWT = require('../utilities/jwt');
-const google = require('googleapis');
+
+const WORK_EMAIL = getConfig('work_email');
 
 export default async function list() {
-  const jwtClient = await generateJWT('rarebeauty@soho.sg');
+  const jwtClient = await generateJWT(WORK_EMAIL);
   const people = google.people({
     version: 'v1',
     auth: jwtClient,

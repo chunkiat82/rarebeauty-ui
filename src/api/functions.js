@@ -10,23 +10,25 @@ import contactLists from './contacts/list';
 import calendarCreate from './calendar/create';
 import urlCreate from './urlshortener/create';
 import contactGet from './contacts/get';
+import contactCreate from './contacts/create';
+import contactUpdate from './contacts/update';
 
 import appointmentsByPerson from './appointments/person';
 
 const calendarPatch = require('./calendar/patch');
 const calendarDayBefore = require('./calendar/dayBeforeEvents');
 
-const contactCreate = require('./contacts/create');
-const contactUpdate = require('./contacts/update');
 const calendarWatch = require('./calendar/watch');
 const calendarWatchStop = require('./calendar/watch/stop');
 
 const { sendMessage: sms } = require('./utilities/sms');
 const { getSyncToken, setSyncToken } = require('./utilities/token');
+const configs = require('./utilities/configs');
 const { get, upsert } = require('../data/database');
 
 const NO_MOBILE_NUMBER = '00000000';
-const calendarId = 'rarebeauty@soho.sg';
+const calendarId = configs.get('work_email');
+
 const confirmationURL = 'https://rarebeauty.soho.sg/general/confirmation/';
 const reservationURL = 'https://rarebeauty.soho.sg/general/reservation/';
 const webHookURL = 'https://rarebeauty.soho.sg/events/calendar';
@@ -40,7 +42,6 @@ async function listEvents(options) {
     options,
   );
   try {
-    // console.log(`finalOptions=${JSON.stringify(finalOptions)}`);
     const events = await calendarList(finalOptions);
     return events;
   } catch (err) {
@@ -75,38 +76,6 @@ async function listDeltaEvents(options) {
   try {
     const response = await calendarDelta(finalOptions);
     return response;
-  } catch (err) {
-    console.error(err);
-    throw err;
-  }
-}
-
-async function createEvent(options) {
-  // node index --action=calendarCreate --name=Raymond Ho --mobile=12345678 --start=20170730T1130 --duration=105 --services=ELFS,HLW
-  try {
-    const { event, uuid } = await calendarCreate(
-      Object.assign({}, options, {
-        calendarId,
-      }),
-    );
-    const finalEvent = await informReservationToCustomer({ eventId: event.id });
-    return { event: finalEvent, uuid };
-  } catch (err) {
-    console.error(err);
-    throw err;
-  }
-}
-
-async function patchEvent(options) {
-  // node index --action=patchEvent --eventId=XXX --mobile=11111111 --services=ELFS,HLW
-  try {
-    const event = await calendarPatch(
-      Object.assign({}, options, {
-        calendarId,
-      }),
-    );
-    // console.log(event);
-    return event;
   } catch (err) {
     console.error(err);
     throw err;
@@ -168,7 +137,40 @@ async function informReservationToCustomer(options) {
   }
 }
 
+async function createEvent(options) {
+  // node index --action=calendarCreate --name=Raymond Ho --mobile=12345678 --start=20170730T1130 --duration=105 --services=ELFS,HLW
+  try {
+    const { event, uuid } = await calendarCreate(
+      Object.assign({}, options, {
+        calendarId,
+      }),
+    );
+    const finalEvent = await informReservationToCustomer({ eventId: event.id });
+    return { event: finalEvent, uuid };
+  } catch (err) {
+    console.error(err);
+    throw err;
+  }
+}
+
+async function patchEvent(options) {
+  // node index --action=patchEvent --eventId=XXX --mobile=11111111 --services=ELFS,HLW
+  try {
+    const event = await calendarPatch(
+      Object.assign({}, options, {
+        calendarId,
+      }),
+    );
+    // console.log(event);
+    return event;
+  } catch (err) {
+    console.error(err);
+    throw err;
+  }
+}
+
 async function remindCustomers(options) {
+  const { tomorrow } = options;
   try {
     const events = await calendarDayBefore(
       Object.assign({}, options, {
@@ -199,10 +201,16 @@ async function remindCustomers(options) {
               -1;
             const startDate = moment(event.start.dateTime).format('DD-MMM');
             const startTime = moment(event.start.dateTime).format('hh:mm a');
-            const shortURL = await urlCreate({
-              longURL: `${confirmationURL}${event.id}`,
-            });
-            const message = `<Reminder>Appt on ${startDate} at ${startTime}.\n\nAny changes, please reply now to REPLY_MOBILE\n\nOtherwise click ${shortURL.id} to confirm your appt`;
+
+            let message = '';
+            if (tomorrow) {
+              const shortURL = await urlCreate({
+                longURL: `${confirmationURL}${event.id}`,
+              });
+              message = `<Reminder>Appt on ${startDate}-${startTime}.\n\nAny changes, msg to REPLY_MOBILE by 12pm.\n\nOtherwise click ${shortURL.id} to confirm now`;
+            } else {
+              message = `<Reminder>Appt on ${startDate}-${startTime}.\n\nFor last minute cancellation, msg to REPLY_MOBILE.`;
+            }
 
             // const message = `<Reminder>Appt on ${startDate} at ${startTime}.\n\nAny changes, please reply now to REPLY_MOBILE.`;
 

@@ -32,11 +32,6 @@ async function handleCancel(item) {
 }
 
 async function handleUpsert(item) {
-  // if (item.creator.email === 'rarebeauty@soho.sg') {
-  //   console.log('-----THIS APPOINTMENT NOT CREATED BY THE APP---');
-  //   console,log(item);
-  //   return;
-  // }
   await upsert(`event:${item.id}`, item);
 }
 

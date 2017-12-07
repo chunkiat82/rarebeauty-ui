@@ -1,14 +1,18 @@
 // https://developers.google.com/apis-explorer/?hl=en_US#p/
 // babel-node cli --action=updateContact --verified=false --resourceName=people/YYY --mobile=XX
+import google from 'googleapis';
+import { get as getConfig } from '../utilities/configs';
+
 const generateJWT = require('../utilities/jwt');
-const google = require('googleapis');
+
+const WORK_EMAIL = getConfig('work_email');
 
 async function updateContact(
   { resourceName, first, last, mobile, validPhone, etag },
   me,
   cb,
 ) {
-  const jwtClient = await generateJWT('rarebeauty@soho.sg');
+  const jwtClient = await generateJWT(WORK_EMAIL);
   const people = google.people({
     version: 'v1',
     auth: jwtClient,
@@ -51,9 +55,9 @@ async function updateContact(
   );
 }
 
-module.exports = async function update(options) {
+export default async function update(options) {
   const { resourceName } = options;
-  const jwtClient = await generateJWT('rarebeauty@soho.sg');
+  const jwtClient = await generateJWT(WORK_EMAIL);
 
   const people = google.people({
     version: 'v1',
@@ -83,4 +87,4 @@ module.exports = async function update(options) {
       },
     );
   });
-};
+}
