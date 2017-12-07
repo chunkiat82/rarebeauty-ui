@@ -173,7 +173,7 @@ app.use('/general/confirmation/:eventId', async (req, res, next) => {
 
   const event = await API({ action: 'getEvent', eventId });
   req.data = { event, workAddress: config.app.workAddress };
-  await API({ action: 'patchEvent', status: 'confirmed', eventId });
+  await API({ action: 'patchEvent', status: 'confirmed', confirmed: moment().format('lll'), eventId });
 
   reactMiddleware(req, res, next);
 });
