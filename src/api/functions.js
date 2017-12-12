@@ -29,8 +29,8 @@ const { get, upsert } = require('../data/database');
 const NO_MOBILE_NUMBER = '00000000';
 const calendarId = configs.get('work_email');
 
-const confirmationURL = 'https://rarebeauty.soho.sg/general/confirmation/';
-const reservationURL = 'https://rarebeauty.soho.sg/general/reservation/';
+const confirmationURL = 'http://rarebeauty.soho.sg/general/confirmation/';
+const reservationURL = 'http://rarebeauty.soho.sg/general/reservation/';
 const webHookURL = 'https://rarebeauty.soho.sg/events/calendar';
 const webHookId = 'anythingintheworld';
 
