@@ -29,10 +29,10 @@ const { get, upsert } = require('../data/database');
 const NO_MOBILE_NUMBER = '00000000';
 const calendarId = configs.get('work_email');
 
-const confirmationURL = 'http://rarebeauty.soho.sg/general/confirmation/';
-const reservationURL = 'http://rarebeauty.soho.sg/general/reservation/';
-const webHookURL = 'https://rarebeauty.soho.sg/events/calendar';
-const webHookId = 'anythingintheworld';
+const confirmationURL = configs.get('confirmationURL');
+const reservationURL = configs.get('reservationURL');
+const webHookURL = configs.get('webHookURL');
+const webHookId = configs.get('webHookId');
 
 async function listEvents(options) {
   const finalOptions = Object.assign(

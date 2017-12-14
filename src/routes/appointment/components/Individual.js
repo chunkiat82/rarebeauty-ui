@@ -393,6 +393,7 @@ class Appointment extends React.Component {
             onToggle={(event, isInputChecked) => {
               this.setState({ toBeInformed: isInputChecked });
             }}
+            toggled={this.state.toBeInformed}
           />
           <RaisedButton
             ref={c => {

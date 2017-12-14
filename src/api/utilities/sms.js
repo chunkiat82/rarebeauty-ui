@@ -1,11 +1,13 @@
 const Twilio = require('twilio');
 const keys = require('../keys/twilio.json');
+const configs = require('./configs');
 
+const defaultMobile = configs.get('mobile');
 const client = new Twilio(keys.accountSid, keys.authToken);
 
 const FROM = 'RareBeauty';
-const REPLY_MOBILE = '+6590349137';
-const TEST_MOBILE = '+6593663631';
+const REPLY_MOBILE = defaultMobile;
+const TEST_MOBILE = defaultMobile;
 
 export function sendMessage(options) {
   const { test, message } = options;
