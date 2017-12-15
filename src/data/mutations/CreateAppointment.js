@@ -97,6 +97,8 @@ export default {
     // console.log(`services=${services}`);
 
     if (resourceName === '' || resourceName === undefined) {
+      // find by mobile first before creating
+
       const firstLast = name.split(' ');
       const first = firstLast[0];
       const last = firstLast[1] || '';
@@ -182,6 +184,8 @@ export default {
         additional,
         discount,
         now,
+        name,
+        resourceName,
         moment(event.start.dateTime),
       );
       await upsert(`trans:${uuid}`, transaction);
