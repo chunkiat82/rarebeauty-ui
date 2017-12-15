@@ -20,6 +20,8 @@ function createTransactionEntry(
   discount,
   createdAt,
   apptDate,
+  name,
+  resourceName,
 ) {
   const items = entries.map(entry => ({
     id: entry.id,
@@ -40,6 +42,8 @@ function createTransactionEntry(
     discount,
     createdAt,
     apptDate,
+    name,
+    resourceName,
   };
   return entryTemplate;
 }
@@ -184,9 +188,9 @@ export default {
         additional,
         discount,
         now,
+        moment(event.start.dateTime),
         name,
         resourceName,
-        moment(event.start.dateTime),
       );
       await upsert(`trans:${uuid}`, transaction);
       // console.log(`uuid=${uuid}`);
