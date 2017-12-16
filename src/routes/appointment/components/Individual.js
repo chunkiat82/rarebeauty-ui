@@ -76,6 +76,7 @@ class Appointment extends React.Component {
     // ),
     successMessage: PropTypes.string,
     errorMessage: PropTypes.string,
+    submitted: PropTypes.bool
     // startDate: PropTypes.string.isRequired,
     // startTime: PropTypes.string.isRequired,
     // id: PropTypes.string,
@@ -93,6 +94,7 @@ class Appointment extends React.Component {
     additional: 0,
     pastAppointments: {},
     services: {},
+    submitted: false
     // mapOfServices: {},
   };
 
@@ -402,6 +404,7 @@ class Appointment extends React.Component {
             label={this.props.buttonText}
             primary
             fullWidth
+            disabled={this.state.submitted}
             onClick={async () => {
               const inputs = Object.assign({}, this.state);
               delete inputs.contactDS;
@@ -413,12 +416,15 @@ class Appointment extends React.Component {
               this.props.showLoading();
               this.setState({
                 error: false,
+                submitted: true
               });
               const results = await this.props.post(inputs);
+
               this.props.hideLoading();
 
               this.setState({
                 notify: true,
+                submitted: false
               });
 
               if (results.errors) {

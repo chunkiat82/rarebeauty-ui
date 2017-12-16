@@ -14,6 +14,7 @@ import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
 import getMuiTheme from 'material-ui/styles/getMuiTheme';
 // external-global styles must be imported in your JS.
 import normalizeCss from 'normalize.css';
+import LoadingBar from 'react-redux-loading-bar';
 import s from './Layout.css';
 import Header from '../Header';
 
@@ -29,6 +30,7 @@ class Layout extends React.Component {
         <div>
           <Header />
           {this.props.children}
+          <LoadingBar />
         </div>
       </MuiThemeProvider>
     );
