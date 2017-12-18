@@ -21,7 +21,6 @@ class Header extends React.Component {
   render() {
     return (
       <div className={s.root}>
-        <LoadingBar />
         <div className={s.container}>
           <div className={s.banner}>
             <FloatingActionButton
