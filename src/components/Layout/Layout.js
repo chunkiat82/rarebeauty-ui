@@ -31,6 +31,8 @@ class Layout extends React.Component {
           <Header />
           {this.props.children}
           <LoadingBar />
+          <br/>
+          <br/>
         </div>
       </MuiThemeProvider>
     );
