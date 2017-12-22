@@ -65,6 +65,11 @@ function patchHandler(res, rej, calendar, options, eventResponse) {
   }
 
   if (confirmed) {
+    if (resource.attendees && resource.attendees[0]) {
+      resource.attendees[0].responseStatus = 'accepted';
+    } else {
+      console.error(`no attendees for calendar event -> ${eventId}`);
+    }
     resource.extendedProperties.shared.confirmed = confirmed;
   }
 
