@@ -21,9 +21,9 @@ async function action({ fetch, params, store }) {
       <Layout>
         <MapAndMessage
           address={workAddress}
-          message={`Thank you, see you on ${moment(event.start.dateTime).format(
-            'LLLL',
-          )}`}
+          message={`Appointment is confirmed! See you on ${moment(
+            event.start.dateTime,
+          ).format('LLLL')}`}
         />
       </Layout>
     ),
