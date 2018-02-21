@@ -14,6 +14,7 @@ export default async function getDelta(options) {
         calendarId,
         singleEvents: true,
         syncToken,
+        maxResults: 2500
       },
       async (err, response) => {
         if (err) {
