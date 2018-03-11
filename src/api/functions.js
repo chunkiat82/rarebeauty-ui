@@ -401,8 +401,8 @@ async function remindCustomersTouchUp(options) {
 
         // this is full set services which are eligible for touch up
 
-        const naturalService = inputServices.indexOf('service:1') > -1;
-        const denseService = inputServices.indexOf('service:2') > -1;
+        const naturalService = inputServices.indexOf('service:20181') > -1;
+        const denseService = inputServices.indexOf('service:20182') > -1;
         if (!naturalService && !denseService) {
           return;
         }
@@ -410,7 +410,9 @@ async function remindCustomersTouchUp(options) {
         remindedEvents[remindedEvents.length] = event;
 
         try {
-          const lashService = naturalService ? 'service:1' : 'service:2';
+          const lashService = naturalService
+            ? 'service:20181'
+            : 'service:20182';
           const followUpService = services.peekByKey(lashService).followUp;
           const followUpPrice = services.peekByKey(followUpService).price;
           const name = event.summary;

@@ -17,9 +17,13 @@ import { get } from '../database';
 
 const services = {
   type: new ListType(ServiceType),
-  async resolve(obj) {
+  async resolve() {
     const response = await get(`config:services`);
-    return response.value.services;
+    const finalServices = response.value.services.filter(
+      service =>
+        !service.disabled || (service.disabled && service.disabled === false),
+    );
+    return finalServices;
   },
 };
 
