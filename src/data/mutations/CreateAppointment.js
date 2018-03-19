@@ -22,6 +22,7 @@ function createTransactionEntry(
   apptDate,
   name,
   resourceName,
+  deposit,
 ) {
   const items = entries.map(entry => ({
     id: entry.id,
@@ -44,6 +45,7 @@ function createTransactionEntry(
     apptDate,
     name,
     resourceName,
+    deposit,
   };
   return entryTemplate;
 }
@@ -81,6 +83,9 @@ export default {
     toBeInformed: {
       type: BooleanType,
     },
+    deposit: {
+      type: FloatType,
+    },
   },
   async resolve(
     value,
@@ -95,6 +100,7 @@ export default {
       additional,
       discount,
       toBeInformed,
+      deposit,
     },
   ) {
     let finalResourceName = resourceName;
@@ -162,7 +168,7 @@ export default {
         services,
         duration,
         resourceName: finalResourceName,
-        // these are sent in as floats
+        // these are sent in as floats not actually needed
         totalAmount,
         additional,
         discount,
@@ -191,6 +197,7 @@ export default {
         moment(event.start.dateTime),
         name,
         resourceName,
+        deposit,
       );
       await upsert(`trans:${uuid}`, transaction);
       // console.log(`uuid=${uuid}`);

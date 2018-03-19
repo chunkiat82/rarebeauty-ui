@@ -46,6 +46,7 @@ export function createCalendar(fetch) {
       additional,
       discount,
       toBeInformed,
+      deposit,
     } = input;
 
     const dateInput = moment(startDate).format('YYYYMMDD');
@@ -53,8 +54,8 @@ export function createCalendar(fetch) {
 
     const resp = await fetch('/graphql', {
       body: JSON.stringify({
-        query: `mutation($name: String!, $mobile:String!, $resourceName:String, $start:String!, $serviceIds:[String]!, $duration:Int!, $totalAmount:Float, $additional:Float, $discount:Float, $toBeInformed:Boolean) {
-                    createAppointment(name:$name, mobile:$mobile, resourceName:$resourceName, start:$start, serviceIds:$serviceIds, duration:$duration, totalAmount:$totalAmount, additional:$additional, discount:$discount, toBeInformed:$toBeInformed ) {
+        query: `mutation($name: String!, $mobile:String!, $resourceName:String, $start:String!, $serviceIds:[String]!, $duration:Int!, $totalAmount:Float, $additional:Float, $discount:Float, $toBeInformed:Boolean, $deposit:Float) {
+                    createAppointment(name:$name, mobile:$mobile, resourceName:$resourceName, start:$start, serviceIds:$serviceIds, duration:$duration, totalAmount:$totalAmount, additional:$additional, discount:$discount, toBeInformed:$toBeInformed, deposit:$deposit ) {
                         id
                         event { 
                             id,
@@ -73,7 +74,8 @@ export function createCalendar(fetch) {
                             service,
                             product,
                             discount,
-                            additional
+                            additional,
+                            deposit
                         }
                     }
                 }`,
@@ -88,6 +90,7 @@ export function createCalendar(fetch) {
           additional,
           discount,
           toBeInformed,
+          deposit,
         }),
       }),
     });
@@ -133,14 +136,15 @@ export function getAppointment(fetch) {
                       service,
                       product,
                       discount,
-                      additional
+                      additional,
+                      deposit
                   } 
               }}`,
       }),
     });
     const { data } = await resp.json();
     // console.log(`data=${JSON.stringify(data, null, 2)}`);
-    return data.appointment;
+    return data && data.appointment;
   };
 }
 export function updateAppointment(fetch) {

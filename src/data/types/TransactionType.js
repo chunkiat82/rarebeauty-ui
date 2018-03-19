@@ -51,6 +51,9 @@ const TransactionType = new ObjectType({
     createdAt: {
       type: new NonNull(StringType),
     },
+    deposit: {
+      type: new NonNull(FloatType),
+    },
   },
 });
 

@@ -76,7 +76,8 @@ class Appointment extends React.Component {
     // ),
     successMessage: PropTypes.string,
     errorMessage: PropTypes.string,
-    submitted: PropTypes.bool
+    submitted: PropTypes.bool,
+    deposit: PropTypes.number,
     // startDate: PropTypes.string.isRequired,
     // startTime: PropTypes.string.isRequired,
     // id: PropTypes.string,
@@ -94,7 +95,8 @@ class Appointment extends React.Component {
     additional: 0,
     pastAppointments: {},
     services: {},
-    submitted: false
+    submitted: false,
+    deposit: 0,
     // mapOfServices: {},
   };
 
@@ -112,11 +114,12 @@ class Appointment extends React.Component {
       discount,
       additional,
       pastAppointments,
+      deposit,
     } = this.props;
     const finalDuration = duration || 0;
     const finalDiscount = discount || 0;
     const finalAdditional = additional || 0;
-
+    const finalDeposit = deposit || 0;
     // console.log(`componentWillMount expanded=${pastAppointments && pastAppointments.length > 0}`);
     // console.log(`pastAppointments=${JSON.stringify(pastAppointments)}`);
     this.setState({
@@ -140,6 +143,7 @@ class Appointment extends React.Component {
       ),
       error: false,
       expanded: pastAppointments && pastAppointments.length > 0,
+      deposit: finalDeposit,
     });
   }
 
@@ -191,6 +195,7 @@ class Appointment extends React.Component {
     });
   };
   handleSliderChange = (event, value) => this.setState({ duration: value });
+  handleDepositChange = (event, value) => this.setState({ deposit: value });
   handleDateChange = (something, dateChosen) =>
     this.setState({ startDate: dateChosen });
   handleTimeChange = (something, timeChosen) =>
@@ -371,6 +376,13 @@ class Appointment extends React.Component {
             value={this.state.discount}
             fullWidth
           />
+          <TextField
+            hintText="Deposit"
+            floatingLabelText="Deposit"
+            onChange={this.handleDepositChange}
+            value={this.state.deposit}
+            fullWidth
+          />
           <p>
             <FontIcon className="material-icons" style={iconStyles}>
               schedule
@@ -416,7 +428,7 @@ class Appointment extends React.Component {
               this.props.showLoading();
               this.setState({
                 error: false,
-                submitted: true
+                submitted: true,
               });
               const results = await this.props.post(inputs);
 
@@ -424,7 +436,7 @@ class Appointment extends React.Component {
 
               this.setState({
                 notify: true,
-                submitted: false
+                submitted: false,
               });
 
               if (results.errors) {
@@ -446,6 +458,7 @@ class Appointment extends React.Component {
                   resourceName: '',
                   pastAppointments: [],
                   toBeInformed: false,
+                  deposit: 0,
                 });
 
                 this.nameAC.setState({ searchText: '' });
