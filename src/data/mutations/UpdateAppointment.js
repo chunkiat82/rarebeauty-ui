@@ -20,6 +20,7 @@ function createTransactionEntry(
   apptDate,
   name,
   resourceName,
+  deposit,
 ) {
   const items = entries.map(entry => ({
     id: entry.id,
@@ -42,6 +43,7 @@ function createTransactionEntry(
     apptDate,
     name,
     resourceName,
+    deposit,
   };
   return entryTemplate;
 }
@@ -79,6 +81,9 @@ export default {
     discount: {
       type: FloatType,
     },
+    deposit: {
+      type: FloatType,
+    },
   },
   async resolve(
     value,
@@ -93,6 +98,7 @@ export default {
       totalAmount,
       additional,
       discount,
+      deposit,
     },
   ) {
     // [todo] - what if it's a mobile in the summary
@@ -153,6 +159,7 @@ export default {
         moment(event.start.dateTime),
         name,
         resourceName,
+        deposit,
       );
       await upsert(`trans:${transId}`, transaction);
       // console.log(`id=${id}`);

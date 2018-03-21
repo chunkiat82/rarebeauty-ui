@@ -161,6 +161,7 @@ export function updateAppointment(fetch) {
       totalAmount,
       additional,
       discount,
+      deposit,
     } = input;
 
     const dateInput = moment(startDate).format('YYYYMMDD');
@@ -168,8 +169,8 @@ export function updateAppointment(fetch) {
 
     const resp = await fetch('/graphql', {
       body: JSON.stringify({
-        query: `mutation($id: String!, $name: String!, $mobile:String!, $resourceName:String, $start:String!, $serviceIds:[String]!, $duration:Int!, $totalAmount:Float, $additional:Float, $discount:Float) {
-            updateAppointment(id:$id, name:$name, mobile:$mobile, resourceName:$resourceName, start:$start, serviceIds:$serviceIds, duration:$duration, totalAmount:$totalAmount, additional:$additional, discount:$discount ) {
+        query: `mutation($id: String!, $name: String!, $mobile:String!, $resourceName:String, $start:String!, $serviceIds:[String]!, $duration:Int!, $totalAmount:Float, $additional:Float, $discount:Float, $deposit:Float) {
+            updateAppointment(id:$id, name:$name, mobile:$mobile, resourceName:$resourceName, start:$start, serviceIds:$serviceIds, duration:$duration, totalAmount:$totalAmount, additional:$additional, discount:$discount, deposit:$deposit) {
                 id
                 event { 
                     id,
@@ -186,7 +187,8 @@ export function updateAppointment(fetch) {
                     service,
                     product,
                     discount,
-                    additional
+                    additional,
+                    deposit
                 }
             }
             }`,
@@ -201,6 +203,7 @@ export function updateAppointment(fetch) {
           totalAmount,
           additional,
           discount,
+          deposit,
         }),
       }),
     });

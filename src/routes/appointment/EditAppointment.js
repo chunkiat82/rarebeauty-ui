@@ -42,10 +42,12 @@ async function action({ fetch, params, store }) {
   let discount = 0;
   let additional = 0;
   let totalAmount = 0;
+  let deposit = 0;
   if (transaction) {
     discount = transaction.discount;
     additional = transaction.additional;
     totalAmount = transaction.totalAmount;
+    deposit = transaction.deposit;
   }
   const pastAppointments = await queryPastAppointments(fetch)(resourceName);
   const services = await getServices(fetch)();
@@ -89,6 +91,7 @@ async function action({ fetch, params, store }) {
           errorMessage={'Appointment Creation Failed'}
           showLoading={show(store)}
           hideLoading={hide(store)}
+          deposit={deposit}
           {...this.props}
         />
       </Layout>
