@@ -19,10 +19,7 @@ const services = {
   type: new ListType(ServiceType),
   async resolve() {
     const response = await get(`config:services`);
-    const finalServices = response.value.services.filter(
-      service =>
-        !service.disabled || (service.disabled && service.disabled === false),
-    );
+    const finalServices = response.value.services;
     return finalServices;
   },
 };

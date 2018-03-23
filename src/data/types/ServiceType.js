@@ -13,6 +13,7 @@ import {
   GraphQLInt as IntegerType,
   GraphQLNonNull as NonNull,
   GraphQLFloat as FloatType,
+  GraphQLBoolean as BooleanType,
   // GraphQLList as ListType,
 } from 'graphql';
 
@@ -39,6 +40,12 @@ const ServiceType = new ObjectType({
     },
     duration: {
       type: new NonNull(IntegerType),
+    },
+    enabled: {
+      type: BooleanType,
+      resolve(obj) {
+        return obj.enabled;
+      },
     },
   },
 });

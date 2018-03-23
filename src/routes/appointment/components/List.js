@@ -67,7 +67,11 @@ class AppointmentList extends React.Component {
         </TableRowColumn>
         <TableRowColumn style={{ whiteSpace: 'wrap', textOverflow: 'wrap' }}>
           {value.serviceIds
-            .map(serviceId => this.props.services.peekByKey(serviceId).service)
+            .map(
+              serviceId =>
+                // console.log(serviceId);
+                this.props.services.peekByKey(serviceId).service,
+            )
             .join(', ')}
         </TableRowColumn>
       </TableRow>,

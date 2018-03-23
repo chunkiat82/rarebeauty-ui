@@ -349,6 +349,9 @@ class Appointment extends React.Component {
           >
             {this.props.services
               .getArray()
+              .filter(
+                service => service.enabled === null || service.enabled === true,
+              )
               .map(item =>
                 <MenuItem
                   key={item.id}

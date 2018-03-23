@@ -226,14 +226,14 @@ function listServices(fetch) {
                 duration,
                 price,
                 followUp,
-                count
+                count,
+                enabled
               }
           }
         `,
       }),
     });
     const { data } = await resp.json();
-
     return data.services;
   };
 }
