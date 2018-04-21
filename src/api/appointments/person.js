@@ -3,9 +3,10 @@ import { get, query } from '../../data/database';
 import { get as getAppointment } from '../../data/database/appointment';
 
 export function byPerson(options) {
-  const { limit, id } = options;
   // console.log(options);
   return new Promise(async (res, rej) => {
+    const { limit, id } = options;
+
     try {
       const queryString = `select extendedProperties.shared.uuid from default event where extendedProperties.shared.resourceName='${id}' ORDER BY   \`start\`.\`dateTime\` desc LIMIT ${limit ||
         '3'}`;
@@ -14,20 +15,25 @@ export function byPerson(options) {
       // console.log(`idObjs=${JSON.stringify(idObjs,null,2)}`);
       // need to get batch here instead
       const promises = [];
+      let uuidObjs = [];
       idObjs.forEach(idObj => {
         const { uuid } = idObj;
         // console.log(`uuid=${uuid}`);
         promises[promises.length] = get(`appt:${uuid}`);
       });
-      const uuidObjs = await Promise.all(promises);
+
+      uuidObjs = await Promise.all(promises);
 
       const appointmentsPromises = [];
+
       uuidObjs.forEach(uuidObj => {
         // console.log(`uuidObj.value.id=${uuidObj.value.id}`);
-        appointmentsPromises[appointmentsPromises.length] = getAppointment(
-          uuidObj.value.id,
-        );
+        if (uuidObj !== null)
+          appointmentsPromises[appointmentsPromises.length] = getAppointment(
+            uuidObj.value.id,
+          );
       });
+
       const appointments = await Promise.all(appointmentsPromises);
       // console.log(appointments);
       res({
@@ -37,6 +43,7 @@ export function byPerson(options) {
         appointments,
       });
     } catch (err) {
+      console.error(`Error byPerson=${JSON.stringify(err)}`);
       rej(err);
     }
   });

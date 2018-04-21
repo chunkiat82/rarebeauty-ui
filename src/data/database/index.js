@@ -12,8 +12,9 @@ async function runOperation(operation, options) {
   try {
     res = await operation(bucket, options);
   } catch (err) {
-    console.error(err);
-    throw err;
+    // console.error(`runOperation=${JSON.stringify(err)}`);
+    res = null;
+    // throw err;
   }
   bucket.disconnect();
   return res;
@@ -24,6 +25,7 @@ function getObject(bucket, options) {
   return new Promise((res, rej) => {
     bucket.get(id, (err, result) => {
       if (err) {
+        console.error(`Err getObject id=${options.id}`);
         rej(err);
       } else {
         res(result);
@@ -37,6 +39,7 @@ function deleteObject(bucket, options) {
   return new Promise((res, rej) => {
     bucket.remove(id, (err, result) => {
       if (err) {
+        console.error(`Err deleteObject id=${options.id}`);
         rej(err);
       } else {
         res(result);
@@ -50,6 +53,7 @@ function setObject(bucket, options) {
   return new Promise((res, rej) => {
     bucket.upsert(id, doc, (err, result) => {
       if (err) {
+        console.error(`Err setObject id=${options.id}`);
         rej(err);
       } else {
         res(result);
@@ -68,6 +72,7 @@ function queryOperation(bucket, options) {
   return new Promise((res, rej) => {
     bucket.query(n1Query, (err, rows) => {
       if (err) {
+        console.error(`Err queryOperation n1Query=${n1Query}`);
         rej(err);
       } else {
         res(rows);
