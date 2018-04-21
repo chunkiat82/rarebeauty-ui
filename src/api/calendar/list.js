@@ -19,7 +19,7 @@ export default function list(options) {
       auth: jwtClient,
     });
     const timeMin =
-      timeStart || startDT || moment().subtract(1, 'hours').toISOString();
+      timeStart || startDT || moment().subtract(3, 'hours').toISOString();
     let finalOptions = {
       calendarId,
       timeMin,
