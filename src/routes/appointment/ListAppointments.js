@@ -19,7 +19,8 @@ async function getEvents(fetch) {
                         apptId,
                         serviceIds,
                         confirmed,
-                        shortURL
+                        shortURL,
+                        created
                     }
                 }`,
     }),

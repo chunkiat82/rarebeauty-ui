@@ -62,6 +62,12 @@ const EventType = new ObjectType({
         return String(obj.end.dateTime);
       },
     },
+    created: {
+      type: new NonNull(StringType),
+      resolve(obj) {
+        return String(obj.created);
+      },
+    },
     serviceIds: {
       type: new ListType(StringType),
       resolve(obj) {

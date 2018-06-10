@@ -8,14 +8,18 @@
  */
 // http://www.material-ui.com/#/components/select-field
 import 'moment-duration-format';
-import {
-  Table,
-  TableBody,
-  TableHeader,
-  TableHeaderColumn,
-  TableRow,
-  TableRowColumn,
-} from 'material-ui/Table';
+import Table from '@material-ui/core/Table';
+import TableBody from '@material-ui/core/TableBody';
+import TableCell from '@material-ui/core/TableCell';
+import TableHead from '@material-ui/core/TableHead';
+import TableRow from '@material-ui/core/TableRow';
+import ExpansionPanel from '@material-ui/core/ExpansionPanel';
+import ExpansionPanelSummary from '@material-ui/core/ExpansionPanelSummary';
+import ExpansionPanelDetails from '@material-ui/core/ExpansionPanelDetails';
+import Typography from '@material-ui/core/Typography';
+import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
+
+
 import PropTypes from 'prop-types';
 import moment from 'moment';
 import React from 'react';
@@ -41,14 +45,14 @@ class AppointmentList extends React.Component {
   rows(values) {
     return values.map((value /* ,index*/) =>
       <TableRow key={value.id}>
-        <TableRowColumn>
+        <TableCell>
           {value.shortURL
             ? <a href={value.shortURL} target="_blank">
                 {' '}{value.name}
               </a>
             : value.name}
-        </TableRowColumn>
-        <TableRowColumn>
+        </TableCell>
+        <TableCell>
           <p>
             {moment(value.start).format('DD MMM YYYY')}
           </p>
@@ -64,8 +68,20 @@ class AppointmentList extends React.Component {
                 : `${value.status}`}
             </span>
           </p>
-        </TableRowColumn>
-        <TableRowColumn style={{ whiteSpace: 'wrap', textOverflow: 'wrap' }}>
+          <p>
+          <ExpansionPanel>
+            <ExpansionPanelSummary expandIcon={<ExpandMoreIcon />}>
+              <Typography >More Details</Typography>
+            </ExpansionPanelSummary>
+            <ExpansionPanelDetails>
+              <Typography>
+                Created On: {moment(value.created).format('DD MMM YYYY hh:mm A')}
+              </Typography>
+            </ExpansionPanelDetails>
+          </ExpansionPanel>
+          </p>
+        </TableCell>
+        <TableCell style={{ whiteSpace: 'wrap', textOverflow: 'wrap' }}>
           {value.serviceIds
             .map(
               serviceId =>
@@ -73,7 +89,7 @@ class AppointmentList extends React.Component {
                 this.props.services.peekByKey(serviceId).service,
             )
             .join(', ')}
-        </TableRowColumn>
+        </TableCell>
       </TableRow>,
     );
   }
@@ -89,13 +105,13 @@ class AppointmentList extends React.Component {
   render() {
     return (
       <Table onRowSelection={this.select(this.props.rows)}>
-        <TableHeader displaySelectAll={false} adjustForCheckbox={false}>
+        <TableHead displaySelectAll={false} adjustForCheckbox={false}>
           <TableRow>
-            <TableHeaderColumn>Name</TableHeaderColumn>
-            <TableHeaderColumn>Date/Time</TableHeaderColumn>
-            <TableHeaderColumn>Services</TableHeaderColumn>
+            <TableCell>Name</TableCell>
+            <TableCell>Date/Time</TableCell>
+            <TableCell>Services</TableCell>
           </TableRow>
-        </TableHeader>
+        </TableHead>
         <TableBody displayRowCheckbox={false}>
           {this.rows(this.props.rows)}
         </TableBody>
