@@ -82,9 +82,12 @@ function createAppointment(calendar, options) {
               email: TEST_EMAIL,
             },
           ],
-          description: `${services
-            .map(item => item.service)
-            .join(',')}\n\n${EDIT_URL}/${uuid}`,
+          description: `
+            $${services.reduce((prevSum, item) => prevSum + item.price, 0)}
+
+            ${services
+              .map(item => item.service)
+              .join(',')}\n\n${EDIT_URL}/${uuid}`,
         },
       },
       (err, event) => {
