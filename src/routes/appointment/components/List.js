@@ -71,33 +71,33 @@ class AppointmentList extends React.Component {
           </p>
           <ExpansionPanel>
             <ExpansionPanelSummary expandIcon={<ExpandMoreIcon />}>
-              <Typography>Details</Typography>
+              <Typography>Expand</Typography>
             </ExpansionPanelSummary>
             <ExpansionPanelDetails>
-              <Typography>
+              <span>
                 Created On:{' '}
                 {moment(value.created).format('DD MMM YYYY hh:mm A')}
-              </Typography>
+              </span>
+              -
+              <span>
+                {value.serviceIds
+                  .map(
+                    serviceId =>
+                      // console.log(serviceId);
+                      this.props.services.peekByKey(serviceId).service,
+                  )
+                  .join(', ')}
+              </span>
+              -
+              <span>
+                ${value.serviceIds.reduce(
+                  (prevValue, serviceId) =>
+                    prevValue + this.props.services.peekByKey(serviceId).price,
+                  0,
+                )}
+              </span>
             </ExpansionPanelDetails>
           </ExpansionPanel>
-        </TableCell>
-        <TableCell style={{ whiteSpace: 'wrap', textOverflow: 'wrap' }}>
-          <p>
-            {value.serviceIds
-              .map(
-                serviceId =>
-                  // console.log(serviceId);
-                  this.props.services.peekByKey(serviceId).service,
-              )
-              .join(', ')}
-          </p>
-          <p>
-            ${value.serviceIds.reduce(
-              (prevValue, serviceId) =>
-                prevValue + this.props.services.peekByKey(serviceId).price,
-              0,
-            )}
-          </p>
         </TableCell>
       </TableRow>,
     );
@@ -117,8 +117,7 @@ class AppointmentList extends React.Component {
         <TableHead displaySelectAll={false} adjustForCheckbox={false}>
           <TableRow>
             <TableCell>Name</TableCell>
-            <TableCell>Date/Time</TableCell>
-            <TableCell>Services</TableCell>
+            <TableCell>Details</TableCell>            
           </TableRow>
         </TableHead>
         <TableBody displayRowCheckbox={false}>
