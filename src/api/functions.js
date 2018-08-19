@@ -15,7 +15,8 @@ import contactUpdate from './contacts/update';
 
 import appointmentsByPerson from './appointments/person';
 
-const calendarPatch = require('./calendar/patch');
+import calendarPatch from './calendar/patch';
+
 const calendarDayBefore = require('./calendar/dayBeforeEvents');
 
 const calendarWatch = require('./calendar/watch');
@@ -256,14 +257,15 @@ async function syncContacts() {
   try {
     const contacts = await contactLists();
 
-    //remember to delete all records first
+    // remember to delete all records first
 
-    contacts.forEach(contact => {
+    contacts.forEach(rec => {
+      const contact = rec;
       contact.type = 'contact';
       delete contact.id;
       upsert(`contact:${contact.resourceName}`, contact);
-      console.log(`contact:${contact.resourceName}`);
-    })
+      // console.log(`contact:${contact.resourceName}`);
+    });
 
     return contacts;
   } catch (err) {
@@ -497,7 +499,7 @@ const functions = {
   remindCustomersTouchUp,
   createShortURL,
   getAppointmentsByPerson,
-  syncContacts
+  syncContacts,
 };
 
 export default functions;

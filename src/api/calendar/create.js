@@ -62,7 +62,10 @@ function createAppointment(calendar, options) {
           end: { dateTime: endDT },
           summary: `${name} (${countOfExistingAppointments > 0
             ? countOfExistingAppointments
-            : 'FIRST'})`,
+            : 'FIRST'}) - $${services.reduce(
+            (prevSum, item) => prevSum + item.price,
+            0,
+          )}`,
           location: 'Home',
           status: 'tentative',
           extendedProperties: {
@@ -82,12 +85,12 @@ function createAppointment(calendar, options) {
               email: TEST_EMAIL,
             },
           ],
-          description: `
-            $${services.reduce((prevSum, item) => prevSum + item.price, 0)}
+          description: `$${services.reduce(
+            (prevSum, item) => prevSum + item.price,
+            0,
+          )}
 
-            ${services
-              .map(item => item.service)
-              .join(',')}\n\n${EDIT_URL}/${uuid}`,
+${services.map(item => item.service).join(',')}\n\n${EDIT_URL}/${uuid}`,
         },
       },
       (err, event) => {

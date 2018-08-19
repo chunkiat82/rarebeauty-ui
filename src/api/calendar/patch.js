@@ -1,7 +1,11 @@
+import { byPersonCount as getAppointmentsCountByPerson } from '../appointments/person';
+
 const generateJWT = require('../utilities/jwt');
 const google = require('googleapis');
 
-function patchHandler(res, rej, calendar, options, eventResponse) {
+const EDIT_URL = 'https://rarebeauty.soho.sg/appointment/edit';
+
+async function patchHandler(res, rej, calendar, options, eventResponse) {
   const {
     calendarId,
     eventId,
@@ -39,9 +43,26 @@ function patchHandler(res, rej, calendar, options, eventResponse) {
     resource.extendedProperties.shared.services = services
       .map(item => item.id)
       .join(',');
-    resource.description = `${services
-      .map(item => item.service)
-      .join(',')}\n\nhttps://rarebeauty.soho.sg/appointment/edit/${apptId}`;
+    resource.description = `$${services.reduce(
+      (prevSum, item) => prevSum + item.price,
+      0,
+    )}
+
+${services.map(item => item.service).join(',')}\n\n${EDIT_URL}/${apptId}`;
+
+    const {
+      count: countOfExistingAppointments,
+    } = await getAppointmentsCountByPerson({
+      id: resource.extendedProperties.shared.resourceName,
+    });
+
+    resource.summary = `${resource.attendees[0]
+      .displayName} (${countOfExistingAppointments > 0
+      ? countOfExistingAppointments
+      : 'FIRST'}) - $${services.reduce(
+      (prevSum, item) => prevSum + item.price,
+      0,
+    )}`;
   }
   if (reminded) {
     resource.extendedProperties.shared.reminded = reminded;
@@ -75,7 +96,7 @@ function patchHandler(res, rej, calendar, options, eventResponse) {
 
   resource.extendedProperties.shared.changed = new Date().getTime();
 
-  // console.log(`patchObject=${JSON.stringify(patchObject)}`);
+  // console.log(`patchObject1=${JSON.stringify(patchObject)}`);
   calendar.events.patch(patchObject, (err, event) => {
     if (err) {
       console.error(
@@ -90,7 +111,7 @@ function patchHandler(res, rej, calendar, options, eventResponse) {
   });
 }
 
-module.exports = function patch(options) {
+export default function patch(options) {
   const { calendarId, eventId } = options;
 
   if (!calendarId || !eventId) {
@@ -101,19 +122,22 @@ module.exports = function patch(options) {
 
   return new Promise(async (res, rej) => {
     const jwtClient = await generateJWT();
-    const calendar = google.calendar({ version: 'v3', auth: jwtClient });
+    const calendar = google.calendar({
+      version: 'v3',
+      auth: jwtClient,
+    });
     calendar.events.get(
       {
         calendarId,
         eventId,
       },
-      (err, response) => {
+      async (err, response) => {
         if (err) {
           rej(err);
         } else {
-          patchHandler(res, rej, calendar, options, response);
+          await patchHandler(res, rej, calendar, options, response);
         }
       },
     );
   });
-};
+}
