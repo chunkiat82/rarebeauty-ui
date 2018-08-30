@@ -100,7 +100,10 @@ async function informReservationToCustomer(options) {
         event.extendedProperties.shared.informed === false)
     ) {
       try {
-        const name = event.summary;
+        let name = 'dear';
+        name =
+          event.attendees &&
+          event.attendees.filter(a => a.displayName)[0].displayName;
         const mobile =
           (event.extendedProperties &&
             event.extendedProperties.shared &&
@@ -194,7 +197,10 @@ async function remindCustomers(options) {
         ) {
           remindedEvents[remindedEvents.length] = event;
           try {
-            const name = event.summary;
+            let name = 'dear';
+            name =
+              event.attendees &&
+              event.attendees.filter(a => a.displayName)[0].displayName;
             const mobile =
               (event.extendedProperties &&
                 event.extendedProperties.shared &&
@@ -439,7 +445,10 @@ async function remindCustomersTouchUp(options) {
             : 'service:20182';
           const followUpService = services.peekByKey(lashService).followUp;
           const followUpPrice = services.peekByKey(followUpService).price;
-          const name = event.summary;
+          let name = 'dear';
+          name =
+            event.attendees &&
+            event.attendees.filter(a => a.displayName)[0].displayName;
           const mobile =
             (event.extendedProperties &&
               event.extendedProperties.shared &&
