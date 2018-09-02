@@ -4,6 +4,7 @@ import {
   GraphQLInt as IntegerType,
   GraphQLList as ListType,
   GraphQLFloat as FloatType,
+  GraphQLBoolean as BooleanType,
 } from 'graphql';
 import moment from 'moment';
 import AppointmentType from '../types/AppointmentType';
@@ -84,6 +85,9 @@ export default {
     deposit: {
       type: FloatType,
     },
+    toBeInformed: {
+      type: BooleanType,
+    },
   },
   async resolve(
     value,
@@ -99,6 +103,7 @@ export default {
       additional,
       discount,
       deposit,
+      toBeInformed,
     },
   ) {
     // [todo] - what if it's a mobile in the summary
@@ -106,9 +111,6 @@ export default {
     try {
       const apptResponse = await get(`appt:${id}`);
       const { eventId, transId } = apptResponse.value;
-
-      // console.log(`eventId=${eventId}`);
-      // console.log(`transId=${transId}`);
 
       /* need to abstract this logic */
       const response = await get(`config:services`);
@@ -139,6 +141,11 @@ export default {
         totalAmount,
         additional,
         discount,
+        informed: !!(
+          toBeInformed === undefined ||
+          toBeInformed === 'false' ||
+          toBeInformed === false
+        ), // bad logic too hard to understand //its set to false so that it will be picked up later to be informed
       });
       // console.log(`fullEvent:${JSON.stringify(event)}`);
       const now = moment();

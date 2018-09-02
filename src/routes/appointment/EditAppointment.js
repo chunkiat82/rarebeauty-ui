@@ -64,6 +64,7 @@ async function action({ fetch, params, store }) {
       <Layout>
         <Appointment
           post={async input => {
+            // console.log(input);
             await updateAppointment(fetch)(
               Object.assign({ id: apptId, resourceName }, input),
             );

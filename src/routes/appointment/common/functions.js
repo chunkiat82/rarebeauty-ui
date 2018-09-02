@@ -162,15 +162,19 @@ export function updateAppointment(fetch) {
       additional,
       discount,
       deposit,
+      toBeInformed,
     } = input;
 
     const dateInput = moment(startDate).format('YYYYMMDD');
     const timeInput = moment(startTime).format('HHmm');
 
+    // console.log(`input=${JSON.stringify(input)}`);
+    // console.log(`toBeInformed=${toBeInformed}`)
+
     const resp = await fetch('/graphql', {
       body: JSON.stringify({
-        query: `mutation($id: String!, $name: String!, $mobile:String!, $resourceName:String, $start:String!, $serviceIds:[String]!, $duration:Int!, $totalAmount:Float, $additional:Float, $discount:Float, $deposit:Float) {
-            updateAppointment(id:$id, name:$name, mobile:$mobile, resourceName:$resourceName, start:$start, serviceIds:$serviceIds, duration:$duration, totalAmount:$totalAmount, additional:$additional, discount:$discount, deposit:$deposit) {
+        query: `mutation($id: String!, $name: String!, $mobile:String!, $resourceName:String, $start:String!, $serviceIds:[String]!, $duration:Int!, $totalAmount:Float, $additional:Float, $discount:Float, $deposit:Float, $toBeInformed:Boolean) {
+            updateAppointment(id:$id, name:$name, mobile:$mobile, resourceName:$resourceName, start:$start, serviceIds:$serviceIds, duration:$duration, totalAmount:$totalAmount, additional:$additional, discount:$discount, deposit:$deposit, toBeInformed:$toBeInformed) {
                 id
                 event { 
                     id,
@@ -178,12 +182,13 @@ export function updateAppointment(fetch) {
                     mobile,
                     start,
                     end,
-                    serviceIds
+                    serviceIds,
+                    informed
                 }
                 transaction {
                     id,
                     items { id, type, name, price },
-                   totalAmount,
+                    totalAmount,
                     service,
                     product,
                     discount,
@@ -204,6 +209,7 @@ export function updateAppointment(fetch) {
           additional,
           discount,
           deposit,
+          toBeInformed,
         }),
       }),
     });

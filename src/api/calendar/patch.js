@@ -19,6 +19,7 @@ async function patchHandler(res, rej, calendar, options, eventResponse) {
     status,
     confirmed,
     shortURL,
+    informed,
   } = options;
 
   const patchObject = {
@@ -71,6 +72,8 @@ ${services.map(item => item.service).join(',')}\n\n${EDIT_URL}/${apptId}`;
   if (touchUpReminded) {
     resource.extendedProperties.shared.touchUpReminded = touchUpReminded;
   }
+
+  resource.extendedProperties.shared.informed = informed;
 
   if (status) {
     resource.status = status;

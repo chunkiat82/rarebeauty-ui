@@ -76,7 +76,7 @@ class Appointment extends React.Component {
     // ),
     successMessage: PropTypes.string,
     errorMessage: PropTypes.string,
-    submitted: PropTypes.bool,
+    // submitted: PropTypes.bool,
     deposit: PropTypes.number,
     // startDate: PropTypes.string.isRequired,
     // startTime: PropTypes.string.isRequired,
@@ -404,7 +404,7 @@ class Appointment extends React.Component {
             onChange={this.handleSliderChange}
           />
           <Toggle
-            label="Send appointment details to customer (only for creation now)"
+            label="Send appointment details to customer"
             labelPosition="right"
             style={{ marginBottom: 16 }}
             onToggle={(event, isInputChecked) => {

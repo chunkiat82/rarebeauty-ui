@@ -84,12 +84,14 @@ async function listDeltaEvents(options) {
 }
 
 async function informReservationToCustomer(options) {
+  const { updated } = options;
   const finalOptions = Object.assign(
     {
       calendarId,
     },
     options,
   );
+
   try {
     const event = await calendarGet(finalOptions);
     // console.log(event);
@@ -114,7 +116,10 @@ async function informReservationToCustomer(options) {
         const shortURL = await urlCreate({
           longURL: `${reservationURL}${event.id}`,
         });
-        const message = `Your appt with Rare Beauty on ${startDate} at ${startTime} is reserved.\n\nClick ${shortURL.id} to view address/details`;
+
+        const message = `${updated
+          ? 'Updated - '
+          : ''}Your appt with Rare Beauty on ${startDate} at ${startTime} is reserved.\n\nClick ${shortURL.id} to view address/details`;
 
         console.error(`message=${message}`);
 
@@ -159,14 +164,20 @@ async function createEvent(options) {
 
 async function patchEvent(options) {
   // node index --action=patchEvent --eventId=XXX --mobile=11111111 --services=ELFS,HLW
+  // console.log(options);
   try {
     const event = await calendarPatch(
       Object.assign({}, options, {
         calendarId,
       }),
     );
-    // console.log(event);
-    return event;
+
+    const finalEvent = await informReservationToCustomer({
+      eventId: event.id,
+      updated: true,
+    });
+    // console.log(finalEvent);
+    return finalEvent;
   } catch (err) {
     console.error(err);
     throw err;

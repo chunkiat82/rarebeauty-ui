@@ -177,7 +177,7 @@ export default {
           toBeInformed === undefined ||
           toBeInformed === 'false' ||
           toBeInformed === false
-        ),
+        ), // bad logic
       });
       const now = moment();
       await upsert(`appt:${uuid}`, {
