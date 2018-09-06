@@ -294,14 +294,17 @@ class Appointment extends React.Component {
           <hr />
           <div>
             <span>
-              {
-                //--people/undefined--
-              }
-              {this.state.resourceName.length>16
-                ? `http://rarebeauty.soho.sg/customer/${this.state.resourceName.split(
-                    '/',
-                  )[1]}/createAppointment`
-                : ''}
+              <a
+                href={
+                  this.state.resourceName.length > 16
+                    ? `/customer/${this.state.resourceName.split(
+                        '/',
+                      )[1]}/createAppointment`
+                    : ''
+                }
+              >
+                Customer Link
+              </a>
             </span>
           </div>
           <AutoComplete
