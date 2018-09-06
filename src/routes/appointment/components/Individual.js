@@ -294,7 +294,10 @@ class Appointment extends React.Component {
           <hr />
           <div>
             <span>
-              {this.state.resourceName
+              {
+                //--people/undefined--
+              }
+              {this.state.resourceName.length>16
                 ? `http://rarebeauty.soho.sg/customer/${this.state.resourceName.split(
                     '/',
                   )[1]}/createAppointment`

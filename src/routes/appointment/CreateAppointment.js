@@ -35,7 +35,7 @@ async function action({ fetch, params, store }) {
 
   const contacts = await listContacts(fetch)();
   const services = await getServices(fetch)();
-  let contact = null;
+  let contact = { name : '' , mobile: '' };
   let pastAppointments = null;
   if (customerId) {
     contact = await getContact(fetch)(resourceName);
@@ -69,7 +69,7 @@ async function action({ fetch, params, store }) {
           hideLoading={hide(store)}
           name={contact.name}
           mobile={contact.mobile}
-          resourceName={contact.resourceName}
+          resourceName={resourceName}
           contact
         />
       </Layout>
