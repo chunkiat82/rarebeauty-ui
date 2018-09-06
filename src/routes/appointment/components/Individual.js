@@ -34,7 +34,7 @@ const iconStyles = {
 
 class Appointment extends React.Component {
   static propTypes = {
-    contact: PropTypes.arrayOf(
+    contacts: PropTypes.arrayOf(
       PropTypes.shape({
         name: PropTypes.string.isRequired,
         mobile: PropTypes.string.isRequired,
@@ -102,7 +102,7 @@ class Appointment extends React.Component {
 
   componentWillMount() {
     const {
-      contact,
+      contacts,
       name,
       mobile,
       startDate,
@@ -116,14 +116,17 @@ class Appointment extends React.Component {
       pastAppointments,
       deposit,
     } = this.props;
+
+    // console.log(this.props.contacts);
     const finalDuration = duration || 0;
     const finalDiscount = discount || 0;
     const finalAdditional = additional || 0;
     const finalDeposit = deposit || 0;
     // console.log(`componentWillMount expanded=${pastAppointments && pastAppointments.length > 0}`);
     // console.log(`pastAppointments=${JSON.stringify(pastAppointments)}`);
+
     this.setState({
-      contactDS: contact,
+      contactDS: contacts,
       name,
       mobile,
       startDate,
@@ -288,6 +291,16 @@ class Appointment extends React.Component {
               {this.renderPastAppointments()}
             </CardText>
           </Card>
+          <hr />
+          <div>
+            <span>
+              {this.state.resourceName
+                ? `http://rarebeauty.soho.sg/customer/${this.state.resourceName.split(
+                    '/',
+                  )[1]}/createAppointment`
+                : ''}
+            </span>
+          </div>
           <AutoComplete
             ref={c => {
               this.nameAC = c;

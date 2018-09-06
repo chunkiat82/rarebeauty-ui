@@ -14,6 +14,7 @@ import {
 
 import me from './queries/me';
 import news from './queries/news';
+import contacts from './queries/contacts';
 import contact from './queries/contact';
 import event from './queries/event';
 import events from './queries/events';
@@ -29,12 +30,13 @@ const schema = new Schema({
     fields: {
       me,
       news,
-      contact,
+      contacts,
       event,
       events,
       appointment,
       person,
       services,
+      contact,
     },
   }),
   mutation: mutations,

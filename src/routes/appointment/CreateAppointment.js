@@ -8,6 +8,7 @@ import {
   createCalendar,
   listContacts,
   getServices,
+  getContact,
 } from './common/functions';
 
 function show(store) {
@@ -22,11 +23,29 @@ function hide(store) {
   };
 }
 
-async function action({ fetch, store }) {
+async function action({ fetch, params, store }) {
   show(store)();
+
+  // console.log(`params=${JSON.stringify(params)}`);
+
+  const customerId = params.customerId;
+
+  const resourceName = `people/${customerId}`;
+  // console.log(`resourceName=${resourceName}`);
+
   const contacts = await listContacts(fetch)();
   const services = await getServices(fetch)();
-  // console.log(services);
+  let contact = null;
+  let pastAppointments = null;
+  if (customerId) {
+    contact = await getContact(fetch)(resourceName);
+    pastAppointments = await queryPastAppointments(fetch)(resourceName);
+  }
+  // console.log(`contact = ${JSON.stringify(contact)}`);
+
+  // console.
+  // const customer = customerId && await
+  // console.log(contacts);
   hide(store)();
 
   if (!contacts && !services)
@@ -39,14 +58,19 @@ async function action({ fetch, store }) {
       <Layout>
         <Appointment
           services={services}
+          pastAppointments={pastAppointments}
           queryPastAppointments={queryPastAppointments(fetch)}
-          contact={contacts}
+          contacts={contacts}
           post={createCalendar(fetch)}
           buttonText={'Create Appointment'}
           successMessage={'Appointment Added'}
           errorMessage={'Appointment Creation Failed'}
           showLoading={show(store)}
           hideLoading={hide(store)}
+          name={contact.name}
+          mobile={contact.mobile}
+          resourceName={contact.resourceName}
+          contact
         />
       </Layout>
     ),

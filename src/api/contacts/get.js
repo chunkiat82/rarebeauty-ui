@@ -20,7 +20,7 @@ export default async function get(options) {
     people.people.get(
       {
         resourceName,
-        personFields: ['phoneNumbers', 'userDefined'],
+        personFields: ['names', 'phoneNumbers', 'userDefined'],
       },
       {},
       (err, me) => {

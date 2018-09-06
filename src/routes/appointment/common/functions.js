@@ -105,11 +105,11 @@ export function listContacts(fetch) {
   return async () => {
     const resp = await fetch('/graphql', {
       body: JSON.stringify({
-        query: '{contact{name,mobile,display,resourceName}}',
+        query: '{contacts{name,mobile,display,resourceName}}',
       }),
     });
     const { data } = await resp.json();
-    return data.contact;
+    return data.contacts;
   };
 }
 
@@ -255,6 +255,29 @@ export function getServices(fetch) {
   };
 }
 
+export function getContact(fetch) {
+  return async id => {
+    const resp = await fetch('/graphql', {
+      body: JSON.stringify({
+        query: `
+          {
+            contact(id: "${id}") {
+              mobile,
+              display,
+              resourceName,
+              name
+            }
+          }
+        `,
+      }),
+    });
+    const { data } = await resp.json();
+
+    // console.log(data);
+    return data.contact;
+  };
+}
+
 export default {
   queryPastAppointments,
   createCalendar,
@@ -262,4 +285,5 @@ export default {
   getAppointment,
   updateAppointment,
   getServices,
+  getContact,
 };

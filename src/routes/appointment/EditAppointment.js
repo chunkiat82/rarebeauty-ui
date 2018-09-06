@@ -27,7 +27,7 @@ async function action({ fetch, params, store }) {
   const apptId = params.id;
 
   show(store)();
-  const contact = await listContacts(fetch)();
+  const contacts = await listContacts(fetch)();
   const appointment = await getAppointment(fetch)(apptId);
 
   const { event, transaction } = appointment;
@@ -55,7 +55,7 @@ async function action({ fetch, params, store }) {
   // console.log(`Edit pastAppointments=${JSON.stringify(pastAppointments)}`);
   hide(store)();
 
-  if (!contact) throw new Error('Failed to load the contact feed.');
+  if (!contacts) throw new Error('Failed to load the contact feed.');
 
   return {
     chunks: ['appointment-edit'],
@@ -76,7 +76,7 @@ async function action({ fetch, params, store }) {
           queryPastAppointments={queryPastAppointments(fetch)}
           pastAppointments={pastAppointments}
           services={services}
-          contact={contact}
+          contacts={contacts}
           name={name}
           mobile={mobile}
           startDate={startDate.toDate()}
