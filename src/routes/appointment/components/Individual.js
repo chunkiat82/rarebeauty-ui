@@ -242,9 +242,9 @@ class Appointment extends React.Component {
           const services =
             appt.transaction && appt.transaction.items
               ? appt.transaction.items.reduce((serviceArray, item) => {
-                  serviceArray.push(item.name);
-                  return serviceArray;
-                }, [])
+                serviceArray.push(item.name);
+                return serviceArray;
+              }, [])
               : [];
           if (services.length > 0) {
             array.push(
@@ -274,6 +274,19 @@ class Appointment extends React.Component {
     return ['No Past Appointments'];
   };
 
+  generateCustomerLink() {
+    return <div>
+      <div>
+        <span>
+          <a href={`/customer/${this.state.resourceName.split('/')[1]}/createAppointment`}>
+            Customer Link
+          </a>
+        </span>
+      </div>
+      <hr />
+    </div>
+  }
+
   render() {
     return (
       <div
@@ -292,21 +305,7 @@ class Appointment extends React.Component {
             </CardText>
           </Card>
           <hr />
-          <div>
-            <span>
-              <a
-                href={
-                  this.state.resourceName.length > 16
-                    ? `/customer/${this.state.resourceName.split(
-                        '/',
-                      )[1]}/createAppointment`
-                    : ''
-                }
-              >
-                Customer Link
-              </a>
-            </span>
-          </div>
+          {this.state.resourceName.length > 16 ? this.generateCustomerLink(): ''}
           <AutoComplete
             ref={c => {
               this.nameAC = c;
