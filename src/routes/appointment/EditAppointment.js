@@ -4,12 +4,14 @@ import { showLoading, hideLoading } from 'react-redux-loading-bar';
 import Appointment from './components/Individual';
 import Layout from '../../components/Layout';
 import {
-  queryPastAppointments,
   listContacts,
   getAppointment,
-  updateAppointment,
+  queryPastAppointments,
   getServices,
+  cancelAppointment,
+  updateAppointment,
 } from './common/functions';
+import CancelSection from './components/CancelSection';
 
 function show(store) {
   return () => {
@@ -25,11 +27,24 @@ function hide(store) {
 
 async function action({ fetch, params, store }) {
   const apptId = params.id;
+  const appointment = await getAppointment(fetch)(apptId);
+
+  if (appointment.error) {
+    return {
+      chunks: ['appointment-edit'],
+      title: 'Rare Beauty Professional',
+      component: (
+        <Layout>
+          <center>
+            <h1>Appointment Does Not Exist</h1>
+          </center>
+        </Layout>
+      ),
+    };
+  }
 
   show(store)();
   const contacts = await listContacts(fetch)();
-  const appointment = await getAppointment(fetch)(apptId);
-
   const { event, transaction } = appointment;
   const name = event.name;
   const mobile = event.mobile;
@@ -68,9 +83,6 @@ async function action({ fetch, params, store }) {
             await updateAppointment(fetch)(
               Object.assign({ id: apptId, resourceName }, input),
             );
-            setTimeout(() => {
-              open(location, '_self').close();
-            }, 100);
             return { updatedAppointment: true };
           }}
           queryPastAppointments={queryPastAppointments(fetch)}
@@ -93,6 +105,18 @@ async function action({ fetch, params, store }) {
           showLoading={show(store)}
           hideLoading={hide(store)}
           deposit={deposit}
+          cancelButton={
+            <CancelSection
+              label="Customer Cancel"
+              showLoading={show(store)}
+              hideLoading={hide(store)}
+              post={async () => {
+                // console.log(input);
+                await cancelAppointment(fetch)({ apptId });
+                return { canceledAppointment: true };
+              }}
+            />
+          }
           {...this.props}
         />
       </Layout>

@@ -8,9 +8,7 @@
  * LICENSE.txt file in the root directory of this source tree.
  */
 
-import {   
-  GraphQLString as StringType
-} from 'graphql';
+import { GraphQLString as StringType } from 'graphql';
 import AppointmentType from '../types/AppointmentType';
 import { get } from '../database';
 
@@ -20,9 +18,7 @@ const appointment = {
     id: { type: StringType },
   },
   async resolve(obj, args, context) {
-    const key = `appt:${args.id}`;
-    // console.log(`=${key}`);
-    const dbObj = await get(key);
+    const dbObj = await get(`appt:${args.id}`);
     // console.log(JSON.stringify(dbObj.value));
     return dbObj.value;
   },

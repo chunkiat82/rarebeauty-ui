@@ -4,6 +4,7 @@ import AST from 'auto-sorting-array';
 import config from '../config';
 import calendarList from './calendar/list';
 import calendarGet from './calendar/get';
+import calendarDelete from './calendar/delete';
 import calendarDelta from './calendar/delta';
 import contactLists from './contacts/list';
 
@@ -60,6 +61,22 @@ async function getEvent(options) {
   );
   try {
     const event = await calendarGet(finalOptions);
+    return event;
+  } catch (err) {
+    console.error(err);
+    throw err;
+  }
+}
+
+async function cancelEvent(options) {
+  const finalOptions = Object.assign(
+    {
+      calendarId,
+    },
+    options,
+  );
+  try {
+    const event = await calendarDelete(finalOptions);
     return event;
   } catch (err) {
     console.error(err);
@@ -504,6 +521,7 @@ const functions = {
   createEvent,
   patchEvent,
   getEvent,
+  cancelEvent,
   informReservationToCustomer,
   remindCustomers,
   listContacts,

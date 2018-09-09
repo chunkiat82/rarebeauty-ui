@@ -144,9 +144,32 @@ export function getAppointment(fetch) {
     });
     const { data } = await resp.json();
     // console.log(`data=${JSON.stringify(data, null, 2)}`);
+    return (data && data.appointment) || { error: 'Appointment Not Found' };
+  };
+}
+
+export function cancelAppointment(fetch) {
+  return async input => {
+    const { apptId } = input;
+    const resp = await fetch('/graphql', {
+      body: JSON.stringify({
+        query: `
+          mutation($apptId: String!) {
+            cancelAppointment(id:$apptId){
+              id                  
+            }
+          }`,
+        variables: JSON.stringify({
+          apptId,
+        }),
+      }),
+    });
+    const { data } = await resp.json();
+    // console.log(`data=${JSON.stringify(data, null, 2)}`);
     return data && data.appointment;
   };
 }
+
 export function updateAppointment(fetch) {
   return async input => {
     const {
@@ -284,6 +307,7 @@ export default {
   listContacts,
   getAppointment,
   updateAppointment,
+  cancelAppointment,
   getServices,
   getContact,
 };

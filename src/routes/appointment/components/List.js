@@ -61,6 +61,11 @@ class AppointmentList extends React.Component {
                 : `${value.status}`}
             </span>
           </p>
+          <p>
+            <span>
+              <a href={`/appointment/edit/${value.apptId}`}>Edit</a>
+            </span>
+          </p>
         </TableCell>
         <TableCell>
           <p>
@@ -117,7 +122,7 @@ class AppointmentList extends React.Component {
         <TableHead displaySelectAll={false} adjustForCheckbox={false}>
           <TableRow>
             <TableCell>Name</TableCell>
-            <TableCell>Details</TableCell>            
+            <TableCell>Details</TableCell>
           </TableRow>
         </TableHead>
         <TableBody displayRowCheckbox={false}>

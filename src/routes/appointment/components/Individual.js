@@ -26,6 +26,7 @@ import Snackbar from 'material-ui/Snackbar';
 import Toggle from 'material-ui/Toggle';
 import { Card, CardText } from 'material-ui/Card';
 import s from './Appointment.css';
+import history from '../../../history';
 
 const iconStyles = {
   marginRight: 24,
@@ -233,6 +234,25 @@ class Appointment extends React.Component {
     this.setState({ expanded: false });
   };
 
+  generateCustomerLink() {
+    return (
+      <div>
+        <div>
+          <span>
+            <a
+              href={`/customer/${this.state.resourceName.split(
+                '/',
+              )[1]}/createAppointment`}
+            >
+              Customer Link
+            </a>
+          </span>
+        </div>
+        <hr />
+      </div>
+    );
+  }
+
   renderPastAppointments = () => {
     if (this.state.pastAppointments && this.state.pastAppointments.length > 0) {
       const pastAppointments = this.state.pastAppointments.reduce(
@@ -242,9 +262,9 @@ class Appointment extends React.Component {
           const services =
             appt.transaction && appt.transaction.items
               ? appt.transaction.items.reduce((serviceArray, item) => {
-                serviceArray.push(item.name);
-                return serviceArray;
-              }, [])
+                  serviceArray.push(item.name);
+                  return serviceArray;
+                }, [])
               : [];
           if (services.length > 0) {
             array.push(
@@ -274,19 +294,6 @@ class Appointment extends React.Component {
     return ['No Past Appointments'];
   };
 
-  generateCustomerLink() {
-    return <div>
-      <div>
-        <span>
-          <a href={`/customer/${this.state.resourceName.split('/')[1]}/createAppointment`}>
-            Customer Link
-          </a>
-        </span>
-      </div>
-      <hr />
-    </div>
-  }
-
   render() {
     return (
       <div
@@ -305,7 +312,9 @@ class Appointment extends React.Component {
             </CardText>
           </Card>
           <hr />
-          {this.state.resourceName.length > 16 ? this.generateCustomerLink(): ''}
+          {this.state.resourceName.length > 16
+            ? this.generateCustomerLink()
+            : ''}
           <AutoComplete
             ref={c => {
               this.nameAC = c;
@@ -484,11 +493,16 @@ class Appointment extends React.Component {
 
                 this.nameAC.setState({ searchText: '' });
                 this.mobileAC.setState({ searchText: '' });
-                setTimeout(() => this.nameAC.focus(), 200);
+                setTimeout(() => {
+                  this.nameAC.focus();
+                  history.push(`/`);
+                }, 200);
               }
               setTimeout(() => this.setState({ notify: false }), 2000);
             }}
           />
+          <hr />
+          {this.props.cancelButton ? this.props.cancelButton : ''}
           <Snackbar
             open={this.state.notify}
             message={
