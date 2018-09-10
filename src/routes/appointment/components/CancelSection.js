@@ -7,45 +7,76 @@
  * LICENSE.txt file in the root directory of this source tree.
  */
 // http://www.material-ui.com/#/components/select-field
-import PropTypes from 'prop-types';
 import React from 'react';
 import RaisedButton from 'material-ui/RaisedButton';
+import Dialog from 'material-ui/Dialog';
+import FlatButton from 'material-ui/FlatButton';
 import withStyles from 'isomorphic-style-loader/lib/withStyles';
+
 import s from './Appointment.css';
 import history from '../../../history';
 
 class AppointmentCancelSection extends React.Component {
-  componentWillMount() {
-    this.setState({ submitted: false });
-  }
+  state = {
+    submitted: false,
+    open: false,
+  };
+
+  handleClickOpen = () => {
+    this.setState({ open: true });
+  };
+
+  handleClose = async () => {
+    this.props.showLoading();
+    this.setState({
+      submitted: true,
+    });
+    const results = await this.props.post();
+    this.props.hideLoading();
+
+    if (results.errors) {
+      this.setState({ error: 'Error In Creating Appointment' });
+      console.error('Error In Creating Appointment');
+    } else {
+      this.setState({ notify: false });
+      history.push(`/`);
+    }
+  };
 
   render() {
-    return (
-      <RaisedButton
-        ref={c => {
-          this.submitBtn = c;
+    const actions = [
+      <FlatButton
+        label="No"
+        onClick={() => {
+          this.setState({ open: false });
         }}
-        label={this.props.label}
-        secondary
-        fullWidth
-        disabled={this.state.submitted}
-        onClick={async () => {
-          this.props.showLoading();
-          this.setState({
-            submitted: true,
-          });
-          const results = await this.props.post();
-          this.props.hideLoading();
+      />,
+      <FlatButton label="Yes" primary onClick={this.handleClose} />,
+    ];
 
-          if (results.errors) {
-            this.setState({ error: 'Error In Creating Appointment' });
-            console.error('Error In Creating Appointment');
-          } else {
-            this.setState({ notify: false });
-            history.push(`/`);
-          }
-        }}
-      />
+    return (
+      <div>
+        <RaisedButton
+          ref={c => {
+            this.submitBtn = c;
+          }}
+          label={this.props.label}
+          secondary
+          fullWidth
+          disabled={this.state.submitted}
+          onClick={() => {
+            this.handleClickOpen();
+          }}
+        />
+        <Dialog
+          title="Are you sure?"
+          actions={actions}
+          modal
+          open={this.state.open}
+        >
+          Please click yes to delete...
+        </Dialog>
+      </div>
     );
   }
 }
