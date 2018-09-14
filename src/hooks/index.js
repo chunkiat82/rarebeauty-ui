@@ -70,7 +70,7 @@ export async function handleCalendarWebhook(headers) {
     )
       return;
 
-    // if item is more than 7 days old return
+    // if item is more than 7 days old return do nothing
     if (item && item.start && item.start.dateTime) {
       const apptDateMT = moment(item.start.dateTime);
       const currentMT = moment();
@@ -88,6 +88,8 @@ export async function handleCalendarWebhook(headers) {
     if (item.status === 'cancelled') {
       handleCancel(item);
     } else if (item.status === 'confirmed' || item.status === 'tentative') {
+      //some massaging here
+      populateStats(item);
       handleUpsert(item);
       try {
         const uuid = item.extendedProperties.shared.uuid;
@@ -137,6 +139,16 @@ export async function handleCalendarWebhook(headers) {
   }
 
   // console.log(events);
+}
+
+
+//instead of scripting on kibana, i'm duplicating the content here,
+function populateStats(item) {
+  const apptDateMT = moment(item.start.dateTime);
+  const createdDateMT = moment(item.created);
+  const apptSeconds = moment.duration(apptDateMT, 'seconds');
+  const createdSeconds = moment.duration(createdDateMT, 'seconds');
+  item.extendedProperties.shared['bookedAhead'] = apptSeconds - createdSeconds < 0 ? 0 :  apptSeconds - createdSeconds;
 }
 
 export default handleCalendarWebhook;
