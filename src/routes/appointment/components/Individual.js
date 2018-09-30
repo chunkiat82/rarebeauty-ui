@@ -342,6 +342,7 @@ class Appointment extends React.Component {
             filter={AutoComplete.fuzzyFilter}
             fullWidth
             searchText={this.state.mobile}
+            type="tel"
           />
           <DatePicker
             hintText="Date"
