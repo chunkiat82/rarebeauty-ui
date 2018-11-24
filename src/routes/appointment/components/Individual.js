@@ -461,6 +461,7 @@ class Appointment extends React.Component {
                 error: false,
                 submitted: true,
               });
+              // console.log(inputs);
               const results = await this.props.post(inputs);
 
               this.props.hideLoading();

@@ -6,6 +6,7 @@ import { byPersonCount as getAppointmentsCountByPerson } from '../appointments/p
 
 const EDIT_URL = 'https://rarebeauty.soho.sg/appointment/edit';
 const TEST_EMAIL = `test@soho.sg`;
+const WHATSAPPURL = 'https://wa.me';
 
 function findExistingAppointments(calendar, options) {
   const { calendarId, startDT, endDT } = options;
@@ -45,6 +46,8 @@ function createAppointment(calendar, options) {
     resourceName,
     reminded,
     informed,
+    totalAmount,
+    deposit,
   } = options;
 
   return new Promise(async (res, rej) => {
@@ -54,6 +57,8 @@ function createAppointment(calendar, options) {
       count: countOfExistingAppointments,
     } = await getAppointmentsCountByPerson({ id: resourceName });
     // const countOfExistingAppointments = 0;
+
+    // FIRST logic can be better
     calendar.events.insert(
       {
         calendarId,
@@ -62,10 +67,10 @@ function createAppointment(calendar, options) {
           end: { dateTime: endDT },
           summary: `${name} (${countOfExistingAppointments > 0
             ? countOfExistingAppointments
-            : 'FIRST'}) - $${services.reduce(
+            : 'FIRST'}) - S($${services.reduce(
             (prevSum, item) => prevSum + item.price,
             0,
-          )}`,
+          )})-T($${totalAmount})-D($${deposit})`,
           location: 'Home',
           status: 'tentative',
           extendedProperties: {
@@ -85,12 +90,19 @@ function createAppointment(calendar, options) {
               email: TEST_EMAIL,
             },
           ],
-          description: `$${services.reduce(
+          description: `S($${services.reduce(
             (prevSum, item) => prevSum + item.price,
             0,
-          )}
+          )})-T($${totalAmount})-D($${deposit})
 
-${services.map(item => item.service).join(',')}\n\n${EDIT_URL}/${uuid}`,
+${services
+            .map(item => item.service)
+            .join(
+              ',',
+            )}\n\n${EDIT_URL}/${uuid}\n\n${WHATSAPPURL}/${mobile.replace(
+            '+',
+            '',
+          )}`,
         },
       },
       (err, event) => {
@@ -108,6 +120,8 @@ ${services.map(item => item.service).join(',')}\n\n${EDIT_URL}/${uuid}`,
 
 export default function create(options) {
   const { name, mobile, startDT, endDT, services, force } = options;
+
+  // console.error(options);
 
   // console.log(options);
 

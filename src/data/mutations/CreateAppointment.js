@@ -178,6 +178,7 @@ export default {
           toBeInformed === 'false' ||
           toBeInformed === false
         ), // bad logic
+        deposit,
       });
       const now = moment();
       await upsert(`appt:${uuid}`, {

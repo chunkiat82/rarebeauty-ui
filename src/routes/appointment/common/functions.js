@@ -48,7 +48,7 @@ export function createCalendar(fetch) {
       toBeInformed,
       deposit,
     } = input;
-
+    // console.error(input);
     const dateInput = moment(startDate).format('YYYYMMDD');
     const timeInput = moment(startTime).format('HHmm');
 

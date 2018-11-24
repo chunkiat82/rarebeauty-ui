@@ -2,7 +2,7 @@ const generateJWT = require('../../utilities/jwt');
 const google = require('googleapis');
 
 module.exports = function create(options) {
-  const { calendarId, resourceId, id } = options;
+  const { calendarId, resourceId } = options;
 
   return new Promise(async (res, rej) => {
     const jwtClient = await generateJWT();
@@ -11,7 +11,7 @@ module.exports = function create(options) {
       {
         calendarId,
         resource: {
-          id:'anythingintheworld',
+          id: 'anythingintheworld',
           resourceId,
         },
       },

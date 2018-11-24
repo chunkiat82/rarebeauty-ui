@@ -146,6 +146,7 @@ export default {
           toBeInformed === 'false' ||
           toBeInformed === false
         ), // bad logic too hard to understand //its set to false so that it will be picked up later to be informed
+        deposit,
       });
       // console.log(`fullEvent:${JSON.stringify(event)}`);
       const now = moment();

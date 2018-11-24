@@ -4,6 +4,7 @@ const generateJWT = require('../utilities/jwt');
 const google = require('googleapis');
 
 const EDIT_URL = 'https://rarebeauty.soho.sg/appointment/edit';
+const WHATSAPPURL = 'https://wa.me';
 
 async function patchHandler(res, rej, calendar, options, eventResponse) {
   const {
@@ -20,6 +21,8 @@ async function patchHandler(res, rej, calendar, options, eventResponse) {
     confirmed,
     shortURL,
     informed,
+    totalAmount,
+    deposit,
   } = options;
 
   const patchObject = {
@@ -44,12 +47,15 @@ async function patchHandler(res, rej, calendar, options, eventResponse) {
     resource.extendedProperties.shared.services = services
       .map(item => item.id)
       .join(',');
-    resource.description = `$${services.reduce(
+    resource.description = `S($${services.reduce(
       (prevSum, item) => prevSum + item.price,
       0,
-    )}
+    )})-T($${totalAmount})-D($${deposit})
 
-${services.map(item => item.service).join(',')}\n\n${EDIT_URL}/${apptId}`;
+${services
+      .map(item => item.service)
+      // eslint-disable-next-line prettier/prettier
+      .join(',')}\n\n${EDIT_URL}/${apptId}\n\n${WHATSAPPURL}/${mobile.replace('+', '')}`;
 
     const {
       count: countOfExistingAppointments,
@@ -60,10 +66,10 @@ ${services.map(item => item.service).join(',')}\n\n${EDIT_URL}/${apptId}`;
     resource.summary = `${resource.attendees[0]
       .displayName} (${countOfExistingAppointments > 0
       ? countOfExistingAppointments
-      : 'FIRST'}) - $${services.reduce(
+      : 'FIRST'}) - S($${services.reduce(
       (prevSum, item) => prevSum + item.price,
       0,
-    )}`;
+    )})-T($${totalAmount})-D($${deposit})`;
   }
   if (reminded) {
     resource.extendedProperties.shared.reminded = reminded;
