@@ -10,7 +10,7 @@ export function byPerson(options) {
     let queryString = `select extendedProperties.shared.uuid from default event where extendedProperties.shared.resourceName='${id}'`;
 
     try {
-      if (now) queryString += ` \`end\`.dateTime > now_str()`;
+      if (now) queryString += ` and \`end\`.dateTime > now_str()`;
       queryString += ` ORDER BY \`start\`.\`dateTime\` desc LIMIT ${limit ||
         '3'}`;
 
@@ -44,7 +44,7 @@ export function byPerson(options) {
         id,
         createdAt: moment(),
         lastUpdated: moment(),
-        appointments,
+        appointments: appointments || [],
       });
     } catch (err) {
       console.error(`Error byPerson=${JSON.stringify(err)}`);

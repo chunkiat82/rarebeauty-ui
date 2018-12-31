@@ -444,7 +444,9 @@ async function remindCustomersTouchUp(options) {
     // const mapOfServices = convertToMap(listOfServices);
     const services = new AST(listOfServices, 'id');
 
+    // console.log(JSON.stringify(events, null ,2));
     events.forEach(async event => {
+      if (event.summary.indexOf('+') === 0) return;
       // console.log(event);
       // console.log(`services=${JSON.stringify(event.extendedProperties.shared.services, null, 2)}`);
 
@@ -453,25 +455,40 @@ async function remindCustomersTouchUp(options) {
           event.extendedProperties.shared &&
           event.extendedProperties.shared.resourceName) ||
         null;
-      const appointments = await appointmentsByPerson({
-        now: true,
-        id: resourceName,
-      });
-      // extractUnqiueServicesFromAppointmnets(appointments);
-      // filter only touchUp services;
-      const futureTouchServices = Array.from(
-        new Set(
-          appointments
-            .map(appointment =>
-              appointment.event.extendedProperties.shared.services.split(','),
-            )
-            .reduce((a, b) => a.concat(b)),
-        ),
-      ).filter(item => TOUCHUP_SERVICES.indexOf(item) > -1);
+      let futureTouchServices = [];
+      try {
+        const { appointments } = await appointmentsByPerson({
+          now: true,
+          id: resourceName,
+        });
+        // console.log(JSON.stringify(appointments, null ,2));
+        // extractUnqiueServicesFromAppointmnets(appointments);
+        // filter only touchUp services;
+        futureTouchServices = Array.from(
+          new Set(
+            appointments
+              .map(appointment =>
+                appointment.event.extendedProperties.shared.services.split(','),
+              )
+              .reduce((a, b) => a.concat(b), []),
+          ),
+        ).filter(item => TOUCHUP_SERVICES.indexOf(item) > -1);
+      } catch (appointmentsByPersonError) {
+        console.error(`resourceName=${resourceName}`);
+        console.error(appointmentsByPersonError);
+      }
 
-      // becareful short circuit here
-      if (Array.isArray(futureTouchServices) && futureTouchServices.length > 0)
+      // becareful short circuit here to don't send SMS when touch up services are booked already
+      if (
+        Array.isArray(futureTouchServices) &&
+        futureTouchServices.length > 0
+      ) {
+        console.log(
+          `resourceName=${resourceName} was not reminded because ${event
+            .attendees[0].displayName} has touchup already`,
+        );
         return;
+      }
 
       if (
         event.extendedProperties &&
