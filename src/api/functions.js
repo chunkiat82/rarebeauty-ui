@@ -36,6 +36,8 @@ const reservationURL = configs.get('reservationURL');
 const webHookURL = configs.get('webHookURL');
 const webHookId = configs.get('webHookId');
 
+const TOUCHUP_SERVICES = ['service:3', 'service:4'];
+
 async function listEvents(options) {
   const finalOptions = Object.assign(
     {
@@ -445,6 +447,31 @@ async function remindCustomersTouchUp(options) {
     events.forEach(async event => {
       // console.log(event);
       // console.log(`services=${JSON.stringify(event.extendedProperties.shared.services, null, 2)}`);
+
+      const resourceName =
+        (event.extendedProperties &&
+          event.extendedProperties.shared &&
+          event.extendedProperties.shared.resourceName) ||
+        null;
+      const appointments = await appointmentsByPerson({
+        now: true,
+        id: resourceName,
+      });
+      // extractUnqiueServicesFromAppointmnets(appointments);
+      // filter only touchUp services;
+      const futureTouchServices = Array.from(
+        new Set(
+          appointments
+            .map(appointment =>
+              appointment.event.extendedProperties.shared.services.split(','),
+            )
+            .reduce((a, b) => a.concat(b)),
+        ),
+      ).filter(item => TOUCHUP_SERVICES.indexOf(item) > -1);
+
+      // becareful short circuit here
+      if (Array.isArray(futureTouchServices) && futureTouchServices.length > 0)
+        return;
 
       if (
         event.extendedProperties &&

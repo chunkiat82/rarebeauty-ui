@@ -5,11 +5,15 @@ import { get as getAppointment } from '../../data/database/appointment';
 export function byPerson(options) {
   // console.log(options);
   return new Promise(async (res, rej) => {
-    const { limit, id } = options;
+    const { limit, id, now } = options;
+
+    let queryString = `select extendedProperties.shared.uuid from default event where extendedProperties.shared.resourceName='${id}'`;
 
     try {
-      const queryString = `select extendedProperties.shared.uuid from default event where extendedProperties.shared.resourceName='${id}' ORDER BY   \`start\`.\`dateTime\` desc LIMIT ${limit ||
+      if (now) queryString += ` \`end\`.dateTime > now_str()`;
+      queryString += ` ORDER BY \`start\`.\`dateTime\` desc LIMIT ${limit ||
         '3'}`;
+
       // console.log(queryString);
       const idObjs = await query(queryString);
       // console.log(`idObjs=${JSON.stringify(idObjs,null,2)}`);
