@@ -58,6 +58,10 @@ function createAppointment(calendar, options) {
     } = await getAppointmentsCountByPerson({ id: resourceName });
     // const countOfExistingAppointments = 0;
 
+    let finalMobile = mobile;
+
+    // magic number 8 Singapore
+    if (mobile && mobile.length === 8) finalMobile = `65${mobile}`;
     // FIRST logic can be better
     calendar.events.insert(
       {
@@ -99,7 +103,7 @@ ${services
             .map(item => item.service)
             .join(
               ',',
-            )}\n\n${EDIT_URL}/${uuid}\n\n${WHATSAPPURL}/${mobile.replace(
+            )}\n\n${EDIT_URL}/${uuid}\n\n${WHATSAPPURL}/${finalMobile.replace(
             '+',
             '',
           )}`,
