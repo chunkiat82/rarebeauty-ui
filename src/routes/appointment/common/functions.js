@@ -10,6 +10,7 @@ export function queryPastAppointments(fetch) {
         query: `{person(id: "${personId}")
                     {   
                         id, 
+                        cancelCount,
                         appointments { id,
                             event{ 
                                 id, start, resourceName, serviceIds
@@ -19,7 +20,7 @@ export function queryPastAppointments(fetch) {
                                 items {
                                     name 
                                 }
-                            }
+                            },                            
                         }
                     }
                 }`,
@@ -28,7 +29,12 @@ export function queryPastAppointments(fetch) {
 
     const { data: personData } = await personResponse.json();
 
-    return personData.person ? personData.person.appointments : [];
+    return personData.person
+      ? {
+          appointments: personData.person.appointments,
+          cancelCount: personData.person.cancelCount,
+        }
+      : [];
   };
 }
 

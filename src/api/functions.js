@@ -14,7 +14,10 @@ import contactGet from './contacts/get';
 import contactCreate from './contacts/create';
 import contactUpdate from './contacts/update';
 
-import appointmentsByPerson from './appointments/person';
+import {
+  byPerson as appointmentsByPerson,
+  cancelledByPerson as countCancelledAppointmentsByPerson,
+} from './appointments/person';
 
 import calendarPatch from './calendar/patch';
 
@@ -559,6 +562,13 @@ async function getAppointmentsByPerson(options) {
   return appointments;
 }
 
+async function getCountCancelledAppointmentsByPerson(options) {
+  const countCancelledAppointments = await countCancelledAppointmentsByPerson(
+    options,
+  );
+  return countCancelledAppointments;
+}
+
 const functions = {
   listEvents,
   listDeltaEvents,
@@ -582,6 +592,7 @@ const functions = {
   createShortURL,
   getAppointmentsByPerson,
   syncContacts,
+  getCountCancelledAppointmentsByPerson,
 };
 
 export default functions;

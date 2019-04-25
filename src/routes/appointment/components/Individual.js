@@ -64,17 +64,7 @@ class Appointment extends React.Component {
     // id: PropTypes.string,
     discount: PropTypes.number,
     additional: PropTypes.number,
-    // pastAppointments: PropTypes.arrayOf(
-    //   PropTypes.shape({
-    //     id: PropTypes.string,
-    //   }),
-    // ),
-    // mapOfServices: PropTypes.arrayOf(
-    //   PropTypes.shape({
-    //     price: PropTypes.number,
-    //     duration: PropTypes.number,
-    //   }),
-    // ),
+    cancelAppointmentsCount: PropTypes.number,
     successMessage: PropTypes.string,
     errorMessage: PropTypes.string,
     // submitted: PropTypes.bool,
@@ -98,6 +88,7 @@ class Appointment extends React.Component {
     services: {},
     submitted: false,
     deposit: 0,
+    cancelAppointmentsCount: 0,
     // mapOfServices: {},
   };
 
@@ -116,6 +107,7 @@ class Appointment extends React.Component {
       additional,
       pastAppointments,
       deposit,
+      cancelAppointmentsCount,
     } = this.props;
 
     // console.log(this.props.contacts);
@@ -148,6 +140,7 @@ class Appointment extends React.Component {
       error: false,
       expanded: pastAppointments && pastAppointments.length > 0,
       deposit: finalDeposit,
+      cancelAppointmentsCount,
     });
   }
 
@@ -175,7 +168,11 @@ class Appointment extends React.Component {
 
     const { resourceName } = inputString;
     // console.log(`resourceName=${resourceName}`);
-    const appointments = await this.props.queryPastAppointments(resourceName);
+    const {
+      appointments,
+      cancelCount,
+    } = await this.props.queryPastAppointments(resourceName);
+    // console.log(cancelCount);
     // console.log(`appointments=${JSON.stringify(appointments)}`);
     // console.log(`expanded=${appointments && appointments.length > 0}`);
     this.setState({
@@ -184,6 +181,7 @@ class Appointment extends React.Component {
       mobileInput: '',
       expanded: appointments && appointments.length > 0,
       pastAppointments: appointments,
+      cancelAppointmentsCount: cancelCount,
       ...inputString,
     });
   };
@@ -315,6 +313,11 @@ class Appointment extends React.Component {
           {this.state.resourceName.length > 16
             ? this.generateCustomerLink()
             : ''}
+          {this.state.cancelAppointmentsCount > 0
+            ? `Total ${this.state
+                .cancelAppointmentsCount} cancelled appointments in < 36 hours`
+            : ''}
+          <hr />
           <AutoComplete
             ref={c => {
               this.nameAC = c;

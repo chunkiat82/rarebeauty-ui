@@ -64,7 +64,12 @@ async function action({ fetch, params, store }) {
     totalAmount = transaction.totalAmount;
     deposit = transaction.deposit;
   }
-  const pastAppointments = await queryPastAppointments(fetch)(resourceName);
+  // const pastAppointments = await queryPastAppointments(fetch)(resourceName);
+
+  const {
+    appointments: pastAppointments,
+    cancelCount: cancelAppointmentsCount,
+  } = await queryPastAppointments(fetch)(resourceName);
   const services = await getServices(fetch)();
   // console.log(`resourceName=${resourceName}`);
   // console.log(`Edit pastAppointments=${JSON.stringify(pastAppointments)}`);
@@ -87,6 +92,7 @@ async function action({ fetch, params, store }) {
           }}
           queryPastAppointments={queryPastAppointments(fetch)}
           pastAppointments={pastAppointments}
+          cancelAppointmentsCount={cancelAppointmentsCount}
           services={services}
           contacts={contacts}
           name={name}

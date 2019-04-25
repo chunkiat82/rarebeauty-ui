@@ -2,10 +2,50 @@ import moment from 'moment';
 import { get, query } from '../../data/database';
 import { get as getAppointment } from '../../data/database/appointment';
 
+export function cancelledByPerson(options) {
+  // console.log(options);
+  return new Promise(async (res, rej) => {
+    const { id } = options;
+
+    const queryString = `Select count(*) as totalCancelledLess36 from (
+      select cancelHours
+        from (select DATE_DIFF_MILLIS(STR_TO_MILLIS(event.\`value\`.\`start\`.dateTime), STR_TO_MILLIS(canceledAt), 'hour') as cancelHours, 
+        canceledAt, event.\`value\`.\`start\`.dateTime, id
+          from default cancelledEvents
+          where canceledAt is not null and event.\`value\`.extendedProperties.shared.resourceName = '${id}') as cancelHoursTable 
+        where cancelHours < 36) as lessThanThirtySix`;
+
+    try {
+      // console.log(queryString);
+      const idObjs = await query(queryString);
+      let totalCancelledLess36 = -1;
+      if (idObjs.length === 1) {
+        totalCancelledLess36 = idObjs[0].totalCancelledLess36;
+      }
+      res({
+        id,
+        cancelledAppointmentsCount: totalCancelledLess36,
+      });
+    } catch (err) {
+      console.error(`Error byPerson=${JSON.stringify(err)}`);
+      rej(err);
+    }
+  });
+}
+
 export function byPerson(options) {
   // console.log(options);
   return new Promise(async (res, rej) => {
     const { limit, id, now } = options;
+    let cancelCount = 0;
+    try {
+      const { cancelledAppointmentsCount } = await cancelledByPerson(options);
+
+      cancelCount = cancelledAppointmentsCount;
+      // console.log(`byPersonCount - ${id}`, count);
+    } catch (e) {
+      console.error('you can ignore this for now');
+    }
 
     let queryString = `select extendedProperties.shared.uuid from default event where extendedProperties.shared.resourceName='${id}'`;
 
@@ -42,6 +82,7 @@ export function byPerson(options) {
       // console.log(appointments);
       res({
         id,
+        cancelCount,
         createdAt: moment(),
         lastUpdated: moment(),
         appointments: appointments || [],
