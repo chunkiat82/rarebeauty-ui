@@ -23,12 +23,12 @@ export default async function get(options) {
         personFields: ['names', 'phoneNumbers', 'userDefined'],
       },
       {},
-      (err, me) => {
-        // console.log(err || me);
+      (err, obj) => {
+        // console.log(err || obj);
         if (err) {
           rej(err);
         } else {
-          res(me);
+          res(obj);
         }
       },
     );

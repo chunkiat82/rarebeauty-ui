@@ -7,6 +7,8 @@ const generateJWT = require('../utilities/jwt');
 
 const WORK_EMAIL = getConfig('work_email');
 
+// function
+
 export default async function list() {
   const jwtClient = await generateJWT(WORK_EMAIL);
   const people = google.people({
@@ -28,7 +30,16 @@ export default async function list() {
         }
         // console.log(me.connections.length);
         // console.log(JSON.stringify(me, null, 2));
-        const contacts = me.connections.map((one, index) => {
+        let contacts = me.connections.filter(contact =>
+          Array.isArray(contact.phoneNumbers),
+        );
+        contacts = contacts.map((one, index) => {
+          // console.log(one);
+
+          const phoneNumbers = one.phoneNumbers.filter(
+            number => number.type !== 'whatsapp',
+          );
+
           const obj = {
             id: index,
             name:
@@ -36,9 +47,8 @@ export default async function list() {
               one.names &&
               one.names.length > 0 &&
               one.names[0].displayName,
-            mobile: ((one.phoneNumbers &&
-              (one.phoneNumbers[0].canonicalForm ||
-                one.phoneNumbers[0].value)) ||
+            mobile: (phoneNumbers[0].canonicalForm ||
+              phoneNumbers[0].value ||
               '0')
               .replace(/\s/g, ''),
             resourceName: one.resourceName,

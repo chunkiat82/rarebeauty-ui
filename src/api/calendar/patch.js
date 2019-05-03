@@ -33,6 +33,11 @@ async function patchHandler(res, rej, calendar, options, eventResponse) {
 
   const resource = patchObject.resource;
 
+  let finalMobile = mobile;
+
+  // magic number 8 Singapore
+  if (mobile && mobile.length === 8) finalMobile = `65${mobile}`;
+
   if (startDT && endDT) resource.start.dateTime = startDT;
   if (endDT) resource.end.dateTime = endDT;
 
@@ -41,7 +46,7 @@ async function patchHandler(res, rej, calendar, options, eventResponse) {
   if (resource.extendedProperties.shared === undefined)
     resource.extendedProperties.shared = {};
 
-  if (mobile) resource.extendedProperties.shared.mobile = mobile;
+  if (finalMobile) resource.extendedProperties.shared.mobile = finalMobile;
 
   if (services) {
     resource.extendedProperties.shared.services = services
@@ -55,7 +60,7 @@ async function patchHandler(res, rej, calendar, options, eventResponse) {
 ${services
       .map(item => item.service)
       // eslint-disable-next-line prettier/prettier
-      .join(',')}\n\n${EDIT_URL}/${apptId}\n\n${WHATSAPPURL}/${mobile.replace('+', '')}`;
+      .join(',')}\n\n${EDIT_URL}/${apptId}\n\n${WHATSAPPURL}/${finalMobile.replace('+', '')}`;
 
     const {
       count: countOfExistingAppointments,
