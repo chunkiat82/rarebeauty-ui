@@ -205,6 +205,18 @@ export default {
       // console.log(`transaction=${JSON.stringify(transaction, null, 2)}`);
       return { id: uuid, event, transaction, createdAt: now, lastUpdated: now };
     } catch (err) {
+      // this is scenario to rollback when appointment cannot be created.
+      // remove contact
+      if (
+        (resourceName === '' || resourceName === undefined) &&
+        finalResourceName
+      ) {
+        await api({
+          action: 'deleteContact',
+          resourceName: finalResourceName,
+        });
+      }
+
       console.error(err);
       throw err;
     }

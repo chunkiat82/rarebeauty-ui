@@ -13,6 +13,7 @@ import urlCreate from './urlshortener/create';
 import contactGet from './contacts/get';
 import contactCreate from './contacts/create';
 import contactUpdate from './contacts/update';
+import contactDelete from './contacts/delete';
 
 import {
   byPerson as appointmentsByPerson,
@@ -348,6 +349,17 @@ async function getContact(options) {
   }
 }
 
+async function deleteContact(options) {
+  try {
+    const contact = await contactDelete(options);
+    // console.log(contact);
+    return contact;
+  } catch (err) {
+    console.error(err);
+    throw err;
+  }
+}
+
 async function watchCalendar(options) {
   const finalOptions = Object.assign({}, options, {
     calendarId,
@@ -486,7 +498,7 @@ async function remindCustomersTouchUp(options) {
         Array.isArray(futureTouchServices) &&
         futureTouchServices.length > 0
       ) {
-        console.log(
+        console.error(
           `resourceName=${resourceName} was not reminded because ${event
             .attendees[0].displayName} has touchup already`,
         );
@@ -593,6 +605,7 @@ const functions = {
   getAppointmentsByPerson,
   syncContacts,
   getCountCancelledAppointmentsByPerson,
+  deleteContact,
 };
 
 export default functions;
