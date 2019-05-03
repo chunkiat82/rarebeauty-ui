@@ -2,6 +2,7 @@ import moment from 'moment';
 import { get, query } from '../../data/database';
 import { get as getAppointment } from '../../data/database/appointment';
 
+// CREATE INDEX canceledAt_index ON `default`(canceledAt);
 export function cancelledByPerson(options) {
   // console.log(options);
   return new Promise(async (res, rej) => {

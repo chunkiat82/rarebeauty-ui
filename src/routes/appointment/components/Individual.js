@@ -141,6 +141,9 @@ class Appointment extends React.Component {
       expanded: pastAppointments && pastAppointments.length > 0,
       deposit: finalDeposit,
       cancelAppointmentsCount,
+      toBeInformed: false,
+      force: false,
+      waitingList: false,
     });
   }
 
@@ -435,14 +438,32 @@ class Appointment extends React.Component {
             onChange={this.handleSliderChange}
           />
           <Toggle
-            label="Send appointment details to customer"
+            label="SMS appointment details to customer"
             labelPosition="right"
             style={{ marginBottom: 16 }}
-            onToggle={(event, isInputChecked) => {
+            onToggle={(_, isInputChecked) => {
               this.setState({ toBeInformed: isInputChecked });
             }}
-            toggled={this.state.toBeInformed}
+            selected={this.state.toBeInformed}
           />
+          <Toggle
+            label="Force create appointment"
+            labelPosition="right"
+            style={{ marginBottom: 16 }}
+            onToggle={(_, isInputChecked) => {
+              this.setState({ force: isInputChecked });
+            }}
+            selected={this.state.force}
+          />
+          {/* <Toggle
+            label="Create waiting list appointment"
+            labelPosition="right"
+            style={{ marginBottom: 16 }}
+            onToggle={(_, isInputChecked) => {              
+              this.setState({ waitingList: isInputChecked });
+            }}
+            selected={this.state.waitingList}
+          /> */}
           <RaisedButton
             ref={c => {
               this.submitBtn = c;
@@ -492,8 +513,10 @@ class Appointment extends React.Component {
                   mobileInput: '',
                   resourceName: '',
                   pastAppointments: [],
-                  toBeInformed: false,
+                  toBeInformed: true,
                   deposit: 0,
+                  force: false,
+                  waitingList: false,
                 });
 
                 this.nameAC.setState({ searchText: '' });

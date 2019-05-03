@@ -9,32 +9,41 @@ function processArguments(argv) {
   const options = argv;
   const startDT = moment(argv.start);
   const endDT = moment(startDT).add(argv.duration, 'minutes');
+  const services = String(argv.services).split(',');
+  const mobile = String(argv.mobile);
 
   return Object.assign({}, options, {
     startDT: startDT.toISOString(),
     endDT: argv.duration ? endDT.toISOString() : null,
     details: true,
     action: functions[argv.action] || functions['listEvents'],
+    services,
+    mobile
   });
 }
 
 async function main(argv) {
-  const options = processArguments(argv);
-  const results = await options.action(options);  
-  if (results && Array.isArray(results)) {    
-    if (results.length > 0 && argv.details) {      
-      if (results[0].start) {
-        println(results);
-      }else {
-        console.log(JSON.stringify(results, null, 2));
+  try {
+    const options = processArguments(argv);
+    const results = await options.action(options);
+    if (results && Array.isArray(results)) {
+      if (results.length > 0 && argv.details) {
+        if (results[0].start) {
+          println(results);
+        } else {
+          console.log(JSON.stringify(results, null, 2));
+        }
+        console.log(`Results Length ${results.length}`);
+      } else {
+        console.log(`Results is ${results}`);
       }
-      console.log(`Results Length ${results.length}`);
     } else {
-      console.log(`Results is ${results}`);
+      console.log(JSON.stringify(results, null, 2));
     }
-  } else {
-    console.log(JSON.stringify(results, null, 2));
+  } catch (error) {
+    console.log('main - ', error);
   }
+  
 }
 
 function println(events) {

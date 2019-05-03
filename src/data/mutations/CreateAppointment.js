@@ -86,9 +86,15 @@ export default {
     deposit: {
       type: FloatType,
     },
+    force: {
+      type: BooleanType,
+    },
+    waitingList: {
+      type: BooleanType,
+    },
   },
   async resolve(
-    value,
+    _,
     {
       name,
       mobile,
@@ -101,6 +107,8 @@ export default {
       discount,
       toBeInformed,
       deposit,
+      force,
+      waitingList,
     },
   ) {
     let finalResourceName = resourceName;
@@ -159,6 +167,39 @@ export default {
         reminded = validPhoneArray[0] && validPhoneArray[0].value === 'false';
       }
 
+      const now = moment();
+      // create event vs waiting list
+      if (waitingList) {
+        const { event, uuid } = await api({
+          action: 'createWaitingEvent',
+          name,
+          start,
+          mobile,
+          // these services sent in are objects
+          services,
+          duration,
+          resourceName: finalResourceName,
+          // these are sent in as floats not actually needed
+          totalAmount,
+          additional,
+          discount,
+          reminded,
+          informed: !!(
+            toBeInformed === undefined ||
+            toBeInformed === 'false' ||
+            toBeInformed === false
+          ), // bad logic
+          deposit,
+          force: true,
+        });
+        return {
+          id: uuid,
+          event,
+          transaction: {},
+          createdAt: now,
+          lastUpdated: now,
+        };
+      }
       const { event, uuid } = await api({
         action: 'createEvent',
         name,
@@ -179,8 +220,8 @@ export default {
           toBeInformed === false
         ), // bad logic
         deposit,
+        force,
       });
-      const now = moment();
       await upsert(`appt:${uuid}`, {
         id: uuid,
         eventId: event.id,

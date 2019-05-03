@@ -99,7 +99,7 @@ function createAppointment(calendar, options) {
             0,
           )})-T($${totalAmount})-D($${deposit})
 
-${services
+          ${services
             .map(item => item.service)
             .join(
               ',',
@@ -137,26 +137,33 @@ export default function create(options) {
 
   return new Promise(async (res, rej) => {
     const jwtClient = await generateJWT();
-    const calendar = google.calendar({ version: 'v3', auth: jwtClient });
 
-    if (force) {
-      const { event, uuid } = await createAppointment(calendar, options);
-      res({ event, uuid });
-    } else {
-      const events = await findExistingAppointments(calendar, options);
-      const filteredEvents = events.filter(
-        event => event.summary.indexOf('-') !== 0,
-      );
-      if (filteredEvents.length > 0) {
-        console.error('---------------------------');
-        console.error(JSON.stringify(events, null, 2));
-        rej({ error: 'Overlapping appointment' });
-        console.error('---------------------------');
-        return;
+    try {
+      const calendar = google.calendar({ version: 'v3', auth: jwtClient });
+
+      if (force) {
+        const { event, uuid } = await createAppointment(calendar, options);
+        res({ event, uuid });
+      } else {
+        const events = await findExistingAppointments(calendar, options);
+        const filteredEvents = events.filter(
+          event => event.summary.indexOf('-') !== 0,
+        );
+
+        if (filteredEvents.length > 0) {
+          console.error('---------------------------');
+          console.error(JSON.stringify(events, null, 2));
+          rej({ error: 'Overlapping appointment' });
+          console.error('---------------------------');
+          return;
+        }
+
+        const { event, uuid } = await createAppointment(calendar, options);
+        res({ event, uuid });
       }
-
-      const { event, uuid } = await createAppointment(calendar, options);
-      res({ event, uuid });
+    } catch (err) {
+      console.error('calendar create', err, options);
+      rej('no event created in the end');
     }
   });
 }

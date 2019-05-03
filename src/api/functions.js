@@ -33,7 +33,8 @@ const configs = require('./utilities/configs');
 const { get, upsert } = require('../data/database');
 
 const NO_MOBILE_NUMBER = '00000000';
-const calendarId = configs.get('work_email');
+const calendarId = configs.get('calendar_id');
+const waitingListCalendarId = configs.get('waitinglist_calendar_id');
 
 const confirmationURL = configs.get('confirmationURL');
 const reservationURL = configs.get('reservationURL');
@@ -170,17 +171,37 @@ async function informReservationToCustomer(options) {
 }
 
 async function createEvent(options) {
-  // node index --action=calendarCreate --name=Raymond Ho --mobile=12345678 --start=20170730T1130 --duration=105 --services=ELFS,HLW
+  // node index --action=createEvent --name=Raymond Ho --mobile=12345678 --start=20170730T1130 --duration=105 --services=service:20181
+
   try {
     const { event, uuid } = await calendarCreate(
       Object.assign({}, options, {
         calendarId,
       }),
     );
+
     const finalEvent = await informReservationToCustomer({ eventId: event.id });
     return { event: finalEvent, uuid };
   } catch (err) {
-    console.error(err);
+    console.error('createEvent - ', err);
+    throw err;
+  }
+}
+
+async function createWaitingEvent(options) {
+  // node index --action=createWaitingEvent --name=Raymond Ho --mobile=12345678 --start=20170730T1130 --duration=105 --services=service:20181 --force=true
+
+  try {
+    const { event, uuid } = await calendarCreate(
+      Object.assign({}, options, {
+        calendarId: waitingListCalendarId,
+      }),
+    );
+
+    // const finalEvent = await informReservationToCustomer({ eventId: event.id });
+    return { event, uuid };
+  } catch (err) {
+    console.error('createWaitingEvent - ', err);
     throw err;
   }
 }
@@ -606,6 +627,7 @@ const functions = {
   syncContacts,
   getCountCancelledAppointmentsByPerson,
   deleteContact,
+  createWaitingEvent,
 };
 
 export default functions;

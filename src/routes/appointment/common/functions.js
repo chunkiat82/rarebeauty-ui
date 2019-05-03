@@ -53,6 +53,8 @@ export function createCalendar(fetch) {
       discount,
       toBeInformed,
       deposit,
+      force,
+      waitingList,
     } = input;
     // console.error(input);
     const dateInput = moment(startDate).format('YYYYMMDD');
@@ -60,29 +62,9 @@ export function createCalendar(fetch) {
 
     const resp = await fetch('/graphql', {
       body: JSON.stringify({
-        query: `mutation($name: String!, $mobile:String!, $resourceName:String, $start:String!, $serviceIds:[String]!, $duration:Int!, $totalAmount:Float, $additional:Float, $discount:Float, $toBeInformed:Boolean, $deposit:Float) {
-                    createAppointment(name:$name, mobile:$mobile, resourceName:$resourceName, start:$start, serviceIds:$serviceIds, duration:$duration, totalAmount:$totalAmount, additional:$additional, discount:$discount, toBeInformed:$toBeInformed, deposit:$deposit ) {
-                        id
-                        event { 
-                            id,
-                            resourceName,
-                            name,
-                            mobile,
-                            start,
-                            end,
-                            serviceIds,
-                            informed
-                        }
-                        transaction {
-                            id,
-                            items { id, type, name, price },
-                            totalAmount,
-                            service,
-                            product,
-                            discount,
-                            additional,
-                            deposit
-                        }
+        query: `mutation($name: String!, $mobile:String!, $resourceName:String, $start:String!, $serviceIds:[String]!, $duration:Int!, $totalAmount:Float, $additional:Float, $discount:Float, $toBeInformed:Boolean, $deposit:Float, $force:Boolean, $waitingList:Boolean) {
+                    createAppointment(name:$name, mobile:$mobile, resourceName:$resourceName, start:$start, serviceIds:$serviceIds, duration:$duration, totalAmount:$totalAmount, additional:$additional, discount:$discount, toBeInformed:$toBeInformed, deposit:$deposit, force:$force, waitingList:$waitingList) {
+                        id                                                
                     }
                 }`,
         variables: JSON.stringify({
@@ -97,6 +79,8 @@ export function createCalendar(fetch) {
           discount,
           toBeInformed,
           deposit,
+          force,
+          waitingList,
         }),
       }),
     });
