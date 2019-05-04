@@ -9,6 +9,7 @@ import calendarDelta from './calendar/delta';
 import contactLists from './contacts/list';
 
 import calendarCreate from './calendar/create';
+import waitingCalendarCreate from './calendar/createWaiting';
 import urlCreate from './urlshortener/create';
 import contactGet from './contacts/get';
 import contactCreate from './contacts/create';
@@ -41,7 +42,8 @@ const reservationURL = configs.get('reservationURL');
 const webHookURL = configs.get('webHookURL');
 const webHookId = configs.get('webHookId');
 
-const TOUCHUP_SERVICES = ['service:3', 'service:4'];
+const TOUCHUP_SERVICES = ['service:3', 'service:4', 'service:20192'];
+const FULL_SERVICES = ['service:20181', 'service:20182', 'service:20191'];
 
 async function listEvents(options) {
   const finalOptions = Object.assign(
@@ -192,12 +194,13 @@ async function createWaitingEvent(options) {
   // node index --action=createWaitingEvent --name=Raymond Ho --mobile=12345678 --start=20170730T1130 --duration=105 --services=service:20181 --force=true
 
   try {
-    const { event, uuid } = await calendarCreate(
+    const { event, uuid } = await waitingCalendarCreate(
       Object.assign({}, options, {
         calendarId: waitingListCalendarId,
       }),
     );
 
+    // not able to inform today because of no event being stored in DB, this is best effort information
     // const finalEvent = await informReservationToCustomer({ eventId: event.id });
     return { event, uuid };
   } catch (err) {
@@ -538,19 +541,20 @@ async function remindCustomersTouchUp(options) {
         );
 
         // this is full set services which are eligible for touch up
-
-        const naturalService = inputServices.indexOf('service:20181') > -1;
-        const denseService = inputServices.indexOf('service:20182') > -1;
-        if (!naturalService && !denseService) {
+        let foundFullLashService = null;
+        FULL_SERVICES.forEach(service => {
+          if (inputServices.indexOf(service) > -1) {
+            foundFullLashService = service;
+          }
+        });
+        if (!foundFullLashService) {
           return;
         }
 
         remindedEvents[remindedEvents.length] = event;
 
         try {
-          const lashService = naturalService
-            ? 'service:20181'
-            : 'service:20182';
+          const lashService = foundFullLashService;
           const followUpService = services.peekByKey(lashService).followUp;
           const followUpPrice = services.peekByKey(followUpService).price;
           let name = 'dear';

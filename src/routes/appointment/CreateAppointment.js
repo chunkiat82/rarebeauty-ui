@@ -6,6 +6,7 @@ import Layout from '../../components/Layout';
 import {
   queryPastAppointments,
   createCalendar,
+  createWaitingCalendar,
   listContacts,
   getServices,
   getContact,
@@ -68,7 +69,9 @@ async function action({ fetch, params, store }) {
           queryPastAppointments={queryPastAppointments(fetch)}
           contacts={contacts}
           post={createCalendar(fetch)}
-          buttonText={'Create Appointment'}
+          postWaiting={createWaitingCalendar(fetch)}
+          postText={'Create Appointment'}
+          postWaitingText={'Create Waiting Appointment'}
           successMessage={'Appointment Added'}
           errorMessage={'Appointment Creation Failed'}
           showLoading={show(store)}

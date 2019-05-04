@@ -105,7 +105,7 @@ async function action({ fetch, params, store }) {
           totalAmount={totalAmount}
           duration={duration}
           resourceName={resourceName}
-          buttonText={'Update Appointment'}
+          postText={'Update Appointment'}
           successMessage={'Appointment Updated'}
           errorMessage={'Appointment Creation Failed'}
           showLoading={show(store)}

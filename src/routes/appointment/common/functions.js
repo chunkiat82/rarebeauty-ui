@@ -54,7 +54,6 @@ export function createCalendar(fetch) {
       toBeInformed,
       deposit,
       force,
-      waitingList,
     } = input;
     // console.error(input);
     const dateInput = moment(startDate).format('YYYYMMDD');
@@ -62,8 +61,8 @@ export function createCalendar(fetch) {
 
     const resp = await fetch('/graphql', {
       body: JSON.stringify({
-        query: `mutation($name: String!, $mobile:String!, $resourceName:String, $start:String!, $serviceIds:[String]!, $duration:Int!, $totalAmount:Float, $additional:Float, $discount:Float, $toBeInformed:Boolean, $deposit:Float, $force:Boolean, $waitingList:Boolean) {
-                    createAppointment(name:$name, mobile:$mobile, resourceName:$resourceName, start:$start, serviceIds:$serviceIds, duration:$duration, totalAmount:$totalAmount, additional:$additional, discount:$discount, toBeInformed:$toBeInformed, deposit:$deposit, force:$force, waitingList:$waitingList) {
+        query: `mutation($name: String!, $mobile:String!, $resourceName:String, $start:String!, $serviceIds:[String]!, $duration:Int!, $totalAmount:Float, $additional:Float, $discount:Float, $toBeInformed:Boolean, $deposit:Float, $force:Boolean) {
+                    createAppointment(name:$name, mobile:$mobile, resourceName:$resourceName, start:$start, serviceIds:$serviceIds, duration:$duration, totalAmount:$totalAmount, additional:$additional, discount:$discount, toBeInformed:$toBeInformed, deposit:$deposit, force:$force) {
                         id                                                
                     }
                 }`,
@@ -80,13 +79,61 @@ export function createCalendar(fetch) {
           toBeInformed,
           deposit,
           force,
-          waitingList,
         }),
       }),
     });
 
     const { data, errors } = await resp.json();
 
+    return { errors, data };
+  };
+}
+
+export function createWaitingCalendar(fetch) {
+  return async input => {
+    const {
+      duration,
+      name,
+      mobile,
+      resourceName,
+      startDate,
+      startTime,
+      serviceIds,
+      totalAmount,
+      additional,
+      discount,
+      toBeInformed,
+      deposit,
+    } = input;
+    // console.error(input);
+    const dateInput = moment(startDate).format('YYYYMMDD');
+    const timeInput = moment(startTime).format('HHmm');
+
+    const resp = await fetch('/graphql', {
+      body: JSON.stringify({
+        query: `mutation($name: String!, $mobile:String!, $resourceName:String, $start:String!, $serviceIds:[String]!, $duration:Int!, $totalAmount:Float, $additional:Float, $discount:Float, $toBeInformed:Boolean, $deposit:Float) {
+          createWaitingAppointment(name:$name, mobile:$mobile, resourceName:$resourceName, start:$start, serviceIds:$serviceIds, duration:$duration, totalAmount:$totalAmount, additional:$additional, discount:$discount, toBeInformed:$toBeInformed, deposit:$deposit) {
+            id                                                
+          }
+        }`,
+        variables: JSON.stringify({
+          name,
+          mobile,
+          resourceName,
+          start: `${dateInput}T${timeInput}`,
+          serviceIds,
+          duration,
+          totalAmount,
+          additional,
+          discount,
+          toBeInformed,
+          deposit,
+        }),
+      }),
+    });
+
+    const { data, errors } = await resp.json();
+    // console.log({ data, errors });
     return { errors, data };
   };
 }
@@ -294,6 +341,7 @@ export function getContact(fetch) {
 export default {
   queryPastAppointments,
   createCalendar,
+  createWaitingCalendar,
   listContacts,
   getAppointment,
   updateAppointment,

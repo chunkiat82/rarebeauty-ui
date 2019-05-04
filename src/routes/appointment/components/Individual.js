@@ -44,34 +44,18 @@ class Appointment extends React.Component {
     ).isRequired,
     post: PropTypes.func.isRequired,
     queryPastAppointments: PropTypes.func.isRequired,
-    // listOfServices: PropTypes.arrayOf(
-    //   PropTypes.shape({
-    //     id: PropTypes.string.isRequired,
-    //     service: PropTypes.string.isRequired,
-    //     price: PropTypes.number.isRequired,
-    //     duration: PropTypes.number.isRequired
-    //   }).isRequired,
-    // ).isRequired,
     services: PropTypes.instanceOf(AST),
-    buttonText: PropTypes.string.isRequired,
     name: PropTypes.string,
     mobile: PropTypes.string,
-    // startDate: PropTypes.instanceOf(PropTypes.string),
-    // startTime: PropTypes.instanceOf(PropTypes.string),
     duration: PropTypes.number,
     serviceIds: PropTypes.arrayOf(PropTypes.string),
     resourceName: PropTypes.string,
-    // id: PropTypes.string,
     discount: PropTypes.number,
     additional: PropTypes.number,
     cancelAppointmentsCount: PropTypes.number,
     successMessage: PropTypes.string,
     errorMessage: PropTypes.string,
-    // submitted: PropTypes.bool,
     deposit: PropTypes.number,
-    // startDate: PropTypes.string.isRequired,
-    // startTime: PropTypes.string.isRequired,
-    // id: PropTypes.string,
   };
   static defaultProps = {
     successMessage: '',
@@ -115,8 +99,6 @@ class Appointment extends React.Component {
     const finalDiscount = discount || 0;
     const finalAdditional = additional || 0;
     const finalDeposit = deposit || 0;
-    // console.log(`componentWillMount expanded=${pastAppointments && pastAppointments.length > 0}`);
-    // console.log(`pastAppointments=${JSON.stringify(pastAppointments)}`);
 
     this.setState({
       contactDS: contacts,
@@ -175,9 +157,7 @@ class Appointment extends React.Component {
       appointments,
       cancelCount,
     } = await this.props.queryPastAppointments(resourceName);
-    // console.log(cancelCount);
-    // console.log(`appointments=${JSON.stringify(appointments)}`);
-    // console.log(`expanded=${appointments && appointments.length > 0}`);
+
     this.setState({
       index,
       nameInput: '',
@@ -468,7 +448,7 @@ class Appointment extends React.Component {
             ref={c => {
               this.submitBtn = c;
             }}
-            label={this.props.buttonText}
+            label={this.props.postText}
             primary
             fullWidth
             disabled={this.state.submitted}
@@ -530,6 +510,73 @@ class Appointment extends React.Component {
             }}
           />
           <hr />
+          <RaisedButton
+            ref={c => {
+              this.submitBtn = c;
+            }}
+            label={this.props.postWaitingText}
+            secondary
+            fullWidth
+            disabled={this.state.submitted || !this.props.postWaiting}
+            onClick={async () => {
+              const inputs = Object.assign({}, this.state);
+              delete inputs.contactDS;
+              delete inputs.pastAppointments;
+
+              inputs.mobile = inputs.mobileInput || inputs.mobile;
+              inputs.name = inputs.nameInput || inputs.name;
+
+              this.props.showLoading();
+              this.setState({
+                error: false,
+                submitted: true,
+              });
+              // console.log(inputs);
+              const results = await this.props.postWaiting(inputs);
+
+              this.props.hideLoading();
+
+              this.setState({
+                notify: true,
+                submitted: false,
+              });
+
+              if (results.errors) {
+                this.setState({
+                  error: 'Error In Creating Waiting Appointment',
+                });
+                console.error('Error In Creating Waiting Appointment');
+              } else {
+                this.setState({
+                  name: '',
+                  duration: 0,
+                  mobile: '',
+                  startTime: {},
+                  startDate: {},
+                  serviceIds: [],
+                  discount: 0,
+                  additional: 0,
+                  totalAmount: 0,
+                  nameInput: '',
+                  mobileInput: '',
+                  resourceName: '',
+                  pastAppointments: [],
+                  toBeInformed: true,
+                  deposit: 0,
+                  force: false,
+                  waitingList: false,
+                });
+
+                this.nameAC.setState({ searchText: '' });
+                this.mobileAC.setState({ searchText: '' });
+                setTimeout(() => {
+                  this.nameAC.focus();
+                  history.push(`/`);
+                }, 200);
+              }
+              setTimeout(() => this.setState({ notify: false }), 2000);
+            }}
+          />
           {this.props.cancelButton ? this.props.cancelButton : ''}
           <Snackbar
             open={this.state.notify}
