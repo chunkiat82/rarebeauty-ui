@@ -1,3 +1,4 @@
+/* eslint-disable react/prop-types */
 /**
  * React Starter Kit (https://www.reactstarterkit.com/)
  *
@@ -7,6 +8,7 @@
  * LICENSE.txt file in the root directory of this source tree.
  */
 // http://www.material-ui.com/#/components/select-field
+// https://v0.material-ui.com/v0.18.7/#/components/toggle
 import AST from 'auto-sorting-array';
 import 'moment-duration-format';
 import moment from 'moment';
@@ -123,7 +125,7 @@ class Appointment extends React.Component {
       expanded: pastAppointments && pastAppointments.length > 0,
       deposit: finalDeposit,
       cancelAppointmentsCount,
-      toBeInformed: false,
+      toBeInformed: true,
       force: false,
       waitingList: false,
     });
@@ -424,6 +426,7 @@ class Appointment extends React.Component {
             onToggle={(_, isInputChecked) => {
               this.setState({ toBeInformed: isInputChecked });
             }}
+            defaultToggled={this.state.toBeInformed}
             selected={this.state.toBeInformed}
           />
           <Toggle
