@@ -111,6 +111,7 @@ async function action({ fetch, params, store }) {
           showLoading={show(store)}
           hideLoading={hide(store)}
           deposit={deposit}
+          toBeInformed={false}
           cancelButton={
             <CancelSection
               label="Customer Cancel"

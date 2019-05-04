@@ -79,6 +79,7 @@ async function action({ fetch, params, store }) {
           name={contact.name}
           mobile={contact.mobile}
           resourceName={resourceName}
+          toBeInformed
           contact
         />
       </Layout>

@@ -125,7 +125,7 @@ class Appointment extends React.Component {
       expanded: pastAppointments && pastAppointments.length > 0,
       deposit: finalDeposit,
       cancelAppointmentsCount,
-      toBeInformed: true,
+      toBeInformed: this.props.toBeInformed,
       force: false,
       waitingList: false,
     });
@@ -426,7 +426,7 @@ class Appointment extends React.Component {
             onToggle={(_, isInputChecked) => {
               this.setState({ toBeInformed: isInputChecked });
             }}
-            defaultToggled={this.state.toBeInformed}
+            defaultToggled={this.props.toBeInformed}
             selected={this.state.toBeInformed}
           />
           <Toggle
@@ -513,73 +513,75 @@ class Appointment extends React.Component {
             }}
           />
           <hr />
-          <RaisedButton
-            ref={c => {
-              this.submitBtn = c;
-            }}
-            label={this.props.postWaitingText}
-            secondary
-            fullWidth
-            disabled={this.state.submitted || !this.props.postWaiting}
-            onClick={async () => {
-              const inputs = Object.assign({}, this.state);
-              delete inputs.contactDS;
-              delete inputs.pastAppointments;
+          {this.props.postWaiting
+            ? <RaisedButton
+                ref={c => {
+                  this.submitBtn = c;
+                }}
+                label={this.props.postWaitingText}
+                secondary
+                fullWidth
+                disabled={this.state.submitted || !this.props.postWaiting}
+                onClick={async () => {
+                  const inputs = Object.assign({}, this.state);
+                  delete inputs.contactDS;
+                  delete inputs.pastAppointments;
 
-              inputs.mobile = inputs.mobileInput || inputs.mobile;
-              inputs.name = inputs.nameInput || inputs.name;
+                  inputs.mobile = inputs.mobileInput || inputs.mobile;
+                  inputs.name = inputs.nameInput || inputs.name;
 
-              this.props.showLoading();
-              this.setState({
-                error: false,
-                submitted: true,
-              });
-              // console.log(inputs);
-              const results = await this.props.postWaiting(inputs);
+                  this.props.showLoading();
+                  this.setState({
+                    error: false,
+                    submitted: true,
+                  });
+                  // console.log(inputs);
+                  const results = await this.props.postWaiting(inputs);
 
-              this.props.hideLoading();
+                  this.props.hideLoading();
 
-              this.setState({
-                notify: true,
-                submitted: false,
-              });
+                  this.setState({
+                    notify: true,
+                    submitted: false,
+                  });
 
-              if (results.errors) {
-                this.setState({
-                  error: 'Error In Creating Waiting Appointment',
-                });
-                console.error('Error In Creating Waiting Appointment');
-              } else {
-                this.setState({
-                  name: '',
-                  duration: 0,
-                  mobile: '',
-                  startTime: {},
-                  startDate: {},
-                  serviceIds: [],
-                  discount: 0,
-                  additional: 0,
-                  totalAmount: 0,
-                  nameInput: '',
-                  mobileInput: '',
-                  resourceName: '',
-                  pastAppointments: [],
-                  toBeInformed: true,
-                  deposit: 0,
-                  force: false,
-                  waitingList: false,
-                });
+                  if (results.errors) {
+                    this.setState({
+                      error: 'Error In Creating Waiting Appointment',
+                    });
+                    console.error('Error In Creating Waiting Appointment');
+                  } else {
+                    this.setState({
+                      name: '',
+                      duration: 0,
+                      mobile: '',
+                      startTime: {},
+                      startDate: {},
+                      serviceIds: [],
+                      discount: 0,
+                      additional: 0,
+                      totalAmount: 0,
+                      nameInput: '',
+                      mobileInput: '',
+                      resourceName: '',
+                      pastAppointments: [],
+                      toBeInformed: true,
+                      deposit: 0,
+                      force: false,
+                      waitingList: false,
+                    });
 
-                this.nameAC.setState({ searchText: '' });
-                this.mobileAC.setState({ searchText: '' });
-                setTimeout(() => {
-                  this.nameAC.focus();
-                  history.push(`/`);
-                }, 200);
-              }
-              setTimeout(() => this.setState({ notify: false }), 2000);
-            }}
-          />
+                    this.nameAC.setState({ searchText: '' });
+                    this.mobileAC.setState({ searchText: '' });
+                    setTimeout(() => {
+                      this.nameAC.focus();
+                      history.push(`/`);
+                    }, 200);
+                  }
+                  setTimeout(() => this.setState({ notify: false }), 2000);
+                }}
+              />
+            : ''}
           {this.props.cancelButton ? this.props.cancelButton : ''}
           <Snackbar
             open={this.state.notify}
