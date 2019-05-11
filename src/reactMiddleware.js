@@ -106,7 +106,8 @@ export const reactMiddleware = async (req, res, next) => {
 export const reactErrorMiddleware = (err, req, res, next) => {
   if (err.name === 'UnauthorizedError') {
     res.clearCookie('token');
-    res.status(401);
+    res.redirect('/page');
+    // res.status(401);
     // return res.status(401).send('Unauthorized Access...Please leave');
     // handle error pages
     // return

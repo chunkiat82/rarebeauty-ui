@@ -16,6 +16,7 @@ class MapAndMessage extends React.Component {
   static propTypes = {
     address: PropTypes.string.isRequired,
     message: PropTypes.string.isRequired,
+    // eslint-disable-next-line react/require-default-props
     errors: PropTypes.string,
   };
 

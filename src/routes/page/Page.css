@@ -1,0 +1,12 @@
+@import '../../components/variables.css';
+
+.root {
+  /* background: Radial-gradient(rgba(71, 71, 71, 0.35), rgba(71, 71, 71, 0)), Radial-gradient(at 0 0, #474747, #070707); */
+  text-align: center;
+  padding-top: 5%;
+  padding-bottom: 5%;
+}
+
+.middle {
+  width: 100%;
+}

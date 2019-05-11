@@ -1,12 +1,5 @@
-/**
- * React Starter Kit (https://www.reactstarterkit.com/)
- *
- * Copyright © 2014-present Kriasoft, LLC. All rights reserved.
- *
- * This source code is licensed under the MIT license found in the
- * LICENSE.txt file in the root directory of this source tree.
- */
-// http://www.material-ui.com/#/components/select-field
+/* eslint-disable css-modules/no-unused-class */
+/* eslint-disable react/forbid-prop-types */
 import 'moment-duration-format';
 import Table from '@material-ui/core/Table';
 import TableBody from '@material-ui/core/TableBody';
@@ -47,7 +40,7 @@ class AppointmentList extends React.Component {
         <TableCell>
           <p>
             {value.shortURL
-              ? <a href={value.shortURL} target="_blank">
+              ? <a href={`http://${value.shortURL}`} target="_blank">
                   {' '}{value.name}
                 </a>
               : value.name}
@@ -108,6 +101,7 @@ class AppointmentList extends React.Component {
     );
   }
 
+  // eslint-disable-next-line class-methods-use-this
   select(rows) {
     return row => {
       const event = rows[row];

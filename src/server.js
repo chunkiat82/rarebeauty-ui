@@ -67,20 +67,7 @@ app.use((req, res, next) => {
   return next();
 });
 
-if (!__DEV__) {
-  // const myFilter = function(req) {
-  //   console.error(req.url.indexOf('/public/appointment/confirm/') === 0);
-  //   console.error(req.url);
-
-  //   if (
-  //     req.url.indexOf('/public/appointment/confirm/') === 0 ||
-  //     /\/events\/calendar/.test(req.url)
-  //   ) {
-  //     return true;
-  //   }
-  //   return false;
-  // };
-
+if (__DEV__) {
   app.use(
     expressJwt({
       secret: checkingUser,
@@ -94,7 +81,7 @@ if (!__DEV__) {
         return null;
       },
     }).unless({
-      path: ['/events/calendar', /\/general*/, /\/assets*/],
+      path: ['/events/calendar', /\/general*/, /\/assets*/, /\/page*/],
     }),
   );
   // Error handler for express-jwt
@@ -108,37 +95,13 @@ if (!__DEV__) {
         maxAge: 1000 * expiresIn,
         httpOnly: true,
       });
+      return next();
     }
-    next();
+    return next();
   });
 }
 
 app.use(passport.initialize());
-
-// if (__DEV__) {
-//   app.enable('trust proxy');
-// }
-// app.get(
-//   '/login/facebook',
-//   passport.authenticate('facebook', {
-//     scope: ['email', 'user_location'],
-//     session: false,
-//   }),
-// );
-// app.get(
-//   '/login/facebook/return',
-//   passport.authenticate('facebook', {
-//     failureRedirect: '/login',
-//     session: false,
-//   }),
-//   (req, res) => {
-//     const expiresIn = 60 * 60 * 24 * 180; // 180 days
-//     const token = jwt.sign(req.user, config.auth.jwt.secret, { expiresIn });
-//     res.cookie('id_token', token, { maxAge: 1000 * expiresIn, httpOnly: true });
-//     res.redirect('/');
-//   },
-// );
-
 //
 // Register API middleware
 // -----------------------------------------------------------------------------
@@ -173,7 +136,12 @@ app.use('/general/confirmation/:eventId', async (req, res, next) => {
 
   const event = await API({ action: 'getEvent', eventId });
   req.data = { event, workAddress: config.app.workAddress };
-  await API({ action: 'patchEvent', status: 'confirmed', confirmed: moment().format('lll'), eventId });
+  await API({
+    action: 'patchEvent',
+    status: 'confirmed',
+    confirmed: moment().format('lll'),
+    eventId,
+  });
 
   reactMiddleware(req, res, next);
 });
