@@ -34,7 +34,7 @@ class Page extends React.Component {
   render() {
     return (
       <div className={s.root}>
-        <span style={{ fontSize: '3vw' }}>
+        <span style={{ fontSize: 'calc(12px + 0.75vw)' }}>
           Providing Eyelash Extensions, Facial, Threading and Waxing Services.<br />
           More than 10 years experience in the beauty industry. <br />
           Staying beautiful inside and outside is our passion.
@@ -79,7 +79,7 @@ class Page extends React.Component {
           />
         </div>
         <br />
-        <span style={{ fontSize: '3vw' }}>
+        <span style={{ fontSize: 'calc(12px + 0.75vw)' }}>
           We are located near Pioneer MRT/Jurong West Stadium.
         </span>
         <Paper style={mapStyle} zDepth={5}>
