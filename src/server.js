@@ -67,7 +67,7 @@ app.use((req, res, next) => {
   return next();
 });
 
-if (__DEV__) {
+if (!__DEV__) {
   app.use(
     expressJwt({
       secret: checkingUser,
