@@ -106,7 +106,7 @@ export const reactMiddleware = async (req, res, next) => {
 export const reactErrorMiddleware = (err, req, res, next) => {
   if (err.name === 'UnauthorizedError') {
     res.clearCookie('token');
-    res.redirect('/page');
+    return res.redirect('/page');
     // res.status(401);
     // return res.status(401).send('Unauthorized Access...Please leave');
     // handle error pages
@@ -117,9 +117,9 @@ export const reactErrorMiddleware = (err, req, res, next) => {
   if (err instanceof Jwt401Error) {
     console.error('[express-jwt-error]', req.cookies.id_token);
     // `clearCookie`, otherwise user can't use web-app until cookie expires
-    res.clearCookie('id_token');
+    return res.clearCookie('id_token');
   }
-  next(err);
+  return next(err);
 };
 
 export default { reactMiddleware, reactErrorMiddleware };
