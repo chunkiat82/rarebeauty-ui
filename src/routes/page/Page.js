@@ -19,9 +19,9 @@ const style = {
 const aStyle = {
   margin: '3vw',
   width: '20%',
-  minWidth: '150px',
+  minWidth: '120px',
   height: '20%',
-  minHeight: '150px',
+  minHeight: '120px',
 };
 
 const mapStyle = {
