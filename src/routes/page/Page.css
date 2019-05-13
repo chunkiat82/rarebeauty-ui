@@ -10,3 +10,28 @@
 .middle {
   width: 100%;
 }
+
+.rarebeauty {
+  color: #fff;
+  font-family: 'ubuntu';
+  text-transform: uppercase;
+  margin-top: 10px;
+  margin-bottom: 10px;
+  font-weight: 300;
+  /* font-family: 'Josefin Sans',sans-serif; */
+  background: linear-gradient(to right, #a54dd1 10%, #c257c8 20%, #e58cc9 30%, #cf5f6d 40%, #ce4839 50%, #e27339 60%, #d3aa6f 70%, #59b2c6 80%, #758df5 90%, #000 100%);
+  background-size: auto auto;
+  background-clip: border-box;
+  background-size: 200% auto;
+  color: #fff;
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  animation: textclip 1.5s linear infinite;
+}
+
+@keyframes textclip {
+  to {
+    background-position:200% center;
+  }
+}
