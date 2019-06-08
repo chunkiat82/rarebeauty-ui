@@ -3,6 +3,7 @@ const google = require('googleapis');
 const moment = require('moment');
 
 export default function list(options) {
+  // console.log(options);
   const {
     calendarId,
     timeStart,

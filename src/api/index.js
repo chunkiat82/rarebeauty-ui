@@ -2,7 +2,7 @@ import moment from 'moment';
 import { argv } from 'yargs';
 import functions from './functions';
 
-function processArguments(argv) {
+function processArguments() {
   const options = argv;
   const startDT = moment(argv.start);
   const endDT = moment(startDT).add(argv.duration, 'minutes');
@@ -14,6 +14,7 @@ function processArguments(argv) {
   });
 }
 
+// eslint-disable-next-line no-shadow
 export default async function main(argv) {
   const options = processArguments(argv);
   const results = await options.action(options);

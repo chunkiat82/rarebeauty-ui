@@ -21,6 +21,8 @@ import {
   cancelledByPerson as countCancelledAppointmentsByPerson,
 } from './appointments/person';
 
+import { listTransactions as listTransactionsDB } from './transactions/list';
+
 import calendarPatch from './calendar/patch';
 
 const calendarDayBefore = require('./calendar/dayBeforeEvents');
@@ -606,6 +608,11 @@ async function getCountCancelledAppointmentsByPerson(options) {
   return countCancelledAppointments;
 }
 
+async function listTransactions(options) {
+  const listTransactionsByRange = await listTransactionsDB(options);
+  return listTransactionsByRange;
+}
+
 const functions = {
   listEvents,
   listDeltaEvents,
@@ -632,6 +639,7 @@ const functions = {
   getCountCancelledAppointmentsByPerson,
   deleteContact,
   createWaitingEvent,
+  listTransactions,
 };
 
 export default functions;

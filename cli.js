@@ -8,13 +8,14 @@ import functions from './src/api/functions';
 function processArguments(argv) {
   const options = argv;
   const startDT = moment(argv.start);
-  const endDT = moment(startDT).add(argv.duration, 'minutes');
+  let endDT = argv.end ? moment(argv.end) : startDT;
+  endDT = argv.duration ? moment(startDT).add(argv.duration, 'minutes') :  endDT;
   const services = String(argv.services).split(',');
   const mobile = String(argv.mobile);
 
   return Object.assign({}, options, {
     startDT: startDT.toISOString(),
-    endDT: argv.duration ? endDT.toISOString() : null,
+    endDT: endDT.toISOString(),
     details: true,
     action: functions[argv.action] || functions['listEvents'],
     services,
@@ -25,6 +26,7 @@ function processArguments(argv) {
 async function main(argv) {
   try {
     const options = processArguments(argv);
+    // console.log(options);
     const results = await options.action(options);
     if (results && Array.isArray(results)) {
       if (results.length > 0 && argv.details) {
@@ -35,7 +37,11 @@ async function main(argv) {
         }
         console.log(`Results Length ${results.length}`);
       } else {
-        console.log(`Results is ${results}`);
+        if (argv.pretty) {
+          console.log(JSON.stringify(results, null, 2));
+        } else {
+          console.log(`Results is ${results}`);
+        }
       }
     } else {
       console.log(JSON.stringify(results, null, 2));
@@ -43,7 +49,6 @@ async function main(argv) {
   } catch (error) {
     console.log('main - ', error);
   }
-  
 }
 
 function println(events) {
