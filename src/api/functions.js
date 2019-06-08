@@ -1,3 +1,4 @@
+/* eslint-disable no-param-reassign */
 import jwt from 'jsonwebtoken';
 import moment from 'moment';
 import AST from 'auto-sorting-array';
@@ -609,6 +610,11 @@ async function getCountCancelledAppointmentsByPerson(options) {
 }
 
 async function listTransactions(options) {
+  if (options.endDT === null) {
+    options.startDT = moment(options.startDT).startOf('day');
+    options.endDT = moment(options.startDT).endOf('day');
+  }
+  // console.log(options);
   const listTransactionsByRange = await listTransactionsDB(options);
   return listTransactionsByRange;
 }

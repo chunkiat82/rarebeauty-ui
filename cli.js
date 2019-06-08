@@ -8,14 +8,14 @@ import functions from './src/api/functions';
 function processArguments(argv) {
   const options = argv;
   const startDT = moment(argv.start);
-  let endDT = argv.end ? moment(argv.end) : startDT;
-  endDT = argv.duration ? moment(startDT).add(argv.duration, 'minutes') :  endDT;
+  let endDT = argv.end ? moment(argv.end) : null;
+  endDT = argv.duration ? moment(startDT).add(argv.duration, 'minutes') : endDT;
   const services = String(argv.services).split(',');
   const mobile = String(argv.mobile);
 
   return Object.assign({}, options, {
     startDT: startDT.toISOString(),
-    endDT: endDT.toISOString(),
+    endDT: endDT ? endDT.toISOString() : null,
     details: true,
     action: functions[argv.action] || functions['listEvents'],
     services,
