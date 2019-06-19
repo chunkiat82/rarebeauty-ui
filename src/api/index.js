@@ -1,8 +1,8 @@
 import moment from 'moment';
-import { argv } from 'yargs';
+// import { argv } from 'yargs';
 import functions from './functions';
 
-function processArguments() {
+function processArguments(argv) {
   const options = argv;
   const startDT = moment(argv.start);
   const endDT = moment(startDT).add(argv.duration, 'minutes');

@@ -30,12 +30,11 @@ export default async function list() {
         }
         // console.log(me.connections.length);
         // console.log(JSON.stringify(me, null, 2));
+
         let contacts = me.connections.filter(contact =>
           Array.isArray(contact.phoneNumbers),
         );
         contacts = contacts.map((one, index) => {
-          // console.log(one);
-
           const phoneNumbers = one.phoneNumbers.filter(
             number => number.type !== 'whatsapp',
           );

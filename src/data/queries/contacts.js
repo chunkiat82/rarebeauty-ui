@@ -18,6 +18,7 @@ const contacts = {
   async resolve() {
     // console.log('graphql listContacts');
     const items = await api({ action: 'listContacts' });
+    // console.log(items);
     return items;
   },
 };
