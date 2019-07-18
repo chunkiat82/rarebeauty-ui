@@ -95,6 +95,10 @@ if (!__DEV__) {
         maxAge: 1000 * expiresIn,
         httpOnly: true,
       });
+      res.cookie('jwt', req.query.token, {
+        maxAge: 1000 * expiresIn,
+        httpOnly: true,
+      });
       return next();
     }
     return next();
