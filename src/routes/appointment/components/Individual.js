@@ -227,7 +227,15 @@ class Appointment extends React.Component {
                 '/',
               )[1]}/createAppointment`}
             >
-              Customer Link
+              Create Link
+            </a>
+            {` - `}
+            <a
+              href={`/customer/${this.state.resourceName.split(
+                '/',
+              )[1]}/appointments`}
+            >
+              List Link
             </a>
           </span>
         </div>

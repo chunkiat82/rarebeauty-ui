@@ -53,7 +53,7 @@ export function byPerson(options) {
     try {
       if (now) queryString += ` and \`end\`.dateTime > now_str()`;
       queryString += ` ORDER BY \`start\`.\`dateTime\` desc LIMIT ${limit ||
-        '3'}`;
+        '5'}`;
 
       // console.log(queryString);
       const idObjs = await query(queryString);

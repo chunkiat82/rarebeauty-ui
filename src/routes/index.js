@@ -29,6 +29,11 @@ const routes = {
         import(/* webpackChunkName: 'appointment-create' */ './appointment/CreateAppointment'),
     },
     {
+      path: '/customer/:customerId/appointments',
+      load: () =>
+        import(/* webpackChunkName: 'customer-appointments-ist' */ './customer/appointments'),
+    },
+    {
       path: '/appointment/create',
       load: () =>
         import(/* webpackChunkName: 'appointment-create' */ './appointment/CreateAppointment'),

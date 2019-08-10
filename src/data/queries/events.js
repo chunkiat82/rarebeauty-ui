@@ -9,23 +9,22 @@
  */
 
 import { GraphQLList as ListType, GraphQLString as StringType } from 'graphql';
-import moment from 'moment';
+// import moment from 'moment';
 import EventType from '../types/EventType';
 import api from '../../api';
 
+function queryEvents(args) {
+  return api({ action: 'listEvents', ...args });
+}
 const events = {
   type: new ListType(EventType),
   args: {
     id: { type: StringType },
   },
   async resolve(obj, args) {
-    const response = await queryEvents();
+    const response = await queryEvents(args);
     return response;
   },
 };
-
-function queryEvents() {
-  return api({ action: 'listEvents' });
-}
 
 export default events;
