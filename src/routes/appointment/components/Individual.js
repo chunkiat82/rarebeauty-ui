@@ -220,39 +220,28 @@ class Appointment extends React.Component {
   };
 
   generateCustomerLink() {
+    const customerId = this.state.resourceName.split('/')[1];
     return (
       <div>
         <div>
           <span>
             <Link
-              key={`/customer/${this.state.resourceName.split(
-                '/',
-              )[1]}/createAppointment`}
-              to={`/customer/${this.state.resourceName.split(
-                '/',
-              )[1]}/createAppointment`}
+              key={`/customer/${customerId}/createAppointment`}
+              to={`/customer/${customerId}/createAppointment`}
             >
               Create Appt
             </Link>
             {` -  `}
             <Link
-              key={`/customer/${this.state.resourceName.split(
-                '/',
-              )[1]}/appointments`}
-              to={`/customer/${this.state.resourceName.split(
-                '/',
-              )[1]}/appointments`}
+              key={`/customer/${customerId}/appointments`}
+              to={`/customer/${customerId}/appointments`}
             >
               List Appts
             </Link>
             {` -  `}
             <Link
-              key={`/customer/${this.state.resourceName.split(
-                '/',
-              )[1]}/appointments`}
-              to={`/customer/${this.state.resourceName.split(
-                '/',
-              )[1]}/appointments`}
+              key={`/p/customer/${customerId}/appointments`}
+              to={`/p/customer/${customerId}/appointments`}
             >
               Public List Appts
             </Link>
