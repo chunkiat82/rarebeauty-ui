@@ -1,3 +1,5 @@
+/* eslint-disable css-modules/no-unused-class */
+/* eslint-disable react/prop-types */
 /**
  * React Starter Kit (https://www.reactstarterkit.com/)
  *
@@ -12,7 +14,6 @@ import RaisedButton from 'material-ui/RaisedButton';
 import Dialog from 'material-ui/Dialog';
 import FlatButton from 'material-ui/FlatButton';
 import withStyles from 'isomorphic-style-loader/lib/withStyles';
-
 import s from './Appointment.css';
 import history from '../../../history';
 
