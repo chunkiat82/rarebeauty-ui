@@ -81,7 +81,7 @@ if (!__DEV__) {
         return null;
       },
     }).unless({
-      path: ['/events/calendar', /\/general*/, /\/assets*/, /\/page*/],
+      path: ['/events/calendar', /\/general*/, /\/assets*/, /\/page*/, /\/p*/],
     }),
   );
   // Error handler for express-jwt
