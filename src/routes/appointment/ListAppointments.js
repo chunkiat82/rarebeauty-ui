@@ -29,13 +29,15 @@ async function getEvents(fetch) {
   // console.log(`data=${JSON.stringify(data, null, 2)}`);
   return data.events.reduce((array, item) => {
     if (item) {
+      // eslint-disable-next-line no-param-reassign
       array[array.length] = item;
     }
     return array;
   }, []);
 }
 
-async function action({ fetch, params, store }) {
+// eslint-disable-next-line no-unused-vars
+async function action({ fetch, _, store }) {
   store.dispatch(showLoading());
   const events = await getEvents(fetch);
   const services = await getServices(fetch)();

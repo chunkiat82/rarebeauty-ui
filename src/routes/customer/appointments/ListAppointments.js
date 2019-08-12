@@ -29,35 +29,34 @@ class AppointmentList extends React.Component {
   //     services: PropTypes.array.isRequired,
   //   };
 
-  rows(values) {
-    return values.map((value /* ,index*/) =>
+  rows(appointments) {
+    return appointments.map((value /* ,index*/) =>
       <TableRow key={value.id}>
         <TableCell>
           <p>
-            {value.shortURL
-              ? <a href={`http://${value.shortURL}`} target="_blank">
-                {' '}{value.shortURL}
+            {value.event.shortURL
+              ? <a href={`http://${value.event.shortURL}`} target="_blank">
+                {' '}{value.event.shortURL}
               </a>
               : value.name}
           </p>
           <p>
             <span
-              style={value.status === 'confirmed' ? stylesPurple : stylesGreen}
+              style={value.event.status === 'confirmed' ? stylesPurple : stylesGreen}
             >
-              {value.status === 'tentative' ? 'Appointment Created' : 'Appointment Confirmed by Customer'}
+              {value.event.status === 'tentative' ? 'Appointment Created' : 'Appointment Confirmed by Customer'}
             </span>
           </p>    
         </TableCell>
         <TableCell>
           <p>
-            {moment(value.start).format('DD MMM YYYY')}
-          </p>
-          <p>
-            {moment(value.start).format('hh:mm A')}
+            {moment(value.event.start).format('DD MMM YYYY')}
+            &nbsp;-&nbsp;
+            {moment(value.event.tart).format('hh:mm A')}
           </p>
           <p>
             <span>
-            {value.serviceIds
+            {value.event.serviceIds
               .map(
                 serviceId =>
                   // console.log(serviceId);
@@ -65,14 +64,15 @@ class AppointmentList extends React.Component {
               )
               .join(', ')}
           </span>
-            -
-              <span>
-              ${value.serviceIds.reduce(
+          </p>
+          <p>
+          <span>
+              ${value.event.serviceIds.reduce(
                 (prevValue, serviceId) =>
                   prevValue + this.props.services.peekByKey(serviceId).price,
                 0,
               )}
-            </span>
+          </span>
           </p>
         </TableCell>
       </TableRow>,
@@ -89,19 +89,16 @@ class AppointmentList extends React.Component {
   }
 
   render() {
-    // const rows = this.props.rows;
-    // console.log(JSON.stringify(this.props.rows, null, 2));
-    // console.log(this.props.services);
     return (
-      <Table onRowSelection={this.select(this.props.rows)}>
-        <TableHead displaySelectAll={false} adjustForCheckbox={false}>
+      <Table>
+        <TableHead>
           <TableRow>
             <TableCell>Status</TableCell>
             <TableCell>Details</TableCell>
           </TableRow>
         </TableHead>
-        <TableBody displayRowCheckbox={false}>
-          {this.rows(this.props.rows)}
+        <TableBody>
+          {this.rows(this.props.appointments)}
         </TableBody>
       </Table>
     );

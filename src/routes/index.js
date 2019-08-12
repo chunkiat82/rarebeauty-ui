@@ -29,9 +29,30 @@ const routes = {
         import(/* webpackChunkName: 'appointment-create' */ './appointment/CreateAppointment'),
     },
     {
-      path: '/customer/:customerId/appointments',
-      load: () =>
-        import(/* webpackChunkName: 'customer-appointments-ist' */ './customer/appointments'),
+      path: '/p', // public path
+      action: context => {
+        // console.log(Object.keys(context));
+        const { url, store } = context;
+        // console.log(store);
+        if (url.indexOf('login') === -1) {
+          if (!store.customer) {
+            return { redirect: `/p/login?url=${url}` }; // route does not match (skip all /admin* routes)
+          }
+        }
+        return context.next(); // or `return context.next()` - try to match child routes
+      },
+      children: [
+        {
+          path: '/login',
+          load: () =>
+            import(/* webpackChunkName: 'customer-login' */ './customer/login'),
+        },
+        {
+          path: '/customer/:customerId/appointments',
+          load: () =>
+            import(/* webpackChunkName: 'customer-appointments-list' */ './customer/appointments'),
+        },
+      ],
     },
     {
       path: '/appointment/create',
@@ -77,7 +98,6 @@ const routes = {
       load: () =>
         import(/* webpackChunkName: 'general-confirmation' */ './general/confirmation'),
     },
-
     {
       path: '/general/reservation/:id',
       load: () =>
