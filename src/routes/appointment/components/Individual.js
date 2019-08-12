@@ -1,3 +1,4 @@
+/* eslint-disable react/jsx-no-undef */
 /* eslint-disable react/prop-types */
 /**
  * React Starter Kit (https://www.reactstarterkit.com/)
@@ -29,6 +30,7 @@ import Toggle from 'material-ui/Toggle';
 import { Card, CardText } from 'material-ui/Card';
 import s from './Appointment.css';
 import history from '../../../history';
+import Link from '../../../components/Link/Link';
 
 const iconStyles = {
   marginRight: 24,
@@ -222,21 +224,27 @@ class Appointment extends React.Component {
       <div>
         <div>
           <span>
-            <a
-              href={`/customer/${this.state.resourceName.split(
+            <Link
+              key={`/customer/${this.state.resourceName.split(
+                '/',
+              )[1]}/createAppointment`}
+              to={`/customer/${this.state.resourceName.split(
                 '/',
               )[1]}/createAppointment`}
             >
-              Create Link
-            </a>
+              Create Appt
+            </Link>
             {` - `}
-            <a
-              href={`/customer/${this.state.resourceName.split(
+            <Link
+              key={`/customer/${this.state.resourceName.split(
+                '/',
+              )[1]}/appointments`}
+              to={`/customer/${this.state.resourceName.split(
                 '/',
               )[1]}/appointments`}
             >
-              List Link
-            </a>
+              List Appts
+            </Link>
           </span>
         </div>
         <hr />

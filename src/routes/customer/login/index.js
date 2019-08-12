@@ -4,29 +4,42 @@ import { showLoading, hideLoading } from 'react-redux-loading-bar';
 import Layout from '../../../components/Layout';
 import Login from './Login';
 import history from '../../../history';
+import {
+  getContact,
+} from '../../appointment/common/functions';
 
 async function action(context) {
-  // const customerId = params.customerId;
-  // console.log(Object.keys(context));
-  const { store, query } = context;
+  const { fetch, store, query } = context;  
   const { url } = query;
-  // console.log(url);
-  store.dispatch(showLoading());
 
-  function setMobileNumber(number) {
-    store.customer = { mobile: number };
-    history.push(url);
+  async function checkValidCustomer(number) {
+    // hardcoded for /p/customer/customerId
+    const customerId = url.split('/')[3];
+
+    if (customerId) {
+      const resourceName = `people/${customerId}`;
+      store.dispatch(showLoading());
+      const contact = await getContact(fetch)(resourceName);
+      store.dispatch(hideLoading());
+      // console.log(contact.mobile.replace(/ /g,''));
+      if (contact && contact.mobile && contact.mobile.replace(/ /g,'').indexOf(number) >= 0) {        
+        store.customer = true;
+        return history.push(url);
+      }
+    }
+    store.customer = false;
+    return history.push('/');
   }
   // eslint-disable-next-line no-param-reassign
 
-  store.dispatch(hideLoading());
+  
 
   return {
     chunks: ['customer-login'],
     title: 'Rare Beauty Professional',
     component: (
       <Layout>
-        <Login submit={setMobileNumber} />
+        <Login submit={checkValidCustomer} />
       </Layout>
     ),
   };

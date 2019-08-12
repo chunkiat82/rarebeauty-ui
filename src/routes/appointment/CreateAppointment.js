@@ -3,6 +3,7 @@ import React from 'react';
 import { showLoading, hideLoading } from 'react-redux-loading-bar';
 import Appointment from './components/Individual';
 import Layout from '../../components/Layout';
+
 import {
   queryPastAppointments,
   createCalendar,

@@ -1,3 +1,7 @@
+/* eslint-disable jsx-a11y/alt-text */
+/* eslint-disable react/jsx-no-comment-textnodes */
+/* eslint-disable css-modules/no-unused-class */
+/* eslint-disable prettier/prettier */
 /**
  * React Starter Kit (https://www.reactstarterkit.com/)
  *
@@ -8,7 +12,6 @@
  */
 // http://www.material-ui.com/#/components/select-field
 import React from 'react';
-import PropTypes from 'prop-types';
 import withStyles from 'isomorphic-style-loader/lib/withStyles';
 import { GridList, GridTile } from 'material-ui/GridList';
 import IconButton from 'material-ui/IconButton';
@@ -18,58 +21,56 @@ import s from './Home.css';
 import Link from '../../components/Link/Link';
 
 const styles = {
-    root: {
-        display: 'flex',
-        flexWrap: 'wrap',
-        justifyContent: 'space-around',
-    },
-    gridList: {
-        width: 500,
-        height: 300,
-        overflowY: 'auto',
-    },
+  root: {
+    display: 'flex',
+    flexWrap: 'wrap',
+    justifyContent: 'space-around',
+  },
+  gridList: {
+    width: 500,
+    height: 300,
+    overflowY: 'auto',
+  },
 };
 
 const tilesData = [
-    {
-        img: 'images/home/empty-calendar.png',
-        title: 'Create Appointment',
-        subTitle: 'With/Without Payments',
-        link: '/appointment/create'
-    },
-    {
-        img: 'images/home/calendar-appointments.png',
-        title: 'List Appointments',
-        subTitle: 'Upcoming 20',
-        link: '/appointment'
-    }
+  {
+    img: 'images/home/empty-calendar.png',
+    title: 'Create Appointment',
+    subTitle: 'With/Without Payments',
+    link: '/appointment/create'
+  },
+  {
+    img: 'images/home/calendar-appointments.png',
+    title: 'List Appointments',
+    subTitle: 'Upcoming 20',
+    link: '/appointment'
+  }
 ];
 
 class Home extends React.Component {
-    static propTypes = {
-    };
 
-    render() {
-        return <div style={styles.root}>
-            <GridList
-                cellHeight={180}
-                style={styles.gridList}
+  render() {
+    return <div style={styles.root}>      
+      <GridList
+        cellHeight={180}
+        style={styles.gridList}
+      >
+        <Subheader style={{ textAlign: 'center' }}>How can I help you, Today?</Subheader>
+        {tilesData.map((tile) => (
+          <Link key={tile.link} to={tile.link}>
+            <GridTile
+              key={tile.img}
+              title={tile.title}
+              subtitle={<span>{tile.subTitle}</span>}
+              actionIcon={<IconButton><StarBorder color="white" /></IconButton>}
             >
-                <Subheader style={{textAlign:'center'}}>How can I help you, Today?</Subheader>
-                {tilesData.map((tile) => (
-                    <Link key={tile.link} to={tile.link}>
-                        <GridTile
-                            key={tile.img}
-                            title={tile.title}
-                            subtitle={<span>{tile.subTitle}</span>}
-                            actionIcon={<IconButton><StarBorder color="white" /></IconButton>}                           
-                        >
-                            <img src={tile.img} />
-                        </GridTile>
-                    </Link>
-                ))}
-            </GridList>
-        </div>
-    }
+              <img src={tile.img} />
+            </GridTile>
+          </Link>
+        ))}
+      </GridList>
+    </div>
+  }
 }
 export default withStyles(s)(Home);

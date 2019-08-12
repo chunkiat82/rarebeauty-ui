@@ -24,16 +24,25 @@ const routes = {
       load: () => import(/* webpackChunkName: 'home' */ './home'),
     },
     {
-      path: '/customer/:customerId/createAppointment',
-      load: () =>
-        import(/* webpackChunkName: 'appointment-create' */ './appointment/CreateAppointment'),
+      path: '/customer',
+      children: [
+        {
+          path: '/:customerId/createAppointment',
+          load: () =>
+            import(/* webpackChunkName: 'appointment-create' */ './appointment/CreateAppointment'),
+        },
+        {
+          path: '/:customerId/appointments',
+          load: () =>
+            import(/* webpackChunkName: 'customer-appointments-list' */ './customer/appointments'),
+        },
+      ],
     },
     {
       path: '/p', // public path
       action: context => {
         // console.log(Object.keys(context));
         const { url, store } = context;
-        // console.log(store);
         if (url.indexOf('login') === -1) {
           if (!store.customer) {
             return { redirect: `/p/login?url=${url}` }; // route does not match (skip all /admin* routes)
