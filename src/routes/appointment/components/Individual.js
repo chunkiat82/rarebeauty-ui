@@ -234,7 +234,7 @@ class Appointment extends React.Component {
             >
               Create Appt
             </Link>
-            {` - `}
+            {` -  `}
             <Link
               key={`/customer/${this.state.resourceName.split(
                 '/',
@@ -244,6 +244,17 @@ class Appointment extends React.Component {
               )[1]}/appointments`}
             >
               List Appts
+            </Link>
+            {` -  `}
+            <Link
+              key={`/customer/${this.state.resourceName.split(
+                '/',
+              )[1]}/appointments`}
+              to={`/customer/${this.state.resourceName.split(
+                '/',
+              )[1]}/appointments`}
+            >
+              Public List Appts
             </Link>
           </span>
         </div>
