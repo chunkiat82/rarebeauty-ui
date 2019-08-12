@@ -8,18 +8,16 @@
  */
 
 import React from 'react';
-import moment from 'moment';
 import Home from './Home';
 import Layout from '../../components/Layout';
 
-async function action({ fetch }) {
-
+async function action() {
   return {
     chunks: ['home'],
     title: 'Rare Beauty Professional',
     component: (
       <Layout>
-        <Home/>
+        <Home />
       </Layout>
     ),
   };
