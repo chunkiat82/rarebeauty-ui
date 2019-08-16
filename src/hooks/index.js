@@ -1,8 +1,19 @@
+/* eslint-disable no-param-reassign */
 import moment from 'moment';
 import api from './../api';
 import { get, remove, upsert } from '../data/database';
 
 const { getSyncToken, setSyncToken } = require('../api/utilities/token');
+
+// instead of scripting on kibana, i'm duplicating the content here,
+function populateStats(item) {
+  const apptDateMT = moment(item.start.dateTime, 'YYYY-MM-DDThh:mm:ssZ');
+  const createdDateMT = moment(item.created, 'YYYY-MM-DDThh:mm:ssZ');
+  const apptSeconds = moment.duration(apptDateMT, 'seconds');
+  const createdSeconds = moment.duration(createdDateMT, 'seconds');
+  item.extendedProperties.shared.bookedAhead =
+    apptSeconds - createdSeconds < 0 ? 0 : apptSeconds - createdSeconds;
+}
 
 async function handleCancel(item) {
   try {
@@ -72,7 +83,7 @@ export async function handleCalendarWebhook(headers) {
 
     // if item is more than 7 days old return do nothing
     if (item && item.start && item.start.dateTime) {
-      const apptDateMT = moment(item.start.dateTime);
+      const apptDateMT = moment(item.start.dateTime, 'YYYY-MM-DDThh:mm:ssZ');
       const currentMT = moment();
       const appDays = moment.duration(apptDateMT, 'days');
       const currentDays = moment.duration(currentMT, 'days');
@@ -88,7 +99,7 @@ export async function handleCalendarWebhook(headers) {
     if (item.status === 'cancelled') {
       handleCancel(item);
     } else if (item.status === 'confirmed' || item.status === 'tentative') {
-      //some massaging here
+      // some massaging here
       populateStats(item);
       handleUpsert(item);
       try {
@@ -96,7 +107,10 @@ export async function handleCalendarWebhook(headers) {
         console.error(`uuid=${uuid}`);
         const transResponse = await get(`trans:${uuid}`);
         const transaction = transResponse.value;
-        transaction.apptDate = moment(item.start.dateTime);
+        transaction.apptDate = moment(
+          item.start.dateTime,
+          'YYYY-MM-DDThh:mm:ssZ',
+        );
         await upsert(`trans:${uuid}`, transaction);
       } catch (err) {
         console.error(err);
@@ -139,16 +153,6 @@ export async function handleCalendarWebhook(headers) {
   }
 
   // console.log(events);
-}
-
-
-//instead of scripting on kibana, i'm duplicating the content here,
-function populateStats(item) {
-  const apptDateMT = moment(item.start.dateTime);
-  const createdDateMT = moment(item.created);
-  const apptSeconds = moment.duration(apptDateMT, 'seconds');
-  const createdSeconds = moment.duration(createdDateMT, 'seconds');
-  item.extendedProperties.shared['bookedAhead'] = apptSeconds - createdSeconds < 0 ? 0 :  apptSeconds - createdSeconds;
 }
 
 export default handleCalendarWebhook;
