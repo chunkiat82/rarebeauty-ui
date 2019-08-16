@@ -85,12 +85,14 @@ export async function handleCalendarWebhook(headers) {
     if (item && item.start && item.start.dateTime) {
       const apptDateMT = moment(item.start.dateTime, 'YYYY-MM-DDThh:mm:ssZ');
       const currentMT = moment();
-      const appDays = moment.duration(apptDateMT, 'days');
-      const currentDays = moment.duration(currentMT, 'days');
-      console.error(`apptDateMT=${apptDateMT}`);
-      console.error(`currentDays=${currentDays}`);
-      console.error(`difference=${currentDays - appDays}`);
-      if (currentDays - appDays > 7) {
+      const duration = moment.duration(apptDateMT.diff(currentMT));
+      const days = duration.asDays();
+      // const appDays = moment.duration(apptDateMT, 'days');
+      // const currentDays = moment.duration(currentMT, 'days');
+      // console.error(`apptDateMT=${apptDateMT}`);
+      // console.error(`currentDays=${currentDays}`);
+      // console.error(`difference=${currentDays - appDays}`);
+      if (days > 7) {
         console.error(`item more than 7 days wants changes =${item.id}`);
         return;
       }
