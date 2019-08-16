@@ -9,10 +9,10 @@ const { getSyncToken, setSyncToken } = require('../api/utilities/token');
 function populateStats(item) {
   const apptDateMT = moment(item.start.dateTime, 'YYYY-MM-DDThh:mm:ssZ');
   const createdDateMT = moment(item.created, 'YYYY-MM-DDThh:mm:ssZ');
-  const apptSeconds = moment.duration(apptDateMT, 'seconds');
-  const createdSeconds = moment.duration(createdDateMT, 'seconds');
-  item.extendedProperties.shared.bookedAhead =
-    apptSeconds - createdSeconds < 0 ? 0 : apptSeconds - createdSeconds;
+  const duration = moment.duration(apptDateMT.diff(createdDateMT));
+  const seconds = duration.asSeconds();
+
+  item.extendedProperties.shared.bookedAhead = seconds < 0 ? 0 : seconds;
 }
 
 async function handleCancel(item) {
@@ -87,11 +87,6 @@ export async function handleCalendarWebhook(headers) {
       const currentMT = moment();
       const duration = moment.duration(apptDateMT.diff(currentMT));
       const days = duration.asDays();
-      // const appDays = moment.duration(apptDateMT, 'days');
-      // const currentDays = moment.duration(currentMT, 'days');
-      // console.error(`apptDateMT=${apptDateMT}`);
-      // console.error(`currentDays=${currentDays}`);
-      // console.error(`difference=${currentDays - appDays}`);
       if (days > 7) {
         console.error(`item more than 7 days wants changes =${item.id}`);
         return;
