@@ -2,6 +2,7 @@
 
 import google from 'googleapis';
 import { get as getConfig } from '../utilities/configs';
+import getList from './list';
 
 const generateJWT = require('../utilities/jwt');
 
@@ -32,11 +33,12 @@ export default async function create({ first, last, mobile }) {
           ],
         },
       },
-      (err, me) => {
+      async (err, me) => {
         // console.log(err || me);
         if (err) {
           rej(err);
         } else {
+          await getList({ forceRefresh: true });
           res(me);
         }
       },

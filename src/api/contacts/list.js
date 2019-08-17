@@ -1,3 +1,4 @@
+/* eslint-disable consistent-return */
 // https://developers.google.com/apis-explorer/?hl=en_US#p/
 
 import google from 'googleapis';
@@ -8,15 +9,24 @@ const generateJWT = require('../utilities/jwt');
 const WORK_EMAIL = getConfig('work_email');
 
 // function
+let cache = [];
+// let stateTimer = setTimeout()
 
-export default async function list() {
+export default async function list(options = { forceRefresh: false }) {
+  const { forceRefresh } = options;
+  // console.log("forceRefresh", forceRefresh);
   const jwtClient = await generateJWT(WORK_EMAIL);
   const people = google.people({
     version: 'v1',
     auth: jwtClient,
   });
 
+  // caching is amazing but becareful when it becomes stale
   return new Promise((res, rej) => {
+    if (cache.length > 0 && forceRefresh === false) {
+      return res(cache);
+    }
+    // console.log('i was here her her');
     people.people.connections.list(
       {
         resourceName: 'people/me',
@@ -25,8 +35,7 @@ export default async function list() {
       },
       (err, me) => {
         if (err) {
-          rej(err);
-          return;
+          return rej(err);
         }
         // console.log(me.connections.length);
         // console.log(JSON.stringify(me, null, 2));
@@ -62,7 +71,8 @@ export default async function list() {
         contacts.forEach(item => {
           if (item.name && item.mobile) final[final.length] = item;
         });
-        res(final);
+        cache = final;
+        return res(cache);
       },
     );
   });
