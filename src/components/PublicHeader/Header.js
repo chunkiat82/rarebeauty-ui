@@ -1,3 +1,4 @@
+/* eslint-disable css-modules/no-unused-class */
 /**
  * React Starter Kit (https://www.reactstarterkit.com/)
  *
@@ -9,19 +10,14 @@
 
 import React from 'react';
 import withStyles from 'isomorphic-style-loader/lib/withStyles';
-import LoadingBar from 'react-redux-loading-bar';
-import FloatingActionButton from 'material-ui/FloatingActionButton';
-import s from './Header.css';
 import logoUrl from './logo-small.png';
 import logoUrl2x from './logo-small@2x.png';
-
-import history from '../../history';
+import s from './Header.css';
 
 class Header extends React.Component {
   render() {
     return (
       <div className={s.root}>
-        <LoadingBar />
         <div className={s.container}>
           <div className={s.banner}>
             <img

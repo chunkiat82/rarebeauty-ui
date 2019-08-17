@@ -1,6 +1,4 @@
 import React from 'react';
-// import moment from 'moment';
-import { showLoading, hideLoading } from 'react-redux-loading-bar';
 import Appointment from './components/Individual';
 import Layout from '../../components/Layout';
 
@@ -15,13 +13,13 @@ import {
 
 function show(store) {
   return () => {
-    store.dispatch(showLoading());
+    store.dispatch({ type: 'SHOW_LOADER' });
   };
 }
 
 function hide(store) {
   return () => {
-    store.dispatch(hideLoading());
+    store.dispatch({ type: 'HIDE_LOADER' });
   };
 }
 

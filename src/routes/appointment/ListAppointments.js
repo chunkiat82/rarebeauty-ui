@@ -1,9 +1,20 @@
 import React from 'react';
-import { showLoading, hideLoading } from 'react-redux-loading-bar';
 import Layout from '../../components/Layout';
 import AppointmentList from './components/List';
 
 import { getServices } from './common/functions';
+
+function show(store) {
+  return () => {
+    store.dispatch({ type: 'SHOW_LOADER' });
+  };
+}
+
+function hide(store) {
+  return () => {
+    store.dispatch({ type: 'HIDE_LOADER' });
+  };
+}
 
 async function getEvents(fetch) {
   const resp = await fetch('/graphql', {
@@ -38,10 +49,10 @@ async function getEvents(fetch) {
 
 // eslint-disable-next-line no-unused-vars
 async function action({ fetch, _, store }) {
-  store.dispatch(showLoading());
+  show(store)();
   const events = await getEvents(fetch);
   const services = await getServices(fetch)();
-  store.dispatch(hideLoading());
+  hide(store)();
 
   return {
     chunks: ['appointment-list'],

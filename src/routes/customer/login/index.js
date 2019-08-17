@@ -30,9 +30,6 @@ async function action(context) {
     store.customer = false;
     return history.push('/');
   }
-  // eslint-disable-next-line no-param-reassign
-
-  
 
   return {
     chunks: ['customer-login'],

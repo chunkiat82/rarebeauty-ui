@@ -9,7 +9,6 @@
 
 import React from 'react';
 import withStyles from 'isomorphic-style-loader/lib/withStyles';
-import LoadingBar from 'react-redux-loading-bar';
 import FloatingActionButton from 'material-ui/FloatingActionButton';
 import s from './Header.css';
 import logoUrl from './logo-small.png';

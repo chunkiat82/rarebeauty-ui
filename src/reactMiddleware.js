@@ -24,6 +24,7 @@ export const reactMiddleware = async (req, res, next) => {
 
     let initialState = req.initialState || {
       user: req.user || null,
+      loading: false,
     };
 
     initialState = { ...reqData, ...initialState };
