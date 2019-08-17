@@ -80,7 +80,8 @@ class Appointment extends React.Component {
     // mapOfServices: {},
   };
 
-  componentWillMount() {
+  constructor(props) {
+    super(props);
     const {
       contacts,
       name,
@@ -104,7 +105,7 @@ class Appointment extends React.Component {
     const finalAdditional = additional || 0;
     const finalDeposit = deposit || 0;
 
-    this.setState({
+    this.state = {
       contactDS: contacts,
       name,
       mobile,
@@ -130,7 +131,64 @@ class Appointment extends React.Component {
       toBeInformed: this.props.toBeInformed,
       force: false,
       waitingList: false,
-    });
+    };
+  }
+
+  componentWillReceiveProps(nextProps) {
+    if (this.props.apptId !== nextProps.apptId) {
+      const {
+        contacts,
+        name,
+        mobile,
+        startDate,
+        startTime,
+        duration,
+        serviceIds,
+        resourceName,
+        id,
+        discount,
+        additional,
+        pastAppointments,
+        deposit,
+        cancelAppointmentsCount,
+      } = nextProps;
+
+      // console.log(this.props.contacts);
+      const finalDuration = duration || 0;
+      const finalDiscount = discount || 0;
+      const finalAdditional = additional || 0;
+      const finalDeposit = deposit || 0;
+
+      this.state = {
+        contactDS: contacts,
+        name,
+        mobile,
+        startDate,
+        startTime,
+        serviceIds,
+        resourceName,
+        pastAppointments,
+        notify: false,
+        appId: id,
+        duration: finalDuration,
+        discount: finalDiscount,
+        additional: finalAdditional,
+        totalAmount: this.calculateTotal(
+          serviceIds,
+          finalAdditional,
+          finalDiscount,
+        ),
+        error: false,
+        expanded: pastAppointments && pastAppointments.length > 0,
+        deposit: finalDeposit,
+        cancelAppointmentsCount,
+        toBeInformed: this.props.toBeInformed,
+        force: false,
+        waitingList: false,
+      };
+    }
+    // console.log(`this.props.apptId`, this.props.apptId);
+    // console.log(`nextProps.apptId`, nextProps.apptId);
   }
 
   calculateTotal(serviceIds, additional, discount) {
@@ -267,13 +325,16 @@ class Appointment extends React.Component {
               : [];
           if (services.length > 0) {
             array.push(
-              React.createElement(
-                'div',
-                { key: `pastAppt${array.length}` },
-                `${moment(appt.event.start).format(
-                  'DD MMM YY - HH:mm',
-                )} - ${services.join(', ')}`,
-              ),
+              <div key={`pastAppt${array.length}`}>
+                <Link
+                  key={`appointment/edit/${appt.id}`}
+                  to={`/appointment/edit/${appt.id}`}
+                >{`Edit`}</Link>
+                {` - `}
+                {`${moment(appt.event.start).format(
+                  'D/MMM/YY, h:mm:ss a',
+                )} - ${services.join(', ')}`}
+              </div>,
             );
           }
 

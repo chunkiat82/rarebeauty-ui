@@ -97,6 +97,7 @@ async function action({ fetch, params, store }) {
           contacts={contacts}
           name={name}
           mobile={mobile}
+          apptId={apptId}
           startDate={startDate.toDate()}
           startTime={startDate.toDate()}
           serviceIds={serviceIds}
