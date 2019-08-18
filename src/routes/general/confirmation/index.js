@@ -8,11 +8,11 @@
  */
 
 import React from 'react';
-import moment from 'moment';
+import moment from 'moment-timezone';
 import Layout from '../../../components/PublicLayout';
 import MapAndMessage from '../common/mapAndMessage';
 
-async function action({ fetch, params, store }) {
+async function action({ store }) {
   const { event, workAddress } = store.getState();
   return {
     chunks: ['general-confirmation'],
@@ -23,7 +23,9 @@ async function action({ fetch, params, store }) {
           address={workAddress}
           message={`Appointment is confirmed! See you on ${moment(
             event.start.dateTime,
-          ).format('LLLL')}`}
+          )
+            .tz('Asia/Singapore')
+            .format('LLLL')}`}
         />
       </Layout>
     ),

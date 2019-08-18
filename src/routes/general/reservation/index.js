@@ -8,11 +8,11 @@
  */
 
 import React from 'react';
-import moment from 'moment';
+import moment from 'moment-timezone';
 import Layout from '../../../components/PublicLayout';
 import MapAndMessage from '../common/mapAndMessage';
 
-async function action({ fetch, params, store }) {
+async function action({ store }) {
   const { event, workAddress } = store.getState();
 
   return {
@@ -22,9 +22,9 @@ async function action({ fetch, params, store }) {
       <Layout>
         <MapAndMessage
           address={workAddress}
-          message={`Slot reserved on ${moment(event.start.dateTime).format(
-            'LLLL',
-          )}`}
+          message={`Slot reserved on ${moment(event.start.dateTime)
+            .tz('Asia/Singapore')
+            .format('LLLL')}`}
         />
       </Layout>
     ),
