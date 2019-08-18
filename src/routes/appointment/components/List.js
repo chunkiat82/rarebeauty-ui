@@ -31,7 +31,7 @@ const stylesGreen = {
 class AppointmentList extends React.Component {
   static propTypes = {
     rows: PropTypes.array.isRequired,
-    services: PropTypes.array.isRequired,
+    services: PropTypes.object.isRequired,
   };
 
   rows(values) {
@@ -112,14 +112,14 @@ class AppointmentList extends React.Component {
 
   render() {
     return (
-      <Table onRowSelection={this.select(this.props.rows)}>
-        <TableHead displaySelectAll={false} adjustForCheckbox={false}>
+      <Table>
+        <TableHead displaySelectAll={false}>
           <TableRow>
             <TableCell>Name</TableCell>
             <TableCell>Details</TableCell>
           </TableRow>
         </TableHead>
-        <TableBody displayRowCheckbox={false}>
+        <TableBody>
           {this.rows(this.props.rows)}
         </TableBody>
       </Table>
