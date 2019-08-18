@@ -52,7 +52,7 @@ class AppointmentList extends React.Component {
           <p>
             {moment(value.event.start).format('DD MMM YYYY')}
             &nbsp;-&nbsp;
-            {moment(value.event.tart).format('hh:mm A')}
+            {moment(value.event.start).format('hh:mm A')}
           </p>
           <p>
             <span>
