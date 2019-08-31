@@ -24,6 +24,10 @@ const routes = {
       load: () => import(/* webpackChunkName: 'home' */ './home'),
     },
     {
+      path: '/tool',
+      load: () => import(/* webpackChunkName: 'tool' */ './tool'),
+    },
+    {
       path: '/customer',
       children: [
         {

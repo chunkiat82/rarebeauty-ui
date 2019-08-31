@@ -17,7 +17,7 @@ import { GridList, GridTile } from 'material-ui/GridList';
 import IconButton from 'material-ui/IconButton';
 import Subheader from 'material-ui/Subheader';
 import StarBorder from 'material-ui/svg-icons/toggle/star-border';
-import s from './Home.css';
+import s from './Tool.css';
 import Link from '../../components/Link/Link';
 
 const styles = {
@@ -28,55 +28,16 @@ const styles = {
   },
   gridList: {
     width: 500,
-    height: 500,
+    height: 300,
     overflowY: 'auto',
   },
 };
-
-const tilesData = [
-  {
-    img: 'images/home/empty-calendar.png',
-    title: 'Create Appointment',
-    subTitle: 'With/Without Payments',
-    link: '/appointment/create'
-  },
-  {
-    img: 'images/home/calendar-appointments.png',
-    title: 'List Appointments',
-    subTitle: 'Upcoming 20',
-    link: '/appointment'
-  },
-  {
-    img: 'images/home/tool.png',
-    title: 'Tools',
-    subTitle: 'Tools',
-    link: '/tool'
-  }
-];
 
 class Home extends React.Component {
 
   render() {
     return <div style={styles.root}>      
-      <GridList
-        cellHeight={180}
-        cellWidth={180}
-        style={styles.gridList}
-      >
-        <Subheader style={{ textAlign: 'center' }}>How can I help you, Today?</Subheader>
-        {tilesData.map((tile) => (
-          <Link key={tile.link} to={tile.link}>
-            <GridTile
-              key={tile.img}
-              title={tile.title}
-              subtitle={<span>{tile.subTitle}</span>}
-              actionIcon={<IconButton><StarBorder color="white" /></IconButton>}
-            >
-              <img src={tile.img} />
-            </GridTile>
-          </Link>
-        ))}
-      </GridList>
+      {`tools page`}
     </div>
   }
 }
