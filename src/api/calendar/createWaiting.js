@@ -4,7 +4,6 @@ import uuidv1 from 'uuid/v1';
 import generateJWT from '../utilities/jwt';
 import { byPersonCount as getAppointmentsCountByPerson } from '../appointments/person';
 
-const EDIT_URL = 'https://rarebeauty.soho.sg/appointment/edit';
 const TEST_EMAIL = `test@soho.sg`;
 const WHATSAPPURL = 'https://wa.me';
 
@@ -94,7 +93,12 @@ function createAppointment(calendar, options) {
               email: TEST_EMAIL,
             },
           ],
-          description: `S($${services.reduce((prevSum, item) => prevSum + item.price,0,)})-T($${totalAmount})-D($${deposit})\n\n${services.map(item => item.service).join(',',)}\n\n${WHATSAPPURL}/${finalMobile.replace('+','',)}`,
+          description: `S($${services.reduce(
+            (prevSum, item) => prevSum + item.price,
+            0,
+          )})-T($${totalAmount})-D($${deposit})\n\n${services
+            .map(item => item.service)
+            .join(',')}\n\n${WHATSAPPURL}/${finalMobile.replace('+', '')}`,
         },
       },
       (err, event) => {
