@@ -58,6 +58,7 @@ export default function listFree(options) {
       timeMin,
       timeMax,
       timeZone: '+08:00',
+      calendarExpansionMax: 50,
       items: [
         {
           id: calendarId,
