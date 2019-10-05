@@ -48,7 +48,7 @@ class Home extends React.Component {
     return values.map((value) =>
       <TableRow>
         <TableCell>{`
-          ${moment(value.start).format('DD/MM/YY')} - ${value.durationInMinutes} Minutes`}
+          ${moment(value.start).format('DD/MM/YY (ddd)')} - ${value.durationInMinutes} Minutes`}
           <br/>
           {moment(value.start).format('h:mm A')}
           <br/>
@@ -63,7 +63,7 @@ class Home extends React.Component {
       <Table>
         <TableHead displaySelectAll={false}>
           <TableRow>
-            <TableCell>Free Slots - Tool 1</TableCell>
+            <TableCell>Free Slots - Tool</TableCell>
             {/* <TableCell>Time Window</TableCell> */}
           </TableRow>
         </TableHead>
