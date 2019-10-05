@@ -1,3 +1,6 @@
+/* eslint-disable react/jsx-no-undef */
+/* eslint-disable react/forbid-prop-types */
+/* eslint-disable class-methods-use-this */
 /* eslint-disable jsx-a11y/alt-text */
 /* eslint-disable react/jsx-no-comment-textnodes */
 /* eslint-disable css-modules/no-unused-class */
@@ -12,13 +15,16 @@
  */
 // http://www.material-ui.com/#/components/select-field
 import React from 'react';
+import PropTypes from 'prop-types';
 import withStyles from 'isomorphic-style-loader/lib/withStyles';
-import { GridList, GridTile } from 'material-ui/GridList';
-import IconButton from 'material-ui/IconButton';
-import Subheader from 'material-ui/Subheader';
-import StarBorder from 'material-ui/svg-icons/toggle/star-border';
+import Table from '@material-ui/core/Table';
+import TableBody from '@material-ui/core/TableBody';
+import TableCell from '@material-ui/core/TableCell';
+import TableHead from '@material-ui/core/TableHead';
+import TableRow from '@material-ui/core/TableRow';
+import moment from 'moment';
+
 import s from './Tool.css';
-import Link from '../../components/Link/Link';
 
 const styles = {
   root: {
@@ -34,10 +40,37 @@ const styles = {
 };
 
 class Home extends React.Component {
+  static propTypes = {
+    rows: PropTypes.array.isRequired,    
+  };
+
+  rows(values) {
+    return values.map((value) =>
+      <TableRow>
+        <TableCell>{`
+          ${moment(value.start).format('DD/MM/YY')} - ${value.durationInMinutes} Minutes`}
+          <br/>
+          {moment(value.start).format('h:mm A')}
+          <br/>
+         {`${moment(value.end).format('h:mm A')} `}
+        </TableCell>        
+      </TableRow>
+    );
+  }
 
   render() {
-    return <div style={styles.root}>      
-      {`tools page`}
+    return <div style={styles.root}>
+      <Table>
+        <TableHead displaySelectAll={false}>
+          <TableRow>
+            <TableCell>Free Slots - Tool 1</TableCell>
+            {/* <TableCell>Time Window</TableCell> */}
+          </TableRow>
+        </TableHead>
+        <TableBody>
+          {this.rows(this.props.rows)}
+        </TableBody>
+      </Table>
     </div>
   }
 }

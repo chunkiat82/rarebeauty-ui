@@ -26,12 +26,14 @@ function convertBusyToFree(calendarId, response) {
     const duration = moment.duration(endMoment.diff(startMoment));
     const durationInMinutes = duration.asMinutes();
 
-    freeSlots.push({
-      freeStart: startMoment.format('YYYY-MM-DDTHH:mm:ssZ'),
-      freeEnd: endMoment.format('YYYY-MM-DDTHH:mm:ssZ'),
-      durationInMinutes,
-    });
-    freeStart = busySlot.end;
+    if (durationInMinutes > 0) {
+      freeSlots.push({
+        start: startMoment.format('YYYY-MM-DDTHH:mm:ssZ'),
+        end: endMoment.format('YYYY-MM-DDTHH:mm:ssZ'),
+        durationInMinutes,
+      });
+      freeStart = busySlot.end;
+    }
   }
 
   return freeSlots;

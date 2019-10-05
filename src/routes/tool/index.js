@@ -11,13 +11,49 @@ import React from 'react';
 import Tool from './Tool';
 import Layout from '../../components/Layout';
 
-async function action() {
+function listFreeSlots(fetch) {
+  return async () => {
+    const slotsResponse = await fetch('/graphql', {
+      body: JSON.stringify({
+        query: `{slots{   
+                    start,
+                    end,
+                    durationInMinutes
+                  }
+                }`,
+      }),
+    });
+
+    const { data } = await slotsResponse.json();
+    return (data && data.slots) || [];
+  };
+}
+
+function show(store) {
+  return () => {
+    store.dispatch({ type: 'SHOW_LOADER' });
+  };
+}
+
+function hide(store) {
+  return () => {
+    store.dispatch({ type: 'HIDE_LOADER' });
+  };
+}
+
+async function action({ fetch, store }) {
+  show(store)();
+
+  const freeSlots = await listFreeSlots(fetch)();
+
+  hide(store)();
+
   return {
     chunks: ['tool'],
     title: 'Rare Beauty Professional',
     component: (
       <Layout>
-        <Tool />
+        <Tool rows={freeSlots} />
       </Layout>
     ),
   };

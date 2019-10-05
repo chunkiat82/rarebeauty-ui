@@ -21,6 +21,7 @@ import events from './queries/events';
 import appointment from './queries/appointment';
 import person from './queries/person';
 import services from './queries/services';
+import slots from './queries/slots';
 
 import mutations from './mutations';
 
@@ -37,6 +38,7 @@ const schema = new Schema({
       person,
       services,
       contact,
+      slots,
     },
   }),
   mutation: mutations,
