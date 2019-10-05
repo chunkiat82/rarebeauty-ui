@@ -4,8 +4,8 @@ const moment = require('moment');
 
 function convertBusyToFree(calendarId, response) {
   const { calendars } = response;
-  const busySlots = calendars[calendarId].busy;
 
+  const busySlots = calendars[calendarId].busy;
   const freeSlots = [];
 
   if (busySlots.length === 0) return freeSlots;
@@ -13,8 +13,11 @@ function convertBusyToFree(calendarId, response) {
   let busySlot = busySlots.shift();
 
   let freeStart = busySlot.end;
+
+  // console.log(busySlots.length);
   while (busySlots.length > 0) {
     busySlot = busySlots.shift();
+    // console.log(busySlots.length);
     const freeEnd = busySlot.start;
 
     const startMoment = moment(freeStart);
@@ -23,17 +26,18 @@ function convertBusyToFree(calendarId, response) {
     if (endMoment.hours() >= 21 || startMoment.date() !== endMoment.date()) {
       endMoment = moment(startMoment).hours(21).minutes(0).seconds(0);
     }
+
     const duration = moment.duration(endMoment.diff(startMoment));
     const durationInMinutes = duration.asMinutes();
-
+    // console.log(startMoment.format('YYYY-MM-DDTHH:mm:ssZ') + ' - ' + endMoment.format('YYYY-MM-DDTHH:mm:ssZ') + ' - ' + durationInMinutes);
     if (durationInMinutes > 0) {
       freeSlots.push({
         start: startMoment.format('YYYY-MM-DDTHH:mm:ssZ'),
         end: endMoment.format('YYYY-MM-DDTHH:mm:ssZ'),
         durationInMinutes,
       });
-      freeStart = busySlot.end;
     }
+    freeStart = busySlot.end;
   }
 
   return freeSlots;
