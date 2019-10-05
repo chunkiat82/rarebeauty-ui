@@ -52,14 +52,12 @@ export default function listFree(options) {
     const timeMin = moment()
       .subtract(1, 'hours')
       .format('YYYY-MM-DDTHH:mm:ssZ');
-    const timeMax = moment().add(14, 'days').format('YYYY-MM-DDTHH:mm:ssZ');
+    const timeMax = moment().add(30, 'days').format('YYYY-MM-DDTHH:mm:ssZ');
     // timeStart || startDT || moment().subtract(3, 'hours').toISOString();
     const finalOptions = {
       timeMin,
       timeMax,
       timeZone: '+08:00',
-      // "groupExpansionMax": integer,
-      calendarExpansionMax: 10,
       items: [
         {
           id: calendarId,
