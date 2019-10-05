@@ -20,8 +20,8 @@ function convertBusyToFree(calendarId, response) {
     const startMoment = moment(freeStart);
     let endMoment = moment(freeEnd);
 
-    if (endMoment.hours() > 21 || startMoment.date() !== endMoment.date()) {
-      endMoment = moment(startMoment).hours(21);
+    if (endMoment.hours() >= 21 || startMoment.date() !== endMoment.date()) {
+      endMoment = moment(startMoment).hours(21).minutes(0).seconds(0);
     }
     const duration = moment.duration(endMoment.diff(startMoment));
     const durationInMinutes = duration.asMinutes();
