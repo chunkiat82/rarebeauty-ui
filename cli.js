@@ -12,15 +12,29 @@ function processArguments(argv) {
   endDT = argv.duration ? moment(startDT).add(argv.duration, 'minutes') : endDT;
   const services = String(argv.services).split(',');
   const mobile = String(argv.mobile);
+  let action = functions.listEvents;
+  
+  if (functions[argv.action]) {
+    action = functions[argv.action];
+  } else {
+    console.error(`action not found = `, functions[argv.action]);
+  }
 
   return Object.assign({}, options, {
     startDT: startDT.toISOString(),
     endDT: endDT ? endDT.toISOString() : null,
     details: true,
-    action: functions[argv.action] || functions['listEvents'],
+    action,
     services,
     mobile
   });
+}
+
+// eslint-disable-next-line no-shadow
+export default async function main(argv) {
+  const options = processArguments(argv);
+  //const results = await options.action(options);
+  return results;
 }
 
 async function main(argv) {

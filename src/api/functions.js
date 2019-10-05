@@ -8,6 +8,7 @@ import calendarGet from './calendar/get';
 import calendarDelete from './calendar/delete';
 import calendarDelta from './calendar/delta';
 import contactLists from './contacts/list';
+import calendarListFree from './calendar/listFree';
 
 import calendarCreate from './calendar/create';
 import waitingCalendarCreate from './calendar/createWaiting';
@@ -619,6 +620,18 @@ async function listTransactions(options) {
   return listTransactionsByRange;
 }
 
+async function listFreeSlots(options) {
+  try {
+    const slots = await calendarListFree(
+      Object.assign({}, options, { calendarId }),
+    );
+    return slots;
+  } catch (err) {
+    console.error(err);
+    throw err;
+  }
+}
+
 const functions = {
   listEvents,
   listDeltaEvents,
@@ -646,6 +659,7 @@ const functions = {
   deleteContact,
   createWaitingEvent,
   listTransactions,
+  listFreeSlots,
 };
 
 export default functions;
