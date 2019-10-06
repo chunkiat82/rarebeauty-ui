@@ -17,19 +17,27 @@ function convertBusyToFree(calendarId, response) {
   // console.log(busySlots.length);
   while (busySlots.length > 0) {
     busySlot = busySlots.shift();
-    // console.log(busySlots.length);
+    // console.log(busySlot);
     const freeEnd = busySlot.start;
 
-    const startMoment = moment(freeStart);
+    let startMoment = moment(freeStart);
     let endMoment = moment(freeEnd);
 
-    if (endMoment.hours() >= 21 || startMoment.date() !== endMoment.date()) {
+    if (endMoment.hours() >= 21 && startMoment.date() !== endMoment.date()) {
       endMoment = moment(startMoment).hours(21).minutes(0).seconds(0);
     }
 
+    if (startMoment.date() < endMoment.date()) {
+      startMoment = moment(endMoment).hours(10).minutes(30).seconds(0);
+    }
+
+    // // catering for scenario if first appointment is after 10.30am
+    // console.log(`startMoment`, startMoment.format('YYYY-MM-DDTHH:mm:ssZ'));
+    // console.log(`endMoment`, endMoment.format('YYYY-MM-DDTHH:mm:ssZ'));
+    // console.log('---------');
+
     const duration = moment.duration(endMoment.diff(startMoment));
     const durationInMinutes = duration.asMinutes();
-    // console.log(startMoment.format('YYYY-MM-DDTHH:mm:ssZ') + ' - ' + endMoment.format('YYYY-MM-DDTHH:mm:ssZ') + ' - ' + durationInMinutes);
     if (durationInMinutes > 0) {
       freeSlots.push({
         start: startMoment.format('YYYY-MM-DDTHH:mm:ssZ'),
@@ -53,9 +61,7 @@ export default function listFree(options) {
       version: 'v3',
       auth: jwtClient,
     });
-    const timeMin = moment()
-      .subtract(1, 'hours')
-      .format('YYYY-MM-DDTHH:mm:ssZ');
+    const timeMin = moment().add(2, 'days').format('YYYY-MM-DDTHH:mm:ssZ');
     const timeMax = moment().add(30, 'days').format('YYYY-MM-DDTHH:mm:ssZ');
     // timeStart || startDT || moment().subtract(3, 'hours').toISOString();
     const finalOptions = {
