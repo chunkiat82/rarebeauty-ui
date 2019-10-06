@@ -6,3 +6,4 @@ workflows:
     jobs:
       - cypress/install:
           build: npm run build
+          executor: base-8
