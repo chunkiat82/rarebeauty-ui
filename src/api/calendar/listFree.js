@@ -61,7 +61,7 @@ export default function listFree(options) {
       version: 'v3',
       auth: jwtClient,
     });
-    const timeMin = moment().add(2, 'days').format('YYYY-MM-DDTHH:mm:ssZ');
+    const timeMin = moment().add(0, 'days').format('YYYY-MM-DDTHH:mm:ssZ');
     const timeMax = moment().add(30, 'days').format('YYYY-MM-DDTHH:mm:ssZ');
     // timeStart || startDT || moment().subtract(3, 'hours').toISOString();
     const finalOptions = {
