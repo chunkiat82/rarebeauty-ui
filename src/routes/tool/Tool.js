@@ -22,6 +22,7 @@ import TableBody from '@material-ui/core/TableBody';
 import TableCell from '@material-ui/core/TableCell';
 import TableHead from '@material-ui/core/TableHead';
 import TableRow from '@material-ui/core/TableRow';
+import Toggle from 'material-ui/Toggle';
 import moment from 'moment';
 
 import s from './Tool.css';
@@ -39,39 +40,97 @@ const styles = {
   },
   white: {
     color: 'white'
+  },
+  chip: {
+    margin: 4,
+  },
+  wrapper: {
+    display: 'flex',
+    flexWrap: 'wrap',
+  },
+  toggle: {
+    margin: '10px 20px',
+    width: 100,
   }
 };
+
+const ALL = ['A', 'M', 'P'];
+const DEFAULT_TOGGLE_STATE = false;
 
 function selectRowColour(value) {
   // #007bff - blue AM
   // #dc3545 - red Noon
   // #28a745 - green PM  
-  if (value.amp === 'A') return '#007bff';
-  if (value.amp === 'M') return '#dc3545';
-  return '#28a745';
+  if (value.amp === 'A') return 'rgb(0, 123, 255, 0.5)';
+  if (value.amp === 'M') return 'rgb(220, 53, 69, 0.5)';
+  return 'rgb(40, 167, 69, 0.5)';
 }
 
 class Home extends React.Component {
+
   static propTypes = {
-    rows: PropTypes.array.isRequired,    
+    rows: PropTypes.array.isRequired,
   };
 
+  constructor(props) {
+    super(props);
+    this.state = { filterA: false, filterM: false, filterP: false };
+  }
+
   rows(values) {
-    return values.map((value) =>
-      <TableRow style={{backgroundColor: selectRowColour(value)}}>
-        <TableCell style={{color: 'white'}}>{`
-          ${moment(value.start).format('DD/MM/YY (ddd)')} - ${value.durationInMinutes} Minutes`}
-          <br/>
+    let filters = [];
+    if (this.state.filterA) filters.push('A');
+    if (this.state.filterM) filters.push('M');
+    if (this.state.filterP) filters.push('P');
+    if (filters.length === 0) filters = ALL;
+
+    return values.filter((value) => filters.includes(value.amp)).map(value =>
+      <TableRow style={{ backgroundColor: selectRowColour(value), zIndex: -1 }}>
+        <TableCell style={{ color: 'black', zIndex: 1000 }}>{`
+        ${moment(value.start).format('DD/MM/YY (ddd)')} - ${value.durationInMinutes} Minutes`}
+          <br />
           {moment(value.start).format('h:mm A')}
-          <br/>
-         {`${moment(value.end).format('h:mm A')} `}
-        </TableCell>        
+          <br />
+          {`${moment(value.end).format('h:mm A')} `}
+        </TableCell>
       </TableRow>
     );
   }
 
   render() {
     return <div style={styles.root}>
+      <Toggle
+        label="Morning"
+        defaultToggled={DEFAULT_TOGGLE_STATE}
+        style={styles.toggle}
+        thumbStyle={{ backgroundColor: 'rgb(0, 123, 255, 0.4)' }}
+        trackStyle={{ backgroundColor: 'rgb(0, 123, 255, 0.4)' }}
+        thumbSwitchedStyle={{ backgroundColor: 'rgb(0, 123, 255, 0.8)' }}
+        trackSwitchedStyle={{ backgroundColor: 'rgb(0, 123, 255, 0.8)' }}
+        onToggle={(event, checked) => { this.setState({ filterA: checked }) }}
+      />
+
+      <Toggle
+        label="Afternoon"
+        defaultToggled={DEFAULT_TOGGLE_STATE}
+        style={styles.toggle}
+        thumbStyle={{ backgroundColor: 'rgb(220, 53, 69, 0.4)' }}
+        trackStyle={{ backgroundColor: 'rgb(220, 53, 69, 0.4)' }}
+        thumbSwitchedStyle={{ backgroundColor: 'rgb(220, 53, 69, 0.8)' }}
+        trackSwitchedStyle={{ backgroundColor: 'rgb(220, 53, 69, 0.8)' }}
+        onToggle={(event, checked) => { this.setState({ filterM: checked }) }}
+      />
+
+      <Toggle
+        label="Evening"
+        defaultToggled={DEFAULT_TOGGLE_STATE}
+        style={styles.toggle}
+        thumbStyle={{ backgroundColor: 'rgb(40, 167, 69, 0.4)' }}
+        trackStyle={{ backgroundColor: 'rgb(40, 167, 69, 0.4)' }}
+        thumbSwitchedStyle={{ backgroundColor: 'rgb(40, 167, 69, 0.8)' }}
+        trackSwitchedStyle={{ backgroundColor: 'rgb(40, 167, 69, 0.8)' }}
+        onToggle={(event, checked) => { this.setState({ filterP: checked }) }}
+      />
       <Table>
         <TableHead displaySelectAll={false}>
           <TableRow>
@@ -80,7 +139,7 @@ class Home extends React.Component {
           </TableRow>
         </TableHead>
         <TableBody>
-          {this.rows(this.props.rows)}
+          {this.rows(this.props.rows, this.state.filter)}
         </TableBody>
       </Table>
     </div>
