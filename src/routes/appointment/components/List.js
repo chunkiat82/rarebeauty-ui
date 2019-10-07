@@ -25,6 +25,9 @@ const stylesRed = {
 const stylesGreen = {
   color: 'green',
 };
+const whiteSpace = {
+  whiteSpace: 'none',
+};
 
 class AppointmentList extends React.Component {
   static propTypes = {
@@ -35,7 +38,7 @@ class AppointmentList extends React.Component {
   rows(values) {
     return values.map((value /* ,index */) => (
       <TableRow key={value.id}>
-        <TableRowColumn>
+        <TableRowColumn style={{ whiteSpace }}>
           <p>
             {value.shortURL ? (
               <a
