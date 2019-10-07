@@ -6,13 +6,17 @@
     "node": ">=6.5",
     "npm": ">=3.10"
   },
-  "browserslist": [">1%", "last 4 versions", "Firefox ESR", "not ie < 9"],
+  "browserslist": [
+    ">1%",
+    "last 4 versions",
+    "Firefox ESR",
+    "not ie < 9"
+  ],
   "dependencies": {
     "@material-ui/core": "^1.2.0",
     "@material-ui/icons": "^1.1.0",
     "ansi-colors": "^4.1.1",
     "auto-sorting-array": "4.5.0",
-    "babel": "^6.23.0",
     "babel-polyfill": "^6.23.0",
     "babel-preset-react-native": "^3.0.0",
     "bluebird": "^3.5.0",
@@ -165,7 +169,9 @@
     ],
     "env": {
       "test": {
-        "plugins": ["rewire"]
+        "plugins": [
+          "rewire"
+        ]
       }
     },
     "ignore": [
@@ -177,9 +183,18 @@
     ]
   },
   "lint-staged": {
-    "*.{js,jsx}": ["eslint --fix", "git add"],
-    "*.{json,graphql}": ["prettier --write", "git add"],
-    "*.{css,less,scss,sss}": ["stylelint --fix", "git add"]
+    "*.{js,jsx}": [
+      "eslint --fix",
+      "git add"
+    ],
+    "*.{json,graphql}": [
+      "prettier --write",
+      "git add"
+    ],
+    "*.{css,less,scss,sss}": [
+      "stylelint --fix",
+      "git add"
+    ]
   },
   "scripts": {
     "precommit": "lint-staged",
@@ -201,6 +216,7 @@
     "deploy": "babel-node tools/run deploy",
     "render": "babel-node tools/run render",
     "serve": "babel-node tools/run runServer",
-    "start": "babel-node tools/run start"
+    "start": "babel-node tools/run start",
+    "cli": "babel-node cli"
   }
 }

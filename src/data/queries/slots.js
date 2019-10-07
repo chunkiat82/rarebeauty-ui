@@ -16,6 +16,7 @@ const slots = {
   },
   async resolve(_, args) {
     const response = await querySlots(args);
+    // console.log(response);
     return response;
   },
 };

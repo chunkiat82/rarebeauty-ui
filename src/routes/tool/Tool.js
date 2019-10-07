@@ -37,7 +37,19 @@ const styles = {
     height: 300,
     overflowY: 'auto',
   },
+  white: {
+    color: 'white'
+  }
 };
+
+function selectRowColour(value) {
+  // #007bff - blue AM
+  // #dc3545 - red Noon
+  // #28a745 - green PM  
+  if (value.amp === 'A') return '#007bff';
+  if (value.amp === 'M') return '#dc3545';
+  return '#28a745';
+}
 
 class Home extends React.Component {
   static propTypes = {
@@ -46,8 +58,8 @@ class Home extends React.Component {
 
   rows(values) {
     return values.map((value) =>
-      <TableRow>
-        <TableCell>{`
+      <TableRow style={{backgroundColor: selectRowColour(value)}}>
+        <TableCell style={{color: 'white'}}>{`
           ${moment(value.start).format('DD/MM/YY (ddd)')} - ${value.durationInMinutes} Minutes`}
           <br/>
           {moment(value.start).format('h:mm A')}

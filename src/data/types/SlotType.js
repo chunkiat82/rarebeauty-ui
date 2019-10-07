@@ -43,6 +43,12 @@ const SlotType = new ObjectType({
         return FREE_TYPE;
       },
     },
+    amp: {
+      type: new NonNull(StringType),
+      resolve(obj) {
+        return obj.amp;
+      },
+    },
   },
 });
 

@@ -18,7 +18,8 @@ function listFreeSlots(fetch) {
         query: `{slots{   
                     start,
                     end,
-                    durationInMinutes
+                    durationInMinutes,
+                    amp,
                   }
                 }`,
       }),
