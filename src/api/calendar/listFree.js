@@ -23,12 +23,21 @@ function convertBusyToFree(calendarId, response) {
     let startMoment = moment(freeStart);
     let endMoment = moment(freeEnd);
 
-    if (endMoment.hours() >= 21 && startMoment.date() !== endMoment.date()) {
-      endMoment = moment(startMoment).hours(21).minutes(0).seconds(0);
+    if (
+      endMoment.hours() >= 21 ||
+      startMoment.dayOfYear() > endMoment.dayOfYear()
+    ) {
+      endMoment = moment(startMoment)
+        .hours(21)
+        .minutes(0)
+        .seconds(0);
     }
 
     if (startMoment.date() < endMoment.date()) {
-      startMoment = moment(endMoment).hours(10).minutes(30).seconds(0);
+      startMoment = moment(endMoment)
+        .hours(10)
+        .minutes(30)
+        .seconds(0);
     }
 
     // // catering for scenario if first appointment is after 10.30am
@@ -61,8 +70,12 @@ export default function listFree(options) {
       version: 'v3',
       auth: jwtClient,
     });
-    const timeMin = moment().add(0, 'days').format('YYYY-MM-DDTHH:mm:ssZ');
-    const timeMax = moment().add(30, 'days').format('YYYY-MM-DDTHH:mm:ssZ');
+    const timeMin = moment()
+      .add(0, 'days')
+      .format('YYYY-MM-DDTHH:mm:ssZ');
+    const timeMax = moment()
+      .add(30, 'days')
+      .format('YYYY-MM-DDTHH:mm:ssZ');
     // timeStart || startDT || moment().subtract(3, 'hours').toISOString();
     const finalOptions = {
       timeMin,
