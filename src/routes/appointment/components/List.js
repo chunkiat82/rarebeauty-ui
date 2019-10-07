@@ -79,7 +79,7 @@ class AppointmentList extends React.Component {
           <p>{moment(value.start).format('DD MMM YYYY')}</p>
           <p>{moment(value.start).format('hh:mm A')}</p>
           <p>
-            <span>
+            <span style={{ whiteSpace: 'normal' }}>
               Created On: {moment(value.created).format('DD MMM YYYY hh:mm A')}
             </span>
           </p>
