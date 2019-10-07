@@ -1,16 +1,14 @@
 /* eslint-disable css-modules/no-unused-class */
 /* eslint-disable react/forbid-prop-types */
 import 'moment-duration-format';
-import Table from '@material-ui/core/Table';
-import TableBody from '@material-ui/core/TableBody';
-import TableCell from '@material-ui/core/TableCell';
-import TableHead from '@material-ui/core/TableHead';
-import TableRow from '@material-ui/core/TableRow';
-import ExpansionPanel from '@material-ui/core/ExpansionPanel';
-import ExpansionPanelSummary from '@material-ui/core/ExpansionPanelSummary';
-import ExpansionPanelDetails from '@material-ui/core/ExpansionPanelDetails';
-import Typography from '@material-ui/core/Typography';
-import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
+import {
+  Table,
+  TableBody,
+  TableHeader,
+  TableHeaderColumn,
+  TableRow,
+  TableRowColumn,
+} from 'material-ui/Table';
 
 import PropTypes from 'prop-types';
 import moment from 'moment';
@@ -35,15 +33,22 @@ class AppointmentList extends React.Component {
   };
 
   rows(values) {
-    return values.map((value /* ,index*/) =>
+    return values.map((value /* ,index */) => (
       <TableRow key={value.id}>
-        <TableCell>
+        <TableRowColumn>
           <p>
-            {value.shortURL
-              ? <a href={`http://${value.shortURL}`} target="_blank">
-                  {' '}{value.name}
-                </a>
-              : value.name}
+            {value.shortURL ? (
+              <a
+                href={`http://${value.shortURL}`}
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                {' '}
+                {value.name}
+              </a>
+            ) : (
+              value.name
+            )}
           </p>
           <p>
             <span
@@ -56,49 +61,47 @@ class AppointmentList extends React.Component {
           </p>
           <p>
             <span>
-              <a href={`/appointment/edit/${value.apptId}`}>Edit</a>
+              <a
+                href={`/appointment/edit/${value.apptId}`}
+                rel="noopener noreferrer"
+              >
+                Edit
+              </a>
             </span>
           </p>
-        </TableCell>
-        <TableCell>
+        </TableRowColumn>
+        <TableRowColumn>
+          <p>{moment(value.start).format('DD MMM YYYY')}</p>
+          <p>{moment(value.start).format('hh:mm A')}</p>
           <p>
-            {moment(value.start).format('DD MMM YYYY')}
+            <span>
+              Created On: {moment(value.created).format('DD MMM YYYY hh:mm A')}
+            </span>
           </p>
           <p>
-            {moment(value.start).format('hh:mm A')}
+            <span>
+              {value.serviceIds
+                .map(
+                  serviceId =>
+                    // console.log(serviceId);
+                    this.props.services.peekByKey(serviceId).service,
+                )
+                .join(', ')}
+            </span>
           </p>
-          <ExpansionPanel>
-            <ExpansionPanelSummary expandIcon={<ExpandMoreIcon />}>
-              <Typography>Expand</Typography>
-            </ExpansionPanelSummary>
-            <ExpansionPanelDetails>
-              <span>
-                Created On:{' '}
-                {moment(value.created).format('DD MMM YYYY hh:mm A')}
-              </span>
-              -
-              <span>
-                {value.serviceIds
-                  .map(
-                    serviceId =>
-                      // console.log(serviceId);
-                      this.props.services.peekByKey(serviceId).service,
-                  )
-                  .join(', ')}
-              </span>
-              -
-              <span>
-                ${value.serviceIds.reduce(
-                  (prevValue, serviceId) =>
-                    prevValue + this.props.services.peekByKey(serviceId).price,
-                  0,
-                )}
-              </span>
-            </ExpansionPanelDetails>
-          </ExpansionPanel>
-        </TableCell>
-      </TableRow>,
-    );
+          <p>
+            <span>
+              $
+              {value.serviceIds.reduce(
+                (prevValue, serviceId) =>
+                  prevValue + this.props.services.peekByKey(serviceId).price,
+                0,
+              )}
+            </span>
+          </p>
+        </TableRowColumn>
+      </TableRow>
+    ));
   }
 
   // eslint-disable-next-line class-methods-use-this
@@ -113,13 +116,13 @@ class AppointmentList extends React.Component {
   render() {
     return (
       <Table>
-        <TableHead displaySelectAll={false}>
+        <TableHeader displaySelectAll={false}>
           <TableRow>
-            <TableCell>Name</TableCell>
-            <TableCell>Details</TableCell>
+            <TableHeaderColumn>Name</TableHeaderColumn>
+            <TableHeaderColumn>Details</TableHeaderColumn>
           </TableRow>
-        </TableHead>
-        <TableBody>
+        </TableHeader>
+        <TableBody displayRowCheckbox={false}>
           {this.rows(this.props.rows)}
         </TableBody>
       </Table>

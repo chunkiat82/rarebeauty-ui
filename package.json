@@ -13,8 +13,6 @@
     "not ie < 9"
   ],
   "dependencies": {
-    "@material-ui/core": "^1.2.0",
-    "@material-ui/icons": "^1.1.0",
     "ansi-colors": "^4.1.1",
     "auto-sorting-array": "4.5.0",
     "babel-polyfill": "^6.23.0",

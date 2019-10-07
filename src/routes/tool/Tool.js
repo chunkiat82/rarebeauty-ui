@@ -17,11 +17,14 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import withStyles from 'isomorphic-style-loader/lib/withStyles';
-import Table from '@material-ui/core/Table';
-import TableBody from '@material-ui/core/TableBody';
-import TableCell from '@material-ui/core/TableCell';
-import TableHead from '@material-ui/core/TableHead';
-import TableRow from '@material-ui/core/TableRow';
+import {
+  Table,
+  TableBody,
+  TableHeader,
+  TableHeaderColumn,
+  TableRow,
+  TableRowColumn,
+} from 'material-ui/Table';
 import Toggle from 'material-ui/Toggle';
 import moment from 'moment';
 
@@ -49,8 +52,8 @@ const styles = {
     flexWrap: 'wrap',
   },
   toggle: {
-    margin: '10px 20px',
-    width: 100,
+    margin: '10px 0px',
+    width: 50,
   }
 };
 
@@ -86,13 +89,13 @@ class Home extends React.Component {
 
     return values.filter((value) => filters.includes(value.amp)).map(value =>
       <TableRow style={{ backgroundColor: selectRowColour(value), zIndex: -1 }}>
-        <TableCell style={{ color: 'black', zIndex: 1000 }}>{`
+        <TableRowColumn style={{ color: 'black', zIndex: 1000 }}>{`
         ${moment(value.start).format('DD/MM/YY (ddd)')} - ${value.durationInMinutes} Minutes`}
           <br />
           {moment(value.start).format('h:mm A')}
           <br />
           {`${moment(value.end).format('h:mm A')} `}
-        </TableCell>
+        </TableRowColumn>
       </TableRow>
     );
   }
@@ -107,7 +110,7 @@ class Home extends React.Component {
         trackStyle={{ backgroundColor: 'rgb(0, 123, 255, 0.4)' }}
         thumbSwitchedStyle={{ backgroundColor: 'rgb(0, 123, 255, 0.8)' }}
         trackSwitchedStyle={{ backgroundColor: 'rgb(0, 123, 255, 0.8)' }}
-        onToggle={(event, checked) => { this.setState({ filterA: checked }) }}
+        onToggle={(_, checked) => { this.setState({ filterA: checked }) }}
       />
 
       <Toggle
@@ -118,7 +121,7 @@ class Home extends React.Component {
         trackStyle={{ backgroundColor: 'rgb(220, 53, 69, 0.4)' }}
         thumbSwitchedStyle={{ backgroundColor: 'rgb(220, 53, 69, 0.8)' }}
         trackSwitchedStyle={{ backgroundColor: 'rgb(220, 53, 69, 0.8)' }}
-        onToggle={(event, checked) => { this.setState({ filterM: checked }) }}
+        onToggle={(_, checked) => { this.setState({ filterM: checked }) }}
       />
 
       <Toggle
@@ -129,16 +132,16 @@ class Home extends React.Component {
         trackStyle={{ backgroundColor: 'rgb(40, 167, 69, 0.4)' }}
         thumbSwitchedStyle={{ backgroundColor: 'rgb(40, 167, 69, 0.8)' }}
         trackSwitchedStyle={{ backgroundColor: 'rgb(40, 167, 69, 0.8)' }}
-        onToggle={(event, checked) => { this.setState({ filterP: checked }) }}
+        onToggle={(_, checked) => { this.setState({ filterP: checked }) }}
       />
       <Table>
-        <TableHead displaySelectAll={false}>
+        <TableHeader displaySelectAll={false}>
           <TableRow>
-            <TableCell>Free Slots - Tool</TableCell>
+            <TableHeaderColumn>Free Slots - Tool</TableHeaderColumn>
             {/* <TableCell>Time Window</TableCell> */}
           </TableRow>
-        </TableHead>
-        <TableBody>
+        </TableHeader>
+        <TableBody displayRowCheckbox={false}>
           {this.rows(this.props.rows, this.state.filter)}
         </TableBody>
       </Table>

@@ -3,11 +3,14 @@
 /* eslint-disable css-modules/no-unused-class */
 /* eslint-disable react/forbid-prop-types */
 import 'moment-duration-format';
-import Table from '@material-ui/core/Table';
-import TableBody from '@material-ui/core/TableBody';
-import TableCell from '@material-ui/core/TableCell';
-import TableHead from '@material-ui/core/TableHead';
-import TableRow from '@material-ui/core/TableRow';
+import {
+  Table,
+  TableBody,
+  TableHeader,
+  TableHeaderColumn,
+  TableRow,
+  TableRowColumn,
+} from 'material-ui/Table';
 import moment from 'moment';
 import React from 'react';
 // import PropTypes from 'prop-types';
@@ -30,12 +33,12 @@ class AppointmentList extends React.Component {
   //   };
 
   rows(appointments) {
-    return appointments.map((value /* ,index*/) =>
+    return appointments.map((value /* ,index */) =>
       <TableRow key={value.id}>
-        <TableCell>
+        <TableRowColumn>
           <p>
             {value.event.shortURL
-              ? <a href={`http://${value.event.shortURL}`} target="_blank">
+              ? <a href={`http://${value.event.shortURL}`} target="_blank" rel="noopener noreferrer">
                 {' '}{value.event.shortURL}
               </a>
               : value.name}
@@ -47,8 +50,8 @@ class AppointmentList extends React.Component {
               {value.event.status === 'tentative' ? 'Appointment Created' : 'Appointment Confirmed by Customer'}
             </span>
           </p>    
-        </TableCell>
-        <TableCell>
+        </TableRowColumn>
+        <TableRowColumn>
           <p>
             {moment(value.event.start).format('DD MMM YYYY')}
             &nbsp;-&nbsp;
@@ -74,7 +77,7 @@ class AppointmentList extends React.Component {
               )}
           </span>
           </p>
-        </TableCell>
+        </TableRowColumn>
       </TableRow>,
     );
   }
@@ -91,13 +94,13 @@ class AppointmentList extends React.Component {
   render() {
     return (
       <Table>
-        <TableHead>
+        <TableHeader>
           <TableRow>
-            <TableCell>Status</TableCell>
-            <TableCell>Details</TableCell>
+            <TableHeaderColumn>Status</TableHeaderColumn>
+            <TableHeaderColumn>Details</TableHeaderColumn>
           </TableRow>
-        </TableHead>
-        <TableBody>
+        </TableHeader>
+        <TableBody displayRowCheckbox={false}>
           {this.rows(this.props.appointments)}
         </TableBody>
       </Table>
