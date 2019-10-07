@@ -52,8 +52,8 @@ const styles = {
     flexWrap: 'wrap',
   },
   toggle: {
-    margin: '10px 10px',
-    width: 100,
+    margin: '10px 5px',
+    width: 50,
   }
 };
 

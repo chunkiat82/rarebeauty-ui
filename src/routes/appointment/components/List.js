@@ -20,13 +20,15 @@ import history from '../../../history';
 
 const stylesRed = {
   color: 'red',
+  whiteSpace: 'normal',
 };
 
 const stylesGreen = {
   color: 'green',
+  whiteSpace: 'normal',
 };
 const whiteSpace = {
-  whiteSpace: 'none',
+  whiteSpace: 'normal',
 };
 
 class AppointmentList extends React.Component {
@@ -63,7 +65,7 @@ class AppointmentList extends React.Component {
             </span>
           </p>
           <p>
-            <span>
+            <span style={whiteSpace}>
               <a
                 href={`/appointment/edit/${value.apptId}`}
                 rel="noopener noreferrer"
@@ -82,7 +84,7 @@ class AppointmentList extends React.Component {
             </span>
           </p>
           <p>
-            <span>
+            <span style={{ whiteSpace: 'normal' }}>
               {value.serviceIds
                 .map(
                   serviceId =>
@@ -93,7 +95,7 @@ class AppointmentList extends React.Component {
             </span>
           </p>
           <p>
-            <span>
+            <span style={whiteSpace}>
               $
               {value.serviceIds.reduce(
                 (prevValue, serviceId) =>
