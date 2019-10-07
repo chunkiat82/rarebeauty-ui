@@ -34,7 +34,7 @@ const styles = {
   root: {
     display: 'flex',
     flexWrap: 'wrap',
-    justifyContent: 'center',
+    justifyContent: 'flex-start',
   },
   gridList: {
     width: 500,
