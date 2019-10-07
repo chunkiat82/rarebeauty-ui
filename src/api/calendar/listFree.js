@@ -1,6 +1,39 @@
-const generateJWT = require('../utilities/jwt');
 const google = require('googleapis');
 const moment = require('moment');
+
+const generateJWT = require('../utilities/jwt');
+
+// function to get AM (A), EarlyPM (E) or PM (P)
+/*
+ * For A Before 12pm
+ * For E 12pm to 5pm
+ * For P After 5pm
+ */
+function generateAMP(inputMoment) {
+  const hour = inputMoment.hour();
+  const AMP = ['A', 'M', 'P'];
+  switch (true) {
+    case hour <= 12:
+      return AMP[0];
+    case hour >= 17:
+      return AMP[2];
+    default:
+      return AMP[1];
+  }
+}
+
+function storeIntoFreeSLots(freeSlots, start, end) {
+  const duration = moment.duration(end.diff(start));
+  const durationInMinutes = duration.asMinutes();
+  if (durationInMinutes > 0) {
+    freeSlots.push({
+      start: start.format('YYYY-MM-DDTHH:mm:ssZ'),
+      end: end.format('YYYY-MM-DDTHH:mm:ssZ'),
+      durationInMinutes,
+      amp: generateAMP(start),
+    });
+  }
+}
 
 function convertBusyToFree(calendarId, response) {
   const { calendars } = response;
@@ -14,46 +47,33 @@ function convertBusyToFree(calendarId, response) {
 
   let freeStart = busySlot.end;
 
-  // console.log(busySlots.length);
   while (busySlots.length > 0) {
     busySlot = busySlots.shift();
-    // console.log(busySlot);
+
     const freeEnd = busySlot.start;
 
-    let startMoment = moment(freeStart);
+    const startMoment = moment(freeStart);
     let endMoment = moment(freeEnd);
 
-    if (
-      endMoment.hours() >= 21 ||
-      startMoment.dayOfYear() > endMoment.dayOfYear()
-    ) {
-      endMoment = moment(startMoment)
-        .hours(21)
-        .minutes(0)
-        .seconds(0);
+    if (endMoment.hours() >= 21) {
+      endMoment = moment(startMoment).hours(21).minutes(0).seconds(0);
     }
 
-    if (startMoment.date() < endMoment.date()) {
-      startMoment = moment(endMoment)
+    // catering for scenario if first appointment is after 10.30am
+    // condition programming - sequence matters a lot here
+    if (startMoment.dayOfYear() < endMoment.dayOfYear()) {
+      const tempStartMoment = moment(endMoment)
         .hours(10)
         .minutes(30)
         .seconds(0);
+
+      storeIntoFreeSLots(freeSlots, tempStartMoment, endMoment);
+
+      endMoment = moment(startMoment).hours(21).minutes(0).seconds(0);
     }
 
-    // // catering for scenario if first appointment is after 10.30am
-    // console.log(`startMoment`, startMoment.format('YYYY-MM-DDTHH:mm:ssZ'));
-    // console.log(`endMoment`, endMoment.format('YYYY-MM-DDTHH:mm:ssZ'));
-    // console.log('---------');
+    storeIntoFreeSLots(freeSlots, startMoment, endMoment);
 
-    const duration = moment.duration(endMoment.diff(startMoment));
-    const durationInMinutes = duration.asMinutes();
-    if (durationInMinutes > 0) {
-      freeSlots.push({
-        start: startMoment.format('YYYY-MM-DDTHH:mm:ssZ'),
-        end: endMoment.format('YYYY-MM-DDTHH:mm:ssZ'),
-        durationInMinutes,
-      });
-    }
     freeStart = busySlot.end;
   }
 
@@ -70,13 +90,8 @@ export default function listFree(options) {
       version: 'v3',
       auth: jwtClient,
     });
-    const timeMin = moment()
-      .add(0, 'days')
-      .format('YYYY-MM-DDTHH:mm:ssZ');
-    const timeMax = moment()
-      .add(30, 'days')
-      .format('YYYY-MM-DDTHH:mm:ssZ');
-    // timeStart || startDT || moment().subtract(3, 'hours').toISOString();
+    const timeMin = moment().add(0, 'days').format('YYYY-MM-DDTHH:mm:ssZ');
+    const timeMax = moment().add(30, 'days').format('YYYY-MM-DDTHH:mm:ssZ');
     const finalOptions = {
       timeMin,
       timeMax,
@@ -93,7 +108,9 @@ export default function listFree(options) {
     // https://developers.google.com/calendar/v3/reference/freebusy/query
     calendar.freebusy.query(
       {
-        headers: { 'content-type': 'application/json' },
+        headers: {
+          'content-type': 'application/json',
+        },
         resource: finalOptions,
       },
       async (err, response) => {
