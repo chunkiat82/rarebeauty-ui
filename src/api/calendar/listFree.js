@@ -56,7 +56,10 @@ function convertBusyToFree(calendarId, response) {
     let endMoment = moment(freeEnd);
 
     if (endMoment.hours() >= 21) {
-      endMoment = moment(startMoment).hours(21).minutes(0).seconds(0);
+      endMoment = moment(startMoment)
+        .hours(21)
+        .minutes(0)
+        .seconds(0);
     }
 
     // catering for scenario if first appointment is after 10.30am
@@ -66,14 +69,17 @@ function convertBusyToFree(calendarId, response) {
         .hours(10)
         .minutes(30)
         .seconds(0);
+      const tempEndMoment = moment(endMoment);
+      endMoment = moment(startMoment)
+        .hours(21)
+        .minutes(0)
+        .seconds(0);
 
-      storeIntoFreeSLots(freeSlots, tempStartMoment, endMoment);
-
-      endMoment = moment(startMoment).hours(21).minutes(0).seconds(0);
+      storeIntoFreeSLots(freeSlots, startMoment, endMoment);
+      storeIntoFreeSLots(freeSlots, tempStartMoment, tempEndMoment);
+    } else {
+      storeIntoFreeSLots(freeSlots, startMoment, endMoment);
     }
-
-    storeIntoFreeSLots(freeSlots, startMoment, endMoment);
-
     freeStart = busySlot.end;
   }
 
@@ -90,8 +96,12 @@ export default function listFree(options) {
       version: 'v3',
       auth: jwtClient,
     });
-    const timeMin = moment().add(0, 'days').format('YYYY-MM-DDTHH:mm:ssZ');
-    const timeMax = moment().add(30, 'days').format('YYYY-MM-DDTHH:mm:ssZ');
+    const timeMin = moment()
+      .add(0, 'days')
+      .format('YYYY-MM-DDTHH:mm:ssZ');
+    const timeMax = moment()
+      .add(30, 'days')
+      .format('YYYY-MM-DDTHH:mm:ssZ');
     const finalOptions = {
       timeMin,
       timeMax,

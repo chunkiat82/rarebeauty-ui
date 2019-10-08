@@ -55,6 +55,8 @@ class AppointmentList extends React.Component {
               value.name
             )}
           </p>
+          <p>{moment(value.start).format('DD MMM YYYY')}</p>
+          <p>{moment(value.start).format('hh:mm A')}</p>
           <p>
             <span
               style={value.status === 'confirmed' ? stylesGreen : stylesRed}
@@ -76,8 +78,6 @@ class AppointmentList extends React.Component {
           </p>
         </TableRowColumn>
         <TableRowColumn>
-          <p>{moment(value.start).format('DD MMM YYYY')}</p>
-          <p>{moment(value.start).format('hh:mm A')}</p>
           <p>
             <span style={{ whiteSpace: 'normal' }}>
               Created On: {moment(value.created).format('DD MMM YYYY hh:mm A')}
