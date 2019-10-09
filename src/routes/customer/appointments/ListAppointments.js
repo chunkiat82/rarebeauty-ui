@@ -49,7 +49,7 @@ class AppointmentList extends React.Component {
           </p>
           <p>
             <span
-              style={value.event.status === 'confirmed' ? { stylesPurple, whiteSpace } : { stylesGreen, whiteSpace }}
+              style={{ color: value.event.status === 'confirmed' ? stylesPurple.color : stylesGreen.color, whiteSpace }}
             >
               {value.event.status === 'tentative' ? 'Appointment Created' : 'Appointment Confirmed by Customer'}
             </span>
