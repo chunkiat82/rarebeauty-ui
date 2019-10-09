@@ -26,6 +26,10 @@ const stylesPurple = {
   color: 'purple',
 };
 
+const whiteSpace = {
+  whiteSpace: 'normal',
+};
+
 class AppointmentList extends React.Component {
   //   static propTypes = {
   //     rows: PropTypes.array.isRequired,
@@ -45,7 +49,7 @@ class AppointmentList extends React.Component {
           </p>
           <p>
             <span
-              style={value.event.status === 'confirmed' ? stylesPurple : stylesGreen}
+              style={value.event.status === 'confirmed' ? { stylesPurple, whiteSpace } : { stylesGreen, whiteSpace }}
             >
               {value.event.status === 'tentative' ? 'Appointment Created' : 'Appointment Confirmed by Customer'}
             </span>
@@ -58,7 +62,7 @@ class AppointmentList extends React.Component {
             {moment(value.event.start).format('hh:mm A')}
           </p>
           <p>
-            <span>
+            <span style={whiteSpace}>
             {value.event.serviceIds
               .map(
                 serviceId =>
@@ -69,7 +73,7 @@ class AppointmentList extends React.Component {
           </span>
           </p>
           <p>
-          <span>
+          <span style={whiteSpace}>
               ${value.event.serviceIds.reduce(
                 (prevValue, serviceId) =>
                   prevValue + this.props.services.peekByKey(serviceId).price,
