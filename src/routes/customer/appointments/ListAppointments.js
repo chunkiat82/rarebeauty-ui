@@ -94,7 +94,7 @@ class AppointmentList extends React.Component {
   render() {
     return (
       <Table>
-        <TableHeader>
+        <TableHeader displaySelectAll={false}>
           <TableRow>
             <TableHeaderColumn>Status</TableHeaderColumn>
             <TableHeaderColumn>Details</TableHeaderColumn>

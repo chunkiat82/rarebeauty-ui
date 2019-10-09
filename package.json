@@ -30,7 +30,7 @@
     "fibers": "^2.0.0",
     "googleapis": "^20.1.0",
     "graphql": "^0.10.3",
-    "history": "^4.6.3",
+    "history": "4.6.3",
     "http-error-pages": "^0.5.2",
     "install": "^0.13.0",
     "isomorphic-style-loader": "^3.0.0",
