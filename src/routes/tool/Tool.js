@@ -31,11 +31,19 @@ import moment from "moment";
 import s from "./Tool.css";
 
 const styles = {
-  root: {
-    display: "flex",
-    flexWrap: "wrap",
-    justifyContent: "flex-start"
-  },
+  // root: {
+  //   display: "-webkit-flex",
+  //   // display: '-webkit-flex',
+  //   // display: '-webkit-box',
+  //   // display: '-ms-flexbox',
+  //   flexWrap: "wrap",
+  //   justifyContent: "flex-start"
+  // },
+  // rootFlex: {
+  //   display: "-webkit-flex",
+  //   flexWrap: "wrap",
+  //   justifyContent: "flex-start"
+  // },
   gridList: {
     width: 500,
     height: 300,
@@ -80,7 +88,7 @@ class Home extends React.Component {
   }
 
   rows(values) {
-    let filters = [];    
+    let filters = [];
     if (this.state.filterA) filters.push("A");
     if (this.state.filterM) filters.push("M");
     if (this.state.filterP) filters.push("P");
@@ -91,20 +99,20 @@ class Home extends React.Component {
 
     return values
       .filter(value => filters.includes(value.amp))
-      .filter(value => value.durationInMinutes >= timeFilter )      
+      .filter(value => value.durationInMinutes >= timeFilter)
       .map(value => (
         <TableRow
           style={{ backgroundColor: selectRowColour(value), zIndex: -1 }}
         >
           <TableRowColumn style={{ color: "black", zIndex: 1000 }}>
-            {`
-        ${moment(value.start).format("DD/MM/YY (ddd)")} - ${
-              value.durationInMinutes
-            } Minutes`}
+            {`${moment(value.start).format("DD/MM/YY (ddd)")}`}
             <br />
             {moment(value.start).format("h:mm A")}
             <br />
             {`${moment(value.end).format("h:mm A")} `}
+          </TableRowColumn>
+          <TableRowColumn style={{ color: "black", zIndex: 1000 }}>
+            {`${value.durationInMinutes} Minutes`}
           </TableRowColumn>
         </TableRow>
       ));
@@ -113,72 +121,94 @@ class Home extends React.Component {
   render() {
     return (
       <div style={styles.root}>
-        <Toggle
-          label="Morning"
-          defaultToggled={DEFAULT_TOGGLE_STATE}
-          style={styles.toggle}
-          thumbStyle={{ backgroundColor: "rgb(0, 123, 255, 0.4)" }}
-          trackStyle={{ backgroundColor: "rgb(0, 123, 255, 0.4)" }}
-          thumbSwitchedStyle={{ backgroundColor: "rgb(0, 123, 255, 0.8)" }}
-          trackSwitchedStyle={{ backgroundColor: "rgb(0, 123, 255, 0.8)" }}
-          onToggle={(_, checked) => {
-            this.setState({ filterA: checked });
-          }}
-        />
-
-        <Toggle
-          label="Afternoon"
-          defaultToggled={DEFAULT_TOGGLE_STATE}
-          style={styles.toggle}
-          thumbStyle={{ backgroundColor: "rgb(220, 53, 69, 0.4)" }}
-          trackStyle={{ backgroundColor: "rgb(220, 53, 69, 0.4)" }}
-          thumbSwitchedStyle={{ backgroundColor: "rgb(220, 53, 69, 0.8)" }}
-          trackSwitchedStyle={{ backgroundColor: "rgb(220, 53, 69, 0.8)" }}
-          onToggle={(_, checked) => {
-            this.setState({ filterM: checked });
-          }}
-        />
-        <Toggle
-          label="Evening"
-          defaultToggled={DEFAULT_TOGGLE_STATE}
-          style={styles.toggle}
-          thumbStyle={{ backgroundColor: "rgb(40, 167, 69, 0.4)" }}
-          trackStyle={{ backgroundColor: "rgb(40, 167, 69, 0.4)" }}
-          thumbSwitchedStyle={{ backgroundColor: "rgb(40, 167, 69, 0.8)" }}
-          trackSwitchedStyle={{ backgroundColor: "rgb(40, 167, 69, 0.8)" }}
-          onToggle={(_, checked) => {
-            this.setState({ filterP: checked });
-          }}
-        />
-        <Toggle
-          label="30Min"
-          defaultToggled={DEFAULT_TOGGLE_STATE}
-          style={styles.toggle}
-          thumbStyle={{ backgroundColor: "rgb(191,74,168, 0.4)" }}
-          trackStyle={{ backgroundColor: "rgb(191,74,168, 0.4)" }}
-          thumbSwitchedStyle={{ backgroundColor: "rgb(191,74,168, 0.8)" }}
-          trackSwitchedStyle={{ backgroundColor: "rgb(191,74,168, 0.8)" }}
-          onToggle={(_, checked) => {
-            this.setState({ number30FilterP: checked ? 30 : 0});
-          }}
-        />
-        <Toggle
-          label=">60Min"
-          defaultToggled={DEFAULT_TOGGLE_STATE}
-          style={styles.toggle}
-          thumbStyle={{ backgroundColor: "rgb(247, 136, 47, 0.4)" }}
-          trackStyle={{ backgroundColor: "rgb(247, 136, 47, 0.4)" }}
-          thumbSwitchedStyle={{ backgroundColor: "rgb(247, 136, 47, 0.8)" }}
-          trackSwitchedStyle={{ backgroundColor: "rgb(247, 136, 47, 0.8)" }}
-          onToggle={(_, checked) => {
-            this.setState({ number60FilterP: checked ? 60 : 0 });
-          }}
-        />
         <Table>
-          <TableHeader displaySelectAll={false}>
-            <TableRow>
-              <TableHeaderColumn>Free Slots - Tool</TableHeaderColumn>
-              {/* <TableCell>Time Window</TableCell> */}
+          <TableHeader adjustForCheckbox={false} displaySelectAll={false}>
+            <TableRow displaySelectAll={false}>
+              <TableHeaderColumn>
+                <Toggle
+                  label="Morning"
+                  defaultToggled={DEFAULT_TOGGLE_STATE}
+                  style={styles.toggle}
+                  thumbStyle={{ backgroundColor: "rgb(0, 123, 255, 0.4)" }}
+                  trackStyle={{ backgroundColor: "rgb(0, 123, 255, 0.4)" }}
+                  thumbSwitchedStyle={{
+                    backgroundColor: "rgb(0, 123, 255, 0.8)"
+                  }}
+                  trackSwitchedStyle={{
+                    backgroundColor: "rgb(0, 123, 255, 0.8)"
+                  }}
+                  onToggle={(_, checked) => {
+                    this.setState({ filterA: checked });
+                  }}
+                />
+
+                <Toggle
+                  label="Afternoon"
+                  defaultToggled={DEFAULT_TOGGLE_STATE}
+                  style={styles.toggle}
+                  thumbStyle={{ backgroundColor: "rgb(220, 53, 69, 0.4)" }}
+                  trackStyle={{ backgroundColor: "rgb(220, 53, 69, 0.4)" }}
+                  thumbSwitchedStyle={{
+                    backgroundColor: "rgb(220, 53, 69, 0.8)"
+                  }}
+                  trackSwitchedStyle={{
+                    backgroundColor: "rgb(220, 53, 69, 0.8)"
+                  }}
+                  onToggle={(_, checked) => {
+                    this.setState({ filterM: checked });
+                  }}
+                />
+                <Toggle
+                  label="Evening"
+                  defaultToggled={DEFAULT_TOGGLE_STATE}
+                  style={styles.toggle}
+                  thumbStyle={{ backgroundColor: "rgb(40, 167, 69, 0.4)" }}
+                  trackStyle={{ backgroundColor: "rgb(40, 167, 69, 0.4)" }}
+                  thumbSwitchedStyle={{
+                    backgroundColor: "rgb(40, 167, 69, 0.8)"
+                  }}
+                  trackSwitchedStyle={{
+                    backgroundColor: "rgb(40, 167, 69, 0.8)"
+                  }}
+                  onToggle={(_, checked) => {
+                    this.setState({ filterP: checked });
+                  }}
+                />
+              </TableHeaderColumn>
+              <TableHeaderColumn>
+                <Toggle
+                  label="30Min"
+                  defaultToggled={DEFAULT_TOGGLE_STATE}
+                  style={styles.toggle}
+                  thumbStyle={{ backgroundColor: "rgb(191,74,168, 0.4)" }}
+                  trackStyle={{ backgroundColor: "rgb(191,74,168, 0.4)" }}
+                  thumbSwitchedStyle={{
+                    backgroundColor: "rgb(191,74,168, 0.8)"
+                  }}
+                  trackSwitchedStyle={{
+                    backgroundColor: "rgb(191,74,168, 0.8)"
+                  }}
+                  onToggle={(_, checked) => {
+                    this.setState({ number30FilterP: checked ? 30 : 0 });
+                  }}
+                />
+                <Toggle
+                  label=">60Min"
+                  defaultToggled={DEFAULT_TOGGLE_STATE}
+                  style={styles.toggle}
+                  thumbStyle={{ backgroundColor: "rgb(247, 136, 47, 0.4)" }}
+                  trackStyle={{ backgroundColor: "rgb(247, 136, 47, 0.4)" }}
+                  thumbSwitchedStyle={{
+                    backgroundColor: "rgb(247, 136, 47, 0.8)"
+                  }}
+                  trackSwitchedStyle={{
+                    backgroundColor: "rgb(247, 136, 47, 0.8)"
+                  }}
+                  onToggle={(_, checked) => {
+                    this.setState({ number60FilterP: checked ? 60 : 0 });
+                  }}
+                />
+              </TableHeaderColumn>              
             </TableRow>
           </TableHeader>
           <TableBody displayRowCheckbox={false}>
