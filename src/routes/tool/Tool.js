@@ -177,7 +177,7 @@ class Home extends React.Component {
               </TableHeaderColumn>
               <TableHeaderColumn>
                 <Toggle
-                  label="30Min"
+                  label=">30Min"
                   defaultToggled={DEFAULT_TOGGLE_STATE}
                   style={styles.toggle}
                   thumbStyle={{ backgroundColor: "rgb(191,74,168, 0.4)" }}
