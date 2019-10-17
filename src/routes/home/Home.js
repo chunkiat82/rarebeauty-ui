@@ -60,7 +60,7 @@ class Home extends React.Component {
     return <div style={styles.root}>      
       <GridList
         cellHeight={180}
-        cellWidth={180}
+        // cellWidth={180}
         style={styles.gridList}
       >
         <Subheader style={{ textAlign: 'center' }}>How can I help you, Today?</Subheader>

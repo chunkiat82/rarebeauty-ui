@@ -1,3 +1,4 @@
+/* eslint-disable react/no-array-index-key */
 /* eslint-disable react/jsx-no-undef */
 /* eslint-disable react/forbid-prop-types */
 /* eslint-disable class-methods-use-this */
@@ -100,9 +101,10 @@ class Home extends React.Component {
     return values
       .filter(value => filters.includes(value.amp))
       .filter(value => value.durationInMinutes >= timeFilter)
-      .map(value => (
+      .map((value, index) => (
         <TableRow
           style={{ backgroundColor: selectRowColour(value), zIndex: -1 }}
+          key={index}
         >
           <TableRowColumn style={{ color: "black", zIndex: 1000 }}>
             {`${moment(value.start).format("DD/MM/YY (ddd)")}`}
@@ -123,7 +125,7 @@ class Home extends React.Component {
       <div style={styles.root}>
         <Table>
           <TableHeader adjustForCheckbox={false} displaySelectAll={false}>
-            <TableRow displaySelectAll={false}>
+            <TableRow>
               <TableHeaderColumn>
                 <Toggle
                   label="Morning"

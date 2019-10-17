@@ -25,6 +25,8 @@ function generateAMP(inputMoment) {
 function storeIntoFreeSLots(freeSlots, start, end) {
   const duration = moment.duration(end.diff(start));
   const durationInMinutes = duration.asMinutes();
+  // start = moment("2019-10-19T00:00:00Z");
+  // console.log(start.day());
   if (durationInMinutes > 0) {
     freeSlots.push({
       start: start.format('YYYY-MM-DDTHH:mm:ssZ'),
@@ -55,9 +57,17 @@ function convertBusyToFree(calendarId, response) {
     const startMoment = moment(freeStart);
     let endMoment = moment(freeEnd);
 
-    if (endMoment.hours() >= 21) {
+    // weekdays MON to FRIDAY
+    if (startMoment.day() > 0 && startMoment.day() < 6) {
+      if (endMoment.hours() >= 21) {
+        endMoment = moment(startMoment)
+          .hours(21)
+          .minutes(0)
+          .seconds(0);
+      }
+    } else if (endMoment.hours() >= 19) {
       endMoment = moment(startMoment)
-        .hours(21)
+        .hours(19)
         .minutes(0)
         .seconds(0);
     }
@@ -70,10 +80,19 @@ function convertBusyToFree(calendarId, response) {
         .minutes(30)
         .seconds(0);
       const tempEndMoment = moment(endMoment);
-      endMoment = moment(startMoment)
-        .hours(21)
-        .minutes(0)
-        .seconds(0);
+
+      // weekdays MON to FRIDAY
+      if (startMoment.day() > 0 && startMoment.day() < 6) {
+        endMoment = moment(startMoment)
+          .hours(21)
+          .minutes(0)
+          .seconds(0);
+      } else {
+        endMoment = moment(startMoment)
+          .hours(19)
+          .minutes(0)
+          .seconds(0);
+      }
 
       storeIntoFreeSLots(freeSlots, startMoment, endMoment);
       storeIntoFreeSLots(freeSlots, tempStartMoment, tempEndMoment);
