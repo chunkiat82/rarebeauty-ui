@@ -19,8 +19,6 @@ import expressGraphQL from 'express-graphql';
 import PrettyError from 'pretty-error';
 import _httpErrorPages from 'http-error-pages';
 
-import passport from './passport';
-import models from './data/models';
 import schema from './data/schema';
 
 import { handleCalendarWebhook } from './hooks';
@@ -105,7 +103,6 @@ if (!__DEV__) {
   });
 }
 
-app.use(passport.initialize());
 //
 // Register API middleware
 // -----------------------------------------------------------------------------
@@ -182,19 +179,12 @@ if (__DEV__) {
 //
 // Launch the server
 // -----------------------------------------------------------------------------
-const promise = models.sync().catch(err => console.error(err.stack));
 if (!module.hot) {
-  promise.then(() => {
-    app.listen(config.port, () => {
-      console.info(`The server is running at http://localhost:${config.port}/`);
-    });
+  app.listen(config.port, () => {
+    console.info(`The server is running at http://localhost:${config.port}/`);
   });
-}
-
-//
-// Hot Module Replacement
-// -----------------------------------------------------------------------------
-if (module.hot) {
+} else {
+  // development mode
   app.hot = module.hot;
   module.hot.accept('./router');
 }
