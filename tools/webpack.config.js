@@ -12,6 +12,7 @@ import webpack from 'webpack';
 import AssetsPlugin from 'assets-webpack-plugin';
 import nodeExternals from 'webpack-node-externals';
 import { BundleAnalyzerPlugin } from 'webpack-bundle-analyzer';
+
 import overrideRules from './lib/overrideRules';
 import pkg from '../package.json';
 
@@ -304,7 +305,6 @@ const clientConfig = {
       filename: 'assets.json',
       prettyPrint: true,
     }),
-
     // Move modules that occur in multiple entry chunks to a new entry chunk (the commons chunk).
     // https://webpack.js.org/plugins/commons-chunk-plugin/
     new webpack.optimize.CommonsChunkPlugin({
@@ -318,7 +318,6 @@ const clientConfig = {
           // Decrease script evaluation time
           // https://github.com/webpack/webpack/blob/master/examples/scope-hoisting/README.md
           new webpack.optimize.ModuleConcatenationPlugin(),
-
           // Minimize all JavaScript output of chunks
           // https://github.com/mishoo/UglifyJS2#compressor-options
           new webpack.optimize.UglifyJsPlugin({
@@ -393,21 +392,20 @@ const serverConfig = {
           ...rule,
           options: {
             ...rule.options,
-            presets: rule.options.presets.map(
-              preset =>
-                preset[0] !== 'env'
-                  ? preset
-                  : [
-                      'env',
-                      {
-                        targets: {
-                          node: pkg.engines.node.match(/(\d+\.?)+/)[0],
-                        },
-                        modules: false,
-                        useBuiltIns: false,
-                        debug: false,
+            presets: rule.options.presets.map(preset =>
+              preset[0] !== 'env'
+                ? preset
+                : [
+                    'env',
+                    {
+                      targets: {
+                        node: pkg.engines.node.match(/(\d+\.?)+/)[0],
                       },
-                    ],
+                      modules: false,
+                      useBuiltIns: false,
+                      debug: false,
+                    },
+                  ],
             ),
           },
         };
