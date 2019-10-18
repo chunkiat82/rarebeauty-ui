@@ -23,7 +23,7 @@ export default async function list(options = { forceRefresh: false }) {
 
   // caching is amazing but becareful when it becomes stale
   return new Promise((res, rej) => {
-    if (cache.length > 0 && forceRefresh === false) {
+    if (cache.length > 0 && forceRefresh !== true) {
       return res(cache);
     }
     // console.log('i was here her her');
@@ -55,10 +55,11 @@ export default async function list(options = { forceRefresh: false }) {
               one.names &&
               one.names.length > 0 &&
               one.names[0].displayName,
-            mobile: (phoneNumbers[0].canonicalForm ||
+            mobile: (
+              phoneNumbers[0].canonicalForm ||
               phoneNumbers[0].value ||
-              '0')
-              .replace(/\s/g, ''),
+              '0'
+            ).replace(/\s/g, ''),
             resourceName: one.resourceName,
           };
           obj.display = `${obj.name} - ${obj.mobile}`;

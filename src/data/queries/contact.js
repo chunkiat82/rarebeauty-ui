@@ -18,7 +18,7 @@ const contact = {
   args: {
     id: { type: StringType },
   },
-  async resolve(obj, args) {
+  async resolve(_obj, args) {
     const { id } = args;
     const item = await api({ action: 'getContact', resourceName: id });
     return item;
