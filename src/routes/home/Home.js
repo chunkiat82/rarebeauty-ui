@@ -1,3 +1,4 @@
+/* eslint-disable react/prop-types */
 /* eslint-disable jsx-a11y/alt-text */
 /* eslint-disable react/jsx-no-comment-textnodes */
 /* eslint-disable css-modules/no-unused-class */
@@ -33,39 +34,18 @@ const styles = {
   },
 };
 
-const tilesData = [
-  {
-    img: 'images/home/empty-calendar.png',
-    title: 'Create Appointment',
-    subTitle: 'With/Without Payments',
-    link: '/appointment/create'
-  },
-  {
-    img: 'images/home/calendar-appointments.png',
-    title: 'List Appointments',
-    subTitle: 'Upcoming 20',
-    link: '/appointment'
-  },
-  {
-    img: 'images/home/tool.png',
-    title: 'Tools',
-    subTitle: 'Tools',
-    link: '/tool'
-  }
-];
-
 class Home extends React.Component {
 
   render() {
-    return <div style={styles.root}>      
+    return <div style={styles.root}>
       <GridList
         cellHeight={180}
         // cellWidth={180}
         style={styles.gridList}
       >
         <Subheader style={{ textAlign: 'center' }}>How can I help you, Today?</Subheader>
-        {tilesData.map((tile) => (
-          <Link key={tile.link} to={tile.link}>
+        {this.props.tiles.map((tile) => (
+          <Link key={tile.link} to={tile.link} onClick={tile.onClick}>
             <GridTile
               key={tile.img}
               title={tile.title}

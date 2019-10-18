@@ -147,9 +147,11 @@ async function informReservationToCustomer(options) {
           longURL: `${reservationURL}${event.id}`,
         });
 
-        const message = `${updated
-          ? 'Updated - '
-          : ''}Your appt with Rare Beauty on ${startDate} at ${startTime} is reserved.\n\nClick ${shortURL.id} to view address/details`;
+        const message = `${
+          updated ? 'Updated - ' : ''
+        }Your appt with Rare Beauty on ${startDate} at ${startTime} is reserved.\n\nClick ${
+          shortURL.id
+        } to view address/details`;
 
         console.error(`message=${message}`);
 
@@ -311,9 +313,9 @@ async function remindCustomers(options) {
   }
 }
 
-async function listContacts() {
+async function listContacts(options) {
   try {
-    const contacts = await contactLists();
+    const contacts = await contactLists(options);
     return contacts;
   } catch (err) {
     console.error(err);
@@ -527,8 +529,7 @@ async function remindCustomersTouchUp(options) {
         futureTouchServices.length > 0
       ) {
         console.error(
-          `resourceName=${resourceName} was not reminded because ${event
-            .attendees[0].displayName} has touchup already`,
+          `resourceName=${resourceName} was not reminded because ${event.attendees[0].displayName} has touchup already`,
         );
         return;
       }

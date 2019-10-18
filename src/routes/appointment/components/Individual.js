@@ -211,8 +211,6 @@ class Appointment extends React.Component {
   }
 
   handleNewRequest = async (inputString, index) => {
-    // console.log(`handleNewRequest=${JSON.stringify(inputString)}`);
-
     const { resourceName } = inputString;
     // console.log(`resourceName=${resourceName}`);
     const {
@@ -230,7 +228,7 @@ class Appointment extends React.Component {
       ...inputString,
     });
   };
-  handleServiceChange = (event, index, serviceIds) => {
+  handleServiceChange = (_event, _index, serviceIds) => {
     this.setState({
       serviceIds,
       totalAmount: this.calculateTotal(
@@ -241,11 +239,11 @@ class Appointment extends React.Component {
       duration: this.calculateDuration(serviceIds),
     });
   };
-  handleSliderChange = (event, value) => this.setState({ duration: value });
-  handleDepositChange = (event, value) => this.setState({ deposit: value });
-  handleDateChange = (something, dateChosen) =>
+  handleSliderChange = (_event, value) => this.setState({ duration: value });
+  handleDepositChange = (_eevent, value) => this.setState({ deposit: value });
+  handleDateChange = (_something, dateChosen) =>
     this.setState({ startDate: dateChosen });
-  handleTimeChange = (something, timeChosen) =>
+  handleTimeChange = (_something, timeChosen) =>
     this.setState({ startTime: timeChosen });
   handleUpdateName = nameInput => {
     this.setState({ nameInput, resourceName: '' });
@@ -343,11 +341,7 @@ class Appointment extends React.Component {
         [],
       );
       if (pastAppointments.length > 0) {
-        return (
-          <div>
-            {pastAppointments}
-          </div>
-        );
+        return <div>{pastAppointments}</div>;
       }
       return ['No Past Appointments'];
     }
@@ -367,17 +361,14 @@ class Appointment extends React.Component {
             expanded={this.state.expanded}
             onExpandChange={this.handleExpandChange}
           >
-            <CardText expandable>
-              {this.renderPastAppointments()}
-            </CardText>
+            <CardText expandable>{this.renderPastAppointments()}</CardText>
           </Card>
           <hr />
           {this.state.resourceName.length > 16
             ? this.generateCustomerLink()
             : ''}
           {this.state.cancelAppointmentsCount > 0
-            ? `Total ${this.state
-                .cancelAppointmentsCount} cancelled appointments in < 36 hours`
+            ? `Total ${this.state.cancelAppointmentsCount} cancelled appointments in < 36 hours`
             : ''}
           <hr />
           <AutoComplete
@@ -392,6 +383,7 @@ class Appointment extends React.Component {
             floatingLabelText="Name"
             filter={AutoComplete.fuzzyFilter}
             fullWidth
+            maxSearchResults={10}
             searchText={this.state.name}
           />
           <AutoComplete
@@ -406,6 +398,7 @@ class Appointment extends React.Component {
             onUpdateInput={this.handleUpdateMobile}
             filter={AutoComplete.fuzzyFilter}
             fullWidth
+            maxSearchResults={10}
             searchText={this.state.mobile}
             type="tel"
           />
@@ -429,9 +422,7 @@ class Appointment extends React.Component {
             <FontIcon className="material-icons" style={iconStyles}>
               attach_money
             </FontIcon>
-            <span>
-              {this.state.totalAmount}
-            </span>
+            <span>{this.state.totalAmount}</span>
           </p>
           <SelectField
             multiple
@@ -445,7 +436,7 @@ class Appointment extends React.Component {
               .filter(
                 service => service.enabled === null || service.enabled === true,
               )
-              .map(item =>
+              .map(item => (
                 <MenuItem
                   key={item.id}
                   insetChildren
@@ -455,8 +446,8 @@ class Appointment extends React.Component {
                   }
                   value={item.id}
                   primaryText={`${item.service} - ${item.price}`}
-                />,
-              )}
+                />
+              ))}
           </SelectField>
           <TextField
             hintText="Additional"
@@ -590,75 +581,77 @@ class Appointment extends React.Component {
             }}
           />
           <hr />
-          {this.props.postWaiting
-            ? <RaisedButton
-                ref={c => {
-                  this.submitBtn = c;
-                }}
-                label={this.props.postWaitingText}
-                secondary
-                fullWidth
-                disabled={this.state.submitted || !this.props.postWaiting}
-                onClick={async () => {
-                  const inputs = Object.assign({}, this.state);
-                  delete inputs.contactDS;
-                  delete inputs.pastAppointments;
+          {this.props.postWaiting ? (
+            <RaisedButton
+              ref={c => {
+                this.submitBtn = c;
+              }}
+              label={this.props.postWaitingText}
+              secondary
+              fullWidth
+              disabled={this.state.submitted || !this.props.postWaiting}
+              onClick={async () => {
+                const inputs = Object.assign({}, this.state);
+                delete inputs.contactDS;
+                delete inputs.pastAppointments;
 
-                  inputs.mobile = inputs.mobileInput || inputs.mobile;
-                  inputs.name = inputs.nameInput || inputs.name;
+                inputs.mobile = inputs.mobileInput || inputs.mobile;
+                inputs.name = inputs.nameInput || inputs.name;
 
-                  this.props.showLoading();
+                this.props.showLoading();
+                this.setState({
+                  error: false,
+                  submitted: true,
+                });
+                // console.log(inputs);
+                const results = await this.props.postWaiting(inputs);
+
+                this.props.hideLoading();
+
+                this.setState({
+                  notify: true,
+                  submitted: false,
+                });
+
+                if (results.errors) {
                   this.setState({
-                    error: false,
-                    submitted: true,
+                    error: 'Error In Creating Waiting Appointment',
                   });
-                  // console.log(inputs);
-                  const results = await this.props.postWaiting(inputs);
-
-                  this.props.hideLoading();
-
+                  console.error('Error In Creating Waiting Appointment');
+                } else {
                   this.setState({
-                    notify: true,
-                    submitted: false,
+                    name: '',
+                    duration: 0,
+                    mobile: '',
+                    startTime: {},
+                    startDate: {},
+                    serviceIds: [],
+                    discount: 0,
+                    additional: 0,
+                    totalAmount: 0,
+                    nameInput: '',
+                    mobileInput: '',
+                    resourceName: '',
+                    pastAppointments: [],
+                    toBeInformed: true,
+                    deposit: 0,
+                    force: false,
+                    waitingList: false,
                   });
 
-                  if (results.errors) {
-                    this.setState({
-                      error: 'Error In Creating Waiting Appointment',
-                    });
-                    console.error('Error In Creating Waiting Appointment');
-                  } else {
-                    this.setState({
-                      name: '',
-                      duration: 0,
-                      mobile: '',
-                      startTime: {},
-                      startDate: {},
-                      serviceIds: [],
-                      discount: 0,
-                      additional: 0,
-                      totalAmount: 0,
-                      nameInput: '',
-                      mobileInput: '',
-                      resourceName: '',
-                      pastAppointments: [],
-                      toBeInformed: true,
-                      deposit: 0,
-                      force: false,
-                      waitingList: false,
-                    });
-
-                    this.nameAC.setState({ searchText: '' });
-                    this.mobileAC.setState({ searchText: '' });
-                    setTimeout(() => {
-                      this.nameAC.focus();
-                      history.push(`/`);
-                    }, 200);
-                  }
-                  setTimeout(() => this.setState({ notify: false }), 2000);
-                }}
-              />
-            : ''}
+                  this.nameAC.setState({ searchText: '' });
+                  this.mobileAC.setState({ searchText: '' });
+                  setTimeout(() => {
+                    this.nameAC.focus();
+                    history.push(`/`);
+                  }, 200);
+                }
+                setTimeout(() => this.setState({ notify: false }), 2000);
+              }}
+            />
+          ) : (
+            ''
+          )}
           {this.props.cancelButton ? this.props.cancelButton : ''}
           <Snackbar
             open={this.state.notify}

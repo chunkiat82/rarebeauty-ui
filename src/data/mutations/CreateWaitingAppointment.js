@@ -12,44 +12,6 @@ import AppointmentType from '../types/AppointmentType';
 import api from '../../api';
 import { get, upsert } from '../database';
 
-function createTransactionEntry(
-  uuid,
-  entries,
-  totalAmount,
-  additional,
-  discount,
-  createdAt,
-  apptDate,
-  name,
-  resourceName,
-  deposit,
-) {
-  const items = entries.map(entry => ({
-    id: entry.id,
-    name: entry.service,
-    type: 'service',
-    price: entry.price,
-  }));
-
-  const service = entries.reduce((sum, entry) => sum + entry.price, 0);
-
-  const entryTemplate = {
-    id: uuid,
-    items,
-    totalAmount,
-    service,
-    product: 0,
-    additional,
-    discount,
-    createdAt,
-    apptDate,
-    name,
-    resourceName,
-    deposit,
-  };
-  return entryTemplate;
-}
-
 export default {
   type: AppointmentType,
   args: {
@@ -109,7 +71,7 @@ export default {
       deposit,
     },
   ) {
-    let finalResourceName = resourceName;    
+    let finalResourceName = resourceName;
 
     if (resourceName === '' || resourceName === undefined) {
       // find by mobile first before creating
@@ -166,7 +128,7 @@ export default {
 
       const now = moment();
       // create event vs waiting list
-      
+
       const { event, uuid } = await api({
         action: 'createWaitingEvent',
         name,
