@@ -111,7 +111,14 @@ app.use(
       return null;
     },
   }).unless({
-    path: ['/events/calendar', /\/general*/, /\/assets*/, /\/page+/, /\/p+/],
+    path: [
+      '/graphql',
+      '/events/calendar',
+      /\/general*/,
+      /\/assets*/,
+      /\/page+/,
+      /\/p+/,
+    ],
   }),
 );
 // Error handler for express-jwt
