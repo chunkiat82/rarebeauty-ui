@@ -15,14 +15,14 @@ import cookieParser from 'cookie-parser';
 import bodyParser from 'body-parser';
 import expressJwt from 'express-jwt';
 import expressGraphQL from 'express-graphql';
-// import jwt from 'jsonwebtoken';
+import jwt from 'jsonwebtoken';
 import PrettyError from 'pretty-error';
 import _httpErrorPages from 'http-error-pages';
 
 import schema from './data/schema';
 
 import { handleCalendarWebhook } from './hooks';
-import { logLogin } from './data/database/login';
+// import { logLogin } from './data/database/login';
 import { reactMiddleware, reactErrorMiddleware } from './reactMiddleware';
 import API from './api/';
 
@@ -48,14 +48,27 @@ app.use(bodyParser.json());
 //
 // Authentication
 // -----------------------------------------------------------------------------
-function checkingUser(req, payload, done) {
+function checkingUser(req, _payload, done) {
   const secret = config.auth.jwt.secret;
-  if (payload.data) {
-    logLogin(payload.data.username, payload);
-  }
+  // req.payload = { foo: 'bar' };
+  // console.log(`checking req.url`, req.url);
+  // console.log(`payload`, payload);
+  // if (payload.data) {
+  //   logLogin(payload.data.username, payload);
+  // }
   done(null, secret);
 }
 
+function populatePayload(req, _res, next) {
+  const token = req.cookies.token;
+  if (token) {
+    const decoded = jwt.verify(token, config.auth.jwt.secret);
+    req.payload = decoded;
+  }
+  return next();
+}
+
+/* bot denial */
 app.use((req, res, next) => {
   if (req.headers.from === 'googlebot(at)googlebot.com') {
     return res.status(401).json({
@@ -65,43 +78,45 @@ app.use((req, res, next) => {
   return next();
 });
 
-if (!__DEV__) {
-  app.use(
-    expressJwt({
-      secret: checkingUser,
-      credentialsRequired: true,
-      getToken: function fromHeaderOrQuerystring(req) {
-        if (req.cookies.token) {
-          return req.cookies.token;
-        } else if (req.query && req.query.token) {
-          return req.query.token;
-        }
-        return null;
-      },
-    }).unless({
-      path: ['/events/calendar', /\/general*/, /\/assets*/, /\/page*/, /\/p*/],
-    }),
-  );
-  // Error handler for express-jwt
-
-  app.use(reactErrorMiddleware);
-
-  app.use((req, res, next) => {
-    if (req.query.token) {
-      const expiresIn = 60 * 60 * 24 * 180; // 180 days
-      res.cookie('token', req.query.token, {
-        maxAge: 1000 * expiresIn,
-        httpOnly: true,
-      });
-      res.cookie('jwt', req.query.token, {
-        maxAge: 1000 * expiresIn,
-        httpOnly: true,
-      });
-      return next();
-    }
+/* to populate cross cookies, tech debt */
+app.use((req, res, next) => {
+  if (req.query.token) {
+    // console.log('req.query.token', req.query.token);
+    const expiresIn = 60 * 60 * 24 * 180; // 180 days
+    res.cookie('token', req.query.token, {
+      maxAge: 1000 * expiresIn,
+      httpOnly: true,
+    });
+    /* tech debt */
+    res.cookie('jwt', req.query.token, {
+      maxAge: 1000 * expiresIn,
+      httpOnly: true,
+    });
     return next();
-  });
-}
+  }
+  return next();
+});
+
+app.use(
+  expressJwt({
+    secret: checkingUser,
+    credentialsRequired: true,
+    getToken: function fromHeaderOrQuerystring(req) {
+      // console.log(`Object.keys(req)`, Object.keys(req));
+      if (req.cookies.token) {
+        return req.cookies.token;
+      } else if (req.query && req.query.token) {
+        return req.query.token;
+      }
+      return null;
+    },
+  }).unless({
+    path: ['/events/calendar', /\/general*/, /\/assets*/, /\/page+/, /\/p+/],
+  }),
+);
+// Error handler for express-jwt
+app.use(populatePayload);
+app.use(reactErrorMiddleware);
 
 //
 // Register API middleware
@@ -160,7 +175,7 @@ app.use('/general/reservation/:eventId', async (req, res, next) => {
 //
 // Register server-side rendering middleware
 // -----------------------------------------------------------------------------
-app.get('*', reactMiddleware);
+app.use('*', reactMiddleware);
 
 //
 // Error handling

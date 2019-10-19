@@ -2,7 +2,6 @@
 /* eslint-disable consistent-return */
 /* eslint-disable prettier/prettier */
 import React from 'react';
-import { showLoading, hideLoading } from 'react-redux-loading-bar';
 import Layout from '../../../components/Layout';
 import AppointmentList from './ListAppointments';
 import {
@@ -10,16 +9,30 @@ import {
   getServices,
 } from '../../appointment/common/functions';
 
+
+function show(store) {
+  return () => {
+    store.dispatch({ type: 'SHOW_LOADER' });
+  };
+}
+
+function hide(store) {
+  return () => {
+    store.dispatch({ type: 'HIDE_LOADER' });
+  };
+}
+
+
 async function action({ fetch, params, store }) {
   const { customerId } = params;
   const resourceName = `people/${customerId}`;
 
-  store.dispatch(showLoading());
+  show(store)();
 
   const { appointments } = await queryPastAppointments(fetch)(resourceName);
   const services = await getServices(fetch)();
 
-  store.dispatch(hideLoading());
+  hide(store)();
 
   return {
     chunks: ['customer-appointments-list'],

@@ -1,12 +1,25 @@
 /* eslint-disable prettier/prettier */
 import React from 'react';
-import { showLoading, hideLoading } from 'react-redux-loading-bar';
-import Layout from '../../../components/Layout';
+import Layout from '../../../components/PublicLayout';
 import Login from './Login';
 import history from '../../../history';
 import {
   getContact,
 } from '../../appointment/common/functions';
+
+
+function show(store) {
+  return () => {
+    store.dispatch({ type: 'SHOW_LOADER' });
+  };
+}
+
+function hide(store) {
+  return () => {
+    store.dispatch({ type: 'HIDE_LOADER' });
+  };
+}
+
 
 async function action(context) {
   const { fetch, store, query } = context;  
@@ -18,16 +31,17 @@ async function action(context) {
 
     if (customerId) {
       const resourceName = `people/${customerId}`;
-      store.dispatch(showLoading());
+      show(store)();
       const contact = await getContact(fetch)(resourceName);
-      store.dispatch(hideLoading());
+      hide(store)();
       // console.log(contact.mobile.replace(/ /g,''));
-      if (contact && contact.mobile && contact.mobile.replace(/ /g,'').indexOf(number) >= 0) {        
-        store.customer = true;
+      if (contact && contact.mobile && contact.mobile.replace(/ /g,'').indexOf(number) >= 0) {
+        // console.log('hit me');
+        store.customerId = customerId;
         return history.push(url);
       }
     }
-    store.customer = false;
+    store.customerId = null;
     return history.push('/');
   }
 

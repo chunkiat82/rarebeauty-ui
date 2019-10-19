@@ -29,7 +29,7 @@ export function sendMessage(options) {
       from: FROM,
     });
   }
-  return console.error(`invalid mobile numer=${mobile}`);
+  return console.error(`invalid mobile number=${mobile}`);
 }
 
 export default sendMessage;

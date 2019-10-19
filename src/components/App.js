@@ -1,3 +1,4 @@
+/* eslint-disable react/require-default-props */
 /**
  * React Starter Kit (https://www.reactstarterkit.com/)
  *
@@ -19,7 +20,7 @@ const ContextType = {
   // Universal HTTP client
   fetch: PropTypes.func.isRequired,
   userAgent: PropTypes.string,
-  ...ReduxProvider.childContextTypes
+  ...ReduxProvider.childContextTypes,
 };
 
 /**

@@ -10,6 +10,9 @@
 /* eslint-disable global-require */
 
 // The top-level (parent) route
+
+import ca from /* webpackChunkName: 'customer-appointments-list' */ './customer/appointments';
+
 const routes = {
   path: '/',
 
@@ -33,27 +36,22 @@ const routes = {
         {
           path: '/:customerId/createAppointment',
           load: () =>
-            import(/* webpackChunkName: 'appointment-create' */ './appointment/CreateAppointment'),
+            import(
+              /* webpackChunkName: 'appointment-create' */ './appointment/CreateAppointment'
+            ),
         },
         {
           path: '/:customerId/appointments',
           load: () =>
-            import(/* webpackChunkName: 'customer-appointments-list' */ './customer/appointments'),
+            import(
+              /* webpackChunkName: 'customer-appointments-list' */ './customer/appointments'
+            ),
         },
       ],
     },
     {
       path: '/p', // public path
-      action: context => {
-        // console.log(Object.keys(context));
-        const { url, store } = context;
-        if (url.indexOf('login') === -1) {
-          if (!store.customer) {
-            return { redirect: `/p/login?url=${url}` }; // route does not match (skip all /admin* routes)
-          }
-        }
-        return context.next(); // or `return context.next()` - try to match child routes
-      },
+      action: context => context.next(),
       children: [
         {
           path: '/login',
@@ -62,25 +60,51 @@ const routes = {
         },
         {
           path: '/customer/:customerId/appointments',
-          load: () =>
-            import(/* webpackChunkName: 'customer-appointments-list' */ './customer/appointments'),
+          action: context => {
+            const { url, store, params } = context;
+            const { customerId } = params;
+            // console.log(`store.getState().user`, store.getState().user);
+            if (
+              store.getState().user &&
+              store.getState().user.type === 'admin'
+            ) {
+              // console.log('context.params.customerId', context.params.customerId);
+              return {
+                redirect: `/customer/${customerId}/createAppointment`,
+              };
+            }
+            // console.log('redirect', `/p/login?url=${url}`);
+            // console.log(`store`, store);
+            if (store.customerId !== customerId) {
+              return { redirect: `/p/login?url=${url}` }; // route does not match (skip all /admin* routes)
+              // }
+            }
+            return ca(context);
+            // return action(context);
+          },
         },
       ],
     },
     {
       path: '/appointment/create',
       load: () =>
-        import(/* webpackChunkName: 'appointment-create' */ './appointment/CreateAppointment'),
+        import(
+          /* webpackChunkName: 'appointment-create' */ './appointment/CreateAppointment'
+        ),
     },
     {
       path: '/appointment/edit/:id',
       load: () =>
-        import(/* webpackChunkName: 'appointment-edit' */ './appointment/EditAppointment'),
+        import(
+          /* webpackChunkName: 'appointment-edit' */ './appointment/EditAppointment'
+        ),
     },
     {
       path: '/appointment/',
       load: () =>
-        import(/* webpackChunkName: 'appointment-list' */ './appointment/ListAppointments'),
+        import(
+          /* webpackChunkName: 'appointment-list' */ './appointment/ListAppointments'
+        ),
     },
     {
       path: '/contact',
@@ -109,12 +133,16 @@ const routes = {
     {
       path: '/general/confirmation/:id',
       load: () =>
-        import(/* webpackChunkName: 'general-confirmation' */ './general/confirmation'),
+        import(
+          /* webpackChunkName: 'general-confirmation' */ './general/confirmation'
+        ),
     },
     {
       path: '/general/reservation/:id',
       load: () =>
-        import(/* webpackChunkName: 'general-reservation' */ './general/reservation'),
+        import(
+          /* webpackChunkName: 'general-reservation' */ './general/reservation'
+        ),
     },
 
     // Wildcard routes, e.g. { path: '*', ... } (must go last)

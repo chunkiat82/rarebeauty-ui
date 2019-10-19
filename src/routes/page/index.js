@@ -14,7 +14,7 @@ import React from 'react';
 // import Subheader from 'material-ui/Subheader';
 // import StarBorder from 'material-ui/svg-icons/toggle/star-border';
 import Page from './Page';
-import Layout from '../../components/Layout/Layout';
+import Layout from '../../components/PublicLayout';
 
 // const styles = {
 //   root: {

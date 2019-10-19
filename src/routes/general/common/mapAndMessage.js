@@ -28,14 +28,10 @@ class MapAndMessage extends React.Component {
         <div className={s.container}>
           <h2>
             <center>
-              <span>
-                {errors ? 'There is error!' : message}
-              </span>
+              <span>{errors ? 'There is error!' : message}</span>
             </center>
           </h2>
-          <h3 className={s.textCenter}>
-            {address}
-          </h3>
+          <h3 className={s.textCenter}>{address}</h3>
           <iframe
             style={{
               width: 320,

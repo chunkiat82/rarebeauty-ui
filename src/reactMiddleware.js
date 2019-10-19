@@ -16,19 +16,23 @@ import Html from './components/Html';
 export const reactMiddleware = async (req, res, next) => {
   try {
     const css = new Set();
-    // console.error(req.headers);
+    // console.error(req.params);
     // not sure if this is a good idea???
     req.url = req.originalUrl;
 
     const { data: reqData } = req;
 
+    // console.log(req.payload);
     let initialState = req.initialState || {
-      user: req.user || null,
+      user:
+        req.payload && req.payload.foo && req.payload.foo.length > 0
+          ? { type: 'admin' }
+          : req.user || null,
       loading: false,
     };
 
     initialState = { ...reqData, ...initialState };
-
+    // console.log('initialState', initialState);
     const store = configureStore(initialState, {
       fetch,
       // I should not use `history` on server.. but how I do redirection? follow universal-router
@@ -106,7 +110,7 @@ export const reactMiddleware = async (req, res, next) => {
 
 export const reactErrorMiddleware = (err, req, res, next) => {
   if (err.name === 'UnauthorizedError') {
-    res.clearCookie('token');
+    // res.clearCookie('token');
     return res.redirect('/page');
     // res.status(401);
     // return res.status(401).send('Unauthorized Access...Please leave');
@@ -118,7 +122,7 @@ export const reactErrorMiddleware = (err, req, res, next) => {
   if (err instanceof Jwt401Error) {
     console.error('[express-jwt-error]', req.cookies.id_token);
     // `clearCookie`, otherwise user can't use web-app until cookie expires
-    return res.clearCookie('id_token');
+    return res.clearCookie('token');
   }
   return next(err);
 };
