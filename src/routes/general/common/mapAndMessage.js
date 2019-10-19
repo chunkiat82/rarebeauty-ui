@@ -40,7 +40,7 @@ class MapAndMessage extends React.Component {
               style: 'border:0',
             }}
             title="addressMap"
-            src="https://www.google.com/maps/embed/v1/place?q=Blk%20987B%20Jurong%20West%20Street%2093%20Singapore%20642987&key=AIzaSyCHNiTXwTuXbuIBRqmrdzHkmnds6-JdruA"
+            src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d7977.465154156651!2d103.69033662836527!3d1.3367016720327713!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x31da0f8ffc39bba3%3A0x86c5239af2cbccd7!2sSingapore%20642987!5e0!3m2!1sen!2ssg!4v1571484005118!5m2!1sen!2ssg"
             allowFullScreen
           />
         </div>
