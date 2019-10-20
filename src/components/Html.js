@@ -82,6 +82,7 @@ class Html extends React.Component {
               defer
             />
           )}
+          <script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.4/clipboard.min.js" />
         </body>
       </html>
     );

@@ -23,6 +23,12 @@ function hide(store) {
   };
 }
 
+function copy(store) {
+  return value => {
+    store.dispatch({ type: 'COPY', value });
+  };
+}
+
 async function action({ fetch, params, store }) {
   show(store)();
 
@@ -47,10 +53,6 @@ async function action({ fetch, params, store }) {
     cancelAppointmentsCount = cancelCount;
   }
   // console.log(`contact = ${JSON.stringify(contact)}`);
-
-  // console.
-  // const customer = customerId && await
-  // console.log(contacts);
   hide(store)();
 
   if (!contacts && !services)
@@ -80,6 +82,7 @@ async function action({ fetch, params, store }) {
           resourceName={resourceName}
           toBeInformed
           contact
+          copy={copy(store)}
         />
       </Layout>
     ),

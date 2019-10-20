@@ -28,6 +28,7 @@ import AutoComplete from 'material-ui/AutoComplete';
 import Snackbar from 'material-ui/Snackbar';
 import Toggle from 'material-ui/Toggle';
 import { Card, CardText } from 'material-ui/Card';
+// import Clipboard from 'react-clipboard.js';
 import s from './Appointment.css';
 import history from '../../../history';
 import Link from '../../../components/Link/Link';
@@ -47,6 +48,7 @@ class Appointment extends React.Component {
       }),
     ).isRequired,
     post: PropTypes.func.isRequired,
+    copy: PropTypes.func.isRequired,
     queryPastAppointments: PropTypes.func.isRequired,
     services: PropTypes.instanceOf(AST),
     name: PropTypes.string,
@@ -296,6 +298,7 @@ class Appointment extends React.Component {
             </Link>
             {` -  `}
             <Link
+              copy={this.props.copy}
               key={`/p/customer/${customerId}/appointments`}
               to={`/p/customer/${customerId}/appointments`}
             >

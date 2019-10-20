@@ -47,6 +47,7 @@
     "query-string": "^4.3.4",
     "react": "^15.5.4",
     "react-addons-create-fragment": "^15.6.0",
+    "react-clipboard.js": "^2.0.16",
     "react-dom": "^15.5.4",
     "react-redux": "^5.0.6",
     "react-spinners": "0.4.3",

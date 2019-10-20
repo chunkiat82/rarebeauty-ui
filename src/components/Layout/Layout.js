@@ -17,6 +17,7 @@ import normalizeCss from 'normalize.css';
 import s from './Layout.css';
 import Header from '../Header';
 import LoaderContainer from '../Loading';
+// import ClipboardContainer from '../Clipboard';
 
 class Layout extends React.Component {
   static propTypes = {
@@ -32,6 +33,7 @@ class Layout extends React.Component {
         <div>
           <Header />
           <LoaderContainer />
+          {/* <ClipboardContainer /> */}
           {this.props.children}
           <br />
           <br />
