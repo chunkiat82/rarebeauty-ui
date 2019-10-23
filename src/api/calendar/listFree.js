@@ -119,7 +119,7 @@ export default function listFree(options) {
       .add(0, 'days')
       .format('YYYY-MM-DDTHH:mm:ssZ');
     const timeMax = moment()
-      .add(30, 'days')
+      .add(90, 'days')
       .format('YYYY-MM-DDTHH:mm:ssZ');
     const finalOptions = {
       timeMin,
