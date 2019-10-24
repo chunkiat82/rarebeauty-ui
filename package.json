@@ -212,6 +212,7 @@
     "render": "babel-node tools/run render",
     "serve": "babel-node tools/run runServer",
     "start": "babel-node tools/run start",
+    "tunnel": "`head -1 ./src/data/database/index.js | cut -c 4-`",
     "cli": "babel-node cli"
   }
 }

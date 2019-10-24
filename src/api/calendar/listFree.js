@@ -22,6 +22,26 @@ function generateAMP(inputMoment) {
   }
 }
 
+function generatEndMoment(inputMoment) {
+  if (inputMoment.day() > 0 && inputMoment.day() < 6) {
+    return moment(inputMoment)
+      .hours(21)
+      .minutes(0)
+      .seconds(0);
+  }
+  return moment(inputMoment)
+    .hours(19)
+    .minutes(0)
+    .seconds(0);
+}
+
+function generatStartMoment(inputMoment) {
+  return moment(inputMoment)
+    .hours(10)
+    .minutes(30)
+    .seconds(0);
+}
+
 function storeIntoFreeSLots(freeSlots, start, end) {
   const duration = moment.duration(end.diff(start));
   const durationInMinutes = duration.asMinutes();
@@ -35,6 +55,40 @@ function storeIntoFreeSLots(freeSlots, start, end) {
       amp: generateAMP(start),
     });
   }
+}
+
+function splitfreeSlots(freeSlots) {
+  const slots = [];
+  freeSlots.forEach(freeSlot => {
+    // console.log(freeSlot);
+    const start = moment(freeSlot.start);
+    const end = moment(freeSlot.end);
+
+    if (start.dayOfYear() < end.dayOfYear()) {
+      // caters for start and end within one day
+      const differenceInDays = end.dayOfYear() - start.dayOfYear();
+      if (differenceInDays === 1) {
+        storeIntoFreeSLots(slots, moment(start), generatEndMoment(start));
+        storeIntoFreeSLots(slots, generatStartMoment(end), end);
+      } else {
+        // console.log(`start`, start);
+        // console.log(`end`, end);
+        storeIntoFreeSLots(slots, moment(start), generatEndMoment(start));
+        for (let i = 1; i < differenceInDays; i += 1) {
+          const tempStart = moment(start).add(i, 'days');
+          storeIntoFreeSLots(
+            slots,
+            generatStartMoment(tempStart),
+            generatEndMoment(tempStart),
+          );
+        }
+        storeIntoFreeSLots(slots, generatStartMoment(end), moment(end));
+      }
+    } else {
+      slots[slots.length] = freeSlot;
+    }
+  });
+  return slots;
 }
 
 function convertBusyToFree(calendarId, response) {
@@ -55,54 +109,13 @@ function convertBusyToFree(calendarId, response) {
     const freeEnd = busySlot.start;
 
     const startMoment = moment(freeStart);
-    let endMoment = moment(freeEnd);
+    const endMoment = moment(freeEnd);
 
-    // weekdays MON to FRIDAY
-    if (startMoment.day() > 0 && startMoment.day() < 6) {
-      if (endMoment.hours() >= 21) {
-        endMoment = moment(startMoment)
-          .hours(21)
-          .minutes(0)
-          .seconds(0);
-      }
-    } else if (endMoment.hours() >= 19) {
-      endMoment = moment(startMoment)
-        .hours(19)
-        .minutes(0)
-        .seconds(0);
-    }
-
-    // catering for scenario if first appointment is after 10.30am
-    // condition programming - sequence matters a lot here
-    if (startMoment.dayOfYear() < endMoment.dayOfYear()) {
-      const tempStartMoment = moment(endMoment)
-        .hours(10)
-        .minutes(30)
-        .seconds(0);
-      const tempEndMoment = moment(endMoment);
-
-      // weekdays MON to FRIDAY
-      if (startMoment.day() > 0 && startMoment.day() < 6) {
-        endMoment = moment(startMoment)
-          .hours(21)
-          .minutes(0)
-          .seconds(0);
-      } else {
-        endMoment = moment(startMoment)
-          .hours(19)
-          .minutes(0)
-          .seconds(0);
-      }
-
-      storeIntoFreeSLots(freeSlots, startMoment, endMoment);
-      storeIntoFreeSLots(freeSlots, tempStartMoment, tempEndMoment);
-    } else {
-      storeIntoFreeSLots(freeSlots, startMoment, endMoment);
-    }
+    storeIntoFreeSLots(freeSlots, startMoment, endMoment);
     freeStart = busySlot.end;
   }
 
-  return freeSlots;
+  return splitfreeSlots(freeSlots);
 }
 
 export default function listFree(options) {
@@ -144,7 +157,8 @@ export default function listFree(options) {
       },
       async (err, response) => {
         if (err) {
-          rej(err);
+          console.err(err);
+          rej([]);
         } else {
           const freeSlots = convertBusyToFree(calendarId, response);
           res(freeSlots);
