@@ -108,18 +108,20 @@ class Home extends React.Component {
         for (let i = 0; i < filters.length; i += 1) {
           // console.log(`tempEnd`, tempEnd);
           if (filters[i] === 'A' ){
-            if (tempStart.isBetween(moment(tempStart).hours(10).minutes(30).seconds(0), moment(tempStart).hours(12).minutes(0).seconds(0), 'hours', '[]') ||
-            tempEnd.isBetween(moment(tempStart).hours(10).minutes(30).seconds(0), moment(tempStart).hours(12).minutes(0).seconds(0), 'hours', '[]'))
+            if (tempStart.isBetween(moment(tempStart).hours(10).minutes(30).seconds(0), moment(tempStart).hours(12).minutes(0).seconds(0), null, '[]') ||
+            tempEnd.isBetween(moment(tempStart).hours(10).minutes(30).seconds(0), moment(tempStart).hours(12).minutes(0).seconds(0), null, '[]'))
             return true;
+            
           }           
           if (filters[i] === 'M' ){
-            if (tempStart.isBetween(moment(tempStart).hours(12).minutes(0).seconds(0), moment(tempStart).hours(17).minutes(0).seconds(0), 'hours', '[]') ||
-            tempEnd.isBetween(moment(tempStart).hours(12).minutes(0).seconds(0), moment(tempStart).hours(17).minutes(0).seconds(0), 'hours', '[]'))
+            if (tempStart.isBetween(moment(tempStart).hours(12).minutes(0).seconds(0), moment(tempStart).hours(17).minutes(0).seconds(0), null, '[]') ||
+            tempEnd.isBetween(moment(tempStart).hours(12).minutes(0).seconds(0), moment(tempStart).hours(17).minutes(0).seconds(0), null, '(]'))
             return true;
+            if (tempStart.hours() < 12 && tempEnd.hours() > 17) return true;
           } 
           if (filters[i] === 'P' ){
-            if (tempStart.isBetween(moment(tempStart).hours(17).minutes(0).seconds(0), moment(tempStart).hours(21).minutes(0).seconds(0), 'hours', '[]') ||
-            tempEnd.isBetween(moment(tempStart).hours(17).minutes(0).seconds(0), moment(tempStart).hours(21).minutes(0).seconds(0), 'hours', '[]'))
+            if (tempStart.isBetween(moment(tempStart).hours(17).minutes(0).seconds(0), moment(tempStart).hours(21).minutes(0).seconds(0), null, '[]') ||
+            tempEnd.isBetween(moment(tempStart).hours(17).minutes(0).seconds(0), moment(tempStart).hours(21).minutes(0).seconds(0), null, '(]'))
             return true;
           } 
         }
@@ -152,7 +154,7 @@ class Home extends React.Component {
             <TableRow>
               <TableHeaderColumn>
                 <Toggle
-                  label="Morning"
+                  label="Morning <12pm"
                   defaultToggled={DEFAULT_TOGGLE_STATE}
                   style={styles.toggle}
                   thumbStyle={{ backgroundColor: "rgb(0, 123, 255, 0.4)" }}
@@ -169,7 +171,7 @@ class Home extends React.Component {
                 />
 
                 <Toggle
-                  label="Afternoon"
+                  label="Afternoon >12pm <5pm"
                   defaultToggled={DEFAULT_TOGGLE_STATE}
                   style={styles.toggle}
                   thumbStyle={{ backgroundColor: "rgb(220, 53, 69, 0.4)" }}
@@ -185,7 +187,7 @@ class Home extends React.Component {
                   }}
                 />
                 <Toggle
-                  label="Evening"
+                  label="Evening <5pm"
                   defaultToggled={DEFAULT_TOGGLE_STATE}
                   style={styles.toggle}
                   thumbStyle={{ backgroundColor: "rgb(40, 167, 69, 0.4)" }}
