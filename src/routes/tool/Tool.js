@@ -91,26 +91,40 @@ class Home extends React.Component {
 
   rows(values) {
     const filters = [];
-    if (this.state.filterA) filters.push(10);
-    if (this.state.filterM) filters.push(12);
-    if (this.state.filterP) filters.push(17);    
+    if (this.state.filterA) filters.push('A');
+    if (this.state.filterM) filters.push('M');
+    if (this.state.filterP) filters.push('P');    
 
     let timeFilter = this.state.number30FilterP || 0;
     timeFilter = this.state.number60FilterP || timeFilter;
 
     return values
+    .filter(value => value.durationInMinutes >= timeFilter)
       .filter(value => {
         if (filters.length === 0) return true;
         const tempStart = moment(value.start);
-        const tempEnd = moment(value.end);                
-        for (let i = 0; i < filters.length; i += 1) {          
-          if (filters[i] >= tempStart.hours()  &&  filters[i] <= tempEnd.hours()){
+        const tempEnd = moment(value.end);       
+        // console.log(`filters`, filters);
+        for (let i = 0; i < filters.length; i += 1) {
+          // console.log(`tempEnd`, tempEnd);
+          if (filters[i] === 'A' ){
+            if (tempStart.isBetween(moment(tempStart).hours(10).minutes(30).seconds(0), moment(tempStart).hours(12).minutes(0).seconds(0), 'hours', '[]') ||
+            tempEnd.isBetween(moment(tempStart).hours(10).minutes(30).seconds(0), moment(tempStart).hours(12).minutes(0).seconds(0), 'hours', '[]'))
             return true;
-          }            
+          }           
+          if (filters[i] === 'M' ){
+            if (tempStart.isBetween(moment(tempStart).hours(12).minutes(0).seconds(0), moment(tempStart).hours(17).minutes(0).seconds(0), 'hours', '[]') ||
+            tempEnd.isBetween(moment(tempStart).hours(12).minutes(0).seconds(0), moment(tempStart).hours(17).minutes(0).seconds(0), 'hours', '[]'))
+            return true;
+          } 
+          if (filters[i] === 'P' ){
+            if (tempStart.isBetween(moment(tempStart).hours(17).minutes(0).seconds(0), moment(tempStart).hours(21).minutes(0).seconds(0), 'hours', '[]') ||
+            tempEnd.isBetween(moment(tempStart).hours(17).minutes(0).seconds(0), moment(tempStart).hours(21).minutes(0).seconds(0), 'hours', '[]'))
+            return true;
+          } 
         }
         return false;
-      })
-      .filter(value => value.durationInMinutes >= timeFilter)
+      })      
       .map((value, index) => (
         <TableRow
           style={{ backgroundColor: selectRowColour(value), zIndex: -1 }}
