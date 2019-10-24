@@ -11,9 +11,10 @@ const generateJWT = require('../utilities/jwt');
  */
 function generateAMP(inputMoment) {
   const hour = inputMoment.hour();
+  const minutes = inputMoment.minutes();
   const AMP = ['A', 'M', 'P'];
   switch (true) {
-    case hour <= 12:
+    case hour < 12 || (hour === 12 && minutes <= 0):
       return AMP[0];
     case hour >= 17:
       return AMP[2];

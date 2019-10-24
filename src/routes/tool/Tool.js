@@ -62,11 +62,12 @@ const styles = {
   },
   toggle: {
     margin: "10px 5px",
-    width: 50
+    width: 50,
+    float: "right",
+    clear: "both",
   }
 };
 
-const ALL = ["A", "M", "P"];
 const DEFAULT_TOGGLE_STATE = false;
 
 function selectRowColour(value) {
@@ -89,17 +90,26 @@ class Home extends React.Component {
   }
 
   rows(values) {
-    let filters = [];
-    if (this.state.filterA) filters.push("A");
-    if (this.state.filterM) filters.push("M");
-    if (this.state.filterP) filters.push("P");
-    if (filters.length === 0) filters = ALL;
+    const filters = [];
+    if (this.state.filterA) filters.push(10);
+    if (this.state.filterM) filters.push(12);
+    if (this.state.filterP) filters.push(17);    
 
     let timeFilter = this.state.number30FilterP || 0;
     timeFilter = this.state.number60FilterP || timeFilter;
 
     return values
-      .filter(value => filters.includes(value.amp))
+      .filter(value => {
+        if (filters.length === 0) return true;
+        const tempStart = moment(value.start);
+        const tempEnd = moment(value.end);                
+        for (let i = 0; i < filters.length; i += 1) {          
+          if (filters[i] >= tempStart.hours()  &&  filters[i] <= tempEnd.hours()){
+            return true;
+          }            
+        }
+        return false;
+      })
       .filter(value => value.durationInMinutes >= timeFilter)
       .map((value, index) => (
         <TableRow
@@ -210,7 +220,7 @@ class Home extends React.Component {
                     this.setState({ number60FilterP: checked ? 60 : 0 });
                   }}
                 />
-              </TableHeaderColumn>              
+              </TableHeaderColumn>
             </TableRow>
           </TableHeader>
           <TableBody displayRowCheckbox={false}>
