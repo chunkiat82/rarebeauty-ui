@@ -2,7 +2,7 @@
 /* eslint-disable consistent-return */
 /* eslint-disable prettier/prettier */
 import React from 'react';
-import Layout from '../../../components/Layout';
+import Layout from '../../../components/PublicLayout';
 import AppointmentList from './ListAppointments';
 import {
   queryPastAppointments,

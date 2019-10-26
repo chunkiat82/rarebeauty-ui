@@ -38,7 +38,8 @@ async function action(context) {
       if (contact && contact.mobile && contact.mobile.replace(/ /g,'').indexOf(number.replace(/ /g,'')) >= 0) {
         // console.log('hit me');
         store.customerId = customerId;
-        return history.push(url);
+        history.push(url);
+        return true;
       }
     }
     store.customerId = null;
