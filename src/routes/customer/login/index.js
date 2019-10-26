@@ -42,7 +42,7 @@ async function action(context) {
       }
     }
     store.customerId = null;
-    return history.push('/');
+    return alert('Please enter correct mobile number');
   }
 
   return {
