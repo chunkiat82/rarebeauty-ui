@@ -27,6 +27,7 @@ const stylesGreen = {
   color: 'green',
   whiteSpace: 'normal',
 };
+
 const whiteSpace = {
   whiteSpace: 'normal',
 };
@@ -79,19 +80,19 @@ class AppointmentList extends React.Component {
         </TableRowColumn>
         <TableRowColumn>
           <p>
-            <span style={{ whiteSpace: 'normal' }}>
+            <span style={whiteSpace}>
               Created On: {moment(value.created).format('DD MMM YYYY hh:mm A')}
             </span>
           </p>
           <p>
-            <span style={{ whiteSpace: 'normal' }}>
-              {value.serviceIds
-                .map(
-                  serviceId =>
-                    // console.log(serviceId);
-                    this.props.services.peekByKey(serviceId).service,
-                )
-                .join(', ')}
+            <span style={whiteSpace}>
+              <ul style={{ padding: 0 }}>
+                {value.serviceIds.sort().map(serviceId => (
+                  <li key={serviceId}>
+                    {this.props.services.peekByKey(serviceId).service}
+                  </li>
+                ))}
+              </ul>
             </span>
           </p>
           <p>
@@ -121,7 +122,7 @@ class AppointmentList extends React.Component {
   render() {
     return (
       <Table>
-        <TableHeader displaySelectAll={false}>
+        <TableHeader adjustForCheckbox={false} displaySelectAll={false}>
           <TableRow>
             <TableHeaderColumn>Name</TableHeaderColumn>
             <TableHeaderColumn>Details</TableHeaderColumn>
