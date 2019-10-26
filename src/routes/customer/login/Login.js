@@ -29,7 +29,9 @@ class Login extends React.Component {
     if (this.state.mobile.length < 8) {
       alert('Please enter correct mobile number');
     } else {
-      this.props.submit(this.state.mobile);
+      this.props.submit(this.state.mobile).then(result => {
+        if (!result) alert('Please enter correct mobile number');
+      });
     }
   };
 
@@ -42,7 +44,7 @@ class Login extends React.Component {
       <div className={s.root}>
         <div className={s.container}>
           <br />
-          <form onSubmit={this.registerEmail.bind(this)}>
+          <form onSubmit={this.registerEmail}>
             <div className={s.formGroup}>
               <label className={s.label} htmlFor="mobile">
                 Your Mobile Number For Verification

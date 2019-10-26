@@ -29,20 +29,20 @@ async function action(context) {
     // hardcoded for /p/customer/customerId
     const customerId = url.split('/')[3];
 
-    if (customerId) {
+    if (customerId && number) {
       const resourceName = `people/${customerId}`;
       show(store)();
       const contact = await getContact(fetch)(resourceName);
       hide(store)();
       // console.log(contact.mobile.replace(/ /g,''));
-      if (contact && contact.mobile && contact.mobile.replace(/ /g,'').indexOf(number) >= 0) {
+      if (contact && contact.mobile && contact.mobile.replace(/ /g,'').indexOf(number.replace(/ /g,'')) >= 0) {
         // console.log('hit me');
         store.customerId = customerId;
         return history.push(url);
       }
     }
     store.customerId = null;
-    return alert('Please enter correct mobile number');
+    return false;
   }
 
   return {
