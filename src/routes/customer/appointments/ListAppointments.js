@@ -2,7 +2,7 @@
 /* eslint-disable prettier/prettier */
 /* eslint-disable css-modules/no-unused-class */
 /* eslint-disable react/forbid-prop-types */
-import "moment-duration-format";
+import 'moment-duration-format';
 import {
   Table,
   TableBody,
@@ -10,24 +10,24 @@ import {
   TableHeaderColumn,
   TableRow,
   TableRowColumn
-} from "material-ui/Table";
-import moment from "moment";
-import React from "react";
+} from 'material-ui/Table';
+import moment from 'moment';
+import React from 'react';
 // import PropTypes from 'prop-types';
-import withStyles from "isomorphic-style-loader/lib/withStyles";
-import s from "./Appointment.css";
-import history from "../../../history";
+import withStyles from 'isomorphic-style-loader/lib/withStyles';
+import s from './Appointment.css';
+import history from '../../../history';
 
 const stylesGreen = {
-  color: "green"
+  color: 'green'
 };
 
 const stylesPurple = {
-  color: "purple"
+  color: 'purple'
 };
 
 const whiteSpace = {
-  whiteSpace: "normal"
+  whiteSpace: 'normal'
 };
 
 class AppointmentList extends React.Component {
@@ -44,10 +44,10 @@ class AppointmentList extends React.Component {
             {value.event.shortURL ? (
               <a
                 href={`http://${value.event.shortURL}`}
-                target="_blank"
-                rel="noopener noreferrer"
+                target='_blank'
+                rel='noopener noreferrer'
               >
-                {" "}
+                {' '}
                 {value.event.shortURL}
               </a>
             ) : (
@@ -58,45 +58,43 @@ class AppointmentList extends React.Component {
             <span
               style={{
                 color:
-                  value.event.status === "confirmed"
+                  value.event.status === 'confirmed'
                     ? stylesPurple.color
                     : stylesGreen.color,
                 ...whiteSpace
               }}
             >
-              {value.event.status === "tentative"
-                ? "Appointment Created"
-                : "Appointment Confirmed by Customer"}
+              {value.event.status === 'tentative'
+                ? 'Appointment Created'
+                : 'Appointment Confirmed by Customer'}
             </span>
           </p>
         </TableRowColumn>
         <TableRowColumn>
           <p>
-            {moment(value.event.start).format("DD MMM YYYY")}
+            {moment(value.event.start).format('DD MMM YYYY')}
             &nbsp;-&nbsp;
-            {moment(value.event.start).format("hh:mm A")}
+            {moment(value.event.start).format('hh:mm A')}
           </p>
-          <p>
-            <span style={whiteSpace}>
-              <ul style={{ padding: 0 }}>
-                {value.event.serviceIds.sort().map(serviceId => (
-                  <li key={serviceId}>
-                    {this.props.services.peekByKey(serviceId).service}
-                  </li>
-                ))}
-              </ul>
-            </span>
-          </p>
-          <p>
-            <span style={whiteSpace}>
-              $
-              {value.event.serviceIds.reduce(
-                (prevValue, serviceId) =>
-                  prevValue + this.props.services.peekByKey(serviceId).price,
-                0
-              )}
-            </span>
-          </p>
+
+          <span style={whiteSpace}>
+            <ul style={{ padding: 0 }}>
+              {value.event.serviceIds.sort().map(serviceId => (
+                <li key={serviceId}>
+                  {this.props.services.peekByKey(serviceId).service}
+                </li>
+              ))}
+            </ul>
+          </span>
+
+          <span style={whiteSpace}>
+            $
+            {value.event.serviceIds.reduce(
+              (prevValue, serviceId) =>
+                prevValue + this.props.services.peekByKey(serviceId).price,
+              0
+            )}
+          </span>
         </TableRowColumn>
       </TableRow>
     ));

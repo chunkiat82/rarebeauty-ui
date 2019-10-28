@@ -18,6 +18,7 @@ import expressGraphQL from 'express-graphql';
 import jwt from 'jsonwebtoken';
 import PrettyError from 'pretty-error';
 import _httpErrorPages from 'http-error-pages';
+import ical from 'ical-generator';
 
 import schema from './data/schema';
 
@@ -27,6 +28,8 @@ import { reactMiddleware, reactErrorMiddleware } from './reactMiddleware';
 import API from './api/';
 
 import config from './config';
+
+const PEOPLE_PREFIX = 'people/';
 
 const app = express();
 
@@ -44,6 +47,11 @@ app.use(express.static(path.resolve(__dirname, 'public')));
 app.use(cookieParser());
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
+
+const cal = ical({
+  domain: config.app.workDomain,
+  name: config.app.workCalendar,
+});
 
 //
 // Authentication
@@ -176,7 +184,46 @@ app.use('/general/reservation/:eventId', async (req, res, next) => {
   const event = await API({ action: 'getEvent', eventId });
   req.data = { event, workAddress: config.app.workAddress };
 
-  reactMiddleware(req, res, next);
+  const now = moment();
+  const appointmentEnd = moment(event.end.dateTime);
+  // eslint-disable-next-line consistent-return
+  if (now.isAfter(appointmentEnd)) {
+    res.redirect('/');
+  } else {
+    reactMiddleware(req, res, next);
+  }
+});
+
+app.use('/general/calendar/:eventId', async (req, res) => {
+  const { eventId } = req.params;
+
+  if (eventId === 'images') return;
+  const event = await API({ action: 'getEvent', eventId });
+  // req.data = { event, workAddress: config.app.workAddress };
+
+  const customerId = event.extendedProperties.shared.resourceName;
+
+  cal.createEvent({
+    start: event.start.dateTime,
+    end: event.end.dateTime,
+    summary: 'Rare Beauty Appointment',
+    description: `
+We do Lashes, Facial, Waxing, Threading and More
+
+Appointment(s) are found @ ${config.app.customerURL}/${customerId.substring(
+      PEOPLE_PREFIX.length,
+      customerId.length,
+    )}/appointments
+    `,
+    location: config.app.workAddress,
+    url:
+      (event.extendedProperties && event.extendedProperties.shared.shortURL) ||
+      config.app.workDomain,
+  });
+
+  // eslint-disable-next-line consistent-return
+  return cal.serve(res);
+  // next(req, res, next);
 });
 
 //

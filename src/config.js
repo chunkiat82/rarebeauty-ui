@@ -77,5 +77,8 @@ module.exports = {
 
   app: {
     workAddress: keys.work_address,
+    workDomain: keys.domain,
+    workCalendar: keys.calendarName,
+    customerURL: keys.customerURL,
   },
 };

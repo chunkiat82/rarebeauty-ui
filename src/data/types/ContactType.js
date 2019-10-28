@@ -18,7 +18,7 @@ const ContactType = new ObjectType({
   fields: {
     name: {
       type: new NonNull(StringType),
-      async resolve(obj /* , args*/) {
+      async resolve(obj /* , args */) {
         // console.log(obj);
         const selectedObj = (obj.names && obj.names[0]) || null;
 
@@ -28,7 +28,7 @@ const ContactType = new ObjectType({
     },
     display: {
       type: new NonNull(StringType),
-      async resolve(obj /* , args*/) {
+      async resolve(obj /* , args */) {
         // console.log(obj);
         const selectedObj = (obj.names && obj.names[0]) || null;
 
@@ -38,13 +38,17 @@ const ContactType = new ObjectType({
     },
     mobile: {
       type: new NonNull(StringType),
-      async resolve(obj /* , args*/) {
+      async resolve(obj /* , args */) {
         // console.log(obj);
-        const selectedObj =
+        let selectedObj =
           (obj.phoneNumbers &&
             obj.phoneNumbers.filter(x => x.type === 'mobile')[0]) ||
           null;
-
+        if (selectedObj === null)
+          selectedObj =
+            (obj.phoneNumbers &&
+              obj.phoneNumbers.filter(x => x.type === 'other')[0]) ||
+            null;
         if (selectedObj === null) return obj.mobile;
         return selectedObj.value || selectedObj.canonicalForm;
       },

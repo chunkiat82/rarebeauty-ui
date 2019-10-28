@@ -46,6 +46,7 @@ async function action({ fetch, params, store }) {
   let cancelAppointmentsCount = 0;
   if (customerId) {
     contact = await getContact(fetch)(resourceName);
+    // console.log(contact);
     const { appointments, cancelCount } = await queryPastAppointments(fetch)(
       resourceName,
     );

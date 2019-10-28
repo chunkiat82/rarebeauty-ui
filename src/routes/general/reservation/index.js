@@ -20,6 +20,13 @@ async function action({ store }) {
     title: 'Rare Beauty Professional',
     component: (
       <Layout>
+        <div style={{ marginTop: '20px', textAlign: 'center' }}>
+          <a href={`/general/calendar/${event.id}`}>
+            Save Calendar
+            <br />
+            <i className={'material-icons'}>calendar_today</i>
+          </a>
+        </div>
         <MapAndMessage
           address={workAddress}
           message={`Slot reserved on ${moment(event.start.dateTime)
