@@ -22,7 +22,7 @@ async function action({ store }) {
       <Layout>
         <div style={{ marginTop: '20px', textAlign: 'center' }}>
           <a href={`/general/calendar/${event.id}`}>
-            Save Calendar
+            Save To Calendar
             <br />
             <i className={'material-icons'}>calendar_today</i>
           </a>
