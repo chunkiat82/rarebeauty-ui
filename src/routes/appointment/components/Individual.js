@@ -48,7 +48,6 @@ class Appointment extends React.Component {
       }),
     ).isRequired,
     post: PropTypes.func.isRequired,
-    copy: PropTypes.func.isRequired,
     queryPastAppointments: PropTypes.func.isRequired,
     services: PropTypes.instanceOf(AST),
     name: PropTypes.string,

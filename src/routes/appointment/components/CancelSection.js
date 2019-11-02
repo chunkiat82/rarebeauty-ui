@@ -23,23 +23,23 @@ class AppointmentCancelSection extends React.Component {
     open: false,
   };
 
-  handleClickOpen = () => {
-    this.setState({ open: true });
+  handleClickOpen = that => {
+    that.setState({ open: true });
   };
 
-  handleClose = async () => {
-    this.props.showLoading();
-    this.setState({
+  handleClose = async that => {
+    that.props.showLoading();
+    that.setState({
       submitted: true,
     });
-    const results = await this.props.post();
-    this.props.hideLoading();
+    const results = await that.props.post();
+    that.props.hideLoading();
 
     if (results.errors) {
-      this.setState({ error: 'Error In Creating Appointment' });
+      that.setState({ error: 'Error In Creating Appointment' });
       console.error('Error In Creating Appointment');
     } else {
-      this.setState({ notify: false });
+      that.setState({ notify: false });
       history.push(`/`);
     }
   };
@@ -52,7 +52,13 @@ class AppointmentCancelSection extends React.Component {
           this.setState({ open: false });
         }}
       />,
-      <FlatButton label="Yes" primary onClick={this.handleClose} />,
+      <FlatButton
+        label="Yes"
+        primary
+        onClick={() => {
+          this.handleClose(this);
+        }}
+      />,
     ];
 
     return (
@@ -66,7 +72,7 @@ class AppointmentCancelSection extends React.Component {
           fullWidth
           disabled={this.state.submitted}
           onClick={() => {
-            this.handleClickOpen();
+            this.handleClickOpen(this);
           }}
         />
         <Dialog
