@@ -13,9 +13,17 @@ function findExistingAppointments(calendar, options) {
 
   return new Promise(async (res, rej) => {
     const timeMin =
-      moment(startDT).add(1, 'seconds').toISOString() ||
-      moment().subtract(2, 'hours').toISOString();
-    const timeMax = endDT || moment().add(2, 'hours').toISOString();
+      moment(startDT)
+        .add(1, 'seconds')
+        .toISOString() ||
+      moment()
+        .subtract(2, 'hours')
+        .toISOString();
+    const timeMax =
+      endDT ||
+      moment()
+        .add(2, 'hours')
+        .toISOString();
     const finalOptions = {
       calendarId,
       timeMin,
@@ -69,9 +77,11 @@ function createAppointment(calendar, options) {
         resource: {
           start: { dateTime: startDT },
           end: { dateTime: endDT },
-          summary: `${name} (${countOfExistingAppointments > 0
-            ? countOfExistingAppointments
-            : 'FIRST'}) - S($${services.reduce(
+          summary: `${name} (${
+            countOfExistingAppointments > 0
+              ? countOfExistingAppointments
+              : 'FIRST'
+          }) - S($${services.reduce(
             (prevSum, item) => prevSum + item.price,
             0,
           )})-T($${totalAmount})-D($${deposit})`,
@@ -114,9 +124,9 @@ function createAppointment(calendar, options) {
           console.error(
             `There was an error contacting the Calendar service: ${err}`,
           );
-          rej(err);
+          return rej(err);
         }
-        res({ event, uuid });
+        return res({ event, uuid });
       },
     );
   });
@@ -143,27 +153,25 @@ export default function create(options) {
 
       if (force) {
         const { event, uuid } = await createAppointment(calendar, options);
-        res({ event, uuid });
-      } else {
-        const events = await findExistingAppointments(calendar, options);
-        const filteredEvents = events.filter(
-          event => event.summary.indexOf('-') !== 0,
-        );
-
-        if (filteredEvents.length > 0) {
-          console.error('---------------------------');
-          console.error(JSON.stringify(events, null, 2));
-          rej({ error: 'Overlapping appointment' });
-          console.error('---------------------------');
-          return;
-        }
-
-        const { event, uuid } = await createAppointment(calendar, options);
-        res({ event, uuid });
+        return res({ event, uuid });
       }
+      const events = await findExistingAppointments(calendar, options);
+      const filteredEvents = events.filter(
+        event => event.summary.indexOf('-') !== 0,
+      );
+
+      if (filteredEvents.length > 0) {
+        console.error('---------------------------');
+        console.error(JSON.stringify(events, null, 2));
+        rej({ error: 'Overlapping appointment' });
+        return console.error('---------------------------');
+      }
+
+      const { event, uuid } = await createAppointment(calendar, options);
+      return res({ event, uuid });
     } catch (err) {
       console.error('calendar create', err, options);
-      rej('no event created in the end');
+      return rej('no event created in the end');
     }
   });
 }
