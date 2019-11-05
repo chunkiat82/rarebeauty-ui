@@ -46,10 +46,9 @@ class Html extends React.Component {
           {scripts.map(script => (
             <link key={script} rel="preload" href={script} as="script" />
           ))}
-          <link
+          {/* <link
             href="https://fonts.googleapis.com/icon?family=Material+Icons"
-            rel="stylesheet"
-          />
+            rel="stylesheet"/> */}
           {styles.map(style => (
             <style
               key={style.id}
@@ -82,7 +81,24 @@ class Html extends React.Component {
               defer
             />
           )}
-          <script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.4/clipboard.min.js" />
+          <script
+            dangerouslySetInnerHTML={{
+              __html: `
+                  WebFontConfig = {
+                    google: { families: [ 'Material+Icons' ] }
+                  };
+                  (function() {
+                    var wf = document.createElement('script');
+                    wf.src = ('https:' == document.location.protocol ? 'https' : 'http') +
+                      '://ajax.googleapis.com/ajax/libs/webfont/1.5.18/webfont.js';
+                    wf.type = 'text/javascript';
+                    wf.async = 'true';
+                    var s = document.getElementsByTagName('script')[0];
+                    s.parentNode.insertBefore(wf, s);
+                  })();
+                  `,
+            }}
+          />
         </body>
       </html>
     );
