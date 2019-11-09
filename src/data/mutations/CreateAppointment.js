@@ -114,7 +114,11 @@ export default {
     let finalResourceName = resourceName;
     // console.log(`services=${services}`);
 
-    if (resourceName === '' || resourceName === undefined) {
+    if (
+      resourceName === '' ||
+      resourceName === undefined ||
+      resourceName === null
+    ) {
       // find by mobile first before creating
 
       const firstLast = name.split(' ');
@@ -149,14 +153,14 @@ export default {
       });
       /* end of abstraction */
 
+      let reminded = false;
+
       // get finalResourceName here
       const person = await api({
         action: 'getContact',
         resourceName: finalResourceName,
       });
       const userDefined = person && person.userDefined;
-
-      let reminded = false;
 
       if (userDefined) {
         const validPhoneArray = userDefined.filter(

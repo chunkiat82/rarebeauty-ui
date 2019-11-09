@@ -38,7 +38,8 @@ export default async function create({ first, last, mobile }) {
         if (err) {
           rej(err);
         } else {
-          await getList({ forceRefresh: true });
+          // [TEST20191109] - remove "await" from getList
+          getList({ forceRefresh: true });
           res(me);
         }
       },

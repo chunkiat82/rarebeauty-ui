@@ -13,7 +13,7 @@ module.exports = function generateJWT(subject = null) {
       ], // an array of auth scopes
       subject,
     );
-    jwtClient.authorize((err, tokens) => {
+    jwtClient.authorize(err => {
       if (err) {
         rej(err);
       } else {

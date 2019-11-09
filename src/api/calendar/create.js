@@ -151,20 +151,18 @@ export default function create(options) {
     try {
       const calendar = google.calendar({ version: 'v3', auth: jwtClient });
 
-      if (force) {
-        const { event, uuid } = await createAppointment(calendar, options);
-        return res({ event, uuid });
-      }
-      const events = await findExistingAppointments(calendar, options);
-      const filteredEvents = events.filter(
-        event => event.summary.indexOf('-') !== 0,
-      );
+      if (!force) {
+        const events = await findExistingAppointments(calendar, options);
+        const filteredEvents = events.filter(
+          event => event.summary.indexOf('-') !== 0,
+        );
 
-      if (filteredEvents.length > 0) {
-        console.error('---------------------------');
-        console.error(JSON.stringify(events, null, 2));
-        rej({ error: 'Overlapping appointment' });
-        return console.error('---------------------------');
+        if (filteredEvents.length > 0) {
+          console.error('---------------------------');
+          console.error(JSON.stringify(events, null, 2));
+          rej({ error: 'Overlapping appointment' });
+          return console.error('---------------------------');
+        }
       }
 
       const { event, uuid } = await createAppointment(calendar, options);

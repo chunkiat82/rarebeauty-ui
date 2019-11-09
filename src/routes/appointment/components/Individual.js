@@ -254,7 +254,7 @@ class Appointment extends React.Component {
   };
   handleUpdateMobile = mobileInput =>
     this.setState({ mobileInput, resourceName: '' });
-  handleDiscountChange = (event, newDiscount) =>
+  handleDiscountChange = (_event, newDiscount) =>
     this.setState({
       discount: newDiscount,
       totalAmount: this.calculateTotal(
@@ -263,7 +263,7 @@ class Appointment extends React.Component {
         newDiscount,
       ),
     });
-  handleAdditionalChange = (event, newAdditional) =>
+  handleAdditionalChange = (_event, newAdditional) =>
     this.setState({
       additional: newAdditional,
       totalAmount: this.calculateTotal(
@@ -383,7 +383,11 @@ class Appointment extends React.Component {
             onNewRequest={this.handleNewRequest}
             onUpdateInput={this.handleUpdateName}
             floatingLabelText="Name"
-            filter={AutoComplete.fuzzyFilter}
+            filter={(searchText, key) =>
+              (searchText !== '' && key.indexOf(searchText) !== -1) ||
+              (searchText.length > 3 &&
+                AutoComplete.fuzzyFilter(searchText, key))
+            }
             fullWidth
             maxSearchResults={10}
             searchText={this.state.name}
@@ -394,7 +398,7 @@ class Appointment extends React.Component {
             }}
             hintText="Type anything"
             dataSource={this.state.contactDS || []}
-            dataSourceConfig={{ text: 'mobile', value: 'mobile' }}
+            dataSourceConfig={{ text: 'display', value: 'mobile' }}
             onNewRequest={this.handleNewRequest}
             floatingLabelText="Mobile"
             onUpdateInput={this.handleUpdateMobile}
