@@ -20,7 +20,7 @@ const keys = require('../api/keys/twilio.json');
 
 const client = new Twilio(keys.accountSid, keys.authToken);
 
-export function handleTwilioWebhook(req, res) {
+export function handleTwilioWebhook(req) {
   console.log(req.body);
 
   const bodyOut = {
@@ -37,7 +37,6 @@ export function handleTwilioWebhook(req, res) {
     .catch(error => {
       console.error(error);
     });
-  return res.status(200);
 }
 
 export default handleTwilioWebhook;

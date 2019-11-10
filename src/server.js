@@ -149,7 +149,7 @@ app.use(
 );
 
 app.use('/events/calendar', async (req, res) => {
-  console.error('handleCalendarWebhook typeof', typeof handleCalendarWebhook);
+  // console.error('handleCalendarWebhook typeof', typeof handleCalendarWebhook);
   try {
     await handleCalendarWebhook(req.headers);
   } catch (e) {
@@ -159,7 +159,8 @@ app.use('/events/calendar', async (req, res) => {
 });
 
 app.use('/webhooks/twilio', async (req, res) => {
-  handleTwilioWebhook(req, res);
+  handleTwilioWebhook(req);
+  res.sendStatus(200);
 });
 
 app.use('/public/appointment/confirm/:eventId', async (req, res) => {
