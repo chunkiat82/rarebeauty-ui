@@ -22,7 +22,7 @@ import ical from 'ical-generator';
 
 import schema from './data/schema';
 
-import { handleCalendarWebhook } from './hooks';
+import { handleCalendarWebhook, handleTwilioWebhook } from './hooks';
 // import { logLogin } from './data/database/login';
 import { reactMiddleware, reactErrorMiddleware } from './reactMiddleware';
 import API from './api/';
@@ -126,6 +126,8 @@ app.use(
       /\/assets*/,
       /\/page+/,
       /\/p+/,
+      /\/api+/,
+      /\/webhooks+/,
     ],
   }),
 );
@@ -149,6 +151,10 @@ app.use(
 app.use('/events/calendar', async (req, res) => {
   await handleCalendarWebhook(req.headers);
   res.sendStatus(200);
+});
+
+app.use('/webhooks/twilio', async (req, res) => {
+  handleTwilioWebhook(req, res);
 });
 
 app.use('/public/appointment/confirm/:eventId', async (req, res) => {
