@@ -24,7 +24,7 @@ export function handleTwilioWebhook(req, res) {
   console.log(req.body);
 
   const bodyOut = {
-    to: req.body.From,
+    to: 'whatsapp:+14084129807',
     from: req.body.To,
     body: `You said ${req.body.Body}`,
   };
