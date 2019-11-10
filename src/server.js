@@ -149,6 +149,7 @@ app.use(
 );
 
 app.use('/events/calendar', async (req, res) => {
+  console.error('handleCalendarWebhook typeof', typeof handleCalendarWebhook);
   try {
     await handleCalendarWebhook(req.headers);
   } catch (e) {
