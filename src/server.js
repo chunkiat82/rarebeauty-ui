@@ -149,7 +149,11 @@ app.use(
 );
 
 app.use('/events/calendar', async (req, res) => {
-  await handleCalendarWebhook(req.headers);
+  try {
+    await handleCalendarWebhook(req.headers);
+  } catch (e) {
+    console.error(`handleCalendarWebhook`, e);
+  }
   res.sendStatus(200);
 });
 
