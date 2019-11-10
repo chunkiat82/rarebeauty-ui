@@ -23,13 +23,20 @@ const client = new Twilio(keys.accountSid, keys.authToken);
 export function handleTwilioWebhook(req, res) {
   console.log(req.body);
 
+  const bodyOut = {
+    to: req.body.From,
+    from: req.body.To,
+    body: `You said ${req.body.Body}`,
+  };
+
+  console.log('bodyOut', bodyOut);
+
   client.messages
-    .create({
-      to: req.body.From,
-      from: req.body.To,
-      body: `You said ${req.body.Body}`,
-    })
-    .then(message => console.log(message.sid));
+    .create(bodyOut)
+    .then(message => console.log(message.sid))
+    .catch(error => {
+      console.error(error);
+    });
   return res.status(200);
 }
 
