@@ -12,9 +12,17 @@ function findExistingAppointments(calendar, options) {
 
   return new Promise(async (res, rej) => {
     const timeMin =
-      moment(startDT).add(1, 'seconds').toISOString() ||
-      moment().subtract(2, 'hours').toISOString();
-    const timeMax = endDT || moment().add(2, 'hours').toISOString();
+      moment(startDT)
+        .add(1, 'seconds')
+        .toISOString() ||
+      moment()
+        .subtract(2, 'hours')
+        .toISOString();
+    const timeMax =
+      endDT ||
+      moment()
+        .add(2, 'hours')
+        .toISOString();
     const finalOptions = {
       calendarId,
       timeMin,
@@ -54,7 +62,9 @@ function createAppointment(calendar, options) {
 
     const {
       count: countOfExistingAppointments,
-    } = await getAppointmentsCountByPerson({ id: resourceName });
+    } = await getAppointmentsCountByPerson({
+      id: resourceName,
+    });
     // const countOfExistingAppointments = 0;
 
     let finalMobile = mobile;
@@ -66,11 +76,17 @@ function createAppointment(calendar, options) {
       {
         calendarId,
         resource: {
-          start: { dateTime: startDT },
-          end: { dateTime: endDT },
-          summary: `${name} (${countOfExistingAppointments > 0
-            ? countOfExistingAppointments
-            : 'FIRST'}) - S($${services.reduce(
+          start: {
+            dateTime: startDT,
+          },
+          end: {
+            dateTime: endDT,
+          },
+          summary: `${name} (${
+            countOfExistingAppointments > 0
+              ? countOfExistingAppointments
+              : 'FIRST'
+          }) - S($${services.reduce(
             (prevSum, item) => prevSum + item.price,
             0,
           )})-T($${totalAmount})-D($${deposit})`,
@@ -104,11 +120,14 @@ function createAppointment(calendar, options) {
       (err, event) => {
         if (err) {
           console.error(
-            `There was an error contacting the Calendar service: ${err}`,
+            `There was an error contacting the Calendar service2: ${err}`,
           );
           rej(err);
         }
-        res({ event, uuid });
+        res({
+          event,
+          uuid,
+        });
       },
     );
   });
@@ -131,11 +150,24 @@ export default function create(options) {
     const jwtClient = await generateJWT();
 
     try {
-      const calendar = google.calendar({ version: 'v3', auth: jwtClient });
+      const calendar = google.calendar({
+        version: 'v3',
+        auth: jwtClient,
+        timeout: 5000, // 5 seconds.
+        ontimeout() {
+          // Handle timeout.
+          console.error(
+            'gapi.client create waiting could not load in a timely manner!',
+          );
+        },
+      });
 
       if (force) {
         const { event, uuid } = await createAppointment(calendar, options);
-        res({ event, uuid });
+        res({
+          event,
+          uuid,
+        });
       } else {
         const events = await findExistingAppointments(calendar, options);
         const filteredEvents = events.filter(
@@ -145,13 +177,18 @@ export default function create(options) {
         if (filteredEvents.length > 0) {
           console.error('---------------------------');
           console.error(JSON.stringify(events, null, 2));
-          rej({ error: 'Overlapping appointment' });
+          rej({
+            error: 'Overlapping appointment',
+          });
           console.error('---------------------------');
           return;
         }
 
         const { event, uuid } = await createAppointment(calendar, options);
-        res({ event, uuid });
+        res({
+          event,
+          uuid,
+        });
       }
     } catch (err) {
       console.error('calendar create', err, options);

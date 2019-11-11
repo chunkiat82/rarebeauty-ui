@@ -161,7 +161,8 @@ app.use('/events/calendar', async (req, res, next) => {
 
 app.use('/webhooks/twilio', async (req, res) => {
   handleTwilioWebhook(req);
-  res.sendStatus(200);
+  res.send('null');
+  res.status(201).end();
 });
 
 app.use('/public/appointment/confirm/:eventId', async (req, res) => {

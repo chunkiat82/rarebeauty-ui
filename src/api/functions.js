@@ -143,9 +143,18 @@ async function informReservationToCustomer(options) {
           -1;
         const startDate = moment(event.start.dateTime).format('DD-MMM');
         const startTime = moment(event.start.dateTime).format('hh:mm a');
-        const shortURL = await urlCreate({
-          longURL: `${reservationURL}${event.id}`,
-        });
+
+        let shortURL = '';
+        try {
+          shortURL = await urlCreate({
+            longURL: `${reservationURL}${event.id}`,
+          });
+        } catch (urlError) {
+          console.error('unable to create URL - trying again', urlError);
+          shortURL = await urlCreate({
+            longURL: `${reservationURL}${event.id}`,
+          });
+        }
 
         const message = `${
           updated ? 'Updated - ' : ''
@@ -156,7 +165,12 @@ async function informReservationToCustomer(options) {
         console.error(`message=${message}`);
 
         if (mobile.indexOf(NO_MOBILE_NUMBER) === -1) {
-          await sms(Object.assign({}, options, { mobile, message }));
+          await sms(
+            Object.assign({}, options, {
+              mobile,
+              message,
+            }),
+          );
         } else {
           console.error(`${name} not sent because mobile number is ${mobile}`);
         }
@@ -168,12 +182,12 @@ async function informReservationToCustomer(options) {
           shortURL: shortURL.id,
         });
       } catch (err) {
-        console.error(`informReservationToCustomer-${err}`);
+        console.error(`informReservationToCustomer1`, err);
       }
     }
     return event;
   } catch (err) {
-    console.error(err);
+    console.error(`informReservationToCustomer2`, err);
     throw err;
   }
 }
@@ -188,8 +202,13 @@ async function createEvent(options) {
       }),
     );
 
-    const finalEvent = await informReservationToCustomer({ eventId: event.id });
-    return { event: finalEvent, uuid };
+    const finalEvent = await informReservationToCustomer({
+      eventId: event.id,
+    });
+    return {
+      event: finalEvent,
+      uuid,
+    };
   } catch (err) {
     console.error('createEvent - ', err);
     throw err;
@@ -208,7 +227,10 @@ async function createWaitingEvent(options) {
 
     // not able to inform today because of no event being stored in DB, this is best effort information
     // const finalEvent = await informReservationToCustomer({ eventId: event.id });
-    return { event, uuid };
+    return {
+      event,
+      uuid,
+    };
   } catch (err) {
     console.error('createWaitingEvent - ', err);
     throw err;
@@ -288,7 +310,12 @@ async function remindCustomers(options) {
             console.error(`message=${message}`);
 
             if (mobile.indexOf(NO_MOBILE_NUMBER) === -1) {
-              await sms(Object.assign({}, options, { mobile, message }));
+              await sms(
+                Object.assign({}, options, {
+                  mobile,
+                  message,
+                }),
+              );
             } else {
               console.error(
                 `${name} not reminded because mobile number is ${mobile}`,
@@ -577,7 +604,12 @@ async function remindCustomersTouchUp(options) {
 
           console.error(`message=${message}`);
 
-          await sms(Object.assign({}, options, { mobile, message }));
+          await sms(
+            Object.assign({}, options, {
+              mobile,
+              message,
+            }),
+          );
 
           await calendarPatch({
             eventId: event.id,
@@ -624,7 +656,9 @@ async function listTransactions(options) {
 async function listFreeSlots(options) {
   try {
     const slots = await calendarListFree(
-      Object.assign({}, options, { calendarId }),
+      Object.assign({}, options, {
+        calendarId,
+      }),
     );
     return slots;
   } catch (err) {

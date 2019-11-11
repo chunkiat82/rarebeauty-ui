@@ -58,8 +58,8 @@ async function patchHandler(res, rej, calendar, options, eventResponse) {
     )})-T($${totalAmount})-D($${deposit})
 
 ${services
-      .map(item => item.service)
-      // eslint-disable-next-line prettier/prettier
+  .map(item => item.service)
+  // eslint-disable-next-line prettier/prettier
       .join(',')}\n\n${EDIT_URL}/${apptId}\n\n${WHATSAPPURL}/${finalMobile.replace('+', '')}`;
 
     const {
@@ -68,10 +68,9 @@ ${services
       id: resource.extendedProperties.shared.resourceName,
     });
 
-    resource.summary = `${resource.attendees[0]
-      .displayName} (${countOfExistingAppointments > 0
-      ? countOfExistingAppointments
-      : 'FIRST'}) - S($${services.reduce(
+    resource.summary = `${resource.attendees[0].displayName} (${
+      countOfExistingAppointments > 0 ? countOfExistingAppointments : 'FIRST'
+    }) - S($${services.reduce(
       (prevSum, item) => prevSum + item.price,
       0,
     )})-T($${totalAmount})-D($${deposit})`;
@@ -114,7 +113,7 @@ ${services
   calendar.events.patch(patchObject, (err, event) => {
     if (err) {
       console.error(
-        `There was an error contacting the Calendar service: ${JSON.stringify(
+        `There was an error contacting the Calendar service3: ${JSON.stringify(
           err,
         )}`,
       );
@@ -139,6 +138,11 @@ export default function patch(options) {
     const calendar = google.calendar({
       version: 'v3',
       auth: jwtClient,
+      timeout: 5000, // 5 seconds.
+      ontimeout() {
+        // Handle timeout.
+        console.error('gapi.client patch could not load in a timely manner!');
+      },
     });
     calendar.events.get(
       {

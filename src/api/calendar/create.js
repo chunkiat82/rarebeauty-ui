@@ -63,7 +63,9 @@ function createAppointment(calendar, options) {
 
     const {
       count: countOfExistingAppointments,
-    } = await getAppointmentsCountByPerson({ id: resourceName });
+    } = await getAppointmentsCountByPerson({
+      id: resourceName,
+    });
     // const countOfExistingAppointments = 0;
 
     let finalMobile = mobile;
@@ -75,8 +77,12 @@ function createAppointment(calendar, options) {
       {
         calendarId,
         resource: {
-          start: { dateTime: startDT },
-          end: { dateTime: endDT },
+          start: {
+            dateTime: startDT,
+          },
+          end: {
+            dateTime: endDT,
+          },
           summary: `${name} (${
             countOfExistingAppointments > 0
               ? countOfExistingAppointments
@@ -122,11 +128,14 @@ function createAppointment(calendar, options) {
       (err, event) => {
         if (err) {
           console.error(
-            `There was an error contacting the Calendar service: ${err}`,
+            `There was an error contacting the Calendar service1: ${err}`,
           );
           return rej(err);
         }
-        return res({ event, uuid });
+        return res({
+          event,
+          uuid,
+        });
       },
     );
   });
@@ -149,7 +158,17 @@ export default function create(options) {
     const jwtClient = await generateJWT();
 
     try {
-      const calendar = google.calendar({ version: 'v3', auth: jwtClient });
+      const calendar = google.calendar({
+        version: 'v3',
+        auth: jwtClient,
+        timeout: 5000, // 5 seconds.
+        ontimeout() {
+          // Handle timeout.
+          console.error(
+            'gapi.client create appointment could not load in a timely manner!',
+          );
+        },
+      });
 
       if (!force) {
         const events = await findExistingAppointments(calendar, options);
@@ -160,13 +179,18 @@ export default function create(options) {
         if (filteredEvents.length > 0) {
           console.error('---------------------------');
           console.error(JSON.stringify(events, null, 2));
-          rej({ error: 'Overlapping appointment' });
+          rej({
+            error: 'Overlapping appointment',
+          });
           return console.error('---------------------------');
         }
       }
 
       const { event, uuid } = await createAppointment(calendar, options);
-      return res({ event, uuid });
+      return res({
+        event,
+        uuid,
+      });
     } catch (err) {
       console.error('calendar create', err, options);
       return rej('no event created in the end');

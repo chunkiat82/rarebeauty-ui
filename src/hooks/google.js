@@ -51,7 +51,7 @@ export async function handleCalendarWebhook(headers) {
   // console.log('-------------------------------------------------------');
   // headers not used
   const { value: configWatch } = await get('config:watch');
-  console.error('-------------------------------------------------------');
+  console.error('-------------------------------------------------------0');
   // console.log(headers["x-goog-resource-id"]);
   // console.log(configWatch.resourceId);
   // console.log('-------------------------------------------------------');
@@ -67,11 +67,11 @@ export async function handleCalendarWebhook(headers) {
   });
 
   const { items: events, nextSyncToken } = response;
-  console.error('----------------------------------------------');
+  console.error('----------------------------------------------1');
   console.error(JSON.stringify(response, null, 2));
-  console.error('----------------------------------------------');
+  console.error('----------------------------------------------2');
   console.error(JSON.stringify(response.items, null, 2));
-  console.error('----------------------------------------------');
+  console.error('----------------------------------------------3');
   console.error(`Incoming Changed events (${events.length}):`);
   events.forEach(async item => {
     // implement this feature later
@@ -110,7 +110,7 @@ export async function handleCalendarWebhook(headers) {
         );
         await upsert(`trans:${uuid}`, transaction);
       } catch (err) {
-        console.error(err);
+        console.error('tryng to upsert transaction', err);
       }
     } else {
       console.error(`unhandled status-${item.id}`);
