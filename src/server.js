@@ -148,14 +148,15 @@ app.use(
   })),
 );
 
-app.use('/events/calendar', async (req, res) => {
+app.use('/events/calendar', async (req, res, next) => {
   // console.error('handleCalendarWebhook typeof', typeof handleCalendarWebhook);
   try {
     await handleCalendarWebhook(req.headers);
+    res.json({ ok: true });
   } catch (e) {
     console.error(`handleCalendarWebhook`, e);
+    next(e);
   }
-  res.sendStatus(200);
 });
 
 app.use('/webhooks/twilio', async (req, res) => {
@@ -166,7 +167,6 @@ app.use('/webhooks/twilio', async (req, res) => {
 app.use('/public/appointment/confirm/:eventId', async (req, res) => {
   const { eventId } = req.params;
   await API({ action: 'patchEvent', status: 'confirmed', eventId });
-  res.status(200);
   res.send(
     `<!doctype html><html><body style="background-color:#373277"><h1><center><span style="color:white">Your Appointment is confirmed!</span></center></h1></body></html>`,
   );
