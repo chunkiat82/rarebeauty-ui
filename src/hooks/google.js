@@ -46,6 +46,30 @@ async function handleUpsert(item) {
   await upsert(`event:${item.id}`, item);
 }
 
+async function updateTransactionOnTime(item) {
+  const uuid = item.extendedProperties.shared.uuid;
+  let transResponse = null;
+  let transaction = null;
+
+  try {
+    console.error(`uuid=${uuid}`);
+    transResponse = await get(`trans:${uuid}`);
+    transaction = transResponse.value;
+    transaction.apptDate = moment(item.start.dateTime, 'YYYY-MM-DDThh:mm:ssZ');
+  } catch (err) {
+    console.error('tryng to get transaction', err);
+    transResponse = await get(`trans:${uuid}`);
+    transaction = transResponse.value;
+    transaction.apptDate = moment(item.start.dateTime, 'YYYY-MM-DDThh:mm:ssZ');
+  }
+
+  try {
+    await upsert(`trans:${uuid}`, transaction);
+  } catch (err) {
+    console.error('tryng to get and upsert transaction', err);
+  }
+}
+
 export async function handleCalendarWebhook(headers) {
   // console.log(`headers=${JSON.stringify(headers, null, 2)}`);
   // console.log('-------------------------------------------------------');
@@ -98,20 +122,8 @@ export async function handleCalendarWebhook(headers) {
     } else if (item.status === 'confirmed' || item.status === 'tentative') {
       // some massaging here
       populateStats(item);
-      handleUpsert(item);
-      try {
-        const uuid = item.extendedProperties.shared.uuid;
-        console.error(`uuid=${uuid}`);
-        const transResponse = await get(`trans:${uuid}`);
-        const transaction = transResponse.value;
-        transaction.apptDate = moment(
-          item.start.dateTime,
-          'YYYY-MM-DDThh:mm:ssZ',
-        );
-        await upsert(`trans:${uuid}`, transaction);
-      } catch (err) {
-        console.error('tryng to upsert transaction', err);
-      }
+      await handleUpsert(item);
+      await updateTransactionOnTime(item);
     } else {
       console.error(`unhandled status-${item.id}`);
     }
