@@ -15,6 +15,10 @@ function populateStats(item) {
   item.extendedProperties.shared.bookedAhead = seconds < 0 ? 0 : seconds;
 }
 
+function sleep(ms) {
+  return new Promise(resolve => setTimeout(resolve, ms));
+}
+
 async function handleCancel(item) {
   try {
     const eventId = item.id;
@@ -57,16 +61,27 @@ async function updateTransactionOnTime(item) {
     transaction = transResponse.value;
     transaction.apptDate = moment(item.start.dateTime, 'YYYY-MM-DDThh:mm:ssZ');
   } catch (err) {
-    console.error('tryng to get transaction', err);
-    transResponse = await get(`trans:${uuid}`);
-    transaction = transResponse.value;
-    transaction.apptDate = moment(item.start.dateTime, 'YYYY-MM-DDThh:mm:ssZ');
+    console.error('retryng to get transaction', err);
+    await sleep(2000);
+    try {
+      transResponse = await get(`trans:${uuid}`);
+      transaction = transResponse.value;
+      transaction.apptDate = moment(
+        item.start.dateTime,
+        'YYYY-MM-DDThh:mm:ssZ',
+      );
+    } catch (innerErr) {
+      console.error('failed tryng to get transaction', innerErr);
+    }
   }
 
-  try {
-    await upsert(`trans:${uuid}`, transaction);
-  } catch (err) {
-    console.error('tryng to get and upsert transaction', err);
+  // If transaction is not null or undefined
+  if (transaction) {
+    try {
+      await upsert(`trans:${uuid}`, transaction);
+    } catch (err) {
+      console.error('upsert transaction', err);
+    }
   }
 }
 
