@@ -1,5 +1,6 @@
-import { get, upsert } from '../../data/database';
 import moment from 'moment';
+import { get, upsert } from '../../data/database';
+
 /**
  * return string nextSyncToken
  */
@@ -10,6 +11,7 @@ export async function getSyncToken() {
     syncToken = obj.value.syncToken;
     // console.log(`syncToken:${syncToken}`);
   } catch (err) {
+    console.error('getSyncToken', err);
     throw err;
   }
   return syncToken;
@@ -20,6 +22,7 @@ export async function setSyncToken(options) {
   try {
     await upsert('syncToken:calendar', { syncToken, lastUpdated: moment() });
   } catch (err) {
+    console.error('setSyncToken', err);
     throw err;
   }
 }

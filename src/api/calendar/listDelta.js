@@ -1,12 +1,9 @@
-const generateJWT = require('../utilities/jwt');
-const google = require('googleapis');
-const couchbase = require('couchbase');
+const { generateCalendarObj } = require('../utilities/jwt');
 
 export default function listDelta(options) {
   return new Promise(async (res, rej) => {
     const { calendarId, syncToken } = options;
-    const jwtClient = await generateJWT();
-    const calendar = google.calendar({ version: 'v3', auth: jwtClient });
+    const calendar = await generateCalendarObj();
     calendar.events.list(
       {
         calendarId,

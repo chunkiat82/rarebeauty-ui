@@ -89,21 +89,27 @@ export async function handleCalendarWebhook(headers) {
   // console.log(`headers=${JSON.stringify(headers, null, 2)}`);
   // console.log('-------------------------------------------------------');
   // headers not used
-  const { value: configWatch } = await get('config:watch');
-  console.error('-------------------------------------------------------0');
-  // console.log(headers["x-goog-resource-id"]);
-  // console.log(configWatch.resourceId);
-  // console.log('-------------------------------------------------------');
-  if (headers['x-goog-resource-id'] !== configWatch.resourceId) {
-    console.error('need to check this ASAP');
-    return;
-  }
+  let response = null;
+  try {
+    const { value: configWatch } = await get('config:watch');
+    console.error('-------------------------------------------------------0');
+    // console.log(headers["x-goog-resource-id"]);
+    // console.log(configWatch.resourceId);
+    // console.log('-------------------------------------------------------');
+    if (headers['x-goog-resource-id'] !== configWatch.resourceId) {
+      console.error('need to check this ASAP');
+      return;
+    }
 
-  const syncToken = await getSyncToken(headers);
-  const response = await api({
-    action: 'listDeltaEvents',
-    syncToken,
-  });
+    const syncToken = await getSyncToken(headers);
+    response = await api({
+      action: 'listDeltaEvents',
+      syncToken,
+    });
+  } catch (configErr) {
+    console.error('configErr', configErr);
+    throw configErr;
+  }
 
   const { items: events, nextSyncToken } = response;
   console.error('----------------------------------------------1');

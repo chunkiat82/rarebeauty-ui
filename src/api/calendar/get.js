@@ -1,12 +1,9 @@
-const generateJWT = require('../utilities/jwt');
-const google = require('googleapis');
-// const moment = require('moment');
+const { generateCalendarObj } = require('../utilities/jwt');
 
 export default function get(options) {
   const { calendarId, eventId } = options;
   return new Promise(async (res, rej) => {
-    const jwtClient = await generateJWT();
-    const calendar = google.calendar({ version: 'v3', auth: jwtClient });
+    const calendar = await generateCalendarObj();
     // const timeMin = timeStart || moment().subtract(1, 'hours').toISOString();
     calendar.events.get(
       {

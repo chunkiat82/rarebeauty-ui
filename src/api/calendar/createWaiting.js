@@ -1,7 +1,6 @@
-import google from 'googleapis';
 import moment from 'moment';
 import uuidv1 from 'uuid/v1';
-import generateJWT from '../utilities/jwt';
+import { generateCalendarObj } from '../utilities/jwt';
 import { byPersonCount as getAppointmentsCountByPerson } from '../appointments/person';
 
 const TEST_EMAIL = `test@soho.sg`;
@@ -147,20 +146,8 @@ export default function create(options) {
   }
 
   return new Promise(async (res, rej) => {
-    const jwtClient = await generateJWT();
-
     try {
-      const calendar = google.calendar({
-        version: 'v3',
-        auth: jwtClient,
-        timeout: 5000, // 5 seconds.
-        ontimeout() {
-          // Handle timeout.
-          console.error(
-            'gapi.client create waiting could not load in a timely manner!',
-          );
-        },
-      });
+      const calendar = await generateCalendarObj();
 
       if (force) {
         const { event, uuid } = await createAppointment(calendar, options);

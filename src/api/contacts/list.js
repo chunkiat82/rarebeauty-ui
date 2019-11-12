@@ -1,12 +1,6 @@
 /* eslint-disable consistent-return */
 // https://developers.google.com/apis-explorer/?hl=en_US#p/
-
-import google from 'googleapis';
-import { get as getConfig } from '../utilities/configs';
-
-const generateJWT = require('../utilities/jwt');
-
-const WORK_EMAIL = getConfig('work_email');
+const { generatePeopleObj } = require('../utilities/jwt');
 
 // function
 let cache = [];
@@ -15,11 +9,7 @@ let cache = [];
 export default async function list(options = { forceRefresh: false }) {
   const { forceRefresh } = options;
   // console.log("forceRefresh", forceRefresh);
-  const jwtClient = await generateJWT(WORK_EMAIL);
-  const people = google.people({
-    version: 'v1',
-    auth: jwtClient,
-  });
+  const people = await generatePeopleObj();
 
   // caching is amazing but becareful when it becomes stale
   return new Promise((res, rej) => {

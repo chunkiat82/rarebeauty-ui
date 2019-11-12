@@ -1,12 +1,10 @@
-const generateJWT = require('../utilities/jwt');
-const google = require('googleapis');
+const { generateCalendarObj } = require('../utilities/jwt');
 
 module.exports = function create(options) {
   const { calendarId, address } = options;
 
   return new Promise(async (res, rej) => {
-    const jwtClient = await generateJWT();
-    const calendar = google.calendar({ version: 'v3', auth: jwtClient });
+    const calendar = await generateCalendarObj();
     calendar.events.watch(
       {
         calendarId,

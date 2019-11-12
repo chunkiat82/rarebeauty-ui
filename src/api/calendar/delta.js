@@ -1,20 +1,22 @@
-const google = require('googleapis');
-const generateJWT = require('../utilities/jwt');
-const { getSyncToken, setSyncToken } = require('../utilities/token');
+const { generateCalendarObj } = require('../utilities/jwt');
+const { getSyncToken } = require('../utilities/token');
 
 export default async function getDelta(options) {
   return new Promise(async (res, rej) => {
-    const syncToken = await getSyncToken();
+    let { syncToken } = options;
     const { calendarId } = options;
 
-    const jwtClient = await generateJWT();
-    const calendar = google.calendar({ version: 'v3', auth: jwtClient });
+    if (!syncToken) {
+      syncToken = await getSyncToken();
+    }
+
+    const calendar = await generateCalendarObj();
     calendar.events.list(
       {
         calendarId,
         singleEvents: true,
         syncToken,
-        maxResults: 2500
+        maxResults: 2500,
       },
       async (err, response) => {
         if (err) {

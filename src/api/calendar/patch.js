@@ -1,7 +1,6 @@
 import { byPersonCount as getAppointmentsCountByPerson } from '../appointments/person';
 
-const generateJWT = require('../utilities/jwt');
-const google = require('googleapis');
+const { generateCalendarObj } = require('../utilities/jwt');
 
 const EDIT_URL = 'https://rarebeauty.soho.sg/appointment/edit';
 const WHATSAPPURL = 'https://wa.me';
@@ -134,16 +133,7 @@ export default function patch(options) {
   }
 
   return new Promise(async (res, rej) => {
-    const jwtClient = await generateJWT();
-    const calendar = google.calendar({
-      version: 'v3',
-      auth: jwtClient,
-      timeout: 5000, // 5 seconds.
-      ontimeout() {
-        // Handle timeout.
-        console.error('gapi.client patch could not load in a timely manner!');
-      },
-    });
+    const calendar = await generateCalendarObj();
     calendar.events.get(
       {
         calendarId,

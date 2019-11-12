@@ -1,5 +1,4 @@
-const generateJWT = require('../utilities/jwt');
-const google = require('googleapis');
+const { generateCalendarObj } = require('../utilities/jwt');
 const moment = require('moment');
 
 module.exports = function list(options) {
@@ -8,13 +7,14 @@ module.exports = function list(options) {
   if (tomorrow) {
     start = moment(start).add(1, 'days');
   }
-  const end = moment(start).add(24, 'hours').subtract(1, 'seconds');
+  const end = moment(start)
+    .add(24, 'hours')
+    .subtract(1, 'seconds');
   // console.log(start.toISOString());
   // console.log(end.toISOString());
 
   return new Promise(async (res, rej) => {
-    const jwtClient = await generateJWT();
-    const calendar = google.calendar({ version: 'v3', auth: jwtClient });
+    const calendar = await generateCalendarObj();
     calendar.events.list(
       {
         calendarId,

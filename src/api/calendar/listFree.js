@@ -1,7 +1,6 @@
-const google = require('googleapis');
-const moment = require('moment');
+import moment from 'moment';
 
-const generateJWT = require('../utilities/jwt');
+const { generateCalendarObj } = require('../utilities/jwt');
 
 // function to get AM (A), EarlyPM (E) or PM (P)
 /*
@@ -124,11 +123,7 @@ export default function listFree(options) {
   const { calendarId } = options;
 
   return new Promise(async (res, rej) => {
-    const jwtClient = await generateJWT();
-    const calendar = google.calendar({
-      version: 'v3',
-      auth: jwtClient,
-    });
+    const calendar = await generateCalendarObj();
     const timeMin = moment()
       .add(0, 'days')
       .format('YYYY-MM-DDTHH:mm:ssZ');
@@ -158,7 +153,7 @@ export default function listFree(options) {
       },
       async (err, response) => {
         if (err) {
-          console.err(err);
+          console.error(err);
           rej([]);
         } else {
           const freeSlots = convertBusyToFree(calendarId, response);

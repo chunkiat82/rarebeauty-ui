@@ -1,19 +1,10 @@
 // https://developers.google.com/apis-explorer/?hl=en_US#p/
-
-import google from 'googleapis';
-import { get as getConfig } from '../utilities/configs';
 import getList from './list';
 
-const generateJWT = require('../utilities/jwt');
-
-const WORK_EMAIL = getConfig('work_email');
+const { generatePeopleObj } = require('../utilities/jwt');
 
 export default async function create({ first, last, mobile }) {
-  const jwtClient = await generateJWT(WORK_EMAIL);
-  const people = google.people({
-    version: 'v1',
-    auth: jwtClient,
-  });
+  const people = await generatePeopleObj();
 
   return new Promise((res, rej) => {
     people.people.createContact(
