@@ -1,30 +1,30 @@
-const moment = require('moment');
+// const moment = require('moment');
 const getConfig = require('./configs').get;
 const key = require('../keys/google.json');
 const google = require('googleapis');
 
 const WORK_EMAIL = getConfig('work_email');
 
-/* specifically for cache */
-let moduleToken = null;
-let jwtClient = null;
+// /* specifically for cache */
+// let moduleToken = null;
+// let jwtClient = null;
 
 function generateJWT(subject = null) {
-  if (moduleToken) {
-    // console.error('moduleToken', moduleToken);
-    if (moduleToken.expiry_date) {
-      // console.error('moduleToken.expiry_date', moduleToken.expiry_date);
-      if (
-        moment(moduleToken.expiry_date)
-          .subtract(1, 'minute')
-          .isAfter(moment())
-      ) {
-        return new Promise(res => {
-          res(jwtClient);
-        });
-      }
-    }
-  }
+  // if (moduleToken) {
+  //   // console.error('moduleToken', moduleToken);
+  //   if (moduleToken.expiry_date) {
+  //     // console.error('moduleToken.expiry_date', moduleToken.expiry_date);
+  //     if (
+  //       moment(moduleToken.expiry_date)
+  //         .subtract(1, 'minute')
+  //         .isAfter(moment())
+  //     ) {
+  //       return new Promise(res => {
+  //         res(jwtClient);
+  //       });
+  //     }
+  //   }
+  // }
 
   return new Promise((res, rej) => {
     const innerJWTClient = new google.auth.JWT(
@@ -37,13 +37,13 @@ function generateJWT(subject = null) {
       ], // an array of auth scopes
       subject,
     );
-    innerJWTClient.authorize((err, token) => {
+    innerJWTClient.authorize(err => {
       if (err) {
         rej(err);
       } else {
-        moduleToken = token;
-        jwtClient = innerJWTClient;
-        console.error(moduleToken);
+        // moduleToken = token;
+        // jwtClient = innerJWTClient;
+        // console.error(moduleToken);
         res(innerJWTClient);
       }
     });
@@ -51,6 +51,7 @@ function generateJWT(subject = null) {
 }
 
 async function generateCalendarObj() {
+  let jwtClient = null;
   try {
     jwtClient = await generateJWT(WORK_EMAIL);
   } catch (err) {
@@ -71,6 +72,7 @@ async function generateCalendarObj() {
 }
 
 async function generatePeopleObj() {
+  let jwtClient = null;
   try {
     jwtClient = await generateJWT(WORK_EMAIL);
   } catch (err) {
