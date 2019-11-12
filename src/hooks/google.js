@@ -86,7 +86,7 @@ async function updateTransactionOnTime(item) {
 }
 
 export async function handleCalendarWebhook(headers) {
-  // console.log(`headers=${JSON.stringify(headers, null, 2)}`);
+  console.error(`headers=${JSON.stringify(headers, null, 2)}`);
   // console.log('-------------------------------------------------------');
   // headers not used
   let response = null;
