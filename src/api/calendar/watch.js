@@ -9,7 +9,7 @@ module.exports = function create(options) {
       {
         calendarId,
         resource: {
-          id: 'anythingintheworld',
+          id: 'anythingintheworldnov',
           token: 'anythingbutme',
           type: 'web_hook',
           address,
