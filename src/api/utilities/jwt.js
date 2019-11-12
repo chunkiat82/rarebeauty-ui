@@ -5,6 +5,7 @@ const google = require('googleapis');
 
 const WORK_EMAIL = getConfig('work_email');
 
+/* specifically for cache */
 let moduleToken = null;
 let jwtClient = null;
 
