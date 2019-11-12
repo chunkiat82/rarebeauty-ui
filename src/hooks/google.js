@@ -61,7 +61,7 @@ async function updateTransactionOnTime(item) {
     transaction = transResponse.value;
     transaction.apptDate = moment(item.start.dateTime, 'YYYY-MM-DDThh:mm:ssZ');
   } catch (err) {
-    console.error('retryng to get transaction', err);
+    console.error('retrying to get transaction', err);
     await sleep(2000);
     try {
       transResponse = await get(`trans:${uuid}`);
@@ -115,8 +115,8 @@ export async function handleCalendarWebhook(headers) {
   console.error('----------------------------------------------1');
   console.error(JSON.stringify(response, null, 2));
   console.error('----------------------------------------------2');
-  console.error(JSON.stringify(response.items, null, 2));
-  console.error('----------------------------------------------3');
+  // console.error(JSON.stringify(response.items, null, 2));
+  // console.error('----------------------------------------------3');
   console.error(`Incoming Changed events (${events.length}):`);
   events.forEach(async item => {
     // implement this feature later
@@ -180,7 +180,12 @@ export async function handleCalendarWebhook(headers) {
       syncToken: nextSyncToken,
       lastUpdated: moment(),
     });
+    console.error(
+      '---------------------------------------------- next Sync Token',
+    );
   }
+
+  console.error('----------------------------------------------4');
 
   // console.log(events);
 }
