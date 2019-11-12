@@ -8,8 +8,8 @@ export async function getSyncToken() {
   let syncToken = null;
   try {
     const obj = await get('syncToken:calendar');
-    syncToken = obj.value.syncToken;
-    // console.log(`syncToken:${syncToken}`);
+    syncToken = (obj.value && obj.value.syncToken) || '';
+    console.error(`syncToken:${syncToken}`);
   } catch (err) {
     console.error('getSyncToken', err);
     throw err;
