@@ -9,7 +9,7 @@ module.exports = function create(options) {
       {
         calendarId,
         resource: {
-          id: 'anythingintheworldnov',
+          id: 'anythingintheworld',
           resourceId,
         },
       },
