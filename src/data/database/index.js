@@ -51,14 +51,21 @@ function deleteObject(bucket, options) {
 function setObject(bucket, options) {
   const { id, doc } = options;
   return new Promise((res, rej) => {
-    bucket.upsert(id, doc, (err, result) => {
-      if (err) {
-        console.error(`Err setObject id=${options.id}`);
-        rej(err);
-      } else {
-        res(result);
-      }
-    });
+    bucket.upsert(
+      id,
+      doc,
+      {
+        persist_to: 1,
+      },
+      (err, result) => {
+        if (err) {
+          console.error(`Err setObject id=${options.id}`);
+          rej(err);
+        } else {
+          res(result);
+        }
+      },
+    );
   });
 }
 
@@ -84,24 +91,33 @@ function queryOperation(bucket, options) {
 export async function upsert(id, doc) {
   // console.log(id);
   // console.log(doc);
-  const obj = await runOperation(setObject, { id, doc });
+  const obj = await runOperation(setObject, {
+    id,
+    doc,
+  });
   return obj;
 }
 
 export async function get(id) {
-  const obj = await runOperation(getObject, { id });
+  const obj = await runOperation(getObject, {
+    id,
+  });
   // console.log(obj);
   return obj;
 }
 
 export async function remove(id) {
-  const obj = await runOperation(deleteObject, { id });
+  const obj = await runOperation(deleteObject, {
+    id,
+  });
   return obj;
 }
 
 export async function query(queryString) {
   // https://developer.couchbase.com/documentation/server/4.1/sdks/node-2.0/n1ql-queries.html
-  const obj = await runOperation(queryOperation, { queryString });
+  const obj = await runOperation(queryOperation, {
+    queryString,
+  });
   return obj;
 }
 
