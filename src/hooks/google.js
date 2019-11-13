@@ -72,6 +72,7 @@ async function updateTransactionOnTime(item) {
       );
     } catch (innerErr) {
       console.error('failed to get transaction', innerErr);
+      throw innerErr;
     }
   }
 
@@ -79,8 +80,9 @@ async function updateTransactionOnTime(item) {
   if (transaction) {
     try {
       await upsert(`trans:${uuid}`, transaction);
-    } catch (err) {
-      console.error('upsert transaction', err);
+    } catch (upsertError) {
+      console.error('upsert transaction', upsertError);
+      throw upsertError;
     }
   }
 }
@@ -113,64 +115,69 @@ export async function handleCalendarWebhook(headers) {
     throw configErr;
   }
 
-  const { items: events, nextSyncToken } = response;
-  console.error('----------------------------------------------1');
-  // console.error(JSON.stringify(response, null, 2));
-  // console.error('----------------------------------------------2');
-  // console.error(JSON.stringify(response.items, null, 2));
-  // console.error('----------------------------------------------3');
-  console.error(`Incoming Changed events (${events.length}):`);
+  try {
+    const { items: events, nextSyncToken } = response;
+    console.error('----------------------------------------------1');
+    console.error(`nextSyncToken=`, nextSyncToken);
+    console.error('----------------------------------------------2');
+    // console.error(JSON.stringify(response.items, null, 2));
+    // console.error('----------------------------------------------3');
+    console.error(`Incoming Changed events (${events.length}):`);
 
-  for (let eventIndex = 0; eventIndex < events.length; eventIndex += 1) {
-    const item = events[eventIndex];
+    for (let eventIndex = 0; eventIndex < events.length; eventIndex += 1) {
+      const item = events[eventIndex];
 
-    console.error(JSON.stringify(item, null, 2));
+      console.error(JSON.stringify(item, null, 2));
 
-    if (
-      item.summary &&
-      (item.summary.indexOf('-') === 0 || item.summary.indexOf('+') === 0)
-    )
-      return;
-
-    // if item is more than 7 days old return do nothing
-    if (item && item.start && item.start.dateTime) {
-      const apptDateMT = moment(item.start.dateTime, 'YYYY-MM-DDThh:mm:ssZ');
-      const currentMT = moment();
-      const duration = moment.duration(currentMT.diff(apptDateMT));
-      const days = duration.asDays();
-      if (days > 7) {
-        console.error(`item more than 7 days wants changes =${item.id}`);
+      if (
+        item.summary &&
+        (item.summary.indexOf('-') === 0 || item.summary.indexOf('+') === 0)
+      )
         return;
+
+      // if item is more than 7 days old return do nothing
+      if (item && item.start && item.start.dateTime) {
+        const apptDateMT = moment(item.start.dateTime, 'YYYY-MM-DDThh:mm:ssZ');
+        const currentMT = moment();
+        const duration = moment.duration(currentMT.diff(apptDateMT));
+        const days = duration.asDays();
+        if (days > 7) {
+          console.error(`item more than 7 days wants changes =${item.id}`);
+          return;
+        }
+      }
+
+      if (item.status === 'cancelled') {
+        handleCancel(item);
+      } else if (item.status === 'confirmed' || item.status === 'tentative') {
+        // some massaging here
+        populateStats(item);
+        await handleUpsert(item);
+        await updateTransactionOnTime(item);
+      } else {
+        console.error(`unhandled status-${item.id}`);
+      }
+
+      // temp loggin // mostly cancel use case
+      const event = item;
+      if (!event.start) {
+        console.error(
+          `event start date missing for - ${event.id} - ${event.status}`,
+        );
       }
     }
 
-    if (item.status === 'cancelled') {
-      handleCancel(item);
-    } else if (item.status === 'confirmed' || item.status === 'tentative') {
-      // some massaging here
-      populateStats(item);
-      await handleUpsert(item);
-      await updateTransactionOnTime(item);
-    } else {
-      console.error(`unhandled status-${item.id}`);
+    // save only when there is nextSyncToken otherwise it screws others
+    if (nextSyncToken) {
+      await setSyncToken({
+        syncToken: nextSyncToken,
+        lastUpdated: moment(),
+      });
+      console.error('next Sync Token', nextSyncToken);
     }
-
-    // temp loggin // mostly cancel use case
-    const event = item;
-    if (!event.start) {
-      console.error(
-        `event start date missing for - ${event.id} - ${event.status}`,
-      );
-    }
-  }
-
-  // save only when there is nextSyncToken otherwise it screws others
-  if (nextSyncToken) {
-    await setSyncToken({
-      syncToken: nextSyncToken,
-      lastUpdated: moment(),
-    });
-    console.error('next Sync Token', nextSyncToken);
+  } catch (mainError) {
+    console.error('anything that went wrong', mainError);
+    throw mainError;
   }
 
   console.error('----------------------------------------------4 END');
