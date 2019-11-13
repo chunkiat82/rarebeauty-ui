@@ -117,9 +117,11 @@ export async function handleCalendarWebhook(headers) {
   }
 
   try {
-    const { items: events, nextSyncToken } = response;
+    // need to fix next pagetoken error
+    const { items: events, nextSyncToken, nextPageToken } = response;
     console.error('----------------------------------------------1');
     console.error(`nextSyncToken=`, nextSyncToken);
+    console.error(`nextPageToken=`, nextPageToken);
     console.error('----------------------------------------------2');
     // console.error(JSON.stringify(response.items, null, 2));
     // console.error('----------------------------------------------3');
@@ -128,14 +130,15 @@ export async function handleCalendarWebhook(headers) {
     for (let eventIndex = 0; eventIndex < events.length; eventIndex += 1) {
       const item = events[eventIndex];
 
-      console.error(JSON.stringify(item, null, 2));
-
       if (
         item.summary &&
         (item.summary.indexOf('-') === 0 || item.summary.indexOf('+') === 0)
-      )
+      ) {
         // eslint-disable-next-line no-continue
         continue;
+      }
+
+      console.error(JSON.stringify(item, null, 2));
 
       // if item is more than 7 days old return do nothing
       if (item && item.start && item.start.dateTime) {

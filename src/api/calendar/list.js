@@ -23,9 +23,10 @@ export default function list(options) {
     let finalOptions = {
       calendarId,
       timeMin,
-      maxResults: maxResults || 250,
+      maxResults: maxResults || 2000,
       singleEvents: true,
       orderBy: orderBy || 'startTime',
+      // syncToken: 'CPC4kJ_I5-UCEPC4kJ_I5-UCGAU=',
     };
 
     if (endDT)
@@ -38,11 +39,13 @@ export default function list(options) {
 
     // console.log(`finalOptions=${JSON.stringify(finalOptions, null, 2)}`);
 
-    calendar.events.list(finalOptions, async (err, { data: response }) => {
+    calendar.events.list(finalOptions, async (err, output) => {
       if (err) {
         rej(err);
       } else {
-        res(response.items);
+        const { data } = output;
+        // console.log(`output`, output);
+        res(data.items);
       }
     });
   });
