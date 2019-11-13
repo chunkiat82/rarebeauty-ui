@@ -71,7 +71,7 @@ async function updateTransactionOnTime(item) {
         'YYYY-MM-DDThh:mm:ssZ',
       );
     } catch (innerErr) {
-      console.error('failed tryng to get transaction', innerErr);
+      console.error('failed to get transaction', innerErr);
     }
   }
 
@@ -92,7 +92,9 @@ export async function handleCalendarWebhook(headers) {
   let response = null;
   try {
     const { value: configWatch } = await get('config:watch');
-    console.error('-------------------------------------------------------0');
+    console.error(
+      '-------------------------------------------------------0 START',
+    );
     // console.log(headers["x-goog-resource-id"]);
     // console.log(configWatch.resourceId);
     // console.log('-------------------------------------------------------');
@@ -115,11 +117,15 @@ export async function handleCalendarWebhook(headers) {
   console.error('----------------------------------------------1');
   // console.error(JSON.stringify(response, null, 2));
   // console.error('----------------------------------------------2');
-  console.error(JSON.stringify(response.items, null, 2));
-  console.error('----------------------------------------------3');
+  // console.error(JSON.stringify(response.items, null, 2));
+  // console.error('----------------------------------------------3');
   console.error(`Incoming Changed events (${events.length}):`);
-  events.forEach(async item => {
-    // implement this feature later
+
+  for (let eventIndex = 0; eventIndex < events.length; eventIndex += 1) {
+    const item = events[eventIndex];
+
+    console.error(JSON.stringify(item, null, 2));
+
     if (
       item.summary &&
       (item.summary.indexOf('-') === 0 || item.summary.indexOf('+') === 0)
@@ -149,30 +155,14 @@ export async function handleCalendarWebhook(headers) {
       console.error(`unhandled status-${item.id}`);
     }
 
-    // temp loggin
+    // temp loggin // mostly cancel use case
     const event = item;
-    if (event.start) {
-      //   const start = event.start.dateTime || event.start.date;
-      // console.log(
-      //   '%s - %s - %s - %s',
-      //   start,
-      //   event.summary,
-      //   event.id,
-      //   (event.extendedProperties &&
-      //     event.extendedProperties.shared &&
-      //     event.extendedProperties.shared.mobile) ||
-      //     '0',
-      //   (event.extendedProperties &&
-      //     event.extendedProperties.shared &&
-      //     event.extendedProperties.shared.reminded) ||
-      //     'false',
-      // );
-    } else {
+    if (!event.start) {
       console.error(
         `event start date missing for - ${event.id} - ${event.status}`,
       );
     }
-  });
+  }
 
   // save only when there is nextSyncToken otherwise it screws others
   if (nextSyncToken) {
@@ -180,12 +170,10 @@ export async function handleCalendarWebhook(headers) {
       syncToken: nextSyncToken,
       lastUpdated: moment(),
     });
-    console.error(
-      '---------------------------------------------- next Sync Token',
-    );
+    console.error('next Sync Token', nextSyncToken);
   }
 
-  console.error('----------------------------------------------4');
+  console.error('----------------------------------------------4 END');
 
   // console.log(events);
 }

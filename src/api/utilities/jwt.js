@@ -62,6 +62,12 @@ async function generateCalendarObj() {
     version: 'v3',
     auth: jwtClient,
     timeout: 5000, // 5 seconds.
+    retry: true,
+    retryConfig: {
+      onRetryAttempt: retryError => {
+        console.error('retrying google calendar', retryError);
+      },
+    },
     ontimeout() {
       // Handle timeout.
       console.error(
@@ -82,6 +88,12 @@ async function generatePeopleObj() {
     version: 'v1',
     auth: jwtClient,
     timeout: 5000, // 5 seconds.
+    retry: true,
+    retryConfig: {
+      onRetryAttempt: retryError => {
+        console.error('retrying google people', retryError);
+      },
+    },
     ontimeout() {
       // Handle timeout.
       console.error(
