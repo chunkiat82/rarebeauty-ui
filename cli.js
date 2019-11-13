@@ -60,6 +60,8 @@ async function main(argv) {
     } else {
       console.log(JSON.stringify(results, null, 2));
     }
+    // to kill couchbase bucket
+    process.exit();
   } catch (error) {
     console.log('main - ', error);
   }
