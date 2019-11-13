@@ -12,7 +12,7 @@ export default async function get(options) {
         resourceName,
       },
       {},
-      (err, obj) => {
+      (err, { data: obj }) => {
         // console.log(err || obj);
         if (err) {
           rej(err);

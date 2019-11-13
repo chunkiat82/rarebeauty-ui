@@ -13,7 +13,7 @@ export default async function get(options) {
         personFields: ['names', 'phoneNumbers', 'userDefined'],
       },
       {},
-      (err, obj) => {
+      (err, { data: obj }) => {
         // console.log(err || obj);
         if (err) {
           rej(err);

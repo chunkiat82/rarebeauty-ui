@@ -38,7 +38,7 @@ export default function list(options) {
 
     // console.log(`finalOptions=${JSON.stringify(finalOptions, null, 2)}`);
 
-    calendar.events.list(finalOptions, async (err, response) => {
+    calendar.events.list(finalOptions, async (err, { data: response }) => {
       if (err) {
         rej(err);
       } else {

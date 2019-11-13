@@ -18,7 +18,7 @@ module.exports = function create(options) {
           },
         },
       },
-      (err, event) => {
+      (err, { data: event }) => {
         if (err) {
           rej(err);
         }

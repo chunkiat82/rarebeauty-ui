@@ -23,14 +23,14 @@ export default async function list(options = { forceRefresh: false }) {
         personFields: 'names,phoneNumbers',
         pageSize: 2000, // future problem
       },
-      (err, me) => {
+      (err, { data }) => {
         if (err) {
           return rej(err);
         }
         // console.log(me.connections.length);
         // console.log(JSON.stringify(me, null, 2));
 
-        let contacts = me.connections.filter(contact =>
+        let contacts = data.connections.filter(contact =>
           Array.isArray(contact.phoneNumbers),
         );
         contacts = contacts.map((one, index) => {

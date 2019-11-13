@@ -32,11 +32,11 @@ function findExistingAppointments(calendar, options) {
       orderBy: 'startTime',
     };
 
-    calendar.events.list(finalOptions, async (err, response) => {
+    calendar.events.list(finalOptions, async (err, { data }) => {
       if (err) {
         rej(err);
       } else {
-        res(response.items);
+        res(data.items);
       }
     });
   });
@@ -112,9 +112,7 @@ function createAppointment(calendar, options) {
           description: `S($${services.reduce(
             (prevSum, item) => prevSum + item.price,
             0,
-          )})-T($${totalAmount})-D($${deposit})
-
-          ${services
+          )})-T($${totalAmount})-D($${deposit})\n\n${services
             .map(item => item.service)
             .join(
               ',',
@@ -124,13 +122,12 @@ function createAppointment(calendar, options) {
           )}`,
         },
       },
-      (err, event) => {
+      (err, { data: event }) => {
         if (err) {
-          console.error(
-            `There was an error contacting the Calendar service1: ${err}`,
-          );
+          console.error(`Create Appointment Error: ${err}`);
           return rej(err);
         }
+        // console.log(`event`, event);
         return res({
           event,
           uuid,
@@ -166,16 +163,21 @@ export default function create(options) {
         );
 
         if (filteredEvents.length > 0) {
-          console.error('---------------------------');
+          console.error('------------Overlapping appointment 1---------------');
           console.error(JSON.stringify(events, null, 2));
           rej({
             error: 'Overlapping appointment',
           });
-          return console.error('---------------------------');
+          return console.error(
+            '--------Overlapping appointment 2-------------------',
+          );
         }
       }
 
-      const { event, uuid } = await createAppointment(calendar, options);
+      const { event, uuid } = await createAppointment(
+        calendar,
+        Object.assign({ sendUpdates: 'none' }, options),
+      );
       return res({
         event,
         uuid,

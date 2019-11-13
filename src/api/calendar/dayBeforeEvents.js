@@ -23,7 +23,7 @@ module.exports = function list(options) {
         singleEvents: true,
         orderBy: 'startTime',
       },
-      (err, response) => {
+      (err, { data: response }) => {
         if (err) {
           // console.log(`The API returned an error: ${err}`);
           rej(err);

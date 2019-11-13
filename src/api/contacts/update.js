@@ -53,7 +53,7 @@ export default async function update(options) {
         personFields: ['phoneNumbers', 'userDefined'],
       },
       {},
-      (err, me) => {
+      (err, { obj: me }) => {
         // console.log(err || me);
         if (err) {
           rej(err);

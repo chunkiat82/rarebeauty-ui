@@ -4,23 +4,23 @@ const config = require('../../config.js');
 
 const cluster = new couchbase.Cluster(config.couchbaseUrl);
 const N1qlQuery = couchbase.N1qlQuery;
+const bucket = cluster.openBucket('default');
+bucket.enableN1ql([config.couchbaseQueryUrl]);
 
 async function runOperation(operation, options) {
-  const bucket = cluster.openBucket('default');
-  bucket.enableN1ql([config.couchbaseQueryUrl]);
   let res = null;
   try {
-    res = await operation(bucket, options);
+    res = await operation(options);
   } catch (err) {
     // console.error(`runOperation=${JSON.stringify(err)}`);
     res = null;
     // throw err;
   }
-  bucket.disconnect();
+  // bucket.disconnect();
   return res;
 }
 
-function getObject(bucket, options) {
+function getObject(options) {
   const { id } = options;
   return new Promise((res, rej) => {
     bucket.get(id, (err, result) => {
@@ -34,7 +34,7 @@ function getObject(bucket, options) {
   });
 }
 
-function deleteObject(bucket, options) {
+function deleteObject(options) {
   const { id } = options;
   return new Promise((res, rej) => {
     bucket.remove(id, (err, result) => {
@@ -48,7 +48,7 @@ function deleteObject(bucket, options) {
   });
 }
 
-function setObject(bucket, options) {
+function setObject(options) {
   const { id, doc } = options;
   return new Promise((res, rej) => {
     bucket.upsert(
@@ -69,7 +69,7 @@ function setObject(bucket, options) {
   });
 }
 
-function queryOperation(bucket, options) {
+function queryOperation(options) {
   const { queryString } = options;
 
   // console.log(`queryString1=${queryString}`);

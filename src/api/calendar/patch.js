@@ -5,10 +5,9 @@ const { generateCalendarObj } = require('../utilities/jwt');
 const EDIT_URL = 'https://rarebeauty.soho.sg/appointment/edit';
 const WHATSAPPURL = 'https://wa.me';
 
-async function patchHandler(res, rej, calendar, options, eventResponse) {
+async function patchHandler(options, event) {
   const {
     calendarId,
-    eventId,
     mobile,
     startDT,
     endDT,
@@ -26,8 +25,8 @@ async function patchHandler(res, rej, calendar, options, eventResponse) {
 
   const patchObject = {
     calendarId,
-    eventId,
-    resource: eventResponse,
+    eventId: event.id,
+    resource: event,
   };
 
   const resource = patchObject.resource;
@@ -54,11 +53,9 @@ async function patchHandler(res, rej, calendar, options, eventResponse) {
     resource.description = `S($${services.reduce(
       (prevSum, item) => prevSum + item.price,
       0,
-    )})-T($${totalAmount})-D($${deposit})
-
-${services
-  .map(item => item.service)
-  // eslint-disable-next-line prettier/prettier
+    )})-T($${totalAmount})-D($${deposit})\n\n${services
+      .map(item => item.service)
+      // eslint-disable-next-line prettier/prettier
       .join(',')}\n\n${EDIT_URL}/${apptId}\n\n${WHATSAPPURL}/${finalMobile.replace('+', '')}`;
 
     const {
@@ -101,7 +98,7 @@ ${services
     if (resource.attendees && resource.attendees[0]) {
       resource.attendees[0].responseStatus = 'accepted';
     } else {
-      console.error(`no attendees for calendar event -> ${eventId}`);
+      console.error(`no attendees for calendar event -> ${event.id}`);
     }
     resource.extendedProperties.shared.confirmed = confirmed;
   }
@@ -109,43 +106,27 @@ ${services
   resource.extendedProperties.shared.changed = new Date().getTime();
 
   // console.log(`patchObject1=${JSON.stringify(patchObject)}`);
-  calendar.events.patch(patchObject, (err, event) => {
-    if (err) {
-      console.error(
-        `There was an error contacting the Calendar service3: ${JSON.stringify(
-          err,
-        )}`,
-      );
-      rej(err);
-    }
-    // console.log(`res(event)=${JSON.stringify(event)}`);
-    res(event);
+  const calendar = await generateCalendarObj();
+  return new Promise((res, rej) => {
+    // console.error(`res(patchObject)=${JSON.stringify(patchObject)}`);
+    calendar.events.patch(patchObject, (err, { data: patchedEvent }) => {
+      if (err) {
+        console.error(`Calendar Patch Error: ${JSON.stringify(err)}`);
+        rej(err);
+      }
+      res(patchedEvent);
+    });
   });
 }
 
 export default function patch(options) {
-  const { calendarId, eventId } = options;
+  const { calendarId, event } = options;
 
-  if (!calendarId || !eventId) {
-    return new Promise((res, rej) => {
+  if (!calendarId || !event) {
+    return new Promise((_res, rej) => {
       rej('no event patched');
     });
   }
 
-  return new Promise(async (res, rej) => {
-    const calendar = await generateCalendarObj();
-    calendar.events.get(
-      {
-        calendarId,
-        eventId,
-      },
-      async (err, response) => {
-        if (err) {
-          rej(err);
-        } else {
-          await patchHandler(res, rej, calendar, options, response);
-        }
-      },
-    );
-  });
+  return patchHandler(options, event);
 }

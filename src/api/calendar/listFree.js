@@ -151,7 +151,7 @@ export default function listFree(options) {
         },
         resource: finalOptions,
       },
-      async (err, response) => {
+      async (err, { data: response }) => {
         if (err) {
           console.error(err);
           rej([]);

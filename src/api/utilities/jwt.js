@@ -1,13 +1,13 @@
 // const moment = require('moment');
 const getConfig = require('./configs').get;
 const key = require('../keys/google.json');
-const google = require('googleapis');
+const { google } = require('googleapis');
 
 const WORK_EMAIL = getConfig('work_email');
 
 // /* specifically for cache */
 // let moduleToken = null;
-// let jwtClient = null;
+let authClient = null;
 
 function generateJWT(subject = null) {
   // if (moduleToken) {
@@ -26,8 +26,10 @@ function generateJWT(subject = null) {
   //   }
   // }
 
+  // eslint-disable-next-line consistent-return
   return new Promise((res, rej) => {
-    const innerJWTClient = new google.auth.JWT(
+    if (authClient !== null) return res(authClient);
+    authClient = new google.auth.JWT(
       key.client_email,
       null,
       key.private_key,
@@ -37,15 +39,17 @@ function generateJWT(subject = null) {
       ], // an array of auth scopes
       subject,
     );
-    innerJWTClient.authorize(err => {
+    authClient.authorize((err, token) => {
       if (err) {
-        rej(err);
-      } else {
-        // moduleToken = token;
-        // jwtClient = innerJWTClient;
-        // console.error(moduleToken);
-        res(innerJWTClient);
+        return rej(err);
       }
+      console.error(token);
+      authClient
+        .on('tokens', tokens => {
+          console.error(`tokens`, tokens);
+        })
+        .getAccessToken();
+      return res(authClient);
     });
   });
 }

@@ -116,7 +116,7 @@ function createAppointment(calendar, options) {
             .join(',')}\n\n${WHATSAPPURL}/${finalMobile.replace('+', '')}`,
         },
       },
-      (err, event) => {
+      (err, { data: event }) => {
         if (err) {
           console.error(
             `There was an error contacting the Calendar service2: ${err}`,

@@ -10,7 +10,7 @@ export default function deleteEvent(options) {
         calendarId,
         eventId,
       },
-      async (err, response) => {
+      async (err, { data: response }) => {
         if (err) {
           rej(err);
         } else {

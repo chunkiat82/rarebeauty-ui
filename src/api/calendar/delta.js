@@ -18,7 +18,7 @@ export default async function getDelta(options) {
         syncToken,
         maxResults: 100,
       },
-      async (err, response) => {
+      async (err, { data: response }) => {
         if (err) {
           rej(err);
         } else {

@@ -115,6 +115,7 @@ async function listDeltaEvents(options) {
 
 async function informReservationToCustomer(options) {
   const { updated } = options;
+  let { event } = options;
   const finalOptions = Object.assign(
     {
       calendarId,
@@ -123,7 +124,8 @@ async function informReservationToCustomer(options) {
   );
 
   try {
-    const event = await calendarGet(finalOptions);
+    // if event not in cache
+    if (!event) event = await calendarGet(finalOptions);
     // console.log(event);
     if (
       event.extendedProperties &&
@@ -175,19 +177,19 @@ async function informReservationToCustomer(options) {
           console.error(`${name} not sent because mobile number is ${mobile}`);
         }
 
-        await calendarPatch({
-          eventId: event.id,
+        event = await calendarPatch({
+          event,
           calendarId,
           informed: true,
           shortURL: shortURL.id,
         });
       } catch (err) {
-        console.error(`informReservationToCustomer1`, err);
+        console.error(`informReservationToCustomer calendarPatch failed`, err);
       }
     }
     return event;
   } catch (err) {
-    console.error(`informReservationToCustomer2`, err);
+    console.error(`informReservationToCustomer final step`, err);
     throw err;
   }
 }
@@ -202,9 +204,7 @@ async function createEvent(options) {
       }),
     );
 
-    const finalEvent = await informReservationToCustomer({
-      eventId: event.id,
-    });
+    const finalEvent = await informReservationToCustomer({ event });
     return {
       event: finalEvent,
       uuid,
@@ -254,7 +254,7 @@ async function patchEvent(options) {
     // console.log(finalEvent);
     return finalEvent;
   } catch (err) {
-    console.error(err);
+    console.error(`patchEvent`, err);
     throw err;
   }
 }

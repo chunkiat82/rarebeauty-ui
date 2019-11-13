@@ -24,7 +24,7 @@ export default async function create({ first, last, mobile }) {
           ],
         },
       },
-      async (err, me) => {
+      async (err, { data: me }) => {
         // console.log(err || me);
         if (err) {
           rej(err);
