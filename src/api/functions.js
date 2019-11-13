@@ -116,6 +116,8 @@ async function listDeltaEvents(options) {
 async function informReservationToCustomer(options) {
   const { updated } = options;
   let { event } = options;
+  let shortURL = null;
+
   const finalOptions = Object.assign(
     {
       calendarId,
@@ -146,7 +148,6 @@ async function informReservationToCustomer(options) {
         const startDate = moment(event.start.dateTime).format('DD-MMM');
         const startTime = moment(event.start.dateTime).format('hh:mm a');
 
-        let shortURL = '';
         try {
           shortURL = await urlCreate({
             longURL: `${reservationURL}${event.id}`,
@@ -176,18 +177,11 @@ async function informReservationToCustomer(options) {
         } else {
           console.error(`${name} not sent because mobile number is ${mobile}`);
         }
-
-        event = await calendarPatch({
-          event,
-          calendarId,
-          informed: true,
-          shortURL: shortURL.id,
-        });
       } catch (err) {
         console.error(`informReservationToCustomer calendarPatch failed`, err);
       }
     }
-    return event;
+    return shortURL.id;
   } catch (err) {
     console.error(`informReservationToCustomer final step`, err);
     throw err;
@@ -199,14 +193,21 @@ async function createEvent(options) {
 
   try {
     const { event, uuid } = await calendarCreate(
-      Object.assign({}, options, {
-        calendarId,
-      }),
+      Object.assign({ calendarId }, options),
     );
 
-    const finalEvent = await informReservationToCustomer({ event });
+    const shortURL = await informReservationToCustomer({ event });
+
+    // no waiting here
+    calendarPatch({
+      event,
+      calendarId,
+      informed: true,
+      shortURL,
+    });
+
     return {
-      event: finalEvent,
+      event,
       uuid,
     };
   } catch (err) {
