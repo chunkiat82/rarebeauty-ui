@@ -134,7 +134,8 @@ export async function handleCalendarWebhook(headers) {
         item.summary &&
         (item.summary.indexOf('-') === 0 || item.summary.indexOf('+') === 0)
       )
-        return;
+        // eslint-disable-next-line no-continue
+        continue;
 
       // if item is more than 7 days old return do nothing
       if (item && item.start && item.start.dateTime) {

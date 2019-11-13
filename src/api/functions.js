@@ -129,6 +129,20 @@ async function informReservationToCustomer(options) {
     // if event not in cache
     if (!event) event = await calendarGet(finalOptions);
     // console.log(event);
+
+    // creating shortURL
+    try {
+      shortURL = await urlCreate({
+        longURL: `${reservationURL}${event.id}`,
+      });
+    } catch (urlError) {
+      console.error('unable to create URL - trying again', urlError);
+      shortURL = await urlCreate({
+        longURL: `${reservationURL}${event.id}`,
+      });
+    }
+
+    // to message if needed to be informed
     if (
       event.extendedProperties &&
       event.extendedProperties.shared &&
@@ -147,17 +161,6 @@ async function informReservationToCustomer(options) {
           -1;
         const startDate = moment(event.start.dateTime).format('DD-MMM');
         const startTime = moment(event.start.dateTime).format('hh:mm a');
-
-        try {
-          shortURL = await urlCreate({
-            longURL: `${reservationURL}${event.id}`,
-          });
-        } catch (urlError) {
-          console.error('unable to create URL - trying again', urlError);
-          shortURL = await urlCreate({
-            longURL: `${reservationURL}${event.id}`,
-          });
-        }
 
         const message = `${
           updated ? 'Updated - ' : ''
