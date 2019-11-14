@@ -275,10 +275,9 @@ async function remindCustomers(options) {
     if (events.length === 0) {
       // console.log('No reminder events found.');
     } else {
-      // console.log(`Upcoming events for ${events.length}`);
+      console.error(`RemindCustomers Upcoming events for ${events.length}`);
 
       events.forEach(async event => {
-        // console.log(event);
         if (
           event.extendedProperties &&
           event.extendedProperties.shared &&
@@ -287,6 +286,7 @@ async function remindCustomers(options) {
         ) {
           remindedEvents[remindedEvents.length] = event;
           try {
+            console.error('i was here1', event.id);
             let name = 'dear';
             name =
               event.attendees &&
@@ -299,21 +299,32 @@ async function remindCustomers(options) {
             const startDate = moment(event.start.dateTime).format('DD-MMM');
             const startTime = moment(event.start.dateTime).format('hh:mm a');
 
+            console.error('i was here2', event.id);
+
             let message = '';
             if (tomorrow) {
-              const shortURL = await urlCreate({
-                longURL: `${confirmationURL}${event.id}`,
-              });
-              message = `Click ${shortURL.id} to confirm your appt on ${startDate} ${startTime}.\n\nAny changes, msg to REPLY_MOBILE by 12pm!`;
+              console.error('i was here21', event.id);
+              try {
+                const shortURL = await urlCreate({
+                  longURL: `${confirmationURL}${event.id}`,
+                });
+                message = `Click ${shortURL.id} to confirm your appt on ${startDate} ${startTime}.\n\nAny changes, msg to REPLY_MOBILE by 12pm!`;
+              } catch (shortErr) {
+                console.error(`remindcusotmer short err`, shortErr);
+              }
+              console.error('i was here211', event.id);
             } else {
+              console.error('i was here22', event.id);
               message = `<Reminder>Appt on ${startDate} ${startTime}.\n\nFor last minute cancellation, msg to REPLY_MOBILE.\n\nOtherwise see you later`;
             }
 
+            console.error('i was here3', event.id);
             // const message = `<Reminder>Appt on ${startDate} at ${startTime}.\n\nAny changes, please reply now to REPLY_MOBILE.`;
 
             console.error(`message=${message}`);
 
             if (mobile.indexOf(NO_MOBILE_NUMBER) === -1) {
+              console.error(`sms sent`);
               await sms(
                 Object.assign({}, options, {
                   mobile,
@@ -327,7 +338,7 @@ async function remindCustomers(options) {
             }
 
             await calendarPatch({
-              eventId: event.id,
+              event,
               calendarId,
               reminded: true,
             });

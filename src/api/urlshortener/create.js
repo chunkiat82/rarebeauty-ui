@@ -5,6 +5,8 @@ const { bitly_token } = require('../keys/google.json');
 export default async function create(options) {
   const { longURL } = options;
 
+  console.log('was here1');
+
   const postOptions = {
     method: 'POST',
     headers: {
@@ -18,5 +20,15 @@ export default async function create(options) {
     json: true, // Automatically stringifies the body to JSON
   };
 
-  return rp(postOptions);
+  try {
+    console.log('was here2');
+    const output = await rp(postOptions);
+    console.log('was here3');
+    return new Promise((res, rej) => {
+      res(output);
+    });
+  } catch (err) {
+    console.error(err);
+    throw err;
+  }
 }
