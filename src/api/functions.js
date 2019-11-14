@@ -252,24 +252,19 @@ async function patchEvent(options) {
   // node index --action=patchEvent --eventId=XXX --mobile=11111111 --services=ELFS,HLW
   // console.log(options);
   try {
-    const event = await calendarPatch(
-      Object.assign({}, options, {
-        calendarId,
+    const event = await getEvent(Object.assign({ calendarId }, options));
+
+    const promises = [];
+
+    promises.push(calendarPatch(Object.assign({ calendarId, event }, options)));
+    promises.push(
+      informReservationToCustomer({
+        event,
+        updated: true,
       }),
     );
 
-    const shortURL = await informReservationToCustomer({
-      event,
-      updated: true,
-    });
-
-    // no waiting here
-    calendarPatch({
-      event,
-      calendarId,
-      informed: true,
-      shortURL,
-    });
+    Promise.all(promises);
 
     // console.log(event);
     return event;
