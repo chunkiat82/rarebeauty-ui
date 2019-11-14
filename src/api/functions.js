@@ -196,10 +196,17 @@ async function createEvent(options) {
 
   try {
     const { event, uuid } = await calendarCreate(
-      Object.assign({ calendarId }, options),
+      Object.assign(
+        {
+          calendarId,
+        },
+        options,
+      ),
     );
 
-    const shortURL = await informReservationToCustomer({ event });
+    const shortURL = await informReservationToCustomer({
+      event,
+    });
 
     // no waiting here
     calendarPatch({
@@ -251,12 +258,21 @@ async function patchEvent(options) {
       }),
     );
 
-    const finalEvent = await informReservationToCustomer({
-      eventId: event.id,
+    const shortURL = await informReservationToCustomer({
+      event,
       updated: true,
     });
-    // console.log(finalEvent);
-    return finalEvent;
+
+    // no waiting here
+    calendarPatch({
+      event,
+      calendarId,
+      informed: true,
+      shortURL,
+    });
+
+    // console.log(event);
+    return event;
   } catch (err) {
     console.error(`patchEvent`, err);
     throw err;
@@ -619,7 +635,7 @@ async function remindCustomersTouchUp(options) {
           );
 
           await calendarPatch({
-            eventId: event.id,
+            event,
             calendarId,
             touchUpReminded: true,
           });
