@@ -277,7 +277,9 @@ async function remindCustomers(options) {
     } else {
       // console.log(`Upcoming events for ${events.length}`);
 
-      events.forEach(async event => {
+      // to slow down on purpose hence not promise all
+      for (let loopIndex = 0; loopIndex < events.length; loopIndex += 1) {
+        const event = events[loopIndex];
         // console.log(event);
         if (
           event.extendedProperties &&
@@ -327,7 +329,7 @@ async function remindCustomers(options) {
             }
 
             await calendarPatch({
-              eventId: event.id,
+              event,
               calendarId,
               reminded: true,
             });
@@ -335,7 +337,7 @@ async function remindCustomers(options) {
             console.error(err);
           }
         }
-      });
+      }
     }
     return remindedEvents;
   } catch (err) {
@@ -521,7 +523,8 @@ async function remindCustomersTouchUp(options) {
     const services = new AST(listOfServices, 'id');
 
     // console.log(JSON.stringify(events, null ,2));
-    events.forEach(async event => {
+    for (let loopIndex = 0; loopIndex < events.length; loopIndex += 1) {
+      const event = events[loopIndex];
       if (event.summary.indexOf('+') === 0) return;
       // console.log(event);
       // console.log(`services=${JSON.stringify(event.extendedProperties.shared.services, null, 2)}`);
@@ -624,7 +627,7 @@ async function remindCustomersTouchUp(options) {
           console.error(err);
         }
       }
-    });
+    }
   }
 
   return remindedEvents;
