@@ -1,3 +1,4 @@
+/* eslint-disable camelcase */
 import rp from 'request-promise';
 
 const { bitly_token } = require('../keys/google.json');

@@ -108,13 +108,15 @@ async function patchHandler(options, event) {
   // console.log(`patchObject1=${JSON.stringify(patchObject)}`);
   const calendar = await generateCalendarObj();
   return new Promise((res, rej) => {
-    // console.error(`res(patchObject)=${JSON.stringify(patchObject)}`);
-    calendar.events.patch(patchObject, (err, { data: patchedEvent }) => {
-      if (err) {
+    calendar.events.patch(patchObject, (err, response) => {
+      if (err || !response) {
+        console.error(`res(patchObject)=${JSON.stringify(patchObject)}`);
         console.error(`Calendar Patch Error: ${JSON.stringify(err)}`);
-        rej(err);
+        console.error(`Calendar Patch Response: ${JSON.stringify(response)}`);
+        return rej(err);
       }
-      res(patchedEvent);
+      const { data: patchedEvent } = response;
+      return res(patchedEvent);
     });
   });
 }

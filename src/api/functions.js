@@ -1,3 +1,4 @@
+/* eslint-disable no-await-in-loop */
 /* eslint-disable no-param-reassign */
 import jwt from 'jsonwebtoken';
 import moment from 'moment';
@@ -641,6 +642,7 @@ async function remindCustomersTouchUp(options) {
     }
   }
 
+  // eslint-disable-next-line consistent-return
   return remindedEvents;
 }
 
