@@ -27,6 +27,10 @@ export default function list(options) {
       singleEvents: true,
       orderBy: orderBy || 'startTime',
       // syncToken: 'CPC4kJ_I5-UCEPC4kJ_I5-UCGAU=',
+      // {
+      //   "syncToken": "CNCitsDh7OUCENCitsDh7OUCGAU=",
+      //   "lastUpdated": "2019-11-15T17:40:31.242Z"
+      // }
     };
 
     if (endDT)
@@ -44,7 +48,8 @@ export default function list(options) {
         rej(err);
       } else {
         const { data } = output;
-        // console.log(`output`, output);
+        // console.log(`output.data.nextPageToken`, data.nextPageToken);
+        // console.log(`output.data.nextSyncToken`, data.nextSyncToken);
         res(data.items);
       }
     });
