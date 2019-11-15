@@ -1,3 +1,4 @@
+/* eslint-disable no-continue */
 /* eslint-disable no-await-in-loop */
 /* eslint-disable no-param-reassign */
 import jwt from 'jsonwebtoken';
@@ -527,7 +528,8 @@ async function remindCustomersTouchUp(options) {
   if (events.length === 0) {
     // console.log('No reminder events found.');
   } else {
-    // console.log(`Upcoming events for tomorrow ${events.length}`);
+    console.error(`Upcoming events for tomorrow ${events.length}`);
+
     /* need to abstract this logic */
     const response = await get(`config:services`);
     const listOfServices = response.value.services;
@@ -537,7 +539,7 @@ async function remindCustomersTouchUp(options) {
     // console.log(JSON.stringify(events, null ,2));
     for (let loopIndex = 0; loopIndex < events.length; loopIndex += 1) {
       const event = events[loopIndex];
-      if (event.summary.indexOf('+') === 0) return;
+      if (event.summary.indexOf('+') === 0) continue;
       // console.log(event);
       // console.log(`services=${JSON.stringify(event.extendedProperties.shared.services, null, 2)}`);
 
@@ -577,7 +579,7 @@ async function remindCustomersTouchUp(options) {
         console.error(
           `resourceName=${resourceName} was not reminded because ${event.attendees[0].displayName} has touchup already`,
         );
-        return;
+        continue;
       }
 
       if (
@@ -599,7 +601,7 @@ async function remindCustomersTouchUp(options) {
           }
         });
         if (!foundFullLashService) {
-          return;
+          continue;
         }
 
         remindedEvents[remindedEvents.length] = event;
