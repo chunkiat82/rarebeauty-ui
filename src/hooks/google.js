@@ -140,14 +140,14 @@ export async function handleCalendarWebhook(headers) {
 
       console.error(JSON.stringify(item, null, 2));
 
-      // if item is more than 7 days old return do nothing
+      // if item is more than 180 days old return do nothing
       if (item && item.start && item.start.dateTime) {
         const apptDateMT = moment(item.start.dateTime, 'YYYY-MM-DDThh:mm:ssZ');
         const currentMT = moment();
         const duration = moment.duration(currentMT.diff(apptDateMT));
         const days = duration.asDays();
-        if (days > 7) {
-          console.error(`item more than 7 days wants changes =${item.id}`);
+        if (days > 180) {
+          console.error(`item more than 180 days wants changes =${item.id}`);
           return;
         }
       }
