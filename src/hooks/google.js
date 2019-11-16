@@ -148,7 +148,8 @@ export async function handleCalendarWebhook(headers) {
         const days = duration.asDays();
         if (days > 7) {
           console.error(`item more than 7 days wants changes =${item.id}`);
-          return;
+          // eslint-disable-next-line no-continue
+          continue;
         }
       }
 
