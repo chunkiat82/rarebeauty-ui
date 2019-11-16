@@ -15,8 +15,9 @@ function populateStats(item) {
 
   try {
     item.extendedProperties.shared.bookedAhead = seconds < 0 ? 0 : seconds;
-  } catch (error) {
-    console.error(`populateStats - item cannot be read`, item.id);
+  } catch (populateStatsError) {
+    console.error(`populateStats - item cannot be read - item.id=`, item.id);
+    throw populateStatsError;
   }
 }
 
@@ -161,9 +162,13 @@ export async function handleCalendarWebhook(headers) {
         handleCancel(item);
       } else if (item.status === 'confirmed' || item.status === 'tentative') {
         // some massaging here
-        populateStats(item);
-        await handleUpsert(item);
-        await updateTransactionOnTime(item);
+        try {
+          populateStats(item);
+          await handleUpsert(item);
+          await updateTransactionOnTime(item);
+        } catch (handleError) {
+          console.error('Skipping with Error!!!!!!!!!! --- ', item);
+        }
       } else {
         console.error(`unhandled status-${item.id}`);
       }
