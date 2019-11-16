@@ -13,7 +13,11 @@ function populateStats(item) {
   const duration = moment.duration(createdDateMT.diff(apptDateMT));
   const seconds = duration.asSeconds();
 
-  item.extendedProperties.shared.bookedAhead = seconds < 0 ? 0 : seconds;
+  try {
+    item.extendedProperties.shared.bookedAhead = seconds < 0 ? 0 : seconds;
+  } catch (error) {
+    console.error(`populateStats - item cannot be read`, item.id);
+  }
 }
 
 function sleep(ms) {
