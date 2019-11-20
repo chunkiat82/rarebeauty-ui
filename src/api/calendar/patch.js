@@ -110,9 +110,19 @@ async function patchHandler(options, event) {
   return new Promise((res, rej) => {
     calendar.events.patch(patchObject, (err, response) => {
       if (err || !response) {
-        console.error(`res(patchObject)=${JSON.stringify(patchObject)}`);
-        console.error(`Calendar Patch Error: ${JSON.stringify(err)}`);
-        console.error(`Calendar Patch Response: ${JSON.stringify(response)}`);
+        console.error(
+          '-------------------------------PATCH START-----------------------',
+        );
+        console.error(
+          `res(patchObject)=${JSON.stringify(patchObject, null, 2)}`,
+        );
+        console.error(`Calendar Patch Error: ${JSON.stringify(err, null, 2)}`);
+        console.error(
+          `Calendar Patch Response: ${JSON.stringify(response, null, 2)}`,
+        );
+        console.error(
+          '-------------------------------PATCH END-----------------------',
+        );
         return rej(err);
       }
       const { data: patchedEvent } = response;

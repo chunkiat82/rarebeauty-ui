@@ -13,7 +13,7 @@ module.exports = function create(options) {
           resourceId,
         },
       },
-      (err, { data: response }) => {
+      (err, response) => {
         if (err) {
           rej(err);
         }
