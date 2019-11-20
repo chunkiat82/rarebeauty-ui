@@ -14,9 +14,23 @@ export function sendMessage(options) {
   const finalMessage = message.replace('REPLY_MOBILE', REPLY_MOBILE);
   let { mobile } = options;
 
+  mobile = mobile.replace(/\s/g, '');
+
+  if (mobile.length >= 8) {
+    mobile = mobile
+      .split('')
+      .reverse()
+      .join('')
+      .substring(0, 8)
+      .split('')
+      .reverse()
+      .join('');
+  }
+
   if (!mobile.startsWith('+65')) {
     mobile = `+65${mobile}`;
   }
+
   if (test) {
     mobile = TEST_MOBILE;
   }
