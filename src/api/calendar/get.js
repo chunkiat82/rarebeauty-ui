@@ -11,11 +11,12 @@ export default function get(options) {
         calendarId,
         eventId,
       },
-      async (err, { data: event }) => {
-        if (err) {
+      async (err, response) => {
+        if (err || !response) {
           rej(err);
         } else {
-          res(event);
+          const { data } = response;
+          res(data);
         }
       },
     );
