@@ -341,6 +341,8 @@ async function remindCustomers(options) {
               );
             }
 
+            await calendarGet({ calendarId, eventId: event.id });
+
             await calendarPatch({
               event,
               calendarId,
@@ -631,6 +633,8 @@ async function remindCustomersTouchUp(options) {
               message,
             }),
           );
+
+          await calendarGet({ calendarId, eventId: event.id });
 
           await calendarPatch({
             event,

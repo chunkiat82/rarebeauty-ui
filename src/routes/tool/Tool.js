@@ -187,7 +187,7 @@ class Home extends React.Component {
                   }}
                 />
                 <Toggle
-                  label="Evening <5pm"
+                  label="Evening >=5pm"
                   defaultToggled={DEFAULT_TOGGLE_STATE}
                   style={styles.toggle}
                   thumbStyle={{ backgroundColor: "rgb(40, 167, 69, 0.4)" }}
