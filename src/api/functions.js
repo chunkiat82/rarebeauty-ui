@@ -341,10 +341,13 @@ async function remindCustomers(options) {
               );
             }
 
-            await calendarGet({ calendarId, eventId: event.id });
+            const toBePatchedEvent = await calendarGet({
+              calendarId,
+              eventId: event.id,
+            });
 
             await calendarPatch({
-              event,
+              event: toBePatchedEvent,
               calendarId,
               reminded: true,
             });
