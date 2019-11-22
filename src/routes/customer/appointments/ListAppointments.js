@@ -89,11 +89,7 @@ class AppointmentList extends React.Component {
 
           <span style={whiteSpace}>
             $
-            {value.event.serviceIds.reduce(
-              (prevValue, serviceId) =>
-                prevValue + this.props.services.peekByKey(serviceId).price,
-              0
-            )}
+            {value.transaction.totalAmount}
           </span>
         </TableRowColumn>
       </TableRow>

@@ -13,10 +13,16 @@ export function queryPastAppointments(fetch) {
                         cancelCount,
                         appointments { id,
                             event{ 
-                                id, start, end, status, resourceName, serviceIds, shortURL, mobile
+                                id, start, end, status, resourceName, serviceIds, shortURL, mobile,
                             },
                             transaction { 
                                 id,
+                                totalAmount,
+                                service,
+                                product,
+                                discount,
+                                additional,
+                                deposit,
                                 items {
                                     name 
                                 }
