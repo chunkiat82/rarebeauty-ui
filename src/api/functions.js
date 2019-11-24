@@ -20,6 +20,8 @@ import contactCreate from './contacts/create';
 import contactUpdate from './contacts/update';
 import contactDelete from './contacts/delete';
 
+import googleHook from '../../src/hooks/google';
+
 import {
   byPerson as appointmentsByPerson,
   cancelledByPerson as countCancelledAppointmentsByPerson,
@@ -696,6 +698,25 @@ async function listFreeSlots(options) {
   }
 }
 
+async function handleGoogleHook() {
+  try {
+    const { value: configWatch } = await get('config:watch');
+
+    await googleHook(
+      Object.assign(
+        {},
+        {
+          'x-goog-resource-id': configWatch.resourceId,
+        },
+      ),
+    );
+    return;
+  } catch (err) {
+    console.error(err);
+    throw err;
+  }
+}
+
 const functions = {
   listEvents,
   listDeltaEvents,
@@ -724,6 +745,7 @@ const functions = {
   createWaitingEvent,
   listTransactions,
   listFreeSlots,
+  handleGoogleHook,
 };
 
 export default functions;

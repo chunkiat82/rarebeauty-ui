@@ -1,3 +1,5 @@
+/* eslint-disable no-undef */
+/* eslint-disable consistent-return */
 /* eslint-disable no-await-in-loop */
 /* eslint-disable no-param-reassign */
 import moment from 'moment';
@@ -97,7 +99,7 @@ export async function handleCalendarWebhook(headers) {
   console.error(`headers=${JSON.stringify(headers, null, 2)}`);
   // console.log('-------------------------------------------------------');
   // headers not used
-  let response = null;
+
   try {
     const { value: configWatch } = await get('config:watch');
     console.error(
@@ -110,94 +112,114 @@ export async function handleCalendarWebhook(headers) {
       console.error('need to check this ASAP');
       return;
     }
-
-    const syncToken = await getSyncToken(headers);
-    response = await api({
-      action: 'listDeltaEvents',
-      syncToken,
-    });
   } catch (configErr) {
     console.error('configErr', configErr);
     throw configErr;
   }
-
-  try {
-    // need to fix next pagetoken error
-    const { items: events, nextSyncToken, nextPageToken } = response;
-    console.error('----------------------------------------------1');
-    console.error(`nextSyncToken=`, nextSyncToken);
-    console.error(`nextPageToken=`, nextPageToken);
-    console.error('----------------------------------------------2');
-    // console.error(JSON.stringify(response.items, null, 2));
-    // console.error('----------------------------------------------3');
-    console.error(`Incoming Changed events (${events.length}):`);
-
-    for (let eventIndex = 0; eventIndex < events.length; eventIndex += 1) {
-      const item = events[eventIndex];
-
-      if (
-        item.summary &&
-        (item.summary.indexOf('-') === 0 || item.summary.indexOf('+') === 0)
-      ) {
-        // eslint-disable-next-line no-continue
-        continue;
+  let runOnce = false;
+  let nextPageToken = null;
+  let nextSyncToken = null;
+  let syncToken = null;
+  while (!runOnce || nextPageToken || nextSyncToken) {
+    if (runOnce) break;
+    let response = null;
+    try {
+      // first call on the first run
+      if (!nextPageToken || !nextSyncToken) {
+        syncToken = await getSyncToken(headers);
       }
 
-      console.error(JSON.stringify(item, null, 2));
+      response = await api({
+        action: 'listDeltaEvents',
+        syncToken,
+        nextPageToken,
+        nextSyncToken,
+      });
+      // need to fix next pagetoken error
+      const { items: events } = response;
+      nextPageToken = response.nextPageToken;
+      nextSyncToken = response.nextSyncToken;
 
-      // if item is more than 7 days old return do nothing
-      if (item && item.start && item.start.dateTime) {
-        const apptDateMT = moment(item.start.dateTime, 'YYYY-MM-DDThh:mm:ssZ');
-        const currentMT = moment();
-        const duration = moment.duration(currentMT.diff(apptDateMT));
-        const days = duration.asDays();
-        if (days > 7) {
-          console.error(`item more than 7 days wants changes =${item.id}`);
+      console.error('----------------------------------------------1');
+      console.error(`nextSyncToken=`, nextSyncToken);
+      console.error(`nextPageToken=`, nextPageToken);
+      console.error('----------------------------------------------2');
+      // console.error(JSON.stringify(response.items, null, 2));
+      // console.error('----------------------------------------------3');
+      console.error(`Incoming Changed events (${events.length}):`);
+
+      for (let eventIndex = 0; eventIndex < events.length; eventIndex += 1) {
+        const item = events[eventIndex];
+
+        if (
+          item.summary &&
+          (item.summary.indexOf('-') === 0 || item.summary.indexOf('+') === 0)
+        ) {
           // eslint-disable-next-line no-continue
           continue;
         }
-      }
 
-      if (item.status === 'cancelled') {
-        handleCancel(item);
-      } else if (item.status === 'confirmed' || item.status === 'tentative') {
-        // some massaging here
-        try {
-          populateStats(item);
-          await handleUpsert(item);
-          await updateTransactionOnTime(item);
-        } catch (handleError) {
-          console.error('Skipping with Error!!!!!!!!!! --- ', item);
+        console.error(JSON.stringify(item, null, 2));
+
+        // if item is more than 7 days old return do nothing
+        if (item && item.start && item.start.dateTime) {
+          const apptDateMT = moment(
+            item.start.dateTime,
+            'YYYY-MM-DDThh:mm:ssZ',
+          );
+          const currentMT = moment();
+          const duration = moment.duration(currentMT.diff(apptDateMT));
+          const days = duration.asDays();
+          if (days > 7) {
+            console.error(`item more than 7 days wants changes =${item.id}`);
+            // eslint-disable-next-line no-continue
+            continue;
+          }
         }
-      } else {
-        console.error(`unhandled status-${item.id}`);
+
+        if (item.status === 'cancelled') {
+          handleCancel(item);
+        } else if (item.status === 'confirmed' || item.status === 'tentative') {
+          // some massaging here
+          try {
+            populateStats(item);
+            await handleUpsert(item);
+            await updateTransactionOnTime(item);
+          } catch (handleError) {
+            console.error('Skipping with Error!!!!!!!!!! --- ', item);
+          }
+        } else {
+          console.error(`unhandled status-${item.id}`);
+        }
+
+        // temp loggin // mostly cancel use case
+        const event = item;
+        if (!event.start) {
+          console.error(
+            `event start date missing for - ${event.id} - ${event.status}`,
+          );
+        }
       }
 
-      // temp loggin // mostly cancel use case
-      const event = item;
-      if (!event.start) {
-        console.error(
-          `event start date missing for - ${event.id} - ${event.status}`,
-        );
+      // save only when there is nextSyncToken otherwise it screws others
+      if (nextSyncToken) {
+        runOnce = true;
+        await setSyncToken({
+          syncToken: nextSyncToken,
+          lastUpdated: moment(),
+        });
+        console.error('next Sync Token', nextSyncToken);
       }
+    } catch (mainError) {
+      console.error('anything that went wrong', mainError);
+      throw mainError;
     }
-
-    // save only when there is nextSyncToken otherwise it screws others
-    if (nextSyncToken) {
-      await setSyncToken({
-        syncToken: nextSyncToken,
-        lastUpdated: moment(),
-      });
-      console.error('next Sync Token', nextSyncToken);
-    }
-  } catch (mainError) {
-    console.error('anything that went wrong', mainError);
-    throw mainError;
   }
 
   console.error('----------------------------------------------4 END');
 
   // console.log(events);
+  // return events;
 }
 
 export default handleCalendarWebhook;

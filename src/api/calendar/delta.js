@@ -1,30 +1,44 @@
 const { generateCalendarObj } = require('../utilities/jwt');
-const { getSyncToken } = require('../utilities/token');
 
 export default async function getDelta(options) {
   return new Promise(async (res, rej) => {
-    let { syncToken } = options;
+    const { syncToken, nextPageToken, nextSyncToken } = options;
     const { calendarId } = options;
 
-    if (!syncToken) {
-      syncToken = await getSyncToken();
+    if (nextPageToken) {
+      const calendar = await generateCalendarObj();
+      calendar.events.list(
+        {
+          calendarId,
+          singleEvents: false,
+          pageToken: nextPageToken,
+          maxResults: 100,
+        },
+        async (err, { data: response }) => {
+          if (err) {
+            rej(err);
+          } else {
+            res(response);
+          }
+        },
+      );
+    } else {
+      const calendar = await generateCalendarObj();
+      calendar.events.list(
+        {
+          calendarId,
+          singleEvents: true,
+          syncToken: nextSyncToken || syncToken,
+          maxResults: 100,
+        },
+        async (err, { data: response }) => {
+          if (err) {
+            rej(err);
+          } else {
+            res(response);
+          }
+        },
+      );
     }
-
-    const calendar = await generateCalendarObj();
-    calendar.events.list(
-      {
-        calendarId,
-        singleEvents: true,
-        syncToken,
-        maxResults: 100,
-      },
-      async (err, { data: response }) => {
-        if (err) {
-          rej(err);
-        } else {
-          res(response);
-        }
-      },
-    );
   });
 }

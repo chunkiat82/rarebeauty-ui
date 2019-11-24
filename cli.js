@@ -47,7 +47,7 @@ async function main(argv) {
         if (results[0].start) {
           println(results);
         } else {
-          console.log(JSON.stringify(results, null, 2));
+          console.log('Array Results:', JSON.stringify(results, null, 2));
         }
         console.log(`Results Length ${results.length}`);
       } else {
@@ -58,7 +58,7 @@ async function main(argv) {
         }
       }
     } else {
-      console.log(JSON.stringify(results, null, 2));
+      console.log('Results:', JSON.stringify(results, null, 2));
     }
     // to kill couchbase bucket
     process.exit();
@@ -74,7 +74,7 @@ function println(events) {
     console.log(`Upcoming events (${events.length}):`);
     for (let i = 0; i < events.length; i += 1) {
       const event = events[i];
-      if (event.summary.indexOf('-') === 0) continue;
+      if (event.summary && event.summary.indexOf('-') === 0) continue;
       if (event.start) {
         const start = event.start.dateTime || event.start.date;
         const description =
