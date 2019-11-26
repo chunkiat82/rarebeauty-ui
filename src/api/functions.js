@@ -348,11 +348,23 @@ async function remindCustomers(options) {
               eventId: event.id,
             });
 
-            await calendarPatch({
-              event: toBePatchedEvent,
-              calendarId,
-              reminded: true,
-            });
+            try {
+              await calendarPatch({
+                event: toBePatchedEvent,
+                calendarId,
+                reminded: true,
+              });
+            } catch (patchErr) {
+              console.error(
+                'Patch Failed, Trying Again for event',
+                toBePatchedEvent.summary,
+              );
+              await calendarPatch({
+                event: toBePatchedEvent,
+                calendarId,
+                reminded: true,
+              });
+            }
           } catch (err) {
             console.error(err);
           }

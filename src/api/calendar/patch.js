@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-expressions */
 import { byPersonCount as getAppointmentsCountByPerson } from '../appointments/person';
 
 const { generateCalendarObj } = require('../utilities/jwt');
@@ -56,7 +57,12 @@ async function patchHandler(options, event) {
     )})-T($${totalAmount})-D($${deposit})\n\n${services
       .map(item => item.service)
       // eslint-disable-next-line prettier/prettier
-      .join(',')}\n\n${EDIT_URL}/${apptId}\n\n${WHATSAPPURL}/${finalMobile.replace('+', '')}`;
+      .join(
+        ',',
+      )}\n\n${EDIT_URL}/${apptId}\n\n${WHATSAPPURL}/${finalMobile.replace(
+      '+',
+      '',
+    )}`;
 
     const {
       count: countOfExistingAppointments,
@@ -113,13 +119,21 @@ async function patchHandler(options, event) {
         console.error(
           '-------------------------------PATCH START-----------------------',
         );
-        console.error(
-          `res(patchObject)=${JSON.stringify(patchObject, null, 2)}`,
-        );
-        console.error(`Calendar Patch Error: ${JSON.stringify(err, null, 2)}`);
-        console.error(
-          `Calendar Patch Response: ${JSON.stringify(response, null, 2)}`,
-        );
+        // console.error(
+        //   `res(patchObject)=${JSON.stringify(patchObject, null, 2)}`,
+        // );
+        // console.error(`Calendar Patch Error: ${JSON.stringify(err, null, 2)}`);
+        // console.error(
+        //   `Calendar Patch Response: ${JSON.stringify(response, null, 2)}`,
+        // );
+        err &&
+          err.repsonse &&
+          err.response.data &&
+          err.response.data.error &&
+          console.error(
+            'Calendar Patch Response Error Message:',
+            err.response.data.error.message,
+          );
         console.error(
           '-------------------------------PATCH END-----------------------',
         );
