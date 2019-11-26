@@ -651,13 +651,28 @@ async function remindCustomersTouchUp(options) {
             }),
           );
 
-          await calendarGet({ calendarId, eventId: event.id });
-
-          await calendarPatch({
-            event,
+          const toBePatchedEvent = await calendarGet({
             calendarId,
-            touchUpReminded: true,
+            eventId: event.id,
           });
+
+          try {
+            await calendarPatch({
+              event: toBePatchedEvent,
+              calendarId,
+              touchUpReminded: true,
+            });
+          } catch (patchErr) {
+            console.error(
+              'Patch Failed, Trying Again for event',
+              toBePatchedEvent.summary,
+            );
+            await calendarPatch({
+              event: toBePatchedEvent,
+              calendarId,
+              touchUpReminded: true,
+            });
+          }
         } catch (err) {
           console.error(err);
         }
