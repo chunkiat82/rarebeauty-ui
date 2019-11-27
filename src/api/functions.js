@@ -348,6 +348,7 @@ async function remindCustomers(options) {
               eventId: event.id,
             });
 
+            toBePatchedEvent.extendedProperties.shared.reminded = true;
             try {
               await calendarPatch({
                 event: toBePatchedEvent,

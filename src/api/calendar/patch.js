@@ -111,7 +111,9 @@ async function patchHandler(options, event) {
 
   resource.extendedProperties.shared.changed = new Date().getTime();
 
-  // console.log(`patchObject1=${JSON.stringify(patchObject)}`);
+  if (touchUpReminded || reminded) {
+    console.error(`patchObject reminded =${JSON.stringify(patchObject)}`);
+  }
   const calendar = await generateCalendarObj();
   return new Promise((res, rej) => {
     calendar.events.patch(patchObject, (err, response) => {
