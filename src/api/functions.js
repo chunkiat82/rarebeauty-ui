@@ -548,7 +548,7 @@ async function remindCustomersTouchUp(options) {
   if (events.length === 0) {
     // console.log('No reminder events found.');
   } else {
-    console.error(`Upcoming events for tomorrow ${events.length}`);
+    console.error(`Upcoming events Size: ${events.length}`);
 
     /* need to abstract this logic */
     const response = await get(`config:services`);
