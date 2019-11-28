@@ -13,7 +13,7 @@ import {
   // GraphQLInt as IntegerType,
   GraphQLNonNull as NonNull,
   // GraphQLFloat as FloatType,
-  GraphQLList as ListType,
+  // GraphQLList as ListType,
 } from 'graphql';
 
 const EventStatusType = new ObjectType({

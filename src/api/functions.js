@@ -29,7 +29,7 @@ import {
 
 import { listTransactions as listTransactionsDB } from './transactions/list';
 
-import calendarPatch from './calendar/patch';
+import calendarUpdate from './calendar/update';
 
 const calendarDayBefore = require('./calendar/dayBeforeEvents');
 
@@ -185,7 +185,7 @@ async function informReservationToCustomer(options) {
           console.error(`${name} not sent because mobile number is ${mobile}`);
         }
       } catch (err) {
-        console.error(`informReservationToCustomer calendarPatch failed`, err);
+        console.error(`informReservationToCustomer calendarUpdate failed`, err);
       }
     }
     return shortURL.id;
@@ -213,7 +213,7 @@ async function createEvent(options) {
     });
 
     // no waiting here
-    calendarPatch({
+    calendarUpdate({
       event,
       calendarId,
       informed: true,
@@ -260,7 +260,9 @@ async function patchEvent(options) {
 
     const promises = [];
 
-    promises.push(calendarPatch(Object.assign({ calendarId, event }, options)));
+    promises.push(
+      calendarUpdate(Object.assign({ calendarId, event }, options)),
+    );
     promises.push(
       informReservationToCustomer({
         event,
@@ -350,7 +352,7 @@ async function remindCustomers(options) {
 
             toBePatchedEvent.extendedProperties.shared.reminded = true;
             try {
-              await calendarPatch({
+              await calendarUpdate({
                 event: toBePatchedEvent,
                 calendarId,
                 reminded: true,
@@ -360,7 +362,7 @@ async function remindCustomers(options) {
                 'Patch Failed, Trying Again for event',
                 toBePatchedEvent.summary,
               );
-              await calendarPatch({
+              await calendarUpdate({
                 event: toBePatchedEvent,
                 calendarId,
                 reminded: true,
@@ -658,7 +660,7 @@ async function remindCustomersTouchUp(options) {
           });
 
           try {
-            await calendarPatch({
+            await calendarUpdate({
               event: toBePatchedEvent,
               calendarId,
               touchUpReminded: true,
@@ -668,7 +670,7 @@ async function remindCustomersTouchUp(options) {
               'Patch Failed, Trying Again for event',
               toBePatchedEvent.summary,
             );
-            await calendarPatch({
+            await calendarUpdate({
               event: toBePatchedEvent,
               calendarId,
               touchUpReminded: true,
