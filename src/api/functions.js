@@ -29,7 +29,7 @@ import {
 
 import { listTransactions as listTransactionsDB } from './transactions/list';
 
-import calendarUpdate from './calendar/update';
+import calendarPatch from './calendar/patch';
 
 const calendarDayBefore = require('./calendar/dayBeforeEvents');
 
@@ -213,7 +213,7 @@ async function createEvent(options) {
     });
 
     // no waiting here
-    calendarUpdate({
+    calendarPatch({
       event,
       calendarId,
       informed: true,
@@ -260,9 +260,7 @@ async function patchEvent(options) {
 
     const promises = [];
 
-    promises.push(
-      calendarUpdate(Object.assign({ calendarId, event }, options)),
-    );
+    promises.push(calendarPatch(Object.assign({ calendarId, event }, options)));
     promises.push(
       informReservationToCustomer({
         event,
@@ -333,12 +331,12 @@ async function remindCustomers(options) {
             console.error(`message=${message}`);
 
             if (mobile.indexOf(NO_MOBILE_NUMBER) === -1) {
-              await sms(
-                Object.assign({}, options, {
-                  mobile,
-                  message,
-                }),
-              );
+              // await sms(
+              //   Object.assign({}, options, {
+              //     mobile,
+              //     message,
+              //   }),
+              // );
             } else {
               console.error(
                 `${name} not reminded because mobile number is ${mobile}`,
@@ -352,24 +350,24 @@ async function remindCustomers(options) {
 
             toBePatchedEvent.extendedProperties.shared.reminded = true;
             try {
-              await calendarUpdate({
+              await calendarPatch({
                 event: toBePatchedEvent,
                 calendarId,
                 reminded: true,
               });
             } catch (patchErr) {
               console.error(
-                'Patch Failed, Trying Again for event',
+                'Update Retrying Again for event',
                 toBePatchedEvent.summary,
               );
-              await calendarUpdate({
+              await calendarPatch({
                 event: toBePatchedEvent,
                 calendarId,
                 reminded: true,
               });
             }
           } catch (err) {
-            console.error(err);
+            console.error('Update Really Failed', err);
           }
         }
       }
@@ -660,7 +658,7 @@ async function remindCustomersTouchUp(options) {
           });
 
           try {
-            await calendarUpdate({
+            await calendarPatch({
               event: toBePatchedEvent,
               calendarId,
               touchUpReminded: true,
@@ -670,7 +668,7 @@ async function remindCustomersTouchUp(options) {
               'Patch Failed, Trying Again for event',
               toBePatchedEvent.summary,
             );
-            await calendarUpdate({
+            await calendarPatch({
               event: toBePatchedEvent,
               calendarId,
               touchUpReminded: true,

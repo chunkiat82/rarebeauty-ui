@@ -27,7 +27,7 @@ async function updateHandler(options, event) {
   const patchObject = {
     calendarId,
     eventId: event.id,
-    resource: event,
+    requestBody: event,
   };
 
   const resource = patchObject.resource;
@@ -119,7 +119,7 @@ async function updateHandler(options, event) {
     calendar.events.update(patchObject, (err, response) => {
       if (err || !response) {
         console.error(
-          '-------------------------------PATCH START-----------------------',
+          '-------------------------------UPDATE START-----------------------',
         );
         // console.error(
         //   `res(patchObject)=${JSON.stringify(patchObject, null, 2)}`,
@@ -137,7 +137,7 @@ async function updateHandler(options, event) {
             err.response.data.error.message,
           );
         console.error(
-          '-------------------------------PATCH END-----------------------',
+          '-------------------------------UPDATE END-----------------------',
         );
         return rej(err);
       }
@@ -147,7 +147,7 @@ async function updateHandler(options, event) {
   });
 }
 
-export default function patch(options) {
+export default function update(options) {
   const { calendarId, event } = options;
 
   if (!calendarId || !event) {

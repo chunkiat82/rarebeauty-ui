@@ -27,7 +27,8 @@ async function patchHandler(options, event) {
   const patchObject = {
     calendarId,
     eventId: event.id,
-    resource: event,
+    // resource: event,
+    requestBody: event,
   };
 
   const resource = patchObject.resource;
