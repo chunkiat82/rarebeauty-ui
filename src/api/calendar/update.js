@@ -30,7 +30,7 @@ async function updateHandler(options, event) {
     requestBody: event,
   };
 
-  const resource = patchObject.resource;
+  const resource = patchObject.requestBody;
 
   let finalMobile = mobile;
 

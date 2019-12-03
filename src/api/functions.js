@@ -331,12 +331,12 @@ async function remindCustomers(options) {
             console.error(`message=${message}`);
 
             if (mobile.indexOf(NO_MOBILE_NUMBER) === -1) {
-              // await sms(
-              //   Object.assign({}, options, {
-              //     mobile,
-              //     message,
-              //   }),
-              // );
+              await sms(
+                Object.assign({}, options, {
+                  mobile,
+                  message,
+                }),
+              );
             } else {
               console.error(
                 `${name} not reminded because mobile number is ${mobile}`,
