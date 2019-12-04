@@ -112,6 +112,9 @@ async function patchHandler(options, event) {
 
   resource.extendedProperties.shared.changed = new Date().getTime();
 
+  // patch update
+  resource.sequence += 1;
+
   if (touchUpReminded || reminded) {
     console.error(`patchObject reminded =${JSON.stringify(patchObject)}`);
   }
