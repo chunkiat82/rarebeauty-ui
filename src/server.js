@@ -48,11 +48,6 @@ app.use(cookieParser());
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 
-const cal = ical({
-  domain: config.app.workDomain,
-  name: config.app.workCalendar,
-});
-
 //
 // Authentication
 // -----------------------------------------------------------------------------
@@ -216,12 +211,17 @@ app.use('/general/calendar/:eventId', async (req, res) => {
 
   const customerId = event.extendedProperties.shared.resourceName;
 
+  const cal = ical({
+    domain: config.app.workDomain,
+    name: config.app.workCalendar,
+  });
+
   cal.createEvent({
     start: event.start.dateTime,
     end: event.end.dateTime,
     summary: 'Rare Beauty Appointment',
     description: `
-We do Lashes, Facial, Waxing, Threading and More
+We do Lash Extensions, Facial, Waxing, Threading and More
 
 Appointment(s) are found @ ${config.app.customerURL}/${customerId.substring(
       PEOPLE_PREFIX.length,
