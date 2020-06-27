@@ -12,4 +12,5 @@ export default combineReducers({
   copy,
   event: common,
   workAddress: common,
+  oldWorkAddress: common,
 });

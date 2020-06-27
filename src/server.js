@@ -174,7 +174,11 @@ app.use('/general/confirmation/:eventId', async (req, res, next) => {
   if (eventId === 'images') return;
 
   const event = await API({ action: 'getEvent', eventId });
-  req.data = { event, workAddress: config.app.workAddress };
+  req.data = {
+    event,
+    workAddress: config.app.workAddress,
+    oldWorkAddress: config.app.oldWorkAddress,
+  };
   await API({
     action: 'patchEvent',
     status: 'confirmed',
@@ -190,7 +194,11 @@ app.use('/general/reservation/:eventId', async (req, res, next) => {
 
   if (eventId === 'images') return;
   const event = await API({ action: 'getEvent', eventId });
-  req.data = { event, workAddress: config.app.workAddress };
+  req.data = {
+    event,
+    workAddress: config.app.workAddress,
+    oldWorkAddress: config.app.oldWorkAddress,
+  };
 
   const now = moment();
   const appointmentEnd = moment(event.end.dateTime);
@@ -207,7 +215,6 @@ app.use('/general/calendar/:eventId', async (req, res) => {
 
   if (eventId === 'images') return;
   const event = await API({ action: 'getEvent', eventId });
-  // req.data = { event, workAddress: config.app.workAddress };
 
   const customerId = event.extendedProperties.shared.resourceName;
 

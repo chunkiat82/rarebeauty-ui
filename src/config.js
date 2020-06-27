@@ -76,6 +76,7 @@ module.exports = {
   },
 
   app: {
+    oldWorkAddress: keys.old_work_address,
     workAddress: keys.work_address,
     workDomain: keys.domain,
     workCalendar: keys.calendarName,
