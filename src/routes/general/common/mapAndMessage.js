@@ -1,3 +1,4 @@
+/* eslint-disable jsx-a11y/alt-text */
 /**
  * React Starter Kit (https://www.reactstarterkit.com/)
  *
@@ -19,6 +20,7 @@ class MapAndMessage extends React.Component {
     src: PropTypes.string.isRequired,
     // eslint-disable-next-line react/require-default-props
     errors: PropTypes.string,
+    seLink: PropTypes.string.isRequired,
   };
 
   render() {
@@ -27,6 +29,11 @@ class MapAndMessage extends React.Component {
     return (
       <div className={s.root}>
         <div className={s.container}>
+          <br />
+          <a href={this.props.seLink}>
+            <img src="https://www.safeentry-qr.gov.sg/assets/images/safe_entry_banner.svg" />
+          </a>
+          <br />
           <h2>
             <center>
               <span>{errors ? 'There is error!' : message}</span>

@@ -178,6 +178,8 @@ app.use('/general/confirmation/:eventId', async (req, res, next) => {
     event,
     workAddress: config.app.workAddress,
     oldWorkAddress: config.app.oldWorkAddress,
+    safeEntryLink: config.app.safeEntryLink,
+    oldSafeEntryLink: config.app.oldSafeEntryLink,
   };
   await API({
     action: 'patchEvent',
@@ -198,6 +200,8 @@ app.use('/general/reservation/:eventId', async (req, res, next) => {
     event,
     workAddress: config.app.workAddress,
     oldWorkAddress: config.app.oldWorkAddress,
+    safeEntryLink: config.app.safeEntryLink,
+    oldSafeEntryLink: config.app.oldSafeEntryLink,
   };
 
   const now = moment();

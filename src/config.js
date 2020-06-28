@@ -79,6 +79,8 @@ module.exports = {
     oldWorkAddress: keys.old_work_address,
     workAddress: keys.work_address,
     workDomain: keys.domain,
+    safeEntryLink: keys.safe_entry,
+    oldSafeEntryLink: keys.old_safe_entry,
     workCalendar: keys.calendarName,
     customerURL: keys.customerURL,
   },

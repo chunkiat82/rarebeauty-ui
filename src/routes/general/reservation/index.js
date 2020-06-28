@@ -13,12 +13,22 @@ import Layout from '../../../components/PublicLayout';
 import MapAndMessage from '../common/mapAndMessage';
 
 async function action({ store }) {
-  const { event, workAddress, oldWorkAddress } = store.getState();
+  const {
+    event,
+    workAddress,
+    oldWorkAddress,
+    oldSafeEntryLink,
+    safeEntryLink,
+  } = store.getState();
 
   const startDateTime = moment(event.start.dateTime);
   const address = startDateTime.isBefore('2020-07-01')
     ? oldWorkAddress
     : workAddress;
+
+  const seLink = startDateTime.isBefore('2020-07-01')
+    ? oldSafeEntryLink
+    : safeEntryLink;
 
   const src = startDateTime.isBefore('2020-07-01')
     ? 'https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d7977.465154156651!2d103.69033662836527!3d1.3367016720327713!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x31da0f8ffc39bba3%3A0x86c5239af2cbccd7!2sSingapore%20642987!5e0!3m2!1sen!2ssg!4v1571484005118!5m2!1sen!2ssg'
@@ -29,16 +39,17 @@ async function action({ store }) {
     title: 'Rare Beauty Professional',
     component: (
       <Layout>
-        <div style={{ marginTop: '20px', textAlign: 'center' }}>
+        {/* <div style={{ marginTop: '20px', textAlign: 'center' }}>
           <a href={`/general/calendar/${event.id}`}>
             Save To Calendar
             <br />
             <i className={'material-icons'}>calendar_today</i>
           </a>
-        </div>
+        </div> */}
         <MapAndMessage
           address={address}
           src={src}
+          seLink={seLink}
           message={`Slot reserved on ${startDateTime
             .tz('Asia/Singapore')
             .format('LLLL')}`}
