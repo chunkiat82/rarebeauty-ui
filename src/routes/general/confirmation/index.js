@@ -1,3 +1,4 @@
+/* eslint-disable jsx-a11y/alt-text */
 /**
  * React Starter Kit (https://www.reactstarterkit.com/)
  *
@@ -11,6 +12,7 @@ import React from 'react';
 import moment from 'moment-timezone';
 import Layout from '../../../components/PublicLayout';
 import MapAndMessage from '../common/mapAndMessage';
+import s from './index.css';
 
 async function action({ store }) {
   const {
@@ -38,10 +40,19 @@ async function action({ store }) {
     title: 'Rare Beauty Professional',
     component: (
       <Layout>
+        <div className={s.root}>
+          <div className={s.container}>
+            <a href={seLink}>
+              <img
+                style={{ width: '320px', textAlign: 'center' }}
+                src="https://www.safeentry-qr.gov.sg/assets/images/safe_entry_banner.svg"
+              />
+            </a>
+          </div>
+        </div>
         <MapAndMessage
           address={address}
           src={src}
-          seLink={seLink}
           message={`Appointment is confirmed! See you on ${moment(
             event.start.dateTime,
           )
