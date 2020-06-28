@@ -12,7 +12,8 @@ import React from 'react';
 import moment from 'moment-timezone';
 import Layout from '../../../components/PublicLayout';
 import MapAndMessage from '../common/mapAndMessage';
-import s from './index.css';
+// eslint-disable-next-line css-modules/no-unused-class
+import s from '../common/mapAndMessage.css';
 
 async function action({ store }) {
   const {
@@ -40,13 +41,10 @@ async function action({ store }) {
     title: 'Rare Beauty Professional',
     component: (
       <Layout>
-        <div className={s.root}>
-          <div className={s.container}>
+        <div className={s.confirmation}>
+          <div>
             <a href={seLink}>
-              <img
-                style={{ width: '320px', textAlign: 'center' }}
-                src="https://www.safeentry-qr.gov.sg/assets/images/safe_entry_banner.svg"
-              />
+              <img src="https://www.safeentry-qr.gov.sg/assets/images/safe_entry_banner.svg" />
             </a>
           </div>
         </div>

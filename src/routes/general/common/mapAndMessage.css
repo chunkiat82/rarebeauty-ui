@@ -25,3 +25,9 @@
 .textCenter {
   text-align: center;
 }
+
+.confirmation {
+  width: 320px;
+  margin: 0 auto;
+  padding-top: 30px;
+}
