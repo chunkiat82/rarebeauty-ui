@@ -42,7 +42,15 @@ async function action({ store }) {
     component: (
       <Layout>
         <div className={s.confirmation}>
-          <div>
+          <div style={{ width: '20%', float: 'left' }}>
+            <a href={seLink}>
+              <img
+                className={s.height50}
+                src="https://rarebeautysg.s3.amazonaws.com/clickhere_100.png"
+              />
+            </a>
+          </div>
+          <div style={{ width: '80%', float: 'right' }}>
             <a href={seLink}>
               <img src="https://www.safeentry-qr.gov.sg/assets/images/safe_entry_banner.svg" />
             </a>
