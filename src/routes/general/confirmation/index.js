@@ -44,10 +44,7 @@ async function action({ store }) {
         <div className={s.confirmation}>
           <div style={{ width: '20%', float: 'left' }}>
             <a href={seLink}>
-              <img
-                className={s.height50}
-                src="https://rarebeautysg.s3.amazonaws.com/clickhere_100.png"
-              />
+              <img src="https://rarebeautysg.s3.amazonaws.com/clickhere_50.png" />
             </a>
           </div>
           <div style={{ width: '80%', float: 'right' }}>
