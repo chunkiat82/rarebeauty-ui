@@ -1,7 +1,8 @@
-// ssh sohoe -L 8092:172.17.0.1:8092 -L 8091:172.17.0.1:8091 -L 11207:172.17.0.1:11207  -L 11210:172.17.0.1:11210 -L 8093:172.17.0.1:8093
+// ssh sohoe -L 18091:172.17.0.1:18091 -L 18092:172.17.0.1:18092 -L 18093:172.17.0.1:18093 -L 18094:172.17.0.1:18094 -L 8094:172.17.0.1:8094 -L 8092:172.17.0.1:8092 -L 8091:172.17.0.1:8091 -L 11207:172.17.0.1:11207  -L 11210:172.17.0.1:11210 -L 8093:172.17.0.1:8093 -L 11211:172.17.0.1:11211
 const couchbase = require('couchbase');
 const config = require('../../config.js');
 
+// console.log(config.couchbaseUrl);
 const cluster = new couchbase.Cluster(config.couchbaseUrl);
 const N1qlQuery = couchbase.N1qlQuery;
 const bucket = cluster.openBucket('default');
@@ -26,6 +27,7 @@ function getObject(options) {
     bucket.get(id, (err, result) => {
       if (err) {
         console.error(`Err getObject id=${options.id}`);
+        // console.error(`getObject err`, err);
         rej(err);
       } else {
         res(result);
