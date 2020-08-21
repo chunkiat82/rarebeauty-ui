@@ -639,9 +639,9 @@ async function remindCustomersTouchUp(options) {
               event.extendedProperties.shared &&
               event.extendedProperties.shared.mobile) ||
             -1;
-          const message = `Hi ${name},\n\nGentle Reminder.\n\nIf you need lashes touch up ($${followUpPrice}), your last eligible day is ${lastDayForTwoWeeksReminderStartOfDayDT.format(
+          const message = `Hi ${name},\n\nIf you need lashes touch up ($${followUpPrice}), your last eligible day is ${lastDayForTwoWeeksReminderStartOfDayDT.format(
             'DD-MMM',
-          )}\n\nReply to REPLY_MOBILE to reserve your slot early.`;
+          )}\n\nReply to REPLY_MOBILE to reserve your slot.`;
 
           console.error(`message=${message}`);
 

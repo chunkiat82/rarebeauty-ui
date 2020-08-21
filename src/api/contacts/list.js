@@ -2,26 +2,17 @@
 // https://developers.google.com/apis-explorer/?hl=en_US#p/
 const { generatePeopleObj } = require('../utilities/jwt');
 
-// function
-let cache = [];
-// let stateTimer = setTimeout()
+const cache = [];
 
-export default async function list(options = { forceRefresh: false }) {
-  const { forceRefresh } = options;
-  // console.log("forceRefresh", forceRefresh);
+async function getContacts(previousList, pageToken) {
   const people = await generatePeopleObj();
-
-  // caching is amazing but becareful when it becomes stale
-  return new Promise((res, rej) => {
-    if (cache.length > 0 && forceRefresh !== true) {
-      return res(cache);
-    }
-    // console.log('i was here her her');
+  return new Promise(async (res, rej) => {
     people.people.connections.list(
       {
         resourceName: 'people/me',
         personFields: 'names,phoneNumbers',
-        pageSize: 2000, // future problem
+        pageSize: 1000, // future problem
+        pageToken,
       },
       (err, { data }) => {
         if (err) {
@@ -29,7 +20,7 @@ export default async function list(options = { forceRefresh: false }) {
         }
         // console.log(me.connections.length);
         // console.log(JSON.stringify(me, null, 2));
-
+        const nextPageToken = data.nextPageToken;
         let contacts = data.connections.filter(contact =>
           Array.isArray(contact.phoneNumbers),
         );
@@ -56,15 +47,40 @@ export default async function list(options = { forceRefresh: false }) {
           return obj;
         });
 
+        // to merge with previous list if any
+        if (previousList) {
+          contacts = contacts.concat(previousList);
+        }
         contacts.sort((a, b) => (a.name && a.name.localeCompare(b.name)) || 0);
 
         const final = [];
         contacts.forEach(item => {
           if (item.name && item.mobile) final[final.length] = item;
         });
-        cache = final;
-        return res(cache);
+        // console.log(`nextPageToken= ${nextPageToken}`);
+        return res({ data: final, nextPageToken });
       },
     );
+  });
+}
+
+export default async function list(options = { forceRefresh: false }) {
+  const { forceRefresh } = options;
+
+  return new Promise(async (res) => {
+    if (cache.length > 0 && forceRefresh !== true) {
+      return res(cache);
+    }
+    let { data, nextPageToken } = await getContacts();
+    while (nextPageToken) {
+      const { data: currentData, nextPageToken: pageToken } = await getContacts(
+        data,
+        nextPageToken,
+      );
+      data = currentData;
+      nextPageToken = pageToken;
+    }
+    // console.log(`data`, data.length)
+    return res(data);
   });
 }
