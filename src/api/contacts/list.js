@@ -2,7 +2,7 @@
 // https://developers.google.com/apis-explorer/?hl=en_US#p/
 const { generatePeopleObj } = require('../utilities/jwt');
 
-const cache = [];
+let cache = [];
 
 async function getContacts(previousList, pageToken) {
   const people = await generatePeopleObj();
@@ -57,7 +57,7 @@ async function getContacts(previousList, pageToken) {
         contacts.forEach(item => {
           if (item.name && item.mobile) final[final.length] = item;
         });
-        // console.log(`nextPageToken= ${nextPageToken}`);
+        cache = final;
         return res({ data: final, nextPageToken });
       },
     );
@@ -67,7 +67,7 @@ async function getContacts(previousList, pageToken) {
 export default async function list(options = { forceRefresh: false }) {
   const { forceRefresh } = options;
 
-  return new Promise(async (res) => {
+  return new Promise(async res => {
     if (cache.length > 0 && forceRefresh !== true) {
       return res(cache);
     }
