@@ -35,7 +35,10 @@ class MapAndMessage extends React.Component {
             </center>
           </h2>
           <h3 className={s.textCenter}>{address}</h3>
-          <img src="https://rarebeautysg.s3.amazonaws.com/rb-map-400.png" />
+          <img
+            className={s.map}
+            src="https://rarebeautysg.s3.amazonaws.com/rb-map-400.png"
+          />
         </div>
       </div>
     );

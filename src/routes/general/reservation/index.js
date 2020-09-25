@@ -29,13 +29,13 @@ async function action({ store }) {
     title: 'Rare Beauty Professional',
     component: (
       <Layout>
-        {/* <div style={{ marginTop: '20px', textAlign: 'center' }}>
+        <div style={{ marginTop: '20px', textAlign: 'center' }}>
           <a href={`/general/calendar/${event.id}`}>
             Save To Calendar
             <br />
             <i className={'material-icons'}>calendar_today</i>
           </a>
-        </div> */}
+        </div>
         <MapAndMessage
           address={address}
           src={src}
