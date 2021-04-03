@@ -26,10 +26,12 @@ function createFetch(fetch: Fetch, { baseUrl, cookie }: Options) {
   // NOTE: Tweak the default options to suite your application needs
   const defaults = {
     method: 'POST', // handy with GraphQL backends
-    mode: baseUrl ? 'cors' : 'same-origin',
-    credentials: baseUrl ? 'include' : 'same-origin',
+    //mode: baseUrl ? 'cors' : 'same-origin',
+    mode: 'cors',
+    // credentials: baseUrl ? 'include' : 'same-origin',
     headers: {
       Accept: 'application/json',
+      'Authorization': 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6ImFkbWluIiwiZW1haWwiOiJidXNpbmVzc0Bzb2hvLnNnIiwiaWF0IjoxNjE2MzM3MjA0fQ.fjaG97bF6tzZaCimRsLgKDZlvmFLRXBRQ6mqQiIE1TA',
       'Content-Type': 'application/json',
       ...(cookie ? { Cookie: cookie } : null),
     },

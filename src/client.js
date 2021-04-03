@@ -36,7 +36,7 @@ const context = {
   },
   // Universal HTTP client
   fetch: createFetch(self.fetch, {
-    baseUrl: window.App.apiUrl,
+    baseUrl: 'http://localhost.soho.sg:4000',
   }),
   store: configureStore(window.App.state, { history }),
   storeSubscription: null,

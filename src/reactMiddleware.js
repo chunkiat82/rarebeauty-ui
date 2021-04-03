@@ -58,7 +58,7 @@ export const reactMiddleware = async (req, res, next) => {
       },
       // Universal HTTP client
       fetch: createFetch(fetch, {
-        baseUrl: config.api.serverUrl,
+        baseUrl: 'http://localhost:4000',
         cookie: req.headers.cookie,
       }),
       userAgent: req.headers['user-agent'],
