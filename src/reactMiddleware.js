@@ -17,8 +17,6 @@ export const reactMiddleware = async (req, res, next) => {
   try {
     const css = new Set();
 
-    const { paas } = config;
-
     const { data: reqData } = req;
 
     let initialState = req.initialState || {
@@ -28,7 +26,7 @@ export const reactMiddleware = async (req, res, next) => {
           : req.user || null,
       loading: false,
     };
-    initialState = { ...reqData, ...initialState, paas };
+    initialState = { ...reqData, ...initialState };
     // console.log('initialState', JSON.stringify(initialState, null, 2));
     // console.log('initialState', initialState);
     const store = configureStore(initialState, {
@@ -60,7 +58,6 @@ export const reactMiddleware = async (req, res, next) => {
       fetch: createFetch(fetch, {
         baseUrl: 'http://localhost.soho.sg:4000',
         // baseUrl: paas.apiHost,
-        token: paas.token,
         cookie: req.headers.cookie,
       }),
       userAgent: req.headers['user-agent'],
