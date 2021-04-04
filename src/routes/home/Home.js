@@ -36,6 +36,10 @@ const styles = {
 
 class Home extends React.Component {
 
+  // async componentDidMount(){    
+  //   await this.props.loadToken();
+  // }
+
   render() {
     return <div style={styles.root}>
       <GridList

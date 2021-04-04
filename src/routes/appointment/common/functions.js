@@ -307,7 +307,6 @@ function listServices(fetch) {
       }),
     });
     const { data } = await resp.json();
-    // console.log(data);
     return data.services;
   };
 }

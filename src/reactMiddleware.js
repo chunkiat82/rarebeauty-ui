@@ -16,13 +16,11 @@ import Html from './components/Html';
 export const reactMiddleware = async (req, res, next) => {
   try {
     const css = new Set();
-    // console.error(req.params);
-    // not sure if this is a good idea???
-    req.url = req.originalUrl;
+
+    const { paas } = config;
 
     const { data: reqData } = req;
 
-    // console.log(req.payload);
     let initialState = req.initialState || {
       user:
         req.payload && req.payload.foo && req.payload.foo.length > 0
@@ -30,8 +28,8 @@ export const reactMiddleware = async (req, res, next) => {
           : req.user || null,
       loading: false,
     };
-
-    initialState = { ...reqData, ...initialState };
+    initialState = { ...reqData, ...initialState, paas };
+    // console.log('initialState', JSON.stringify(initialState, null, 2));
     // console.log('initialState', initialState);
     const store = configureStore(initialState, {
       fetch,
@@ -47,6 +45,7 @@ export const reactMiddleware = async (req, res, next) => {
       }),
     );
 
+    // eslint-disable-next-line no-console
     // Global (context) variables that can be easily accessed from any React component
     // https://facebook.github.io/react/docs/context.html
     const context = {
@@ -56,20 +55,18 @@ export const reactMiddleware = async (req, res, next) => {
         // eslint-disable-next-line no-underscore-dangle
         styles.forEach(style => css.add(style._getCss()));
       },
-      // Universal HTTP client
+      // Universal HTTP client backend
+      // this needs to be fixed based on session ****
       fetch: createFetch(fetch, {
-        baseUrl: 'http://localhost:4000',
+        baseUrl: 'http://localhost.soho.sg:4000',
+        // baseUrl: paas.apiHost,
+        token: paas.token,
         cookie: req.headers.cookie,
       }),
       userAgent: req.headers['user-agent'],
       store,
       storeSubscription: null,
     };
-    // console.log(` req.userAgent=${ req.userAgent}`);
-
-    // route.component will have this context too
-
-    // console.log(req.path);
 
     const route = await router.resolve({
       ...context,
@@ -97,6 +94,7 @@ export const reactMiddleware = async (req, res, next) => {
     data.scripts.push(assets.client.js);
     data.app = {
       apiUrl: config.api.clientUrl,
+      // apiUrl: config.paas.apiHost,
       state: context.store.getState(),
     };
 
@@ -110,12 +108,7 @@ export const reactMiddleware = async (req, res, next) => {
 
 export const reactErrorMiddleware = (err, req, res, next) => {
   if (err.name === 'UnauthorizedError') {
-    // res.clearCookie('token');
     return res.redirect('/page');
-    // res.status(401);
-    // return res.status(401).send('Unauthorized Access...Please leave');
-    // handle error pages
-    // return
   }
 
   // eslint-disable-line no-unused-vars

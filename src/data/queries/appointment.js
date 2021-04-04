@@ -17,7 +17,8 @@ const appointment = {
   args: {
     id: { type: StringType },
   },
-  async resolve(obj, args, context) {
+  // eslint-disable-next-line no-unused-vars
+  async resolve(obj, args, _context) {
     const dbObj = await get(`appt:${args.id}`);
     // console.log(JSON.stringify(dbObj.value));
     return dbObj.value;

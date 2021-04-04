@@ -11,6 +11,15 @@ import React from 'react';
 import Home from './Home';
 import Layout from '../../components/Layout';
 
+function loadToken(fetch) {
+  return async () => {
+    const resp = await fetch('/getToken');
+    const body = await resp.json();
+    localStorage.setItem('jwtToken', body.token);
+    return { result: 'completed' };
+  };
+}
+
 function refreshContacts(fetch) {
   return async () => {
     const resp = await fetch('/graphql', {
@@ -66,7 +75,7 @@ async function action({ fetch }) {
     title: 'Rare Beauty Professional',
     component: (
       <Layout>
-        <Home tiles={generateTiles(fetch)} />
+        <Home tiles={generateTiles(fetch)} loadToken={loadToken(fetch)} />
       </Layout>
     ),
   };

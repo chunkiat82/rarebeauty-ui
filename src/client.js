@@ -21,9 +21,15 @@ import { updateMeta } from './DOMUtils';
 import router from './router';
 
 /* eslint-disable global-require */
-
 // Global (context) variables that can be easily accessed from any React component
 // https://facebook.github.io/react/docs/context.html
+
+// this is simulating like a login [20210328]
+const urlParams = new URLSearchParams(window.location.search);
+const token = urlParams.get('jwt');
+const initialState = { ...window.App.state };
+initialState.paas.token = token;
+const store = configureStore(initialState, { history });
 const context = {
   // Enables critical path CSS rendering
   // https://github.com/kriasoft/isomorphic-style-loader
@@ -36,8 +42,11 @@ const context = {
   },
   // Universal HTTP client
   fetch: createFetch(self.fetch, {
+    // baseUrl: initialState.paas.apiHost,
     baseUrl: 'http://localhost.soho.sg:4000',
+    token: initialState.paas.token,
   }),
+  // store,
   store: configureStore(window.App.state, { history }),
   storeSubscription: null,
 };
@@ -109,31 +118,47 @@ async function onLocationChange(location, action) {
   }
   currentLocation = location;
 
+  console.log('i was here 1');
+
   try {
     // Traverses the list of routes in the order they are defined until
     // it finds the first route that matches provided URL path string
     // and whose action method returns anything other than `undefined`.
-    const route = await router.resolve({
-      ...context,
-      path: location.pathname,
-      query: queryString.parse(location.search),
-    });
+    let route = null;
+    try {
+      // const route = await router.resolve({
+      route = await router.resolve({
+        ...context,
+        path: location.pathname,
+        query: queryString.parse(location.search),
+      });
+    } catch (e2) {
+      console.log(e2);
+    }
+    console.log('i was here 2');
 
     // Prevent multiple page renders during the routing process
     if (currentLocation.key !== location.key) {
       return;
     }
+    console.log('i was here 3');
+
+    console.log('route', route);
+
+    console.log('history', history);
 
     if (route.redirect) {
       history.replace(route.redirect);
       return;
     }
+    console.log('i was here 4');
 
     appInstance = ReactDOM.render(
       <App context={context}>{route.component}</App>,
       container,
       () => onRenderComplete(route, location),
     );
+    console.log('i was here 5');
   } catch (error) {
     if (__DEV__) {
       throw error;

@@ -15,4 +15,5 @@ export default combineReducers({
   oldWorkAddress: common,
   oldSafeEntryLink: common,
   safeEntryLink: common,
+  paas: common,
 });

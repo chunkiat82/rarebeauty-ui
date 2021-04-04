@@ -18,6 +18,9 @@ if (process.env.BROWSER) {
 
 module.exports = {
   // Node.js app
+  service: {
+    port: process.env.PORT || 3000,
+  },
   port: process.env.PORT || 3000,
 
   // API Gateway

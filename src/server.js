@@ -14,19 +14,12 @@ import express from 'express';
 import cookieParser from 'cookie-parser';
 import bodyParser from 'body-parser';
 import expressJwt from 'express-jwt';
-import expressGraphQL from 'express-graphql';
 import jwt from 'jsonwebtoken';
 import PrettyError from 'pretty-error';
 import _httpErrorPages from 'http-error-pages';
 import ical from 'ical-generator';
-
-import schema from './data/schema';
-
-import { handleCalendarWebhook, handleTwilioWebhook } from './hooks';
-// import { logLogin } from './data/database/login';
 import { reactMiddleware, reactErrorMiddleware } from './reactMiddleware';
 import API from './api/';
-
 import config from './config';
 
 const PEOPLE_PREFIX = 'people/';
@@ -133,31 +126,17 @@ app.use(reactErrorMiddleware);
 //
 // Register API middleware
 // -----------------------------------------------------------------------------
-app.use(
-  '/graphql',
-  expressGraphQL(async req => ({
-    schema,
-    graphiql: __DEV__,
-    rootValue: { request: req },
-    pretty: __DEV__,
-  })),
-);
 
-app.use('/events/calendar', async (req, res, next) => {
-  // console.error('handleCalendarWebhook typeof', typeof handleCalendarWebhook);
-  try {
-    await handleCalendarWebhook(req.headers);
-    res.json({ ok: true });
-  } catch (e) {
-    console.error(`handleCalendarWebhook`, e);
-    next(e);
-  }
-});
+function createConfig() {
+  return {
+    token: jwt.sign({ user: config.user }, config.auth.jwt.secret),
+    baseUrl: config.apiUrl,
+  };
+}
 
-app.use('/webhooks/twilio', async (req, res) => {
-  handleTwilioWebhook(req);
-  res.send('null');
-  res.status(201).end();
+app.use('/getToken', (_req, res) => {
+  const deploymentConfig = createConfig();
+  res.json({ token: deploymentConfig.token });
 });
 
 app.use('/public/appointment/confirm/:eventId', async (req, res) => {
@@ -250,9 +229,9 @@ Appointment(s) are found @ ${config.app.customerURL}/${customerId.substring(
   // next(req, res, next);
 });
 
-//
-// Register server-side rendering middleware
-// -----------------------------------------------------------------------------
+// //
+// // Register server-side rendering middleware
+// // -----------------------------------------------------------------------------
 app.use('*', reactMiddleware);
 
 //
@@ -273,8 +252,10 @@ if (__DEV__) {
 // Launch the server
 // -----------------------------------------------------------------------------
 if (!module.hot) {
-  app.listen(config.port, () => {
-    console.info(`The server is running at http://localhost:${config.port}/`);
+  app.listen(config.service.port, () => {
+    console.info(
+      `The server is running at http://localhost:${config.service.port}/`,
+    );
   });
 } else {
   // development mode
