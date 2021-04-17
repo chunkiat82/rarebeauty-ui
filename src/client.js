@@ -27,6 +27,7 @@ import router from './router';
 // this is simulating like a login [20210328]
 const urlParams = new URLSearchParams(window.location.search);
 const token = urlParams.get('jwt');
+const API_CLIENT_URL = urlParams.get('API_CLIENT_URL');
 const context = {
   // Enables critical path CSS rendering
   // https://github.com/kriasoft/isomorphic-style-loader
@@ -40,7 +41,7 @@ const context = {
   // Universal HTTP client
   fetch: createFetch(self.fetch, {
     // baseUrl: initialState.paas.apiHost,
-    baseUrl: 'http://localhost.soho.sg:4000',
+    baseUrl: `http://${API_CLIENT_URL}`,
   }),
   // store,
   store: configureStore(window.App.state, { history }),

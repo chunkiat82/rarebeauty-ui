@@ -252,10 +252,9 @@ if (__DEV__) {
 // Launch the server
 // -----------------------------------------------------------------------------
 if (!module.hot) {
-  app.listen(config.service.port, () => {
-    console.info(
-      `The server is running at http://localhost:${config.service.port}/`,
-    );
+  const port = config.port;
+  app.listen(port, () => {
+    console.info(`The server is running at http://localhost:${port}/`);
   });
 } else {
   // development mode

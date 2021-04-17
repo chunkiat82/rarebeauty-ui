@@ -65,22 +65,6 @@ class Html extends React.Component {
           {scripts.map(script => (
             <script key={script} src={script} />
           ))}
-          {config.analytics.googleTrackingId && (
-            <script
-              dangerouslySetInnerHTML={{
-                __html:
-                  'window.ga=function(){ga.q.push(arguments)};ga.q=[];ga.l=+new Date;' +
-                  `ga('create','${config.analytics.googleTrackingId}','auto');ga('send','pageview')`,
-              }}
-            />
-          )}
-          {config.analytics.googleTrackingId && (
-            <script
-              src="https://www.google-analytics.com/analytics.js"
-              async
-              defer
-            />
-          )}
           <script
             dangerouslySetInnerHTML={{
               __html: `
