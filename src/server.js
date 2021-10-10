@@ -1,3 +1,4 @@
+/* eslint-disable no-console */
 // https://github.com/kriasoft/react-starter-kit/blob/master/docs/recipes/how-to-implement-routing.md
 
 /**
@@ -19,7 +20,6 @@ import PrettyError from 'pretty-error';
 import _httpErrorPages from 'http-error-pages';
 import ical from 'ical-generator';
 import { reactMiddleware, reactErrorMiddleware } from './reactMiddleware';
-import API from './api/';
 import config from './config';
 
 const PEOPLE_PREFIX = 'people/';
@@ -138,6 +138,10 @@ app.use('/getToken', (_req, res) => {
   const deploymentConfig = createConfig();
   res.json({ token: deploymentConfig.token });
 });
+
+async function API(options) {
+  console.log('API', options);
+}
 
 app.use('/public/appointment/confirm/:eventId', async (req, res) => {
   const { eventId } = req.params;

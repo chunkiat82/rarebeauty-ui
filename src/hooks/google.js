@@ -1,12 +1,19 @@
+/* eslint-disable no-console */
 /* eslint-disable no-undef */
 /* eslint-disable consistent-return */
 /* eslint-disable no-await-in-loop */
 /* eslint-disable no-param-reassign */
 import moment from 'moment';
-import api from './../api';
-import { get, remove, upsert } from '../data/database';
 
-const { getSyncToken, setSyncToken } = require('../api/utilities/token');
+// const { getSyncToken, setSyncToken } = require('../api/utilities/token');
+
+async function getSyncToken() {
+  console.log('getSyncToken');
+}
+
+async function setSyncToken() {
+  console.log('setSyncToken');
+}
 
 // instead of scripting on kibana, i'm duplicating the content here,
 function populateStats(item) {
