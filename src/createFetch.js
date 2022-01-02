@@ -10,17 +10,17 @@ type Options = {
 // https://hasura.io/blog/best-practices-of-using-jwt-with-graphql/
 
 function createFetch(fetch: Fetch, { baseUrl, cookie, token }: Options) {  
-  // NOTE: Tweak the default options to suite your application needs  
+  // NOTE: Tweak the default options to suite your application needs
+  console.log(token);
   const defaults = {
     method: 'POST', // handy with GraphQL backends
     //mode: baseUrl ? 'cors' : 'same-origin',
     mode : 'cors',
-    //credentials: baseUrl ? 'include' : 'same-origin',
+    // credentials: baseUrl ? 'include' : 'same-origin',
     headers: {
       Accept: 'application/json',
-      'Authorization': token,
-      'Content-Type': 'application/json',      
-      Origin: 'http://localhost:3000',
+      'Authorization': `Bearer ${token}`,
+      'Content-Type': 'application/json',
       ...(cookie ? { Cookie: cookie } : null),
     },
   };

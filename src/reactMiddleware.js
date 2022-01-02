@@ -105,6 +105,7 @@ export const reactMiddleware = async (req, res, next) => {
 
 export const reactErrorMiddleware = (err, req, res, next) => {
   if (err.name === 'UnauthorizedError') {
+    console.error('UnauthorizedError reactErrorMiddleware');
     return res.redirect('/page');
   }
 

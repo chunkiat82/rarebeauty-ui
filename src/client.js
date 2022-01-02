@@ -26,8 +26,20 @@ import router from './router';
 
 // this is simulating like a login [20210328]
 const urlParams = new URLSearchParams(window.location.search);
-const token = urlParams.get('jwt');
-const API_CLIENT_URL = 'appointments.soho.sg'; // TODO: REMOVE THIS
+// const token = urlParams.get('jwt');
+const API_CLIENT_URL = urlParams.get('API_CLIENT_URL') || 'localhost:3002'; // TODO: REMOVE THIS
+// console.log('document.cookie', document.cookie);
+function getCookie(name) {
+  const nameEQ = `${name}=`;
+  const ca = document.cookie.split(';');
+  for (let i = 0; i < ca.length; i++) {
+    let c = ca[i];
+    while (c.charAt(0) === ' ') c = c.substring(1, c.length);
+    if (c.indexOf(nameEQ) === 0) return c.substring(nameEQ.length, c.length);
+  }
+  return null;
+}
+// console.log('....', getCookie('token'));
 const context = {
   // Enables critical path CSS rendering
   // https://github.com/kriasoft/isomorphic-style-loader
@@ -40,9 +52,8 @@ const context = {
   },
   // Universal HTTP client
   fetch: createFetch(self.fetch, {
-    // baseUrl: initialState.paas.apiHost,
+    token: getCookie('token'),
     baseUrl: `http://${API_CLIENT_URL}`,
-    token,
   }),
   // store,
   store: configureStore(window.App.state, { history }),

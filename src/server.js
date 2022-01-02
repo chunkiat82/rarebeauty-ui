@@ -80,12 +80,14 @@ app.use((req, res, next) => {
     const expiresIn = 60 * 60 * 24 * 180; // 180 days
     res.cookie('token', req.query.token, {
       maxAge: 1000 * expiresIn,
-      httpOnly: true,
+      sameSite: 'none',
+      secure: true,
     });
     /* tech debt */
     res.cookie('jwt', req.query.token, {
       maxAge: 1000 * expiresIn,
-      httpOnly: true,
+      sameSite: 'none',
+      secure: true,
     });
     return next();
   }
@@ -98,6 +100,7 @@ app.use(
     credentialsRequired: true,
     getToken: function fromHeaderOrQuerystring(req) {
       // console.log(`Object.keys(req)`, Object.keys(req));
+      // console.log(`req.cookies`, req.cookies);
       if (req.cookies.token) {
         return req.cookies.token;
       } else if (req.query && req.query.token) {
@@ -106,16 +109,7 @@ app.use(
       return null;
     },
   }).unless({
-    path: [
-      '/graphql',
-      '/events/calendar',
-      /\/general*/,
-      /\/assets*/,
-      /\/page+/,
-      /\/p+/,
-      /\/api+/,
-      /\/webhooks+/,
-    ],
+    path: ['/events/calendar', /\/general*/, /\/assets*/, /\/page+/, /\/p+/],
   }),
 );
 // Error handler for express-jwt
