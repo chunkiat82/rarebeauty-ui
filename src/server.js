@@ -71,6 +71,20 @@ function populatePayload(req, _res, next) {
   return next();
 }
 
+// super temporary lin #######
+app.use((req, res, next) => {
+  res.header('Access-Control-Allow-Origin', '*');
+  res.header(
+    'Access-Control-Allow-Headers',
+    'Origin, X-Requested-With, Content-Type, Accept, Authorization',
+  );
+  if (req.method === 'OPTIONS') {
+    res.header('Access-Control-Allow-Methods', 'PUT, POST, PATCH, DELETE, GET');
+    return res.status(200).json({});
+  }
+  return next();
+});
+
 /* bot denial */
 app.use((req, res, next) => {
   if (req.headers.from === 'googlebot(at)googlebot.com') {
