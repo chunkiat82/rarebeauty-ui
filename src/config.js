@@ -23,7 +23,7 @@ module.exports = {
   apiUrl: `http://${process.env.API_CLIENT_URL}`,
   // Authentication
   auth: {
-    jwt: { secret: process.env.JWT_SECRET || 'SOHO Starter Kit' },
+    jwt: { secret: process.env.JWT_SECRET || 'SOHO Appointment Kit' },
   },
   app: {
     oldWorkAddress: keys.old_work_address,
