@@ -26,7 +26,7 @@ import router from './router';
 
 // this is simulating like a login [20210328]
 const urlParams = new URLSearchParams(window.location.search);
-const token = urlParams.get('JWT');
+const token = urlParams.get('jwt');
 const API_CLIENT_URL = urlParams.get('API_CLIENT_URL');
 const context = {
   // Enables critical path CSS rendering

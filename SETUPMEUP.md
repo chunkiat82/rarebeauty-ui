@@ -52,7 +52,7 @@ function createFetch(fetch: Fetch, { baseUrl, cookie, token }: Options) {
 
 ### Step 4
 Run RB V3 with the following line
-
+* https://github.com/chunkiat82/rarebeauty-ui/wiki/Import-Guide-on-CORS
 * JWT_SECRET=`replacewithsecret` API_CLIENT_URL=http://localhost:4000 npm start
 
 ### Step 5
