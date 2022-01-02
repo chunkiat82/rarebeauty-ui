@@ -53,12 +53,18 @@ function createFetch(fetch: Fetch, { baseUrl, cookie, token }: Options) {
 ### Step 4
 Run RB V3 with the following line
 
-* JWT_SECRET=`replacewithsecret` API_CLIENT_URL=http://localhost:3000 npm start
+* JWT_SECRET=`replacewithsecret` API_CLIENT_URL=http://localhost:4000 npm start
 
 ### Step 5
+
+Tunnel to the API
+
+* ssh sohoe -L 4000:localhost:3002
+
+### Step 6
 Start browser with the follow line
 
-* http://localhost:3002/?API_CLIENT_URL=localhost:3000
+* http://localhost:3000/?API_CLIENT_URL=http://localhost:4000
 
 
-
+Remember to use the CORS Plugin in Chrome

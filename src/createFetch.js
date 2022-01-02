@@ -18,8 +18,9 @@ function createFetch(fetch: Fetch, { baseUrl, cookie, token }: Options) {
     //credentials: baseUrl ? 'include' : 'same-origin',
     headers: {
       Accept: 'application/json',
-      'Authorization': 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6ImFkbWluIiwiZW1haWwiOiJidXNpbmVzc0Bzb2hvLnNnIiwiaWF0IjoxNjE2MzM3MjA0fQ.fjaG97bF6tzZaCimRsLgKDZlvmFLRXBRQ6mqQiIE1TA',
+      'Authorization': token,
       'Content-Type': 'application/json',      
+      Origin: 'http://localhost:3000',
       ...(cookie ? { Cookie: cookie } : null),
     },
   };
