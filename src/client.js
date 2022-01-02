@@ -41,7 +41,7 @@ const context = {
   // Universal HTTP client
   fetch: createFetch(self.fetch, {
     // baseUrl: initialState.paas.apiHost,
-    baseUrl: `${API_CLIENT_URL}`,
+    baseUrl: `http://${API_CLIENT_URL}`,
     token,
   }),
   // store,
@@ -116,8 +116,6 @@ async function onLocationChange(location, action) {
   }
   currentLocation = location;
 
-  console.log('i was here 1');
-
   try {
     // Traverses the list of routes in the order they are defined until
     // it finds the first route that matches provided URL path string
@@ -131,32 +129,24 @@ async function onLocationChange(location, action) {
         query: queryString.parse(location.search),
       });
     } catch (e2) {
-      console.log(e2);
+      console.error(e2);
     }
-    console.log('i was here 2');
 
     // Prevent multiple page renders during the routing process
     if (currentLocation.key !== location.key) {
       return;
     }
-    console.log('i was here 3');
-
-    console.log('route', route);
-
-    console.log('history', history);
 
     if (route.redirect) {
       history.replace(route.redirect);
       return;
     }
-    console.log('i was here 4');
 
     appInstance = ReactDOM.render(
       <App context={context}>{route.component}</App>,
       container,
       () => onRenderComplete(route, location),
     );
-    console.log('i was here 5');
   } catch (error) {
     if (__DEV__) {
       throw error;
