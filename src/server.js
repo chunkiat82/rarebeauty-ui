@@ -116,16 +116,20 @@ app.use(
     credentialsRequired: true,
     getToken: function fromHeaderOrQuerystring(req) {
       // console.log(`Object.keys(req)`, Object.keys(req));
+      // console.log(`req.cookies`, JSON.stringify(req.cookies, null, 2));
       if (req.cookies.token) {
         return req.cookies.token;
       } else if (req.query && req.query.token) {
         return req.query.token;
+      } else if (req.headers && req.headers.authorization) {
+        const base64Credentials = req.headers.authorization.split(' ')[1];
+        // console.log('base64Credentials', base64Credentials);
+        return base64Credentials;
       }
       return null;
     },
   }).unless({
     path: [
-      '/graphql',
       '/events/calendar',
       /\/general*/,
       /\/assets*/,
