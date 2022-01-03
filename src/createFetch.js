@@ -19,7 +19,7 @@ function createFetch(fetch: Fetch, { baseUrl, cookie, token }: Options) {
     // credentials: baseUrl ? 'include' : 'same-origin',
     headers: {
       Accept: 'application/json',
-      'Authorization': `Bearer ${token}`,
+      'Authorization': `${token}`,
       'Content-Type': 'application/json',
       ...(cookie ? { Cookie: cookie } : null),
     },
