@@ -122,9 +122,7 @@ app.use(
       } else if (req.query && req.query.token) {
         return req.query.token;
       } else if (req.headers && req.headers.authorization) {
-        const base64Credentials = req.headers.authorization.split(' ')[1];
-        // console.log('base64Credentials', base64Credentials);
-        return base64Credentials;
+        return req.headers.authorization; // base64Credentials;
       }
       return null;
     },
