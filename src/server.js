@@ -78,20 +78,17 @@ app.use((req, res, next) => {
   const expiresIn = 60 * 60 * 24 * 180; // 180 days
   res.cookie('api', process.env.API_CLIENT_URL, {
     maxAge: 1000 * expiresIn,
-    sameSite: 'none',
-    secure: true,
+    httpOnly: true,
   });
   if (req.query.token) {
     res.cookie('token', req.query.token, {
       maxAge: 1000 * expiresIn,
-      sameSite: 'none',
-      secure: true,
+      httpOnly: true,
     });
     /* tech debt */
     res.cookie('jwt', req.query.token, {
       maxAge: 1000 * expiresIn,
-      sameSite: 'none',
-      secure: true,
+      httpOnly: true,
     });
     return next();
   }
