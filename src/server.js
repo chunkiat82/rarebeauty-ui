@@ -89,6 +89,12 @@ app.use((req, res, next) => {
       sameSite: 'none',
       secure: true,
     });
+
+    res.cookie('api', process.env.API_CLIENT_URL, {
+      maxAge: 1000 * expiresIn,
+      sameSite: 'none',
+      secure: true,
+    });
     return next();
   }
   return next();

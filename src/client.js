@@ -20,15 +20,6 @@ import history from './history';
 import { updateMeta } from './DOMUtils';
 import router from './router';
 
-/* eslint-disable global-require */
-// Global (context) variables that can be easily accessed from any React component
-// https://facebook.github.io/react/docs/context.html
-
-// this is simulating like a login [20210328]
-const urlParams = new URLSearchParams(window.location.search);
-// const token = urlParams.get('jwt');
-const API_CLIENT_URL = urlParams.get('API_CLIENT_URL') || 'localhost:3002'; // TODO: REMOVE THIS
-// console.log('document.cookie', document.cookie);
 function getCookie(name) {
   const nameEQ = `${name}=`;
   const ca = document.cookie.split(';');
@@ -39,7 +30,12 @@ function getCookie(name) {
   }
   return null;
 }
-// console.log('....', getCookie('token'));
+/* eslint-disable global-require */
+// Global (context) variables that can be easily accessed from any React component
+// https://facebook.github.io/react/docs/context.html
+
+const API_CLIENT_URL = getCookie('api') || 'localhost:3002'; // TODO: REMOVE THIS
+
 const context = {
   // Enables critical path CSS rendering
   // https://github.com/kriasoft/isomorphic-style-loader
