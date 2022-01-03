@@ -49,7 +49,7 @@ const context = {
   // Universal HTTP client
   fetch: createFetch(self.fetch, {
     token: getCookie('token'),
-    baseUrl: `http://${API_CLIENT_URL}`,
+    baseUrl: `https://${API_CLIENT_URL}`,
   }),
   // store,
   store: configureStore(window.App.state, { history }),
