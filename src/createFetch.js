@@ -11,7 +11,7 @@ type Options = {
 
 function createFetch(fetch: Fetch, { baseUrl, cookie, token }: Options) {  
   // NOTE: Tweak the default options to suite your application needs
-  console.log(token);
+  // console.log(token);
   const defaults = {
     method: 'POST', // handy with GraphQL backends
     //mode: baseUrl ? 'cors' : 'same-origin',
