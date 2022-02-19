@@ -135,8 +135,13 @@ class Appointment extends React.Component {
     };
   }
 
+  componentDidMount() {
+    this.getDelayedData();
+  }
+
   componentWillReceiveProps(nextProps) {
     if (this.props.apptId !== nextProps.apptId) {
+      this.getDelayedData();
       const {
         contacts,
         name,
@@ -192,6 +197,18 @@ class Appointment extends React.Component {
     // console.log(`nextProps.apptId`, nextProps.apptId);
   }
 
+  getDelayedData() {
+    if (!this.props.resourceName) return;
+    this.props.queryPastAppointments(this.props.resourceName).then(results => {
+      const { appointments, cancelCount } = results;
+      this.setState({
+        pastAppointments: appointments,
+        cancelAppointmentsCount: cancelCount,
+        expanded: appointments && appointments.length > 0,
+      });
+    });
+  }
+
   calculateTotal(serviceIds, additional, discount) {
     if (!serviceIds) return 0;
     const totalServices = serviceIds.reduce(
@@ -229,6 +246,7 @@ class Appointment extends React.Component {
       ...inputString,
     });
   };
+
   handleServiceChange = (_event, _index, serviceIds) => {
     this.setState({
       serviceIds,
@@ -327,8 +345,8 @@ class Appointment extends React.Component {
             array.push(
               <div key={`pastAppt${array.length}`}>
                 <Link
-                  key={`appointment/edit/${appt.id}`}
-                  to={`/appointment/edit/${appt.id}`}
+                  key={`appointment/${appt.id}/edit`}
+                  to={`/appointment/${appt.id}/edit`}
                 >{`Edit`}</Link>
                 {` - `}
                 {`${moment(appt.event.start).format(
@@ -345,8 +363,10 @@ class Appointment extends React.Component {
       if (pastAppointments.length > 0) {
         return <div>{pastAppointments}</div>;
       }
+
       return ['No Past Appointments'];
     }
+
     return ['No Past Appointments'];
   };
 

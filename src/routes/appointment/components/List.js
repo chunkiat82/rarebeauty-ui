@@ -70,7 +70,7 @@ class AppointmentList extends React.Component {
           <p>
             <span style={whiteSpace}>
               <a
-                href={`/appointment/edit/${value.apptId}`}
+                href={`/appointment/${value.apptId}/edit`}
                 rel="noopener noreferrer"
               >
                 Edit
@@ -114,7 +114,7 @@ class AppointmentList extends React.Component {
   select(rows) {
     return row => {
       const event = rows[row];
-      const to = `/appointment/edit/${event.apptId}`;
+      const to = `/appointment/${event.apptId}/edit`;
       history.push(to);
     };
   }

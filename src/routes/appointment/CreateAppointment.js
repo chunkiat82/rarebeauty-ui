@@ -42,18 +42,9 @@ async function action({ fetch, params, store }) {
   const contacts = await listContacts(fetch)();
   const services = await getServices(fetch)();
   let contact = { name: '', mobile: '' };
-  let pastAppointments = null;
-  let cancelAppointmentsCount = 0;
   if (customerId) {
     contact = await getContact(fetch)(resourceName);
-    // console.log(contact);
-    const { appointments, cancelCount } = await queryPastAppointments(fetch)(
-      resourceName,
-    );
-    pastAppointments = appointments;
-    cancelAppointmentsCount = cancelCount;
   }
-  // console.log(`contact = ${JSON.stringify(contact)}`);
   hide(store)();
 
   if (!contacts && !services)
@@ -66,8 +57,8 @@ async function action({ fetch, params, store }) {
       <Layout>
         <Appointment
           services={services}
-          pastAppointments={pastAppointments}
-          cancelAppointmentsCount={cancelAppointmentsCount}
+          pastAppointments={[]}
+          cancelAppointmentsCount={0}
           queryPastAppointments={queryPastAppointments(fetch)}
           contacts={contacts}
           post={createCalendar(fetch)}

@@ -93,14 +93,14 @@ const routes = {
         ),
     },
     {
-      path: '/appointment/edit/:id',
+      path: '/appointment/:id/edit',
       load: () =>
         import(
           /* webpackChunkName: 'appointment-edit' */ './appointment/EditAppointment'
         ),
     },
     {
-      path: '/appointment/',
+      path: '/appointments/',
       load: () =>
         import(
           /* webpackChunkName: 'appointment-list' */ './appointment/ListAppointments'

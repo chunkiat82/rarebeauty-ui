@@ -64,11 +64,12 @@ async function action({ fetch, params, store }) {
     deposit = transaction.deposit;
   }
   // const pastAppointments = await queryPastAppointments(fetch)(resourceName);
-
-  const {
-    appointments: pastAppointments,
-    cancelCount: cancelAppointmentsCount,
-  } = await queryPastAppointments(fetch)(resourceName);
+  const pastAppointments = [];
+  const cancelAppointmentsCount = 0;
+  // const {
+  //   appointments: pastAppointments,
+  //   cancelCount: cancelAppointmentsCount,
+  // } = await queryPastAppointments(fetch)(resourceName);
   const services = await getServices(fetch)();
   // console.log(`resourceName=${resourceName}`);
   // console.log(`Edit pastAppointments=${JSON.stringify(pastAppointments)}`);

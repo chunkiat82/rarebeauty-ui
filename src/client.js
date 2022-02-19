@@ -34,7 +34,7 @@ function getCookie(name) {
 // Global (context) variables that can be easily accessed from any React component
 // https://facebook.github.io/react/docs/context.html
 
-const API_CLIENT_URL = getCookie('api') || 'localhost:3002'; // TODO: REMOVE THIS
+const API_CLIENT_URL = decodeURIComponent(getCookie('api'));
 const PROTOCOL = API_CLIENT_URL.indexOf('localhost') > -1 ? 'http' : 'https';
 
 const context = {

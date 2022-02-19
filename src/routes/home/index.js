@@ -48,7 +48,7 @@ function generateTiles(fetch) {
       img: 'images/home/calendar-appointments.png',
       title: 'List Appointments',
       subTitle: 'Upcoming 20',
-      link: '/appointment',
+      link: '/appointments',
     },
     {
       img: 'images/home/tool.png',
