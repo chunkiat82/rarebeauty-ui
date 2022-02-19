@@ -35,6 +35,7 @@ function getCookie(name) {
 // https://facebook.github.io/react/docs/context.html
 
 const API_CLIENT_URL = getCookie('api') || 'localhost:3002'; // TODO: REMOVE THIS
+const PROTOCOL = API_CLIENT_URL.indexOf('localhost') > -1 ? 'http' : 'https';
 
 const context = {
   // Enables critical path CSS rendering
@@ -49,7 +50,7 @@ const context = {
   // Universal HTTP client
   fetch: createFetch(self.fetch, {
     token: getCookie('token'),
-    baseUrl: `https://${API_CLIENT_URL}`,
+    baseUrl: `${PROTOCOL}://${API_CLIENT_URL}`,
   }),
   // store,
   store: configureStore(window.App.state, { history }),

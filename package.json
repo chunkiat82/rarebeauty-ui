@@ -218,6 +218,8 @@
     "serve": "babel-node tools/run runServer",
     "start": "babel-node tools/run start",
     "tunnel": "no more tunnel for standalone",
-    "cli": "babel-node cli"
+    "cli": "babel-node cli",
+    "local": "API_CLIENT_URL=localhost:4000 API_SERVER_URL=localhost:4000 npm start",
+    "remote": "API_CLIENT_URL=appointments.soho.sg API_SERVER_URL=appointments.soho.sg npm start"
   }
 }
