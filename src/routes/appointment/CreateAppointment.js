@@ -36,7 +36,7 @@ async function action({ fetch, params, store }) {
 
   const customerId = params.customerId;
 
-  const resourceName = `people/${customerId}`;
+  const resourceName = customerId ? `people/${customerId}` : null;
   // console.log(`resourceName=${resourceName}`);
 
   const contacts = await listContacts(fetch)();

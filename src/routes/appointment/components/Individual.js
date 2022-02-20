@@ -386,7 +386,7 @@ class Appointment extends React.Component {
             <CardText expandable>{this.renderPastAppointments()}</CardText>
           </Card>
           <hr />
-          {this.state.resourceName.length > 16
+          {this.state.resourceName && this.state.resourceName.length > 16
             ? this.generateCustomerLink()
             : ''}
           {this.state.cancelAppointmentsCount > 0
