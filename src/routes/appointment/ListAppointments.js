@@ -20,20 +20,20 @@ async function getEvents(fetch) {
   const resp = await fetch('/graphql', {
     body: JSON.stringify({
       query: `{
-                    events {
-                        id,
-                        status,
-                        name
-                        mobile,
-                        start,
-                        end,
-                        apptId,
-                        serviceIds,
-                        confirmed,
-                        shortURL,
-                        created
-                    }
-                }`,
+        events {
+            id,
+            status,
+            name
+            mobile,
+            start,
+            end,
+            apptId,
+            serviceIds,
+            confirmed,
+            shortURL,
+            created
+        }
+      }`,
     }),
   });
   const { data } = await resp.json();

@@ -1,11 +1,4 @@
-/**
- * React Starter Kit (https://www.reactstarterkit.com/)
- *
- * Copyright © 2014-present Kriasoft, LLC. All rights reserved.
- *
- * This source code is licensed under the MIT license found in the
- * LICENSE.txt file in the root directory of this source tree.
- */
+/** https://github.com/kriasoft/universal-router */
 
 /* eslint-disable global-require */
 
@@ -15,9 +8,29 @@ import ca from /* webpackChunkName: 'customer-appointments-list' */ './customer/
 
 const routes = {
   path: '/',
-
   // Keep in mind, routes are evaluated in order
   children: [
+    {
+      path: '/appointment/create',
+      load: () =>
+        import(
+          /* webpackChunkName: 'appointment-create' */ './appointment/CreateAppointment'
+        ),
+    },
+    {
+      path: '/appointment/:id/edit',
+      load: () =>
+        import(
+          /* webpackChunkName: 'appointment-edit' */ './appointment/EditAppointment'
+        ),
+    },
+    {
+      path: '/appointments/',
+      load: () =>
+        import(
+          /* webpackChunkName: 'appointment-list' */ './appointment/ListAppointments'
+        ),
+    },
     {
       path: '/page',
       load: () => import(/* webpackChunkName: 'page' */ './page'),
@@ -84,27 +97,6 @@ const routes = {
           },
         },
       ],
-    },
-    {
-      path: '/appointment/create',
-      load: () =>
-        import(
-          /* webpackChunkName: 'appointment-create' */ './appointment/CreateAppointment'
-        ),
-    },
-    {
-      path: '/appointment/:id/edit',
-      load: () =>
-        import(
-          /* webpackChunkName: 'appointment-edit' */ './appointment/EditAppointment'
-        ),
-    },
-    {
-      path: '/appointments/',
-      load: () =>
-        import(
-          /* webpackChunkName: 'appointment-list' */ './appointment/ListAppointments'
-        ),
     },
     {
       path: '/login',

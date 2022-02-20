@@ -17,6 +17,7 @@ import React from 'react';
 import withStyles from 'isomorphic-style-loader/lib/withStyles';
 import s from './Appointment.css';
 import history from '../../../history';
+import Link from '../../../components/Link/Link';
 
 const stylesRed = {
   color: 'red',
@@ -69,12 +70,7 @@ class AppointmentList extends React.Component {
           </p>
           <p>
             <span style={whiteSpace}>
-              <a
-                href={`/appointment/${value.apptId}/edit`}
-                rel="noopener noreferrer"
-              >
-                Edit
-              </a>
+              <Link to={`/appointment/${value.apptId}/edit`}>Edit</Link>
             </span>
           </p>
         </TableRowColumn>
