@@ -135,6 +135,7 @@ app.use(
       /\/p+/,
       /\/api+/,
       /\/webhooks+/,
+      /\/graphql*/,
     ],
   }),
 );
