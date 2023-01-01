@@ -24,11 +24,13 @@ export default async function create({ first, last, mobile }) {
           ],
         },
       },
-      async (err, { data: me }) => {
+      async (err, obj) => {
         // console.log(err || me);
         if (err) {
           rej(err);
         } else {
+          // console.log(obj);
+          const { data: me } = obj;
           // [TEST20191109] - remove "await" from getList
           getList({ forceRefresh: true });
           res(me);
