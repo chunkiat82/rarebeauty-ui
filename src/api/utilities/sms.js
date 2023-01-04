@@ -5,7 +5,7 @@ const configs = require('./configs');
 const defaultMobile = configs.get('mobile');
 const client = new Twilio(keys.accountSid, keys.authToken);
 
-const FROM = 'RARE BEAUTY';
+const FROM = '+14084129807';
 const REPLY_MOBILE = defaultMobile;
 const TEST_MOBILE = defaultMobile;
 
