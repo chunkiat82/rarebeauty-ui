@@ -91,7 +91,7 @@ async function generatePeopleObj() {
   return google.people({
     version: 'v1',
     auth: jwtClient,
-    timeout: 5000, // 5 seconds.
+    timeout: 20000, // 5 seconds.
     retry: true,
     retryConfig: {
       onRetryAttempt: retryError => {
