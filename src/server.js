@@ -186,6 +186,8 @@ app.use('/general/confirmation/:eventId', async (req, res, next) => {
 
   if (eventId === 'images') return;
 
+  console.log('user-agent:',req.headers['user-agent']);
+
   const event = await API({ action: 'getEvent', eventId });
   req.data = {
     event,
