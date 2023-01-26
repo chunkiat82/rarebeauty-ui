@@ -186,8 +186,6 @@ app.use('/general/confirmation/:eventId', async (req, res, next) => {
 
   if (eventId === 'images') return;
 
-  console.log('user-agent:',req.headers['user-agent']);
-
   const event = await API({ action: 'getEvent', eventId });
   req.data = {
     event,
@@ -196,12 +194,16 @@ app.use('/general/confirmation/:eventId', async (req, res, next) => {
     safeEntryLink: config.app.safeEntryLink,
     oldSafeEntryLink: config.app.oldSafeEntryLink,
   };
-  await API({
-    action: 'patchEvent',
-    status: 'confirmed',
-    confirmed: moment().format('lll'),
-    eventId,
-  });
+
+  if (userAgent !== 'Go-http-client/1.1' && userAgent !== 'bitlybot/3.0 (+http://bit.ly/)') {
+    console.log('user-agent:', req.headers['user-agent']);
+    await API({
+      action: 'patchEvent',
+      status: 'confirmed',
+      confirmed: moment().format('lll'),
+      eventId,
+    });
+  }
 
   reactMiddleware(req, res, next);
 });
