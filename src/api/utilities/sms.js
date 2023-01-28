@@ -1,11 +1,11 @@
 const Twilio = require('twilio');
-const keys = require('../keys/twilio.json');
+const twilioConfig = require('../keys/twilio.json');
 const configs = require('./configs');
 
 const defaultMobile = configs.get('mobile');
-const client = new Twilio(keys.accountSid, keys.authToken);
+const client = new Twilio(twilioConfig.accountSid, twilioConfig.authToken);
 
-const FROM = '+14084129807';
+const FROM = twilioConfig.sender;
 const REPLY_MOBILE = defaultMobile;
 const TEST_MOBILE = defaultMobile;
 
