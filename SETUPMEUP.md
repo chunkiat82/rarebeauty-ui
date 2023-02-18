@@ -1,13 +1,13 @@
-## How to Co-Develop with RB V2
+## How to Co-Develop with localhost
 
-### Step 1
+### Step 1 - 'MASTER BRANCH'
 
-Setup RB V2 as API server
+Setup RB "master branch" as API server
 
 Add the following lines in server.js (before alot of inceptors, early part)
 
 ```js
-// super temporary lin #######
+// super temporary line #######
 app.use((req, res, next) => {
   res.header('Access-Control-Allow-Origin', '*');
   res.header(
@@ -22,11 +22,14 @@ app.use((req, res, next) => {
 });
 ```
 
-### Step 2
-Run RB V2 npm start
+## Step 2 - 'MASTER BRANCH'
+npm run tunnel
 
-### Step 3
-Update createFetch.js
+### Step 3 - 'MASTER BRANCH'
+JWT_SECRET=`replacewithsecret` PORT=3002 npm start
+
+### Step 4 - 'SA BRANCH'
+Update createFetch.js file
 
 Make sure you replace the JWT in the authorization
 Make sure you change the mode to 'cors'
@@ -50,21 +53,12 @@ function createFetch(fetch: Fetch, { baseUrl, cookie, token }: Options) {
   };
 ```
 
-### Step 4
-Run RB V3 with the following line
+### Step 5 - 'SA BRANCH'
 * https://github.com/chunkiat82/rarebeauty-ui/wiki/Import-Guide-on-CORS
-* JWT_SECRET=`replacewithsecret` API_CLIENT_URL=http://localhost:4000 npm start
+* JWT_SECRET=`replacewithsecret` PORT=3000 API_CLIENT_URL=localhost:3002 npm start
 
-### Step 5
-
-Tunnel to the API
-
-* ssh sohoe -L 4000:localhost:3002
-
-### Step 6
+### Step 6 - NOT NEEDED NOW [20230218]
 Start browser with the follow line
-
-* http://localhost:3000/?API_CLIENT_URL=http://localhost:4000
-
+* http://localhost:3000/?API_CLIENT_URL=localhost:4000
 
 Remember to use the CORS Plugin in Chrome
