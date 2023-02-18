@@ -150,8 +150,17 @@ app.use(reactErrorMiddleware);
 //
 // Register API middleware
 // -----------------------------------------------------------------------------
+
+const allowOnlyPost = (req, res, next) => {
+  if (req.method !== 'POST') {
+    return res.status(401).send(`Method ${req.method} not allowed`);
+  }
+  return next();
+};
+
 app.use(
   '/graphql',
+  allowOnlyPost,
   expressGraphQL(async req => ({
     schema,
     graphiql: __DEV__,
