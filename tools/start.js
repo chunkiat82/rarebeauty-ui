@@ -229,6 +229,7 @@ async function start() {
   await new Promise((resolve, reject) =>
     browserSync.create().init(
       {
+        port: process.env.PORT || 3000,
         // https://www.browsersync.io/docs/options
         server: 'src/server.js',
         middleware: [server],
