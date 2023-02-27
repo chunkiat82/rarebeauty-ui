@@ -10,7 +10,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import serialize from 'serialize-javascript';
-import config from '../config';
+// import config from '../config';
 /* eslint-disable react/no-danger */
 
 class Html extends React.Component {
@@ -83,6 +83,21 @@ class Html extends React.Component {
                   `,
             }}
           />
+          <script
+            async
+            src="https://www.googletagmanager.com/gtag/js?id=G-GQRRL6RMKV"
+          />
+          {
+            <script
+              dangerouslySetInnerHTML={{
+                __html:
+                  'window.dataLayer = window.dataLayer || [];' +
+                  `function gtag(){dataLayer.push(arguments);}` +
+                  `gtag('js', new Date());` +
+                  ` gtag('config', 'G-GQRRL6RMKV');`,
+              }}
+            />
+          }
         </body>
       </html>
     );
