@@ -8,8 +8,7 @@
  * LICENSE.txt file in the root directory of this source tree.
  */
 
-import { GraphQLList as ListType, GraphQLString as StringType } from 'graphql';
-import moment from 'moment';
+import { GraphQLString as StringType } from 'graphql';
 import EventType from '../types/EventType';
 import { get } from '../database';
 
@@ -24,9 +23,5 @@ const events = {
     return event.value;
   },
 };
-
-function queryEvent(id) {
-  return api({ action: 'getEvent', eventId: id });
-}
 
 export default events;

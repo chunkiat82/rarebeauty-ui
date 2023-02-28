@@ -1,9 +1,5 @@
-import {
-  GraphQLString as StringType,
-  // GraphQLInt as IntegerType,
-  // GraphQLList as ListType,
-  // GraphQLFloat as FloatType,
-} from 'graphql';
+import { GraphQLString as StringType } from 'graphql';
+import moment from 'moment';
 import EventStatusType from '../types/EventStatusType';
 import API from '../../api';
 
@@ -17,9 +13,14 @@ export default {
       type: StringType,
     },
   },
-  async resolve(value, { id, status }) {
+  async resolve(_, { id, status }) {
     try {
-      await API({ action: 'patchEvent', status: 'confirmed', eventId: id });
+      await API({
+        action: 'patchEvent',
+        status: 'confirmed',
+        eventId: id,
+        confirmed: moment().format('lll'),
+      });
       return { id, status };
     } catch (err) {
       console.error(err);
