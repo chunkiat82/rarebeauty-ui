@@ -65,9 +65,10 @@ export const reactMiddleware = async (req, res, next) => {
       storeSubscription: null,
     };
 
+    // console.log('req.path', req.path);
     const route = await router.resolve({
       ...context,
-      path: req.path,
+      path: req.originalUrl,
       query: req.query,
     });
 

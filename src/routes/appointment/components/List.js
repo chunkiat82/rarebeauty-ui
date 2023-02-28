@@ -41,8 +41,8 @@ class AppointmentList extends React.Component {
 
   rows(values) {
     return values.map((value /* ,index */) => (
-      <TableRow key={value.id}>
-        <TableRowColumn style={{ whiteSpace }}>
+      <TableRow key={`TR${value.id}`}>
+        <TableRowColumn key={`TC1${value.id}`} style={{ whiteSpace }}>
           <p>
             {value.shortURL ? (
               <a
@@ -68,13 +68,11 @@ class AppointmentList extends React.Component {
                 : `${value.status}`}
             </span>
           </p>
-          <p>
-            <span style={whiteSpace}>
-              <Link to={`/appointment/${value.apptId}/edit`}>Edit</Link>
-            </span>
-          </p>
+          <Link key={value.id} to={`/appointment/${value.apptId}/edit`}>
+            Edit
+          </Link>
         </TableRowColumn>
-        <TableRowColumn>
+        <TableRowColumn key={`TC2${value.id}`}>
           <p>
             <span style={whiteSpace}>
               Created On: {moment(value.created).format('DD MMM YYYY hh:mm A')}
