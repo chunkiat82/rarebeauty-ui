@@ -1,15 +1,3 @@
-/* eslint-disable no-console */
-// https://github.com/kriasoft/react-starter-kit/blob/master/docs/recipes/how-to-implement-routing.md
-
-/**
- * React Starter Kit (https://www.reactstarterkit.com/)
- *
- * Copyright © 2014-present Kriasoft, LLC. All rights reserved.
- *
- * This source code is licensed under the MIT license found in the
- * LICENSE.txt file in the root directory of this source tree.
- */
-import moment from 'moment';
 import path from 'path';
 import express from 'express';
 import cookieParser from 'cookie-parser';
@@ -18,11 +6,11 @@ import expressJwt from 'express-jwt';
 import jwt from 'jsonwebtoken';
 import PrettyError from 'pretty-error';
 import _httpErrorPages from 'http-error-pages';
-import ical from 'ical-generator';
+// import ical from 'ical-generator';
 import { reactMiddleware, reactErrorMiddleware } from './reactMiddleware';
 import config from './config';
 
-const PEOPLE_PREFIX = 'people/';
+// const PEOPLE_PREFIX = 'people/';
 
 const app = express();
 
@@ -136,37 +124,15 @@ app.use('/getToken', (_req, res) => {
   res.json({ token: deploymentConfig.token });
 });
 
-async function API(options) {
-  console.log('API', options);
-}
-
-app.use('/public/appointment/confirm/:eventId', async (req, res) => {
-  const { eventId } = req.params;
-  await API({ action: 'patchEvent', status: 'confirmed', eventId });
-  res.send(
-    `<!doctype html><html><body style="background-color:#373277"><h1><center><span style="color:white">Your Appointment is confirmed!</span></center></h1></body></html>`,
-  );
-});
-
 app.use('/general/confirmation/:eventId', async (req, res, next) => {
   const { eventId } = req.params;
 
   if (eventId === 'images') return;
 
-  const event = await API({ action: 'getEvent', eventId });
   req.data = {
-    event,
     workAddress: config.app.workAddress,
-    oldWorkAddress: config.app.oldWorkAddress,
-    safeEntryLink: config.app.safeEntryLink,
-    oldSafeEntryLink: config.app.oldSafeEntryLink,
-  };
-  await API({
-    action: 'patchEvent',
-    status: 'confirmed',
-    confirmed: moment().format('lll'),
     eventId,
-  });
+  };
 
   reactMiddleware(req, res, next);
 });
@@ -175,60 +141,50 @@ app.use('/general/reservation/:eventId', async (req, res, next) => {
   const { eventId } = req.params;
 
   if (eventId === 'images') return;
-  const event = await API({ action: 'getEvent', eventId });
+
   req.data = {
-    event,
     workAddress: config.app.workAddress,
-    oldWorkAddress: config.app.oldWorkAddress,
-    safeEntryLink: config.app.safeEntryLink,
-    oldSafeEntryLink: config.app.oldSafeEntryLink,
+    eventId,
   };
 
-  const now = moment();
-  const appointmentEnd = moment(event.end.dateTime);
-  // eslint-disable-next-line consistent-return
-  if (now.isAfter(appointmentEnd)) {
-    res.redirect('/');
-  } else {
-    reactMiddleware(req, res, next);
-  }
+  reactMiddleware(req, res, next);
 });
 
-app.use('/general/calendar/:eventId', async (req, res) => {
-  const { eventId } = req.params;
+// app.use('/general/calendar/:eventId', async (req, res) => {
+//   const { eventId } = req.params;
 
-  if (eventId === 'images') return;
-  const event = await API({ action: 'getEvent', eventId });
+//   if (eventId === 'images') return;
+//   const event = await API({ action: 'getEvent', eventId });
 
-  const customerId = event.extendedProperties.shared.resourceName;
+//   const customerId = event.extendedProperties.shared.resourceName;
 
-  const cal = ical({
-    domain: config.app.workDomain,
-    name: config.app.workCalendar,
-  });
+//   const cal = ical({
+//     domain: config.app.workDomain,
+//     name: config.app.workCalendar,
+//   });
 
-  cal.createEvent({
-    start: event.start.dateTime,
-    end: event.end.dateTime,
-    summary: 'Rare Beauty Appointment',
-    description: `
-We do Lash Extensions, Facial, Waxing, Threading and More
+//   cal.createEvent({
+//     start: event.start.dateTime,
+//     end: event.end.dateTime,
+//     summary: 'Rare Beauty Appointment',
+//     description: `
+// We do Lash Extensions, Facial, Waxing, Threading and More
 
-Appointment(s) are found @ ${config.app.customerURL}/${customerId.substring(
-      PEOPLE_PREFIX.length,
-      customerId.length,
-    )}/appointments
-    `,
-    location: config.app.workAddress,
-    url:
-      (event.extendedProperties && event.extendedProperties.shared.shortURL) ||
-      config.app.workDomain,
-  });
+// Appointment(s) are found @ ${config.app.customerURL}/${customerId.substring(
+//       PEOPLE_PREFIX.length,
+//       customerId.length,
+//     )}/appointments
+//     `,
+//     location: config.app.workAddress,
+//     url:
+//       (event.extendedProperties && event.extendedProperties.shared.shortURL) ||
+//       config.app.workDomain,
+//   });
 
-  // eslint-disable-next-line consistent-return
-  return cal.serve(res);
-  // next(req, res, next);
-});
+//   // eslint-disable-next-line consistent-return
+//   return cal.serve(res);
+//   // next(req, res, next);
+// });
 
 // //
 // // Register server-side rendering middleware

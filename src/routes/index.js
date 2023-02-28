@@ -11,6 +11,20 @@ const routes = {
   // Keep in mind, routes are evaluated in order
   children: [
     {
+      path: '/general/confirmation/:id',
+      load: () =>
+        import(
+          /* webpackChunkName: 'general-confirmation' */ './general/confirmation'
+        ),
+    },
+    {
+      path: '/general/reservation/:id',
+      load: () =>
+        import(
+          /* webpackChunkName: 'general-reservation' */ './general/reservation'
+        ),
+    },
+    {
       path: '/appointment/create',
       load: () =>
         import(
@@ -101,20 +115,6 @@ const routes = {
     {
       path: '/login',
       load: () => import(/* webpackChunkName: 'login' */ './login'),
-    },
-    {
-      path: '/general/confirmation/:id',
-      load: () =>
-        import(
-          /* webpackChunkName: 'general-confirmation' */ './general/confirmation'
-        ),
-    },
-    {
-      path: '/general/reservation/:id',
-      load: () =>
-        import(
-          /* webpackChunkName: 'general-reservation' */ './general/reservation'
-        ),
     },
 
     // Wildcard routes, e.g. { path: '*', ... } (must go last)

@@ -12,8 +12,7 @@ export default combineReducers({
   copy,
   event: common,
   workAddress: common,
-  oldWorkAddress: common,
-  oldSafeEntryLink: common,
-  safeEntryLink: common,
+  eventId: common,
+  appointmentId: common,
   paas: common,
 });
