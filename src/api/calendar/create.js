@@ -3,7 +3,7 @@ import uuidv1 from 'uuid/v1';
 import { generateCalendarObj } from '../utilities/jwt';
 import { byPersonCount as getAppointmentsCountByPerson } from '../appointments/person';
 
-const EDIT_URL = 'https://appointments.soho.sg/appointment/edit';
+const APPOINTMENT_URL = 'https://appointments.soho.sg/appointment';
 const TEST_EMAIL = `test@soho.sg`;
 const WHATSAPPURL = 'https://wa.me';
 
@@ -116,7 +116,7 @@ function createAppointment(calendar, options) {
             .map(item => item.service)
             .join(
               ',',
-            )}\n\n${EDIT_URL}/${uuid}\n\n${WHATSAPPURL}/${finalMobile.replace(
+            )}\n\n${APPOINTMENT_URL}/${uuid}/edit\n\n${WHATSAPPURL}/${finalMobile.replace(
             '+',
             '',
           )}`,
