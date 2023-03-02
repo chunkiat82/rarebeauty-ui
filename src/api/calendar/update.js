@@ -3,7 +3,7 @@ import { byPersonCount as getAppointmentsCountByPerson } from '../appointments/p
 
 const { generateCalendarObj } = require('../utilities/jwt');
 
-const EDIT_URL = 'https://rarebeauty.soho.sg/appointment/edit';
+const APPOINTMENT_URL = 'https://appointments.soho.sg/appointment';
 const WHATSAPPURL = 'https://wa.me';
 
 async function updateHandler(options, event) {
@@ -59,7 +59,7 @@ async function updateHandler(options, event) {
       // eslint-disable-next-line prettier/prettier
       .join(
         ',',
-      )}\n\n${EDIT_URL}/${apptId}\n\n${WHATSAPPURL}/${finalMobile.replace(
+      )}\n\n${APPOINTMENT_URL}/${apptId}/edit\n\n${WHATSAPPURL}/${finalMobile.replace(
       '+',
       '',
     )}`;
