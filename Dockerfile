@@ -4,7 +4,7 @@ FROM node:12
 WORKDIR /usr/src/app
 
 COPY ./build/package.json .
-COPY ./build/yarn.lock .
+COPY ./build/package-lock.json .
 
 # Install Node.js dependencies
 RUN npm install --production --no-progress
