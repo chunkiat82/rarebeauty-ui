@@ -1,1 +1,0 @@
-1. Remember to add service account to your calendar account
