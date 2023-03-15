@@ -70,6 +70,7 @@ app.use((req, res, next) => {
       sameSite: 'none',
       httpOnly: true,
       secure: true,
+      domain: '.soho.sg',
     });
     return next();
   }
@@ -81,7 +82,6 @@ app.use(
     secret: checkingUser,
     credentialsRequired: true,
     getToken: function fromHeaderOrQuerystring(req) {
-      
       if (req.cookies.token) {
         return req.cookies.token;
       } else if (req.query && req.query.token) {
