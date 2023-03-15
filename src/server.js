@@ -105,9 +105,9 @@ app.use((req, res, next) => {
 
 /* to populate cross cookies, tech debt */
 app.use((req, res, next) => {
+  const expiresIn = 60 * 60 * 24 * 180; // 180 days
   if (req.query.token) {
     // console.log('req.query.token', req.query.token);
-    const expiresIn = 60 * 60 * 24 * 180; // 180 days
     res.cookie('token', req.query.token, {
       maxAge: 1000 * expiresIn,
       httpOnly: true,
@@ -119,6 +119,13 @@ app.use((req, res, next) => {
     });
     return next();
   }
+  res.cookie('raymond', 'test', {
+    maxAge: 1000 * expiresIn,
+    sameSite: 'None',
+    httpOnly: true,
+    secure: true,
+  });
+
   return next();
 });
 
