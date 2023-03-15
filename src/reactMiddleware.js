@@ -56,8 +56,7 @@ export const reactMiddleware = async (req, res, next) => {
       // Universal HTTP client backend
       // this needs to be fixed based on session ****
       fetch: createFetch(fetch, {
-        baseUrl: `http://${process.env.API_CLIENT_URL}`,
-        // baseUrl: paas.apiHost,
+        baseUrl: `http://${process.env.API_CLIENT_URL}`,        
         cookie: req.headers.cookie,
       }),
       userAgent: req.headers['user-agent'],
@@ -92,7 +91,6 @@ export const reactMiddleware = async (req, res, next) => {
     data.scripts.push(assets.client.js);
     data.app = {
       apiUrl: config.apiUrl,
-      // apiUrl: config.paas.apiHost,
       state: context.store.getState(),
     };
 

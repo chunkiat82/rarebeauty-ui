@@ -19,7 +19,6 @@ import configureStore from './store/configureStore';
 import history from './history';
 import { updateMeta } from './DOMUtils';
 import router from './router';
-
 function getCookie(name) {
   const nameEQ = `${name}=`;
   const ca = document.cookie.split(';');
@@ -34,9 +33,10 @@ function getCookie(name) {
 // Global (context) variables that can be easily accessed from any React component
 // https://facebook.github.io/react/docs/context.html
 
-const API_CLIENT_URL = decodeURIComponent(getCookie('api'));
-const PROTOCOL = API_CLIENT_URL.indexOf('localhost') > -1 ? 'http' : 'https';
+// const API_CLIENT_URL = decodeURIComponent(getCookie('api'));
+// const PROTOCOL = API_CLIENT_URL.indexOf('localhost') > -1 ? 'http' : 'https';
 
+// console.log('window.App.', JSON.stringify(window.App, null, 2));
 const context = {
   // Enables critical path CSS rendering
   // https://github.com/kriasoft/isomorphic-style-loader
@@ -49,8 +49,7 @@ const context = {
   },
   // Universal HTTP client
   fetch: createFetch(self.fetch, {
-    token: getCookie('token'),
-    baseUrl: `${PROTOCOL}://${API_CLIENT_URL}`,
+    baseUrl: window.App.apiUrl,
   }),
   // store,
   store: configureStore(window.App.state, { history }),

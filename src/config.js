@@ -20,10 +20,10 @@ module.exports = {
   // Backend Service
   port: process.env.PORT || 3000,
   // API Gateway
-  apiUrl: `http://${process.env.API_CLIENT_URL}`,
+  apiUrl: `https://${process.env.API_CLIENT_URL}`,
   // Authentication
   auth: {
-    jwt: { secret: process.env.JWT_SECRET || 'SOHO Appointment Kit' },
+    jwt: { secret: process.env.JWT_SECRET || 'SOHO Appointments System' },
   },
   app: {
     oldWorkAddress: keys.old_work_address,

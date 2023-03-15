@@ -64,21 +64,11 @@ app.use((req, res, next) => {
 /* to populate cross cookies, tech debt */
 app.use((req, res, next) => {
   const expiresIn = 60 * 60 * 24 * 180; // 180 days
-  res.cookie('api', process.env.API_CLIENT_URL, {
-    maxAge: 1000 * expiresIn,
-    sameSite: 'none',
-    secure: true,
-  });
   if (req.query.token) {
     res.cookie('token', req.query.token, {
       maxAge: 1000 * expiresIn,
       sameSite: 'none',
-      secure: true,
-    });
-    /* tech debt */
-    res.cookie('jwt', req.query.token, {
-      maxAge: 1000 * expiresIn,
-      sameSite: 'none',
+      httpOnly: true,
       secure: true,
     });
     return next();
@@ -91,8 +81,7 @@ app.use(
     secret: checkingUser,
     credentialsRequired: true,
     getToken: function fromHeaderOrQuerystring(req) {
-      // console.log(`Object.keys(req)`, Object.keys(req));
-      // console.log(`req.cookies`, req.cookies);
+      
       if (req.cookies.token) {
         return req.cookies.token;
       } else if (req.query && req.query.token) {
@@ -150,45 +139,6 @@ app.use('/general/reservation/:eventId', async (req, res, next) => {
   reactMiddleware(req, res, next);
 });
 
-// app.use('/general/calendar/:eventId', async (req, res) => {
-//   const { eventId } = req.params;
-
-//   if (eventId === 'images') return;
-//   const event = await API({ action: 'getEvent', eventId });
-
-//   const customerId = event.extendedProperties.shared.resourceName;
-
-//   const cal = ical({
-//     domain: config.app.workDomain,
-//     name: config.app.workCalendar,
-//   });
-
-//   cal.createEvent({
-//     start: event.start.dateTime,
-//     end: event.end.dateTime,
-//     summary: 'Rare Beauty Appointment',
-//     description: `
-// We do Lash Extensions, Facial, Waxing, Threading and More
-
-// Appointment(s) are found @ ${config.app.customerURL}/${customerId.substring(
-//       PEOPLE_PREFIX.length,
-//       customerId.length,
-//     )}/appointments
-//     `,
-//     location: config.app.workAddress,
-//     url:
-//       (event.extendedProperties && event.extendedProperties.shared.shortURL) ||
-//       config.app.workDomain,
-//   });
-
-//   // eslint-disable-next-line consistent-return
-//   return cal.serve(res);
-//   // next(req, res, next);
-// });
-
-// //
-// // Register server-side rendering middleware
-// // -----------------------------------------------------------------------------
 app.use('*', reactMiddleware);
 
 //
