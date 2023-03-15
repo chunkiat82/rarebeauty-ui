@@ -33,7 +33,6 @@ function createFetch(fetch: Fetch, { baseUrl, cookie }: Options) {
             ...defaults.headers,
             ...(options && options.headers),
           },
-          credentials: "include"
         })
       : fetch(url, options);
 }
