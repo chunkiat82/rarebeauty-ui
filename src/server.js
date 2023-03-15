@@ -8,7 +8,6 @@
  * This source code is licensed under the MIT license found in the
  * LICENSE.txt file in the root directory of this source tree.
  */
-import moment from 'moment';
 import path from 'path';
 import express from 'express';
 import cookieParser from 'cookie-parser';
@@ -18,18 +17,11 @@ import expressGraphQL from 'express-graphql';
 import jwt from 'jsonwebtoken';
 import PrettyError from 'pretty-error';
 import _httpErrorPages from 'http-error-pages';
-import ical from 'ical-generator';
 
 import schema from './data/schema';
-
 import { handleCalendarWebhook, handleTwilioWebhook } from './hooks';
-// import { logLogin } from './data/database/login';
 import { reactMiddleware, reactErrorMiddleware } from './reactMiddleware';
-import API from './api/';
-
 import config from './config';
-
-const PEOPLE_PREFIX = 'people/';
 
 const app = express();
 
@@ -51,14 +43,9 @@ app.use(bodyParser.json());
 //
 // Authentication
 // -----------------------------------------------------------------------------
-function checkingUser(req, _payload, done) {
+function checkingUser(_, payload, done) {
   const secret = config.auth.jwt.secret;
-  // req.payload = { foo: 'bar' };
-  // console.log(`checking req.url`, req.url);
-  // console.log(`payload`, payload);
-  // if (payload.data) {
-  //   logLogin(payload.data.username, payload);
-  // }
+  console.error('payload', payload);
   done(null, secret);
 }
 
@@ -71,7 +58,7 @@ function populatePayload(req, _res, next) {
   return next();
 }
 
-// super temporary line #######
+/** very important CORS lines */
 app.use((req, res, next) => {
   const allowedOrigins = [
     'http://localhost:3000',
@@ -103,32 +90,6 @@ app.use((req, res, next) => {
   return next();
 });
 
-/* to populate cross cookies, tech debt */
-app.use((req, res, next) => {
-  const expiresIn = 60 * 60 * 24 * 180; // 180 days
-  if (req.query.token) {
-    // console.log('req.query.token', req.query.token);
-    res.cookie('token', req.query.token, {
-      maxAge: 1000 * expiresIn,
-      httpOnly: true,
-    });
-    /* tech debt */
-    res.cookie('jwt', req.query.token, {
-      maxAge: 1000 * expiresIn,
-      httpOnly: true,
-    });
-    return next();
-  }
-  res.cookie('raymond', 'test', {
-    maxAge: 1000 * expiresIn,
-    sameSite: 'None',
-    httpOnly: true,
-    secure: true,
-  });
-
-  return next();
-});
-
 app.use(
   expressJwt({
     secret: checkingUser,
@@ -147,7 +108,6 @@ app.use(
     },
   }).unless({
     path: [
-      '/events/calendar',
       /\/general*/,
       /\/assets*/,
       /\/page+/,
@@ -184,7 +144,7 @@ app.use(
   })),
 );
 
-app.use('/events/calendar', async (req, res, next) => {
+app.use('/webhooks/google/calendar', async (req, res, next) => {
   // console.error('handleCalendarWebhook typeof', typeof handleCalendarWebhook);
   try {
     await handleCalendarWebhook(req.headers);
@@ -199,104 +159,6 @@ app.use('/webhooks/twilio', async (req, res) => {
   handleTwilioWebhook(req);
   res.send('null');
   res.status(201).end();
-});
-
-app.use('/public/appointment/confirm/:eventId', async (req, res) => {
-  const { eventId } = req.params;
-  await API({ action: 'patchEvent', status: 'confirmed', eventId });
-  res.send(
-    `<!doctype html><html><body style="background-color:#373277"><h1><center><span style="color:white">Your Appointment is confirmed!</span></center></h1></body></html>`,
-  );
-});
-
-app.use('/general/confirmation/:eventId', async (req, res, next) => {
-  const { eventId } = req.params;
-
-  if (eventId === 'images') return;
-
-  const userAgent = req.headers['user-agent'];
-  const event = await API({ action: 'getEvent', eventId });
-  req.data = {
-    event,
-    workAddress: config.app.workAddress,
-    oldWorkAddress: config.app.oldWorkAddress,
-    safeEntryLink: config.app.safeEntryLink,
-    oldSafeEntryLink: config.app.oldSafeEntryLink,
-  };
-
-  if (
-    userAgent !== 'Go-http-client/1.1' &&
-    userAgent !== 'bitlybot/3.0 (+http://bit.ly/)'
-  ) {
-    // console.log('user-agent:', userAgent);
-    await API({
-      action: 'patchEvent',
-      status: 'confirmed',
-      confirmed: moment().format('lll'),
-      eventId,
-    });
-  }
-
-  reactMiddleware(req, res, next);
-});
-
-app.use('/general/reservation/:eventId', async (req, res, next) => {
-  const { eventId } = req.params;
-
-  if (eventId === 'images') return;
-  const event = await API({ action: 'getEvent', eventId });
-  req.data = {
-    event,
-    workAddress: config.app.workAddress,
-    oldWorkAddress: config.app.oldWorkAddress,
-    safeEntryLink: config.app.safeEntryLink,
-    oldSafeEntryLink: config.app.oldSafeEntryLink,
-  };
-
-  const now = moment();
-  const appointmentEnd = moment(event.end.dateTime);
-  // eslint-disable-next-line consistent-return
-  if (now.isAfter(appointmentEnd)) {
-    res.redirect('/');
-  } else {
-    reactMiddleware(req, res, next);
-  }
-});
-
-app.use('/general/calendar/:eventId', async (req, res) => {
-  const { eventId } = req.params;
-
-  if (eventId === 'images') return;
-  const event = await API({ action: 'getEvent', eventId });
-
-  const customerId = event.extendedProperties.shared.resourceName;
-
-  const cal = ical({
-    domain: config.app.workDomain,
-    name: config.app.workCalendar,
-  });
-
-  cal.createEvent({
-    start: event.start.dateTime,
-    end: event.end.dateTime,
-    summary: 'Rare Beauty Appointment',
-    description: `
-We do Lash Extensions, Facial, Waxing, Threading and More
-
-Appointment(s) are found @ ${config.app.customerURL}/${customerId.substring(
-      PEOPLE_PREFIX.length,
-      customerId.length,
-    )}/appointments
-    `,
-    location: config.app.workAddress,
-    url:
-      (event.extendedProperties && event.extendedProperties.shared.shortURL) ||
-      config.app.workDomain,
-  });
-
-  // eslint-disable-next-line consistent-return
-  return cal.serve(res);
-  // next(req, res, next);
 });
 
 //
