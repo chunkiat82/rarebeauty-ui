@@ -108,7 +108,7 @@ export const reactMiddleware = async (req, res, next) => {
   }
 };
 
-export const reactErrorMiddleware = (err, req, res) => {
+export const reactErrorMiddleware = (err, req, res, _next) => {
   // console.log('err', err);
   if (err.name === 'UnauthorizedError') {
     // res.clearCookie('token');
