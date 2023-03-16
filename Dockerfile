@@ -14,5 +14,4 @@ COPY ./build .
 RUN cp /usr/share/zoneinfo/Asia/Singapore /etc/localtime
 RUN echo "Asia/Singapore" > /etc/timezone
 
-ENV NODE_ENV production
 CMD [ "node", "server.js" ]
