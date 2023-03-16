@@ -26,7 +26,7 @@ export const reactMiddleware = async (req, res, next) => {
     let initialState = req.initialState || {
       user:
         req.payload && req.payload.foo && req.payload.foo.length > 0
-          ? { type: 'admin' }
+          ? { role: 'admin' }
           : req.user || null,
       loading: false,
     };
@@ -108,10 +108,11 @@ export const reactMiddleware = async (req, res, next) => {
   }
 };
 
-export const reactErrorMiddleware = (err, req, res, next) => {
+export const reactErrorMiddleware = (err, req, res) => {
+  // console.log('err', err);
   if (err.name === 'UnauthorizedError') {
     // res.clearCookie('token');
-    return res.redirect('/page');
+    return res.status(401).send('Please go away');
     // res.status(401);
     // return res.status(401).send('Unauthorized Access...Please leave');
     // handle error pages
@@ -124,7 +125,7 @@ export const reactErrorMiddleware = (err, req, res, next) => {
     // `clearCookie`, otherwise user can't use web-app until cookie expires
     return res.clearCookie('token');
   }
-  return next(err);
+  return res.status(401);
 };
 
 export default { reactMiddleware, reactErrorMiddleware };

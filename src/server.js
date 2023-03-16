@@ -40,24 +40,6 @@ app.use(cookieParser());
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 
-//
-// Authentication
-// -----------------------------------------------------------------------------
-function checkingUser(_, payload, done) {
-  const secret = config.auth.jwt.secret;
-  console.error('payload', payload);
-  done(null, secret);
-}
-
-function populatePayload(req, _res, next) {
-  const token = req.cookies.token;
-  if (token) {
-    const decoded = jwt.verify(token, config.auth.jwt.secret);
-    req.payload = decoded;
-  }
-  return next();
-}
-
 /** very important CORS lines */
 app.use((req, res, next) => {
   const allowedOrigins = [
@@ -90,13 +72,23 @@ app.use((req, res, next) => {
   return next();
 });
 
+// to be deleted
+app.use('/getToken', (req, res) => {
+  const { user, role, tenant } = config.clients[req.query.client || 'client1'];
+  const token = jwt.sign({ user, role, tenant }, config.auth.jwt.secret, {
+    expiresIn: '1h',
+  });
+  res.send(`?token=${token}`);
+});
+
 app.use(
   expressJwt({
-    secret: checkingUser,
+    secret: (req, payload, done) => {
+      req.auth = payload; // this is here because req.auth not populating by framework as promised
+      done(null, config.auth.jwt.secret);
+    },
     credentialsRequired: true,
     getToken: function fromHeaderOrQuerystring(req) {
-      // console.log(`Object.keys(req)`, Object.keys(req));
-      // console.log(`req.cookies`, JSON.stringify(req.cookies, null, 2));
       if (req.cookies.token) {
         return req.cookies.token;
       } else if (req.query && req.query.token) {
@@ -114,12 +106,10 @@ app.use(
       /\/p+/,
       /\/api+/,
       /\/webhooks+/,
-      /\/graphql*/,
     ],
   }),
 );
-// Error handler for express-jwt
-app.use(populatePayload);
+
 app.use(reactErrorMiddleware);
 
 //
@@ -136,6 +126,18 @@ const allowOnlyPost = (req, res, next) => {
 app.use(
   '/graphql',
   allowOnlyPost,
+  (req, res, next) => {
+    // type to be cleaned up
+    if (
+      req.auth.type === 'admin' ||
+      req.auth.role === 'admin' ||
+      req.auth.page.includes('general')
+    )
+      next();
+    else {
+      res.status(401).send('Not Allowed Here');
+    }
+  },
   expressGraphQL(async req => ({
     schema,
     graphiql: __DEV__,
