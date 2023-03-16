@@ -74,7 +74,7 @@ app.use('/general/confirmation/:eventId', async (req, res, next) => {
       tenant: 'itdepends',
     },
     config.auth.jwt.secret,
-    { expiresIn: '1h' },
+    { expiresIn: '6h' },
   );
   req.token = token;
 
@@ -108,7 +108,7 @@ app.use('/general/reservation/:eventId', async (req, res, next) => {
       tenant: 'itdepends',
     },
     config.auth.jwt.secret,
-    { expiresIn: '1h' },
+    { expiresIn: '6h' },
   );
   req.token = token;
 
@@ -145,7 +145,7 @@ app.use(
       return req.token;
     },
   }).unless({
-    path: ['/events/calendar', /\/general+/, /\/assets*/, /\/page+/, /\/p+/],
+    path: ['/events/calendar', /\/general*/, /\/assets*/, /\/page+/, /\/p+/],
   }),
 );
 
