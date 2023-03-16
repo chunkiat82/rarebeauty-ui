@@ -62,29 +62,6 @@ app.use((req, res, next) => {
   return next();
 });
 
-app.use(
-  expressJwt({
-    secret: checkingUser,
-    credentialsRequired: true,
-    getToken: function fromHeaderOrQuerystring(req) {
-      if (req.query && req.query.token) {
-        req.token = req.query.token;
-        return req.token;
-      } else if (req.cookies.token) {
-        req.token = req.cookies.token;
-        return req.token;
-      }
-      console.log('req.token', req.token);
-      return null;
-    },
-  }).unless({
-    path: ['/events/calendar', /\/general*/, /\/assets*/, /\/page+/, /\/p+/],
-  }),
-);
-
-// Error handler for express-jwt
-app.use(reactErrorMiddleware);
-
 app.use('/general/confirmation/:eventId', async (req, res, next) => {
   const { eventId } = req.params;
   if (eventId === 'images') return;
@@ -151,6 +128,29 @@ app.use('/general/reservation/:eventId', async (req, res, next) => {
 
   reactMiddleware(req, res, next);
 });
+
+app.use(
+  expressJwt({
+    secret: checkingUser,
+    credentialsRequired: true,
+    getToken: function fromHeaderOrQuerystring(req) {
+      if (req.query && req.query.token) {
+        req.token = req.query.token;
+        return req.token;
+      } else if (req.cookies.token) {
+        req.token = req.cookies.token;
+        return req.token;
+      }
+      console.log('req.token', req.token);
+      return req.token;
+    },
+  }).unless({
+    path: ['/events/calendar', /\/general+/, /\/assets*/, /\/page+/, /\/p+/],
+  }),
+);
+
+// Error handler for express-jwt
+app.use(reactErrorMiddleware);
 
 app.use('*', reactMiddleware);
 
