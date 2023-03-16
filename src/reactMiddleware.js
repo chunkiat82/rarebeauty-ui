@@ -61,7 +61,7 @@ export const reactMiddleware = async (req, res, next) => {
       fetch: createFetch(fetch, {
         baseUrl: config.apiUrl,
         headers: {
-          Cookie: `token=${req.cookies.token}`,
+          Cookie: `token=${req.token}`,
         },
       }),
       userAgent: req.headers['user-agent'],

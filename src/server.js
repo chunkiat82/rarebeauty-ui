@@ -10,8 +10,8 @@ import _httpErrorPages from 'http-error-pages';
 import { reactMiddleware, reactErrorMiddleware } from './reactMiddleware';
 import config from './config';
 
-const __DEV__ = !process.env.PRODUCTION;
-
+const __DEV__ = !(String(process.env.PRODUCTION) === 'true');
+const expiresIn = 60 * 60 * 24 * 180; // 180 days
 const app = express();
 
 // Tell any CSS tooling (such as Material UI) to use all vendor prefixes if the
@@ -56,23 +56,13 @@ app.use((req, res, next) => {
 });
 
 app.use((req, res, next) => {
-  const expiresIn = 60 * 60 * 24 * 180; // 180 days
   if (req.query.token) {
-    console.log('PRODUCTION', process.env.PRODUCTION);
     res.cookie('token', req.query.token, {
       maxAge: 1000 * expiresIn,
       sameSite: 'none',
       httpOnly: true,
       secure: true,
-      domain: '.soho.sg',
-      path: '/',
-    });
-    res.cookie('token', req.query.token, {
-      maxAge: 1000 * expiresIn,
-      sameSite: 'none',
-      httpOnly: true,
-      secure: true,
-      domain: 'localhost',
+      domain: __DEV__ ? 'localhost' : '.soho.sg',
       path: '/',
     });
     return next();
@@ -86,24 +76,48 @@ app.use(
     credentialsRequired: true,
     getToken: function fromHeaderOrQuerystring(req) {
       if (req.cookies.token) {
-        return req.cookies.token;
+        req.token = req.cookies.token;
+        return req.token;
       } else if (req.query && req.query.token) {
-        return req.query.token;
+        req.token = req.query.token;
+        return req.token;
       }
+
       return null;
     },
   }).unless({
     path: ['/events/calendar', /\/general*/, /\/assets*/, /\/page+/, /\/p+/],
   }),
 );
+
 // Error handler for express-jwt
 app.use(populatePayload);
 app.use(reactErrorMiddleware);
 
 app.use('/general/confirmation/:eventId', async (req, res, next) => {
   const { eventId } = req.params;
-
   if (eventId === 'images') return;
+
+  const token = jwt.sign(
+    {
+      user: 'unknown',
+      page: '/general/confirmation',
+      role: 'user',
+      tenant: 'itdepends',
+    },
+    config.auth.jwt.secret,
+    { expiresIn: '1h' },
+  );
+  req.token = token;
+
+  res.cookie('token', token, {
+    maxAge: 1000 * expiresIn,
+    sameSite: 'none',
+    httpOnly: true,
+    secure: true,
+    domain: __DEV__ ? 'localhost' : '.soho.sg',
+    path: '/',
+  });
 
   req.data = {
     workAddress: config.app.workAddress,
@@ -117,6 +131,27 @@ app.use('/general/reservation/:eventId', async (req, res, next) => {
   const { eventId } = req.params;
 
   if (eventId === 'images') return;
+
+  const token = jwt.sign(
+    {
+      user: 'unknown',
+      page: '/general/reservation',
+      role: 'user',
+      tenant: 'itdepends',
+    },
+    config.auth.jwt.secret,
+    { expiresIn: '1h' },
+  );
+  req.token = token;
+
+  res.cookie('token', token, {
+    maxAge: 1000 * expiresIn,
+    sameSite: 'none',
+    httpOnly: true,
+    secure: true,
+    domain: __DEV__ ? 'localhost' : '.soho.sg',
+    path: '/',
+  });
 
   req.data = {
     workAddress: config.app.workAddress,
