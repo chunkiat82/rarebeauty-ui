@@ -58,10 +58,7 @@ app.use((req, res, next) => {
 app.use((req, res, next) => {
   const expiresIn = 60 * 60 * 24 * 180; // 180 days
   if (req.query.token) {
-    console.log(
-      'i was here req.query.token',
-      process.env.NODE_ENV === 'production',
-    );
+    console.log('i was here req.query.token', process.env.NODE_ENV);
     res.cookie('token', req.query.token, {
       maxAge: 1000 * expiresIn,
       sameSite: 'none',
