@@ -10,7 +10,7 @@ import _httpErrorPages from 'http-error-pages';
 import { reactMiddleware, reactErrorMiddleware } from './reactMiddleware';
 import config from './config';
 
-// const PEOPLE_PREFIX = 'people/';
+const __DEV__ = process.env.NODE_ENV === 'production';
 
 const app = express();
 
@@ -58,14 +58,14 @@ app.use((req, res, next) => {
 app.use((req, res, next) => {
   const expiresIn = 60 * 60 * 24 * 180; // 180 days
   if (req.query.token) {
-    // console.log('i was here');
+    console.log('i was here req.query.token');
     res.cookie('token', req.query.token, {
       maxAge: 1000 * expiresIn,
       sameSite: 'none',
       httpOnly: true,
       secure: true,
       domain: __DEV__ ? 'localhost' : '.soho.sg',
-      path : '/',
+      path: '/',
     });
     return next();
   }
@@ -91,7 +91,6 @@ app.use(
 // Error handler for express-jwt
 app.use(populatePayload);
 app.use(reactErrorMiddleware);
-
 
 app.use('/general/confirmation/:eventId', async (req, res, next) => {
   const { eventId } = req.params;

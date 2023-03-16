@@ -100,7 +100,7 @@ class AppointmentList extends React.Component {
   select(rows) {
     return row => {
       const event = rows[row];
-      const to = `/appointment/edit/${event.apptId}`;
+      const to = `/appointment/${event.apptId}/edit`;
       history.push(to);
     };
   }
