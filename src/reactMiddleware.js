@@ -43,8 +43,8 @@ export const reactMiddleware = async (req, res, next) => {
       }),
     );
 
-    console.log('config.apiUrl', config.apiUrl);
-    console.log('process.env.PRODUCTION', process.env.PRODUCTION);
+    // console.log('config.apiUrl', config.apiUrl);
+    // console.log('process.env.PRODUCTION', process.env.PRODUCTION);
 
     // eslint-disable-next-line no-console
     // Global (context) variables that can be easily accessed from any React component
