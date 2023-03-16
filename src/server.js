@@ -91,7 +91,7 @@ app.use('/general/confirmation/:eventId', async (req, res, next) => {
     workAddress: config.app.workAddress,
     eventId,
   };
-
+  
   reactMiddleware(req, res, next);
 });
 
@@ -165,7 +165,8 @@ if (__DEV__) {
   // eslint-disable-next-line no-unused-vars
   app.use(reactErrorMiddleware);
 } else {
-  _httpErrorPages(app);
+  // _httpErrorPages(app);
+  app.use(reactErrorMiddleware);
 }
 
 //

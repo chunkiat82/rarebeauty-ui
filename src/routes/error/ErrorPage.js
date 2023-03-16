@@ -41,7 +41,7 @@ class ErrorPage extends React.Component {
 
     return (
       <div>
-        <h1>Error</h1>
+        <h1>Error Page</h1>
         <p>Sorry, a critical error occurred on this page.</p>
       </div>
     );

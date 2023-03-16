@@ -14,6 +14,7 @@ import App from './components/App';
 import Html from './components/Html';
 
 export const reactMiddleware = async (req, res, next) => {
+  
   try {
     const css = new Set();
 
