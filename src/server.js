@@ -31,18 +31,10 @@ app.use(bodyParser.json());
 //
 // Authentication
 // -----------------------------------------------------------------------------
-function checkingUser(req, _payload, done) {
+function checkingUser(req, payload, done) {
   const secret = config.auth.jwt.secret;
+  req.payload = payload;
   done(null, secret);
-}
-
-function populatePayload(req, _res, next) {
-  const token = req.cookies.token;
-  if (token) {
-    const decoded = jwt.verify(token, config.auth.jwt.secret);
-    req.payload = decoded;
-  }
-  return next();
 }
 
 /* bot denial */
@@ -75,14 +67,14 @@ app.use(
     secret: checkingUser,
     credentialsRequired: true,
     getToken: function fromHeaderOrQuerystring(req) {
-      if (req.cookies.token) {
-        req.token = req.cookies.token;
-        return req.token;
-      } else if (req.query && req.query.token) {
+      if (req.query && req.query.token) {
         req.token = req.query.token;
         return req.token;
+      } else if (req.cookies.token) {
+        req.token = req.cookies.token;
+        return req.token;
       }
-
+      console.log('req.token', req.token);
       return null;
     },
   }).unless({
@@ -91,7 +83,6 @@ app.use(
 );
 
 // Error handler for express-jwt
-app.use(populatePayload);
 app.use(reactErrorMiddleware);
 
 app.use('/general/confirmation/:eventId', async (req, res, next) => {

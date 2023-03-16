@@ -110,7 +110,7 @@ export const reactMiddleware = async (req, res, next) => {
 export const reactErrorMiddleware = (err, req, res, next) => {
   if (err.name === 'UnauthorizedError') {
     console.error('UnauthorizedError reactErrorMiddleware');
-    return res.json({ err: JSON.stringify(err) });
+    return res.json({ err });
   }
 
   // eslint-disable-line no-unused-vars
