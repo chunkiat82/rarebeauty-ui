@@ -13,6 +13,8 @@ import config from './config';
 import App from './components/App';
 import Html from './components/Html';
 
+const __DEV__ = !(String(process.env.PRODUCTION) === 'true');
+
 export const reactMiddleware = async (req, res, next) => {
   
   try {
@@ -60,7 +62,7 @@ export const reactMiddleware = async (req, res, next) => {
       // Universal HTTP client backend
       // this needs to be fixed based on session ****
       fetch: createFetch(fetch, {
-        baseUrl: config.apiUrl,
+        baseUrl: __DEV__ ? `http://${process.env.API_CLIENT_URL}` : `http://172.17.0.1:3001`,
         headers: {
           Cookie: `token=${req.token}`,
         },
