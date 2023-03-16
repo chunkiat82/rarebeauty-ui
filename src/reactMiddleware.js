@@ -43,8 +43,8 @@ export const reactMiddleware = async (req, res, next) => {
       }),
     );
 
-    console.log('req.cookies.token',req.cookies.token);
-    console.log('res.headers',res.headers);
+    console.log('req.cookies.token', req.cookies.token);
+    console.log('res.headers', res.headers);
 
     // eslint-disable-next-line no-console
     // Global (context) variables that can be easily accessed from any React component
@@ -61,8 +61,8 @@ export const reactMiddleware = async (req, res, next) => {
       fetch: createFetch(fetch, {
         baseUrl: config.apiUrl,
         headers: {
-          Cookie: `token=${req.cookies.token}`
-        }
+          Cookie: `token=${req.cookies.token}`,
+        },
       }),
       userAgent: req.headers['user-agent'],
       store,
@@ -110,15 +110,15 @@ export const reactMiddleware = async (req, res, next) => {
 export const reactErrorMiddleware = (err, req, res, next) => {
   if (err.name === 'UnauthorizedError') {
     console.error('UnauthorizedError reactErrorMiddleware');
-    return res.redirect('/page');
+    return res.json({ err: JSON.stringify(err) });
   }
 
   // eslint-disable-line no-unused-vars
-  if (err instanceof Jwt401Error) {
-    console.error('[express-jwt-error]', req.cookies.id_token);
-    // `clearCookie`, otherwise user can't use web-app until cookie expires
-    return res.clearCookie('token');
-  }
+  // if (err instanceof Jwt401Error) {
+  //   console.error('[express-jwt-error]', req.cookies.id_token);
+  //   // `clearCookie`, otherwise user can't use web-app until cookie expires
+  //   return res.clearCookie('token');
+  // }
   return next(err);
 };
 

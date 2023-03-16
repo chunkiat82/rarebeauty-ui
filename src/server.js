@@ -64,7 +64,15 @@ app.use((req, res, next) => {
       sameSite: 'none',
       httpOnly: true,
       secure: true,
-      domain: __DEV__ ? 'localhost' : '.soho.sg',
+      domain: '.soho.sg',
+      path: '/',
+    });
+    res.cookie('token', req.query.token, {
+      maxAge: 1000 * expiresIn,
+      sameSite: 'none',
+      httpOnly: true,
+      secure: true,
+      domain: 'localhost',
       path: '/',
     });
     return next();
