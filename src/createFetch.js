@@ -9,7 +9,7 @@ type Options = {
 // need to fix how to share token 
 // https://hasura.io/blog/best-practices-of-using-jwt-with-graphql/
 
-function createFetch(fetch: Fetch, { baseUrl, cookie }: Options) {  
+function createFetch(fetch: Fetch, { baseUrl, headers={} }: Options) {
   // NOTE: Tweak the default options to suite your application needs
   // console.log(token);
   const defaults = {
@@ -19,8 +19,7 @@ function createFetch(fetch: Fetch, { baseUrl, cookie }: Options) {
     // credentials: baseUrl ? 'include' : 'same-origin',
     headers: {
       Accept: 'application/json',
-      'Content-Type': 'application/json',
-      ...(cookie ? { Cookie: cookie } : null),
+      'Content-Type': 'application/json'
     },
   };
   // console.log('defaults', defaults);
@@ -31,7 +30,7 @@ function createFetch(fetch: Fetch, { baseUrl, cookie }: Options) {
           ...options,
           headers: {
             ...defaults.headers,
-            ...(options && options.headers),
+            ...headers,
           },
           credentials: "include"
         })

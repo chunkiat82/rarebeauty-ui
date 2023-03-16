@@ -33,12 +33,6 @@ app.use(bodyParser.json());
 // -----------------------------------------------------------------------------
 function checkingUser(req, _payload, done) {
   const secret = config.auth.jwt.secret;
-  // req.payload = { foo: 'bar' };
-  // console.log(`checking req.url`, req.url);
-  // console.log(`payload`, payload);
-  // if (payload.data) {
-  //   logLogin(payload.data.username, payload);
-  // }
   done(null, secret);
 }
 
@@ -61,16 +55,17 @@ app.use((req, res, next) => {
   return next();
 });
 
-/* to populate cross cookies, tech debt */
 app.use((req, res, next) => {
   const expiresIn = 60 * 60 * 24 * 180; // 180 days
   if (req.query.token) {
+    // console.log('i was here');
     res.cookie('token', req.query.token, {
       maxAge: 1000 * expiresIn,
       sameSite: 'none',
       httpOnly: true,
       secure: true,
-      domain: '.soho.sg',
+      domain: __DEV__ ? 'localhost' : '.soho.sg',
+      path : '/',
     });
     return next();
   }
@@ -97,21 +92,6 @@ app.use(
 app.use(populatePayload);
 app.use(reactErrorMiddleware);
 
-//
-// Register API middleware
-// -----------------------------------------------------------------------------
-
-function createConfig() {
-  return {
-    token: jwt.sign({ user: config.user }, config.auth.jwt.secret),
-    baseUrl: config.apiUrl,
-  };
-}
-
-app.use('/getToken', (_req, res) => {
-  const deploymentConfig = createConfig();
-  res.json({ token: deploymentConfig.token });
-});
 
 app.use('/general/confirmation/:eventId', async (req, res, next) => {
   const { eventId } = req.params;

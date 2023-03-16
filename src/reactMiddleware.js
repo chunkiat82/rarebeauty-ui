@@ -43,6 +43,9 @@ export const reactMiddleware = async (req, res, next) => {
       }),
     );
 
+    console.log('req.cookies.token',req.cookies.token);
+    console.log('res.headers',res.headers);
+
     // eslint-disable-next-line no-console
     // Global (context) variables that can be easily accessed from any React component
     // https://facebook.github.io/react/docs/context.html
@@ -56,8 +59,10 @@ export const reactMiddleware = async (req, res, next) => {
       // Universal HTTP client backend
       // this needs to be fixed based on session ****
       fetch: createFetch(fetch, {
-        baseUrl: `http://${process.env.API_CLIENT_URL}`,        
-        cookie: req.headers.cookie,
+        baseUrl: config.apiUrl,
+        headers: {
+          Cookie: `token=${req.cookies.token}`
+        }
       }),
       userAgent: req.headers['user-agent'],
       store,
