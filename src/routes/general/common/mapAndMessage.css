@@ -19,11 +19,15 @@
   padding: 0 0 40px;
 
   /* max-width: var(--max-content-width); */
-  width: 400px;
+  max-width: 400px;
 }
 
 .textCenter {
   text-align: center;
+}
+
+img {
+  max-width: 350px;
 }
 
 .confirmation {

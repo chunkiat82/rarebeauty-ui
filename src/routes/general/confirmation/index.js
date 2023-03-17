@@ -32,9 +32,7 @@ async function action({ store, fetch }) {
         <MapAndMessage
           address={address}
           src={src}
-          message={`Appointment is confirmed! See you on ${moment(
-            event.start.dateTime,
-          )
+          message={`Appointment is confirmed! See you on ${moment(event.start)
             .tz('Asia/Singapore')
             .format('LLLL')}`}
         />
