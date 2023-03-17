@@ -16,7 +16,6 @@ import Html from './components/Html';
 const __DEV__ = !(String(process.env.PRODUCTION) === 'true');
 
 export const reactMiddleware = async (req, res, next) => {
-  
   try {
     const css = new Set();
 
@@ -62,7 +61,9 @@ export const reactMiddleware = async (req, res, next) => {
       // Universal HTTP client backend
       // this needs to be fixed based on session ****
       fetch: createFetch(fetch, {
-        baseUrl: __DEV__ ? `http://${process.env.API_CLIENT_URL}` : `http://172.17.0.1:3001`,
+        baseUrl: __DEV__
+          ? `http://${process.env.API_CLIENT_URL}`
+          : `http://172.17.0.1:3001`,
         headers: {
           Cookie: `token=${req.token}`,
         },
@@ -112,8 +113,8 @@ export const reactMiddleware = async (req, res, next) => {
 
 export const reactErrorMiddleware = (err, req, res, next) => {
   if (err.name === 'UnauthorizedError') {
-    console.error('UnauthorizedError reactErrorMiddleware', err);
-    return res.json({ err });
+    // console.error('UnauthorizedError reactErrorMiddleware', err);
+    return res.json({ message: err.TokenExpiredError });
   }
 
   // eslint-disable-line no-unused-vars
