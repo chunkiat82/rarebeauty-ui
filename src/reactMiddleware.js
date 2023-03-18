@@ -1,7 +1,6 @@
 import fetch from 'node-fetch';
 import React from 'react';
 import ReactDOM from 'react-dom/server';
-import { UnauthorizedError as Jwt401Error } from 'express-jwt';
 
 import assets from './assets.json'; // eslint-disable-line import/no-unresolved
 import configureStore from './store/configureStore';
@@ -29,28 +28,10 @@ export const reactMiddleware = async (req, res, next) => {
       loading: false,
     };
     initialState = { ...reqData, ...initialState };
-    // console.log('initialState', JSON.stringify(initialState, null, 2));
-    // console.log('initialState', initialState);
     const store = configureStore(initialState, {
       fetch,
-      // I should not use `history` on server.. but how I do redirection? follow universal-router
     });
 
-    // console.log(store);
-
-    store.dispatch(
-      setRuntimeVariable({
-        name: 'initialNow',
-        value: Date.now(),
-      }),
-    );
-
-    // console.log('config.apiUrl', config.apiUrl);
-    // console.log('process.env.PRODUCTION', process.env.PRODUCTION);
-
-    // eslint-disable-next-line no-console
-    // Global (context) variables that can be easily accessed from any React component
-    // https://facebook.github.io/react/docs/context.html
     const context = {
       // Enables critical path CSS rendering
       // https://github.com/kriasoft/isomorphic-style-loader
@@ -123,6 +104,8 @@ export const reactErrorMiddleware = (err, req, res, next) => {
   //   // `clearCookie`, otherwise user can't use web-app until cookie expires
   //   return res.clearCookie('token');
   // }
+  console.log('User-agent', req.get('user-agent'));
+  console.log('err', err);
   return next(err);
 };
 

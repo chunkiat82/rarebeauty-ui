@@ -51,7 +51,7 @@ app.use((req, res, next) => {
   if (req.query.token) {
     res.cookie('token', req.query.token, {
       maxAge: 1000 * expiresIn,
-      sameSite: 'none',
+      sameSite: 'lax',
       httpOnly: true,
       secure: true,
       domain: __DEV__ ? 'localhost' : '.soho.sg',
