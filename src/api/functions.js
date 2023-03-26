@@ -50,8 +50,8 @@ const reservationURL = configs.get('reservationURL');
 const webHookURL = configs.get('webHookURL');
 const webHookId = configs.get('webHookId');
 
-const TOUCHUP_SERVICES = ['service:3', 'service:4', 'service:20192'];
-const FULL_SERVICES = ['service:20181', 'service:20182', 'service:20191'];
+const TOUCHUP_SERVICES = ['service:4-2022', 'service:5-2022', 'service:6-2022'];
+const FULL_SERVICES = ['service:1-2022', 'service:2-2022', 'service:3-2022'];
 
 async function listEvents(options) {
   const finalOptions = Object.assign(

@@ -6,7 +6,7 @@ import { UnauthorizedError as Jwt401Error } from 'express-jwt';
 import assets from './assets.json'; // eslint-disable-line import/no-unresolved
 import configureStore from './store/configureStore';
 import createFetch from './createFetch';
-import { setRuntimeVariable } from './actions/runtime';
+// import { setRuntimeVariable } from './actions/runtime';
 import router from './router';
 import config from './config';
 
@@ -37,18 +37,6 @@ export const reactMiddleware = async (req, res, next) => {
       fetch,
       // I should not use `history` on server.. but how I do redirection? follow universal-router
     });
-
-    // console.log(store);
-
-    store.dispatch(
-      setRuntimeVariable({
-        name: 'initialNow',
-        value: Date.now(),
-      }),
-    );
-
-    // Global (context) variables that can be easily accessed from any React component
-    // https://facebook.github.io/react/docs/context.html
     const context = {
       // Enables critical path CSS rendering
       // https://github.com/kriasoft/isomorphic-style-loader
@@ -65,11 +53,6 @@ export const reactMiddleware = async (req, res, next) => {
       store,
       storeSubscription: null,
     };
-    // console.log(` req.userAgent=${ req.userAgent}`);
-
-    // route.component will have this context too
-
-    // console.log(req.path);
 
     const route = await router.resolve({
       ...context,
