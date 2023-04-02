@@ -84,20 +84,20 @@ class Html extends React.Component {
             }}
           />
           <script
-            async
-            src="https://www.googletagmanager.com/gtag/js?id=G-GQRRL6RMKV"
+            dangerouslySetInnerHTML={{
+              __html: `
+                  if ('serviceWorker' in navigator) {
+                    navigator.serviceWorker.register('/service-worker.js')
+                      .then(function(registration) {
+                        console.log('Service Worker registered successfully');
+                      })
+                      .catch(function(error) {
+                        console.log('Service Worker registration failed:', error);
+                      })
+                  }
+                  `,
+            }}
           />
-          {
-            <script
-              dangerouslySetInnerHTML={{
-                __html:
-                  'window.dataLayer = window.dataLayer || [];' +
-                  `function gtag(){dataLayer.push(arguments);}` +
-                  `gtag('js', new Date());` +
-                  ` gtag('config', 'G-GQRRL6RMKV');`,
-              }}
-            />
-          }
         </body>
       </html>
     );
