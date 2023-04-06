@@ -89,14 +89,7 @@ class Page extends React.Component {
           </span>
           <br />
           <Paper style={mapStyle} zDepth={5}>
-            <iframe
-              src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3988.7325944158874!2d103.69252531574084!3d1.336690999025084!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x31da0f8ffc39bba3%3A0x86c5239af2cbccd7!2sSingapore+642987!5e0!3m2!1sen!2ssg!4v1557561471316!5m2!1sen!2ssg"
-              width="100%"
-              height="400vh"
-              frameBorder="0"
-              style={{ border: 0 }}
-              allowFullScreen
-            />
+            <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d15954.922109081197!2d103.6892442251184!3d1.3379629343864816!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x31da0f91b8b821c7%3A0xc05561d22390b4e0!2sSingapore%20642649!5e0!3m2!1sen!2ssg!4v1680754216986!5m2!1sen!2ssg" width="100%" height="400vh" style="border:0;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
           </Paper>
         </div>
       </div>
