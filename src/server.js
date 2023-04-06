@@ -145,7 +145,7 @@ app.use(
       return req.token;
     },
   }).unless({
-    path: ['/events/calendar', /\/general*/, /\/assets*/, /\/page+/, /\/p+/],
+    path: ['/events/calendar', /\/general*/, /\/assets*/, /\/page*/, /\/p+/],
   }),
 );
 

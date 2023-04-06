@@ -46,7 +46,7 @@ const routes = {
         ),
     },
     {
-      path: '/page',
+      path: '/page*',
       load: () => import(/* webpackChunkName: 'page' */ './page'),
     },
     {
