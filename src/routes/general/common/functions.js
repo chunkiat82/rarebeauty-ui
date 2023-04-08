@@ -24,7 +24,7 @@ export function patchEvent(fetch) {
     const resp = await fetch('/graphql', {
       body: JSON.stringify({
         query: `mutation($id: String!, $status:String!) {
-                patchEvent(name:$id, mobile:$status) {
+          updateEventStatus(id:$id, status:$status) {
                     id,
                     status,
                 }
