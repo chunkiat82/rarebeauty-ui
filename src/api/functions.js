@@ -630,10 +630,10 @@ async function remindCustomersTouchUp(options) {
           const lashService = foundFullLashService;
           const followUpService = services.peekByKey(lashService).followUp;
           const followUpPrice = services.peekByKey(followUpService).price;
-          let name = 'dear';
-          name =
-            event.attendees &&
-            event.attendees.filter(a => a.displayName)[0].displayName;
+          const name = 'dear';
+          // name =
+          //   event.attendees &&
+          //   event.attendees.filter(a => a.displayName)[0].displayName;
           const mobile =
             (event.extendedProperties &&
               event.extendedProperties.shared &&
