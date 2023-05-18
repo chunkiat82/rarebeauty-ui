@@ -129,6 +129,31 @@ app.use('/general/reservation/:eventId', async (req, res, next) => {
   reactMiddleware(req, res, next);
 });
 
+app.use('/p*', async (req, res, next) => {
+  const token = jwt.sign(
+    {
+      user: 'unknown',
+      page: '/public',
+      role: 'user',
+      tenant: 'itdepends',
+    },
+    config.auth.jwt.secret,
+    { expiresIn: '6h' },
+  );
+  req.token = token;
+
+  res.cookie('token', token, {
+    maxAge: 1000 * expiresIn,
+    sameSite: 'none',
+    httpOnly: true,
+    secure: true,
+    domain: __DEV__ ? 'localhost' : '.soho.sg',
+    path: '/',
+  });
+
+  reactMiddleware(req, res, next);
+});
+
 app.use(
   expressJwt({
     secret: checkingUser,
