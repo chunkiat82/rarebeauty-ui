@@ -128,10 +128,12 @@ app.use(
   allowOnlyPost,
   (req, res, next) => {
     // type to be cleaned up
+    // this mapping is found in rarebeauty-ui-sa server.js
     if (
       req.auth.type === 'admin' ||
       req.auth.role === 'admin' ||
-      req.auth.page.includes('general')
+      req.auth.page.includes('general') ||
+      req.auth.page.includes('public')
     )
       next();
     else {
