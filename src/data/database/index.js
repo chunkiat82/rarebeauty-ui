@@ -2,32 +2,33 @@
 const couchbase = require('couchbase');
 const config = require('../../config.js');
 
-// console.log(config.couchbaseUrl);
-const cluster = new couchbase.Cluster(config.couchbaseUrl);
-const N1qlQuery = couchbase.N1qlQuery;
-const bucket = cluster.openBucket('default');
-bucket.enableN1ql([config.couchbaseQueryUrl]);
+let collection = null;
+let cluster = null;
+async function main() {
+  // For a secure cluster connection, use `couchbases://<your-cluster-ip>` instead.
+  const clusterConnStr = config.couchbaseUrl;
+  const username = 'rarebeauty';
+  const password = 'soho!@#$';
+  const bucketName = 'default';
 
-async function runOperation(operation, options) {
-  let res = null;
-  try {
-    res = await operation(options);
-  } catch (err) {
-    // console.error(`runOperation=${JSON.stringify(err)}`);
-    res = null;
-    // throw err;
-  }
-  // bucket.disconnect();
-  return res;
+  cluster = await couchbase.connect(clusterConnStr, {
+    username,
+    password,
+  });
+
+  const bucket = cluster.bucket(bucketName);
+
+  // Get a reference to the default collection, required only for older Couchbase server versions
+  collection = bucket.defaultCollection();
 }
 
 function getObject(options) {
   const { id } = options;
   return new Promise((res, rej) => {
-    bucket.get(id, (err, result) => {
+    collection.get(id, (err, result) => {
       if (err) {
         console.error(`Err getObject id=${options.id}`);
-        // console.error(`getObject err`, err);
+        console.error(`getObject err`, err);
         rej(err);
       } else {
         res(result);
@@ -39,7 +40,7 @@ function getObject(options) {
 function deleteObject(options) {
   const { id } = options;
   return new Promise((res, rej) => {
-    bucket.remove(id, (err, result) => {
+    collection.remove(id, (err, result) => {
       if (err) {
         console.error(`Err deleteObject id=${options.id}`);
         rej(err);
@@ -53,7 +54,7 @@ function deleteObject(options) {
 function setObject(options) {
   const { id, doc } = options;
   return new Promise((res, rej) => {
-    bucket.upsert(
+    collection.upsert(
       id,
       doc,
       {
@@ -71,23 +72,33 @@ function setObject(options) {
   });
 }
 
-function queryOperation(options) {
+async function queryOperation(options) {
   const { queryString } = options;
 
   // console.log(`queryString1=${queryString}`);
   // select * from default events where extendedProperties.shared.resourceName='people/c6618236514557043606 limit 0,10';
-  const n1Query = N1qlQuery.fromString(queryString);
 
-  return new Promise((res, rej) => {
-    bucket.query(n1Query, (err, rows) => {
-      if (err) {
-        console.error(`Err queryOperation n1Query=${n1Query}`);
-        rej(err);
-      } else {
-        res(rows);
-      }
-    });
-  });
+  try {
+    const { rows } = await cluster.query(queryString, {});
+    // console.log('rows', rows);
+    return rows;
+  } catch (err) {
+    console.error('err', err);
+    return [];
+  }
+}
+
+async function runOperation(operation, options) {
+  let res = null;
+  try {
+    res = await operation(options);
+  } catch (err) {
+    console.error(`runOperation=${JSON.stringify(err)}`);
+    res = null;
+    // throw err;
+  }
+  // bucket.disconnect();
+  return res;
 }
 
 export async function upsert(id, doc) {
@@ -122,6 +133,8 @@ export async function query(queryString) {
   });
   return obj;
 }
+
+main();
 
 export default {
   upsert,
