@@ -9,6 +9,7 @@
 
 /* eslint-disable max-len */
 const keys = require('./api/keys/google.json');
+const tenants = require('./api/keys/tenants.json');
 
 if (process.env.BROWSER) {
   throw new Error(
@@ -34,12 +35,16 @@ module.exports = {
   // databaseUrl: process.env.DATABASE_URL || 'sqlite:database.sqlite',
 
   // Couchbase
-  couchbaseUrl: process.env.PRODUCTION
-    ? process.env.CBURL || `couchbase://172.17.0.1/`
-    : `couchbase://127.0.0.1/`,
-  couchbaseQueryUrl: process.env.PRODUCTION
-    ? process.env.CBQURL || `'http://172.17.0.1:8093/'`
-    : `'http://127.0.0.1:8093/'`,
+  couchbase: {
+    url: process.env.PRODUCTION
+      ? process.env.CBURL || `couchbase://172.17.0.1/`
+      : `couchbase://127.0.0.1/`,
+    queryUrl: process.env.PRODUCTION
+      ? process.env.CBQURL || `'http://172.17.0.1:8093/'`
+      : `'http://127.0.0.1:8093/'`,
+    username: tenants.rarebeauty.database.username,
+    password: tenants.rarebeauty.database.password,
+  },
 
   // Web analytics
   analytics: {
