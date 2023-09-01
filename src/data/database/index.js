@@ -6,6 +6,7 @@ let collection = null;
 let cluster = null;
 async function main() {
   // For a secure cluster connection, use `couchbases://<your-cluster-ip>` instead.
+  console.error('all deatils', JSON.stringify(config.couchbase));
   const clusterConnStr = config.couchbase.url;
   const username = config.couchbase.username;
   const password = config.couchbase.password;
