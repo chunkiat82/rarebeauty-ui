@@ -19,8 +19,8 @@ const appointment = {
   },
   async resolve(obj, args, context) {
     const dbObj = await get(`appt:${args.id}`);
-    // console.log(JSON.stringify(dbObj.value));
-    return dbObj.value;
+    // console.log('dbObj', JSON.stringify(dbObj));
+    return dbObj;
   },
 };
 

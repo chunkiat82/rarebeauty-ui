@@ -17,7 +17,7 @@ const AppointmentType = new ObjectType({
       async resolve(obj /* , args */) {
         if (obj.eventId) {
           const res = await get(`event:${obj.eventId}`);
-          return res.value;
+          return res;
         }
         return obj.event;
       },
@@ -29,8 +29,8 @@ const AppointmentType = new ObjectType({
           const res = await get(`trans:${obj.transId}`);
 
           // fixing 2017 issues where there are no default despoit values
-          if (!res.value.deposit) res.value.deposit = 0.0;
-          return res.value;
+          if (!res.deposit) res.deposit = 0.0;
+          return res;
         }
         return obj.transaction;
       },

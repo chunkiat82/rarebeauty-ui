@@ -20,7 +20,7 @@ const events = {
   async resolve(obj, args) {
     const event = await get(`event:${args.id}`);
 
-    return event.value;
+    return event;
   },
 };
 

@@ -168,7 +168,7 @@ export default {
         );
         // this is the business logic
         /* i think we must check the whole array */
-        reminded = validPhoneArray[0] && validPhoneArray[0].value === 'false';
+        reminded = validPhoneArray[0] && validPhoneArray[0] === 'false';
       }
 
       const now = moment();

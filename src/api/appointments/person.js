@@ -72,10 +72,10 @@ export function byPerson(options) {
       const appointmentsPromises = [];
 
       uuidObjs.forEach(uuidObj => {
-        // console.log(`uuidObj.value.id=${uuidObj.value.id}`);
+        // console.log(`uuidObj.id=${uuidObj.id}`);
         if (uuidObj !== null)
           appointmentsPromises[appointmentsPromises.length] = getAppointment(
-            uuidObj.value.id,
+            uuidObj.id,
           );
       });
 

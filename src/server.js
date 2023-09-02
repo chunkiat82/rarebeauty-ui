@@ -166,11 +166,6 @@ app.use('/webhooks/twilio', async (req, res) => {
 });
 
 //
-// Register server-side rendering middleware
-// -----------------------------------------------------------------------------
-app.use('*', reactMiddleware);
-
-//
 // Error handling
 // -----------------------------------------------------------------------------
 if (__DEV__) {

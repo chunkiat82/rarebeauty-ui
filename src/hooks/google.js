@@ -73,7 +73,7 @@ async function updateTransactionOnTime(item) {
     await sleep(2000);
     try {
       transResponse = await get(`trans:${uuid}`);
-      transaction = transResponse.value;
+      transaction = transResponse;
       transaction.apptDate = moment(
         item.start.dateTime,
         'YYYY-MM-DDThh:mm:ssZ',
