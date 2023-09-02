@@ -112,11 +112,12 @@ export async function upsert(id, doc) {
   return obj;
 }
 
+// couchbase response changed from value to content from 4 to 6.6
 export async function get(id) {
   const obj = await runOperation(getObject, {
     id,
   });
-  console.log(obj.content);
+  // console.log(obj.content);
   return obj.content;
 }
 

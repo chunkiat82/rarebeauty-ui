@@ -480,7 +480,7 @@ async function stopWatchCalendar(options) {
   // console.log(response);
   const finalOptions = Object.assign({}, options, {
     calendarId,
-    resourceId: response.value.resourceId,
+    resourceId: response.resourceId,
   });
   try {
     const watchStopResponse = await calendarWatchStop(finalOptions);
@@ -552,7 +552,7 @@ async function remindCustomersTouchUp(options) {
 
     /* need to abstract this logic */
     const response = await get(`config:services`);
-    const listOfServices = response.value.services;
+    const listOfServices = response.services;
     // const mapOfServices = convertToMap(listOfServices);
     const services = new AST(listOfServices, 'id');
 
