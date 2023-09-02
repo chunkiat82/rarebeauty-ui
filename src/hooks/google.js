@@ -31,7 +31,7 @@ async function handleCancel(item) {
   try {
     const eventId = item.id;
     const response = await get(`event:${eventId}`);
-    const event = response.value;
+    const event = response;
     // console.log(event);
     const apptId = event.extendedProperties.shared.uuid;
     try {
@@ -66,7 +66,7 @@ async function updateTransactionOnTime(item) {
   try {
     console.error(`uuid=${uuid}`);
     transResponse = await get(`trans:${uuid}`);
-    transaction = transResponse.value;
+    transaction = transResponse;
     transaction.apptDate = moment(item.start.dateTime, 'YYYY-MM-DDThh:mm:ssZ');
   } catch (err) {
     console.error('retrying to get transaction', err);

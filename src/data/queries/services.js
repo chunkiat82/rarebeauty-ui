@@ -19,7 +19,7 @@ const services = {
   type: new ListType(ServiceType),
   async resolve() {
     const response = await get(`config:services`);
-    const finalServices = response.value.services;
+    const finalServices = response.services;
     return finalServices;
   },
 };

@@ -110,11 +110,11 @@ export default {
 
     try {
       const apptResponse = await get(`appt:${id}`);
-      const { eventId, transId } = apptResponse.value;
+      const { eventId, transId } = apptResponse;
 
       /* need to abstract this logic */
       const response = await get(`config:services`);
-      const listOfServices = response.value.services;
+      const listOfServices = response.services;
       const astServices = new AST(listOfServices, 'id');
 
       const services = serviceIds.map(item => astServices.getByKey(item));

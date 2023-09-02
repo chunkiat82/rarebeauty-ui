@@ -26,7 +26,7 @@ export default {
 
     try {
       const apptResponse = await get(`appt:${id}`);
-      const { eventId } = apptResponse.value;
+      const { eventId } = apptResponse;
 
       const event = await get(`event:${eventId}`);
       const transaction = await get(`trans:${id}`);

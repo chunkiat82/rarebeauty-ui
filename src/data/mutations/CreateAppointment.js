@@ -137,7 +137,7 @@ export default {
     try {
       /* need to abstract this logic */
       const response = await get(`config:services`);
-      const listOfServices = response.value.services;
+      const listOfServices = response.services;
       const astServices = new AST(listOfServices, 'id');
 
       const services = serviceIds.map(serviceId =>
