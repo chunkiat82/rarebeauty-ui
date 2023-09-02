@@ -101,7 +101,7 @@ export async function handleCalendarWebhook(headers) {
   // headers not used
 
   try {
-    const { value: configWatch } = await get('config:watch');
+    const configWatch = await get('config:watch');
     console.error(
       '-------------------------------------------------------0 START',
     );
