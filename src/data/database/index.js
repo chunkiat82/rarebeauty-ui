@@ -1,4 +1,4 @@
-// ssh sohoe -L 18091:172.17.0.1:18091 -L 18092:172.17.0.1:18092 -L 18093:172.17.0.1:18093 -L 18094:172.17.0.1:18094 -L 8094:172.17.0.1:8094 -L 8092:172.17.0.1:8092 -L 8091:172.17.0.1:8091 -L 11207:172.17.0.1:11207  -L 11210:172.17.0.1:11210 -L 8093:172.17.0.1:8093 -L 11211:172.17.0.1:11211
+// ssh sohon -L 18091:172.17.0.1:18091 -L 18092:172.17.0.1:18092 -L 18093:172.17.0.1:18093 -L 18094:172.17.0.1:18094 -L 8094:172.17.0.1:8094 -L 8092:172.17.0.1:8092 -L 8091:172.17.0.1:8091 -L 11207:172.17.0.1:11207  -L 11210:172.17.0.1:11210 -L 8093:172.17.0.1:8093 -L 11211:172.17.0.1:11211
 const couchbase = require('couchbase');
 const config = require('../../config.js');
 
@@ -6,7 +6,7 @@ let collection = null;
 let cluster = null;
 async function main() {
   // For a secure cluster connection, use `couchbases://<your-cluster-ip>` instead.
-  console.error('all deatils', JSON.stringify(config.couchbase));
+  console.error('all details', JSON.stringify(config.couchbase));
   const clusterConnStr = config.couchbase.url;
   const username = config.couchbase.username;
   const password = config.couchbase.password;
@@ -116,8 +116,8 @@ export async function get(id) {
   const obj = await runOperation(getObject, {
     id,
   });
-  // console.log(obj);
-  return obj;
+  console.log(obj.content);
+  return obj.content;
 }
 
 export async function remove(id) {
