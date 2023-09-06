@@ -2,10 +2,15 @@
 const couchbase = require('couchbase');
 const config = require('../../config.js');
 
-let collection = null;
-let cluster = null;
-async function main() {
+async function connect() {
   // For a secure cluster connection, use `couchbases://<your-cluster-ip>` instead.
+
+  let cluster = null;
+  let bucket = null;
+  let collection = null;
+
+  if (cluster && bucket && collection) return { bucket, collection, cluster };
+
   console.error('all details', JSON.stringify(config.couchbase));
   const clusterConnStr = config.couchbase.url;
   const username = config.couchbase.username;
@@ -17,13 +22,16 @@ async function main() {
     password,
   });
 
-  const bucket = cluster.bucket(bucketName);
+  bucket = cluster.bucket(bucketName);
 
   // Get a reference to the default collection, required only for older Couchbase server versions
   collection = bucket.defaultCollection();
+  return { bucket, collection, cluster };
 }
 
-function getObject(options) {
+async function getObject(options) {
+  const { collection } = await connect();
+
   const { id } = options;
   return new Promise((res, rej) => {
     collection.get(id, (err, result) => {
@@ -38,7 +46,8 @@ function getObject(options) {
   });
 }
 
-function deleteObject(options) {
+async function deleteObject(options) {
+  const { collection } = await connect();
   const { id } = options;
   return new Promise((res, rej) => {
     collection.remove(id, (err, result) => {
@@ -52,7 +61,8 @@ function deleteObject(options) {
   });
 }
 
-function setObject(options) {
+async function setObject(options) {
+  const { collection } = await connect();
   const { id, doc } = options;
   return new Promise((res, rej) => {
     collection.upsert(
@@ -78,7 +88,7 @@ async function queryOperation(options) {
 
   // console.log(`queryString1=${queryString}`);
   // select * from default events where extendedProperties.shared.resourceName='people/c6618236514557043606 limit 0,10';
-
+  const { cluster } = await connect();
   try {
     const { rows } = await cluster.query(queryString, {});
     // console.log('rows', rows);
@@ -135,8 +145,6 @@ export async function query(queryString) {
   });
   return obj;
 }
-
-main();
 
 export default {
   upsert,
