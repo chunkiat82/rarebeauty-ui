@@ -11,7 +11,7 @@ async function connect() {
 
   if (cluster && bucket && collection) return { bucket, collection, cluster };
 
-  console.error('all details', JSON.stringify(config.couchbase));
+  // console.error('all details', JSON.stringify(config.couchbase));
   const clusterConnStr = config.couchbase.url;
   const username = config.couchbase.username;
   const password = config.couchbase.password;
