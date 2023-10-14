@@ -45,6 +45,9 @@ app.use((req, res, next) => {
   const allowedOrigins = [
     'http://localhost:3000',
     'https://appointments.soho.sg',
+    'http://appt.soho.sg',
+    'https://appt.soho.sg',
+    'https://rarebeauty.soho.sg',
   ];
   const origin = req.headers.origin;
   if (allowedOrigins.includes(origin)) {
