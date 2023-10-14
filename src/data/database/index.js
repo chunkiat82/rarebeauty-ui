@@ -2,20 +2,27 @@
 const couchbase = require('couchbase');
 const config = require('../../config.js');
 
+const bucketName = process.env.CB_BUCKET || 'default';
+const scopeName = process.env.CB_SCOPE || '_default';
+const collectionName = process.env.CB_COLLECTION || '_default';
+
 async function connect() {
   // For a secure cluster connection, use `couchbases://<your-cluster-ip>` instead.
 
   let cluster = null;
   let bucket = null;
+  let scope = null;
   let collection = null;
 
-  if (cluster && bucket && collection) return { bucket, collection, cluster };
+  if (cluster && scope && bucket && collection)
+    return { bucket, scope, collection, cluster };
 
   console.error('all details', JSON.stringify(config.couchbase));
+  // console.error('all env', JSON.stringify(process.env));
+
   const clusterConnStr = config.couchbase.url;
   const username = config.couchbase.username;
   const password = config.couchbase.password;
-  const bucketName = 'default';
 
   cluster = await couchbase.connect(clusterConnStr, {
     username,
@@ -25,8 +32,10 @@ async function connect() {
   bucket = cluster.bucket(bucketName);
 
   // Get a reference to the default collection, required only for older Couchbase server versions
-  collection = bucket.defaultCollection();
-  return { bucket, collection, cluster };
+  scope = bucket.scope(scopeName);
+  collection = scope.collection(collectionName);
+  // collection = bucket.defaultCollection();
+  return { bucket, scope, collection, cluster };
 }
 
 async function getObject(options) {
