@@ -34,7 +34,6 @@ async function connect() {
   // Get a reference to the default collection, required only for older Couchbase server versions
   scope = bucket.scope(scopeName);
   collection = scope.collection(collectionName);
-  // collection = bucket.defaultCollection();
   return { bucket, scope, collection, cluster };
 }
 

@@ -20,7 +20,7 @@ import _httpErrorPages from 'http-error-pages';
 
 import schema from './data/schema';
 import { handleCalendarWebhook, handleTwilioWebhook } from './hooks';
-import { reactMiddleware, reactErrorMiddleware } from './reactMiddleware';
+import { reactErrorMiddleware } from './reactMiddleware';
 import config from './config';
 
 const app = express();
