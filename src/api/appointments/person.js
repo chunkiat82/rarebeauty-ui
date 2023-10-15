@@ -2,6 +2,11 @@ import moment from 'moment';
 import { get, query } from '../../data/database';
 import { get as getAppointment } from '../../data/database/appointment';
 
+const collectionFullName =
+  process.env.CB_BUCKET && process.env.CB_SCOPE && process.env.CB_COLLECTION
+    ? `${process.env.CB_BUCKET}.${process.env.CB_SCOPE}.${process.env.CB_COLLECTION}`
+    : `default`;
+
 // CREATE INDEX canceledAt_index ON `default`(canceledAt);
 export function cancelledByPerson(options) {
   // console.log(options);
@@ -12,7 +17,7 @@ export function cancelledByPerson(options) {
       select cancelHours
         from (select DATE_DIFF_MILLIS(STR_TO_MILLIS(event.\`value\`.\`start\`.dateTime), STR_TO_MILLIS(canceledAt), 'hour') as cancelHours, 
         canceledAt, event.\`value\`.\`start\`.dateTime, id
-          from default cancelledEvents
+          from ${collectionFullName} cancelledEvents
           where canceledAt is not null and event.\`value\`.extendedProperties.shared.resourceName = '${id}') as cancelHoursTable 
         where cancelHours < 36) as lessThanThirtySix`;
 
@@ -48,7 +53,7 @@ export function byPerson(options) {
       console.error('you can ignore this for now');
     }
 
-    let queryString = `select extendedProperties.shared.uuid from default event where extendedProperties.shared.resourceName='${id}'`;
+    let queryString = `select extendedProperties.shared.uuid from ${collectionFullName} event where extendedProperties.shared.resourceName='${id}'`;
 
     try {
       if (now) queryString += ` and \`end\`.dateTime > now_str()`;
@@ -100,7 +105,7 @@ export function byPersonCount(options) {
   // console.log(options);
   return new Promise(async (res, rej) => {
     try {
-      const queryString = `select count(*) from default event where extendedProperties.shared.resourceName='${id}'`;
+      const queryString = `select count(*) from ${collectionFullName} event where extendedProperties.shared.resourceName='${id}'`;
       // console.log(queryString);
       const counts = await query(queryString);
 
