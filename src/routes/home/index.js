@@ -26,7 +26,7 @@ function refreshContacts(fetch) {
       body: JSON.stringify({
         query: `mutation {
           refreshContacts {
-            id                                               
+            id
           }
         }`,
       }),

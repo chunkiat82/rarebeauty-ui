@@ -4,7 +4,7 @@ import Layout from '../../components/Layout';
 
 import {
   queryPastAppointments,
-  createCalendar,
+  createAppointment,
   createWaitingCalendar,
   listContacts,
   getServices,
@@ -61,7 +61,7 @@ async function action({ fetch, params, store }) {
           cancelAppointmentsCount={0}
           queryPastAppointments={queryPastAppointments(fetch)}
           contacts={contacts}
-          post={createCalendar(fetch)}
+          post={createAppointment(fetch)}
           postWaiting={createWaitingCalendar(fetch)}
           postText={'Create Appointment'}
           postWaitingText={'Create Waiting Appointment'}

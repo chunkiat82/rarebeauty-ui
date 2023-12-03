@@ -3,6 +3,22 @@ import AST from 'auto-sorting-array';
 
 let services = null;
 
+function refreshContacts(fetch) {
+  return async () => {
+    const resp = await fetch('/graphql', {
+      body: JSON.stringify({
+        query: `mutation {
+          refreshContacts {
+            id
+          }
+        }`,
+      }),
+    });
+    await resp.json();
+    return { result: 'refreshed' };
+  };
+}
+
 export function queryPastAppointments(fetch) {
   return async personId => {
     const personResponse = await fetch('/graphql', {
@@ -44,7 +60,7 @@ export function queryPastAppointments(fetch) {
   };
 }
 
-export function createCalendar(fetch) {
+export function createAppointment(fetch) {
   return async input => {
     const {
       duration,
@@ -69,7 +85,8 @@ export function createCalendar(fetch) {
       body: JSON.stringify({
         query: `mutation($name: String!, $mobile:String!, $resourceName:String, $start:String!, $serviceIds:[String]!, $duration:Int!, $totalAmount:Float, $additional:Float, $discount:Float, $toBeInformed:Boolean, $deposit:Float, $force:Boolean) {
                     createAppointment(name:$name, mobile:$mobile, resourceName:$resourceName, start:$start, serviceIds:$serviceIds, duration:$duration, totalAmount:$totalAmount, additional:$additional, discount:$discount, toBeInformed:$toBeInformed, deposit:$deposit, force:$force) {
-                        id                                                
+                        id,
+                        createdNewContact
                     }
                 }`,
         variables: JSON.stringify({
@@ -90,6 +107,10 @@ export function createCalendar(fetch) {
     });
 
     const { data, errors } = await resp.json();
+
+    if (data.createAppointment.createdNewContact) {
+      setTimeout(refreshContacts(fetch), 10000);
+    }
 
     return { errors, data };
   };
@@ -347,7 +368,7 @@ export function getContact(fetch) {
 
 export default {
   queryPastAppointments,
-  createCalendar,
+  createAppointment,
   createWaitingCalendar,
   listContacts,
   getAppointment,
@@ -355,4 +376,5 @@ export default {
   cancelAppointment,
   getServices,
   getContact,
+  refreshContacts,
 };
