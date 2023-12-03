@@ -113,7 +113,7 @@ export default {
   ) {
     let finalResourceName = resourceName;
     // console.log(`services=${services}`);
-
+    const returnObj = { createdNewContact: false };
     if (
       resourceName === '' ||
       resourceName === undefined ||
@@ -132,6 +132,7 @@ export default {
         mobile,
       });
       finalResourceName = res.resourceName;
+      returnObj.createdNewContact = true;
     }
 
     try {
@@ -246,9 +247,14 @@ export default {
         deposit,
       );
       await upsert(`trans:${uuid}`, transaction);
-      // console.log(`uuid=${uuid}`);
-      // console.log(`transaction=${JSON.stringify(transaction, null, 2)}`);
-      return { id: uuid, event, transaction, createdAt: now, lastUpdated: now };
+      return {
+        id: uuid,
+        event,
+        transaction,
+        createdAt: now,
+        lastUpdated: now,
+        ...returnObj,
+      };
     } catch (err) {
       // this is scenario to rollback when appointment cannot be created.
       // remove contact

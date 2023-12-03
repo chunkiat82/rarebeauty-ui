@@ -2,6 +2,7 @@ import {
   GraphQLObjectType as ObjectType,
   GraphQLString as StringType,
   GraphQLNonNull as NonNull,
+  GraphQLBoolean as BooleanType,
 } from 'graphql';
 
 import EventType from '../types/EventType';
@@ -11,7 +12,9 @@ import { get } from '../database';
 const AppointmentType = new ObjectType({
   name: 'Appointment',
   fields: {
-    id: { type: StringType },
+    id: {
+      type: StringType,
+    },
     event: {
       type: EventType,
       async resolve(obj /* , args */) {
@@ -28,7 +31,7 @@ const AppointmentType = new ObjectType({
         if (obj.transId) {
           const res = await get(`trans:${obj.transId}`);
 
-          // fixing 2017 issues where there are no default despoit values
+          // fixing 2017 issues where there are no default deposit values
           if (!res.deposit) res.deposit = 0.0;
           return res;
         }
@@ -36,6 +39,7 @@ const AppointmentType = new ObjectType({
       },
     },
     // transactions: { type: new ListType(StringType) },
+    createdNewContact: { type: new NonNull(BooleanType) },
     createdAt: { type: new NonNull(StringType) },
     lastUpdated: { type: new NonNull(StringType) },
   },

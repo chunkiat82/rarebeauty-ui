@@ -11,7 +11,7 @@ async function getContacts(previousList, pageToken) {
       {
         resourceName: 'people/me',
         personFields: 'names,phoneNumbers',
-        pageSize: 1000, // future problem
+        pageSize: 1000,
         pageToken,
       },
       (err, { data }) => {
@@ -80,7 +80,7 @@ export default async function list(options = { forceRefresh: false }) {
       data = currentData;
       nextPageToken = pageToken;
     }
-    // console.log(`data`, data.length)
+    // console.log(`data`, JSON.stringify(data, null, 2));
     return res(data);
   });
 }

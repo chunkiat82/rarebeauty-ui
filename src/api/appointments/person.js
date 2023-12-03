@@ -33,7 +33,7 @@ export function cancelledByPerson(options) {
         cancelledAppointmentsCount: totalCancelledLess36,
       });
     } catch (err) {
-      console.error(`Error byPerson=${JSON.stringify(err)}`);
+      console.error(`cancelledByPerson=${JSON.stringify(err)}`);
       rej(err);
     }
   });
