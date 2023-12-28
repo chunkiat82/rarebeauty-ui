@@ -50,7 +50,7 @@ const ContactType = new ObjectType({
               obj.phoneNumbers.filter(x => x.type === 'other')[0]) ||
             null;
         if (selectedObj === null) return obj.mobile;
-        return selectedObj || selectedObj.canonicalForm;
+        return selectedObj.canonicalForm || selectedObj.value || selectedObj;
       },
     },
     resourceName: { type: StringType },
