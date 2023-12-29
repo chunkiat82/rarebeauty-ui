@@ -247,6 +247,13 @@ export default {
         deposit,
       );
       await upsert(`trans:${uuid}`, transaction);
+
+      if (returnObj.createdNewContact) {
+        api({
+          action: 'updateContact',
+          resourceName: finalResourceName,
+        });
+      }
       return {
         id: uuid,
         event,
