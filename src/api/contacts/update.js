@@ -2,7 +2,11 @@
 // babel-node cli --action=updateContact --verified=false --resourceName=people/YYY --mobile=XX
 const { generatePeopleObj } = require('../utilities/jwt');
 
-async function updateContact({ resourceName, mobile, validPhone }, me, cb) {
+async function updateContact(
+  { resourceName, mobile, validPhone, appointmentUrl },
+  me,
+  cb,
+) {
   const people = await generatePeopleObj();
 
   // console.error(`verified=${verified}` !== undefined ? verified : true);
@@ -31,10 +35,23 @@ async function updateContact({ resourceName, mobile, validPhone }, me, cb) {
     ];
   }
 
+  if (appointmentUrl || true) {
+    // possible
+    defaultResource.urls = [
+      {
+        type: 'appointment',
+        value: `https://appointments.soho.sg/customer/${
+          resourceName.split('people/')[1]
+        }/createAppointment`,
+      },
+    ];
+  }
+
   people.people.updateContact(
     {
       resourceName,
-      updatePersonFields: ['phoneNumbers', 'userDefined'],
+      updatePersonFields: ['urls'],
+      personFields: ['phoneNumbers', 'userDefined', 'urls'],
       resource: defaultResource,
     },
     {},
@@ -50,10 +67,10 @@ export default async function update(options) {
     people.people.get(
       {
         resourceName,
-        personFields: ['phoneNumbers', 'userDefined'],
+        personFields: ['phoneNumbers', 'userDefined', 'urls'],
       },
       {},
-      (err, { obj: me }) => {
+      (err, { data: me }) => {
         // console.log(err || me);
         if (err) {
           rej(err);

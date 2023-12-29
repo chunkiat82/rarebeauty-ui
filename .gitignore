@@ -37,3 +37,4 @@ data.json
 data/default
 data/*.couch*
 data/@2i/**
+jobs/*/*.json

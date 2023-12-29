@@ -10,7 +10,7 @@ async function getContacts(previousList, pageToken) {
     people.people.connections.list(
       {
         resourceName: 'people/me',
-        personFields: 'names,phoneNumbers',
+        personFields: 'names,phoneNumbers,urls',
         pageSize: 1000,
         pageToken,
       },
@@ -41,6 +41,7 @@ async function getContacts(previousList, pageToken) {
               phoneNumbers[0].value ||
               '0'
             ).replace(/\s/g, ''),
+            urls: (one.urls && one.urls[0].value) || null,
             resourceName: one.resourceName,
           };
           obj.display = `${obj.name} - ${obj.mobile}`;
