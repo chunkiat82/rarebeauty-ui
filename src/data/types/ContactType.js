@@ -47,6 +47,11 @@ const ContactType = new ObjectType({
         if (selectedObj === null)
           selectedObj =
             (obj.phoneNumbers &&
+              obj.phoneNumbers.filter(x => x.type === 'home')[0]) ||
+            null;
+        if (selectedObj === null)
+          selectedObj =
+            (obj.phoneNumbers &&
               obj.phoneNumbers.filter(x => x.type === 'other')[0]) ||
             null;
         if (selectedObj === null) return obj.mobile;
