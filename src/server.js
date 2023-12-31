@@ -142,11 +142,17 @@ app.use(
       res.status(401).send('Not Allowed Here');
     }
   },
+  // https://www.npmjs.com/package/express-graphql
   expressGraphQL(async req => ({
     schema,
     graphiql: __DEV__,
     rootValue: { request: req },
     pretty: __DEV__,
+    context: {
+      tenant: req.auth.tenant,
+      role: req.auth.role,
+      user: req.auth.user,
+    },
   })),
 );
 
