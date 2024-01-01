@@ -13,15 +13,16 @@ import { GraphQLList as ListType, GraphQLString as StringType } from 'graphql';
 import EventType from '../types/EventType';
 import api from '../../api';
 
+function queryEvents(args) {
+  return api({ action: 'listEvents', ...args });
+}
 const events = {
   type: new ListType(EventType),
   args: {
     id: { type: StringType },
   },
-  // parent, args, contextValue, info
-  async resolve(_, args, context) {
-    console.log('events resolve context', context);
-    const response = await api({ action: 'listEvents', context, ...args });
+  async resolve(obj, args) {
+    const response = await queryEvents(args);
     return response;
   },
 };

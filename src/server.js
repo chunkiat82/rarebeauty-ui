@@ -134,27 +134,19 @@ app.use(
     if (
       req.auth.type === 'admin' ||
       req.auth.role === 'admin' ||
-      req.auth.role === 'legacy' ||
       req.auth.page.includes('general') ||
       req.auth.page.includes('public')
     )
       next();
     else {
       res.status(401).send('Not Allowed Here');
-      next();
     }
   },
-  // https://www.npmjs.com/package/express-graphql
   expressGraphQL(async req => ({
     schema,
     graphiql: __DEV__,
     rootValue: { request: req },
     pretty: __DEV__,
-    context: {
-      tenant: req.auth.tenant,
-      role: req.auth.role,
-      user: req.auth.user,
-    },
   })),
 );
 
