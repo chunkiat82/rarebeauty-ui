@@ -3,11 +3,11 @@ const couchbase = require('couchbase');
 const config = require('../../config.js');
 const tenantsConfig = require('../../api/keys/tenants.json');
 
-const defaultBucketName = process.env.CB_BUCKET || 'default';
-const defaultScopeName = process.env.CB_SCOPE || '_default';
-const defaultCollectionName = process.env.CB_COLLECTION || '_default';
-const defaultUsername = process.env.CB_USERNAME || '_default';
-const defaultPassword = process.env.CB_PASSWORD || '_default';
+// const defaultBucketName = process.env.CB_BUCKET || 'default';
+// const defaultScopeName = process.env.CB_SCOPE || '_default';
+// const defaultCollectionName = process.env.CB_COLLECTION || '_default';
+// const defaultUsername = process.env.CB_USERNAME || '_default';
+// const defaultPassword = process.env.CB_PASSWORD || '_default';
 const clusterConnStr = config.couchbase.url;
 
 const clusterCache = {};
@@ -15,31 +15,26 @@ const clusterCache = {};
 function findClusterFromCache(tenant) {
   return clusterCache[tenant];
 }
-async function findConfig(tenant) {
-  if (tenantsConfig[tenant]) {
-    const {
-      bucketName,
-      scopeName,
-      collectionName,
-      username,
-      password,
-    } = tenantsConfig[tenant].database;
-    return {
-      bucketName,
-      scopeName,
-      collectionName,
-      username,
-      password,
-    };
-  }
+function findConfig(tenantName) {
+  const tenant = tenantsConfig[tenantName];
+  // console.log('tenantName', tenantName);
+
+  const {
+    bucketName,
+    scopeName,
+    collectionName,
+    username,
+    password,
+  } = tenant.database;
+
   // if no tenant found
 
   return {
-    bucketName: defaultBucketName,
-    scoscopeNamepe: defaultScopeName,
-    collectionName: defaultCollectionName,
-    username: defaultUsername,
-    password: defaultPassword,
+    bucketName,
+    scopeName,
+    collectionName,
+    username,
+    password,
   };
 }
 
@@ -51,9 +46,10 @@ async function findConfig(tenant) {
  * @param {*} context
  * @returns
  */
+
+// all details {"url":"couchbase://127.0.0.1/","queryUrl":"'http://127.0.0.1:8093/'","username":"rarebeauty","password":"soho!@#$"}
 async function connect(context) {
-  console.error('context', context);
-  console.error('all details', JSON.stringify(config.couchbase));
+  // console.error('all details', JSON.stringify(config.couchbase));
 
   const { tenant } = context;
   const cacheCluster = findClusterFromCache(tenant);
@@ -65,22 +61,17 @@ async function connect(context) {
     username,
     password,
   } = databaseConfig;
-  console.error('databaseConfig', databaseConfig);
   let cluster = null;
 
   if (!cacheCluster) {
-    console.error('clusterConnStr', clusterConnStr);
     cluster = await couchbase.connect(clusterConnStr, {
       username,
       password,
     });
-    console.error('context7', context);
     clusterCache[tenant] = cluster;
-    console.error('context8', context);
   } else {
     cluster = cacheCluster;
   }
-  console.error('context9', context);
   const bucket = cluster.bucket(bucketName);
   const scope = bucket.scope(scopeName);
   const collection = scope.collection(collectionName);
@@ -90,7 +81,6 @@ async function connect(context) {
 
 async function getObject(options) {
   const { collection } = await connect(options.context);
-  console.log('database getObject collection', collection);
   const { id } = options;
   return new Promise((res, rej) => {
     collection.get(id, (err, result) => {

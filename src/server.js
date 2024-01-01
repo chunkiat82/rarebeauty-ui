@@ -134,12 +134,14 @@ app.use(
     if (
       req.auth.type === 'admin' ||
       req.auth.role === 'admin' ||
+      req.auth.role === 'legacy' ||
       req.auth.page.includes('general') ||
       req.auth.page.includes('public')
     )
       next();
     else {
       res.status(401).send('Not Allowed Here');
+      next();
     }
   },
   // https://www.npmjs.com/package/express-graphql
