@@ -17,7 +17,7 @@ import { get } from '../database';
 
 const services = {
   type: new ListType(ServiceType),
-  async resolve(_, args, context) {
+  async resolve(_, _args, context) {
     const response = await get(`config:services`, context);
     const finalServices = response.services;
     return finalServices;

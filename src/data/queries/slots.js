@@ -5,17 +5,17 @@ import api from '../../api';
 
 const SLOT_TYPE = 'Free'; // currently not used
 
-function querySlots() {
-  return api({ action: 'listFreeSlots', type: SLOT_TYPE });
-}
-
 const slots = {
   type: new ListType(SlotType),
   args: {
     id: { type: StringType },
   },
-  async resolve(_, args) {
-    const response = await querySlots(args);
+  async resolve(_, _args, context) {
+    const response = await api({
+      action: 'listFreeSlots',
+      type: SLOT_TYPE,
+      context,
+    });
     // console.log(response);
     return response;
   },

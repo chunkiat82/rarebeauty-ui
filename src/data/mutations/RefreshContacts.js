@@ -1,6 +1,6 @@
 import { GraphQLString as StringType } from 'graphql';
 import ResponseType from '../types/ResponseType';
-import API from '../../api';
+import api from '../../api';
 
 export default {
   type: ResponseType,
@@ -9,9 +9,9 @@ export default {
       type: StringType,
     },
   },
-  async resolve() {
+  async resolve(_, _args, context) {
     try {
-      await API({ action: 'listContacts', forceRefresh: true });
+      await api({ action: 'listContacts', forceRefresh: true, context });
       return { id: 0, code: 'refreshed' };
     } catch (err) {
       console.error(err);

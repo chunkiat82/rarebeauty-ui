@@ -21,15 +21,15 @@ export default {
       type: BooleanType,
     },
   },
-  async resolve(value, { id, by, toBeInformed }) {
+  async resolve(_, args, context) {
     // [todo] - what if it's a mobile in the summary
-
+    const { id, by, toBeInformed } = args;
     try {
-      const apptResponse = await get(`appt:${id}`);
+      const apptResponse = await get(`appt:${id}`, context);
       const { eventId } = apptResponse;
 
-      const event = await get(`event:${eventId}`);
-      const transaction = await get(`trans:${id}`);
+      const event = await get(`event:${eventId}`, context);
+      const transaction = await get(`trans:${id}`, context);
 
       const now = moment();
       await upsert(`cancel:${id}`, {
@@ -38,6 +38,7 @@ export default {
         by: by || 'customer',
         event,
         transaction,
+        context,
       });
 
       await api({
@@ -48,7 +49,8 @@ export default {
           toBeInformed === undefined ||
           toBeInformed === 'false' ||
           toBeInformed === false
-        ), // bad logic too hard to understand //its set to false so that it will be picked up later to be informed
+        ),
+        context, // bad logic too hard to understand //its set to false so that it will be picked up later to be informed
       });
       // console.log(`fullEvent:${JSON.stringify(event)}`);
 

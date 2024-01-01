@@ -143,7 +143,7 @@ async function queryOperation(options) {
     // console.log('rows', rows);
     return rows;
   } catch (err) {
-    console.error('err', err);
+    console.error('err queryOperation', err);
     return [];
   }
 }

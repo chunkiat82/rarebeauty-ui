@@ -9,7 +9,7 @@ const person = {
     id: { type: StringType },
     limit: { type: StringType },
   },
-  async resolve(obj, args /* , context not used */) {
+  async resolve(_, args, context) {
     // construct person
     // contruct events;
     const { id, limit } = args;
@@ -19,6 +19,7 @@ const person = {
       action: 'getAppointmentsByPerson',
       id,
       limit,
+      context,
     });
     // console.log(getAppointmentsByPerson);
     return getAppointmentsByPerson;

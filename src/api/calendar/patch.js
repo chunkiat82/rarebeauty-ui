@@ -22,6 +22,7 @@ async function patchHandler(options, event) {
     informed,
     totalAmount,
     deposit,
+    context,
   } = options;
 
   const patchObject = {
@@ -69,6 +70,7 @@ async function patchHandler(options, event) {
       count: countOfExistingAppointments,
     } = await getAppointmentsCountByPerson({
       id: resource.extendedProperties.shared.resourceName,
+      context,
     });
 
     resource.summary = `${resource.attendees[0].displayName} (${

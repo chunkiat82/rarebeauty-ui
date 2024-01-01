@@ -89,9 +89,9 @@ export default {
       type: BooleanType,
     },
   },
-  async resolve(
-    value,
-    {
+  async resolve(_, args, context) {
+    // [todo] - what if it's a mobile in the summary
+    const {
       id,
       name,
       mobile,
@@ -104,16 +104,13 @@ export default {
       discount,
       deposit,
       toBeInformed,
-    },
-  ) {
-    // [todo] - what if it's a mobile in the summary
-
+    } = args;
     try {
-      const apptResponse = await get(`appt:${id}`);
+      const apptResponse = await get(`appt:${id}`, context);
       const { eventId, transId } = apptResponse;
 
       /* need to abstract this logic */
-      const response = await get(`config:services`);
+      const response = await get(`config:services`, context);
       const listOfServices = response.services;
       const astServices = new AST(listOfServices, 'id');
 
@@ -147,16 +144,21 @@ export default {
           toBeInformed === false
         ), // bad logic too hard to understand //its set to false so that it will be picked up later to be informed
         deposit,
+        context,
       });
       // console.log(`fullEvent:${JSON.stringify(event)}`);
       const now = moment();
-      await upsert(`appt:${id}`, {
-        id,
-        eventId,
-        transId,
-        createdAt: now,
-        lastUpdated: now,
-      });
+      await upsert(
+        `appt:${id}`,
+        {
+          id,
+          eventId,
+          transId,
+          createdAt: now,
+          lastUpdated: now,
+        },
+        context,
+      );
       const transaction = createTransactionEntry(
         transId,
         services,
@@ -169,7 +171,7 @@ export default {
         resourceName,
         deposit,
       );
-      await upsert(`trans:${transId}`, transaction);
+      await upsert(`trans:${transId}`, transaction, context);
       // console.log(`id=${id}`);
       // console.log(`transaction=${JSON.stringify(transaction, null, 2)}`);
       return { id, event, transaction, createdAt: now, lastUpdated: now };

@@ -16,8 +16,6 @@ import api from '../../api';
 const contacts = {
   type: new List(ContactType),
   async resolve() {
-    // console.log('graphql listContacts');
-
     const data = await api({ action: 'listContacts' });
     return data;
   },

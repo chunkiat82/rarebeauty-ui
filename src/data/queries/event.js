@@ -17,8 +17,8 @@ const events = {
   args: {
     id: { type: StringType },
   },
-  async resolve(obj, args) {
-    const event = await get(`event:${args.id}`);
+  async resolve(_, args, context) {
+    const event = await get(`event:${args.id}`, context);
 
     return event;
   },

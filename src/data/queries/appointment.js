@@ -17,9 +17,11 @@ const appointment = {
   args: {
     id: { type: StringType },
   },
-  async resolve(obj, args, context) {
-    const dbObj = await get(`appt:${args.id}`);
-    // console.log('dbObj', JSON.stringify(dbObj));
+  async resolve(_, args, context) {
+    // console.log('query appointment args', JSON.stringify(args));
+    // console.log('query appointment context', JSON.stringify(context));
+    const dbObj = await get(`appt:${args.id}`, context);
+    // console.log('query appointment dbObj', JSON.stringify(dbObj));
     return dbObj;
   },
 };

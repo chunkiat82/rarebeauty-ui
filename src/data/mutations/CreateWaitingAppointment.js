@@ -55,9 +55,8 @@ export default {
       type: BooleanType,
     },
   },
-  async resolve(
-    _,
-    {
+  async resolve(_, args, context) {
+    const {
       name,
       mobile,
       resourceName,
@@ -69,8 +68,7 @@ export default {
       discount,
       toBeInformed,
       deposit,
-    },
-  ) {
+    } = args;
     let finalResourceName = resourceName;
 
     if (resourceName === '' || resourceName === undefined) {
@@ -85,13 +83,14 @@ export default {
         first,
         last,
         mobile,
+        context,
       });
       finalResourceName = res.resourceName;
     }
 
     try {
       /* need to abstract this logic */
-      const response = await get(`config:services`);
+      const response = await get(`config:services`, context);
       const listOfServices = response.services;
       const astServices = new AST(listOfServices, 'id');
 
@@ -112,6 +111,7 @@ export default {
       const person = await api({
         action: 'getContact',
         resourceName: finalResourceName,
+        context,
       });
       const userDefined = person && person.userDefined;
 
@@ -150,6 +150,7 @@ export default {
         ), // bad logic
         deposit,
         force: true,
+        context,
       });
       return {
         id: uuid,
@@ -168,6 +169,7 @@ export default {
         await api({
           action: 'deleteContact',
           resourceName: finalResourceName,
+          context,
         });
       }
 

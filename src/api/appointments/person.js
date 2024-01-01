@@ -1,17 +1,37 @@
 import moment from 'moment';
 import { get, query } from '../../data/database';
-import { get as getAppointment } from '../../data/database/appointment';
 
-const collectionFullName =
-  process.env.CB_BUCKET && process.env.CB_SCOPE && process.env.CB_COLLECTION
-    ? `${process.env.CB_BUCKET}.${process.env.CB_SCOPE}.${process.env.CB_COLLECTION}`
-    : `default`;
+export async function getAppointment(id, context) {
+  try {
+    const apptResponse = await get(`appt:${id}`, context);
+    const appt = apptResponse;
+    const { eventId, transId } = appt;
+    // console.log(`appt1=${JSON.stringify(appt, null, 2)}`);
+    const eventResponse = await get(`event:${eventId}`, context);
+    // console.log(`event=${JSON.stringify(appt, null, 2)}`);
+
+    const transactionResponse = await get(`trans:${transId}`, context);
+    // console.log(`trans=${JSON.stringify(appt, null, 2)}`);
+
+    appt.event = eventResponse;
+    appt.transaction = transactionResponse;
+    // console.log(`appt2=${JSON.stringify(appt, null, 2)}`);
+    return appt;
+  } catch (error) {
+    console.error('[DB get by person error]', error);
+    // return { id, event:{}, transaction:{},createdAt:new Date(), lastUpdate: new Date() }
+    throw error;
+  }
+}
 
 // CREATE INDEX canceledAt_index ON `default`(canceledAt);
 export function cancelledByPerson(options) {
   // console.log(options);
   return new Promise(async (res, rej) => {
-    const { id } = options;
+    const { id, context } = options;
+    const { tenantName } = context;
+    const collectionFullName =
+      tenantName === 'legacy' ? 'default' : 'appointments.rarebeauty.default';
 
     const queryString = `Select count(*) as totalCancelledLess36 from (
       select cancelHours
@@ -23,7 +43,7 @@ export function cancelledByPerson(options) {
 
     try {
       // console.log(queryString);
-      const idObjs = await query(queryString);
+      const idObjs = await query(queryString, context);
       let totalCancelledLess36 = -1;
       if (idObjs.length === 1) {
         totalCancelledLess36 = idObjs[0].totalCancelledLess36;
@@ -41,6 +61,11 @@ export function cancelledByPerson(options) {
 
 export function byPerson(options) {
   // console.log(options);
+  const { context } = options;
+  const { tenantName } = context;
+  const collectionFullName =
+    tenantName === 'legacy' ? 'default' : 'appointments.rarebeauty.default';
+
   return new Promise(async (res, rej) => {
     const { limit, id, now } = options;
     let cancelCount = 0;
@@ -61,7 +86,7 @@ export function byPerson(options) {
         '5'}`;
 
       // console.log(queryString);
-      const idObjs = await query(queryString);
+      const idObjs = await query(queryString, context);
       // console.log(`idObjs=${JSON.stringify(idObjs,null,2)}`);
       // need to get batch here instead
       const promises = [];
@@ -69,7 +94,7 @@ export function byPerson(options) {
       idObjs.forEach(idObj => {
         const { uuid } = idObj;
         // console.log(`uuid=${uuid}`);
-        promises[promises.length] = get(`appt:${uuid}`);
+        promises[promises.length] = get(`appt:${uuid}`, context);
       });
 
       uuidObjs = await Promise.all(promises);
@@ -81,6 +106,7 @@ export function byPerson(options) {
         if (uuidObj !== null)
           appointmentsPromises[appointmentsPromises.length] = getAppointment(
             uuidObj.id,
+            context,
           );
       });
 
@@ -101,8 +127,11 @@ export function byPerson(options) {
 }
 
 export function byPersonCount(options) {
-  const { id } = options;
-  // console.log(options);
+  const { id, context } = options;
+  const { tenantName } = context;
+  const collectionFullName =
+    tenantName === 'legacy' ? 'default' : 'appointments.rarebeauty.default';
+
   return new Promise(async (res, rej) => {
     try {
       const queryString = `select count(*) from ${collectionFullName} event where extendedProperties.shared.resourceName='${id}'`;

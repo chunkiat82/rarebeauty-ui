@@ -20,7 +20,6 @@ const events = {
   },
   // parent, args, contextValue, info
   async resolve(_, args, context) {
-    console.log('events resolve context', context);
     const response = await api({ action: 'listEvents', context, ...args });
     return response;
   },

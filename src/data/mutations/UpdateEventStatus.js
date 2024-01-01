@@ -1,7 +1,7 @@
 import { GraphQLString as StringType } from 'graphql';
 import moment from 'moment';
 import EventStatusType from '../types/EventStatusType';
-import API from '../../api';
+import api from '../../api';
 
 export default {
   type: EventStatusType,
@@ -13,13 +13,15 @@ export default {
       type: StringType,
     },
   },
-  async resolve(_, { id, status }) {
+  async resolve(_, args, context) {
+    const { id, status } = args;
     try {
-      await API({
+      await api({
         action: 'patchEvent',
         status: 'confirmed',
         eventId: id,
         confirmed: moment().format('lll'),
+        context,
       });
       return { id, status };
     } catch (err) {

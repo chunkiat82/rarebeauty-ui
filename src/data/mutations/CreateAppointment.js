@@ -93,9 +93,8 @@ export default {
       type: BooleanType,
     },
   },
-  async resolve(
-    _,
-    {
+  async resolve(_, args, context) {
+    const {
       name,
       mobile,
       resourceName,
@@ -109,8 +108,7 @@ export default {
       deposit,
       force,
       waitingList,
-    },
-  ) {
+    } = args;
     let finalResourceName = resourceName;
     // console.log(`services=${services}`);
     const returnObj = { createdNewContact: false };
@@ -130,6 +128,7 @@ export default {
         first,
         last,
         mobile,
+        context,
       });
       finalResourceName = res.resourceName;
       returnObj.createdNewContact = true;
@@ -137,7 +136,7 @@ export default {
 
     try {
       /* need to abstract this logic */
-      const response = await get(`config:services`);
+      const response = await get(`config:services`, context);
       const listOfServices = response.services;
       const astServices = new AST(listOfServices, 'id');
 
@@ -149,9 +148,13 @@ export default {
       // console.error(services);
       // console.error(astServices.getArray());
 
-      upsert(`config:services`, {
-        services: astServices.getArray(),
-      });
+      upsert(
+        `config:services`,
+        {
+          services: astServices.getArray(),
+        },
+        context,
+      );
       /* end of abstraction */
 
       let reminded = false;
@@ -160,6 +163,7 @@ export default {
       const person = await api({
         action: 'getContact',
         resourceName: finalResourceName,
+        context,
       });
       const userDefined = person && person.userDefined;
 
@@ -226,14 +230,19 @@ export default {
         ), // bad logic
         deposit,
         force,
+        context,
       });
-      await upsert(`appt:${uuid}`, {
-        id: uuid,
-        eventId: event.id,
-        transId: uuid,
-        createdAt: now,
-        lastUpdated: now,
-      });
+      await upsert(
+        `appt:${uuid}`,
+        {
+          id: uuid,
+          eventId: event.id,
+          transId: uuid,
+          createdAt: now,
+          lastUpdated: now,
+        },
+        context,
+      );
       const transaction = createTransactionEntry(
         uuid,
         services,
@@ -246,12 +255,13 @@ export default {
         resourceName,
         deposit,
       );
-      await upsert(`trans:${uuid}`, transaction);
+      await upsert(`trans:${uuid}`, transaction, context);
 
       if (returnObj.createdNewContact) {
         api({
           action: 'updateContact',
           resourceName: finalResourceName,
+          context,
         });
       }
       return {
@@ -272,6 +282,7 @@ export default {
         await api({
           action: 'deleteContact',
           resourceName: finalResourceName,
+          context,
         });
       }
 

@@ -1,16 +1,16 @@
 // import moment from 'moment';
 import { get as getFromDB } from '../database';
 
-export async function get(id) {
+export async function get(id, context) {
   try {
-    const apptResponse = await getFromDB(`appt:${id}`);
+    const apptResponse = await getFromDB(`appt:${id}`, context);
     const appt = apptResponse;
     const { eventId, transId } = appt;
     // console.log(`appt1=${JSON.stringify(appt, null, 2)}`);
-    const eventResponse = await getFromDB(`event:${eventId}`);
+    const eventResponse = await getFromDB(`event:${eventId}`, context);
     // console.log(`event=${JSON.stringify(appt, null, 2)}`);
 
-    const transactionResponse = await getFromDB(`trans:${transId}`);
+    const transactionResponse = await getFromDB(`trans:${transId}`, context);
     // console.log(`trans=${JSON.stringify(appt, null, 2)}`);
 
     appt.event = eventResponse;

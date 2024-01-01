@@ -55,6 +55,7 @@ function createAppointment(calendar, options) {
     informed,
     totalAmount,
     deposit,
+    context,
   } = options;
 
   return new Promise(async (res, rej) => {
@@ -64,6 +65,7 @@ function createAppointment(calendar, options) {
       count: countOfExistingAppointments,
     } = await getAppointmentsCountByPerson({
       id: resourceName,
+      context,
     });
     // const countOfExistingAppointments = 0;
 
