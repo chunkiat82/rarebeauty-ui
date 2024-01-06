@@ -1,8 +1,6 @@
 import { UnauthorizedError as Jwt401Error } from 'express-jwt';
 
-// import { setRuntimeVariable } from './actions/runtime';
-
-export const reactErrorMiddleware = (err, req, res) => {
+export const reactErrorMiddleware = (err, req, res, _) => {
   // console.log('err', err);
   if (err.name === 'UnauthorizedError') {
     // res.clearCookie('token');

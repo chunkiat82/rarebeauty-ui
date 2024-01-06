@@ -196,6 +196,9 @@ if (!module.hot) {
   app.listen(config.port, () => {
     console.info(`The server is running at http://localhost:${config.port}/`);
   });
+} else {
+  // development mode
+  app.hot = module.hot;
 }
 
 export default app;

@@ -32,14 +32,18 @@ export default {
       const transaction = await get(`trans:${id}`, context);
 
       const now = moment();
-      await upsert(`cancel:${id}`, {
-        canceledAt: now,
-        id,
-        by: by || 'customer',
-        event,
-        transaction,
+      // console.log('cancel:${id}', `cancel:${id}`);
+      await upsert(
+        `cancel:${id}`,
+        {
+          canceledAt: now,
+          id,
+          by: by || 'customer',
+          event,
+          transaction,
+        },
         context,
-      });
+      );
 
       await api({
         action: 'cancelEvent',

@@ -135,7 +135,7 @@ export function byPersonCount(options) {
     try {
       const queryString = `select count(*) from ${collectionFullName} event where extendedProperties.shared.resourceName='${id}'`;
       // console.log(queryString);
-      const counts = await query(queryString);
+      const counts = await query(queryString, context);
 
       const { $1: count } = counts[0];
       //   console.log(`count=${count}`);

@@ -2,6 +2,7 @@
 /* eslint-disable consistent-return */
 /* eslint-disable no-await-in-loop */
 /* eslint-disable no-param-reassign */
+// import Hashids from 'hashids';
 import moment from 'moment';
 import api from './../api';
 import { get, remove, upsert } from '../data/database';
@@ -187,7 +188,7 @@ export async function handleCalendarWebhook(headers) {
           console.error(`unhandled status-${item.id}`);
         }
 
-        // temp loggin // mostly cancel use case
+        // temp logging // mostly cancel use case
         const event = item;
         if (!event.start) {
           console.error(
