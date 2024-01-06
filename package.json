@@ -27,6 +27,7 @@
     "express-nobots": "^1.0.4",
     "googleapis": "^110.0.0",
     "graphql": "^0.10.3",
+    "hashids": "^2.3.0",
     "history": "4.6.3",
     "http-error-pages": "^0.5.2",
     "ical-generator": "^1.8.1",

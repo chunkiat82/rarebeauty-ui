@@ -48,7 +48,7 @@ const waitingListCalendarId = configs.get('waitinglist_calendar_id');
 const confirmationURL = configs.get('confirmationURL');
 const reservationURL = configs.get('reservationURL');
 const webHookURL = configs.get('webHookURL');
-const webHookId = configs.get('webHookId');
+// const webHookId = configs.get('webHookId');
 
 const TOUCHUP_SERVICES = ['service:4-2022', 'service:5-2022', 'service:6-2022'];
 const FULL_SERVICES = ['service:1-2022', 'service:2-2022', 'service:3-2022'];
@@ -457,17 +457,23 @@ async function deleteContact(options) {
 }
 
 async function watchCalendar(options) {
+  const context = { tenant: options.tenant };
   const finalOptions = Object.assign({}, options, {
     calendarId,
     address: webHookURL,
-    id: webHookId,
+    selfIdentifier: options.tenant,
   });
+  console.log('finalOptions', finalOptions);
   try {
-    const response = await calendarWatch(finalOptions);
+    const response = await calendarWatch(finalOptions, context);
     // console.log(response);
-    await upsert('config:watch', {
-      resourceId: response.resourceId,
-    });
+    await upsert(
+      'config:watch',
+      {
+        resourceId: response.resourceId,
+      },
+      context,
+    );
     return response;
   } catch (err) {
     console.error(err);
@@ -476,12 +482,15 @@ async function watchCalendar(options) {
 }
 
 async function stopWatchCalendar(options) {
-  const response = await get('config:watch');
+  const context = { tenant: options.tenant };
+  const response = await get('config:watch', context);
   // console.log(response);
   const finalOptions = Object.assign({}, options, {
     calendarId,
     resourceId: response.resourceId,
+    selfIdentifier: options.tenant,
   });
+  console.log('finalOptions', finalOptions);
   try {
     const watchStopResponse = await calendarWatchStop(finalOptions);
     // console.log('stopped');
