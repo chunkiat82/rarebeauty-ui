@@ -389,33 +389,33 @@ async function listContacts(options) {
   }
 }
 
-async function syncContacts() {
-  try {
-    const contacts = await contactLists();
+// async function syncContacts(options) {
+//   try {
+//     const contacts = await contactLists();
 
-    // remember to delete all records first
+//     // remember to delete all records first
 
-    contacts.forEach(rec => {
-      const contact = rec;
-      contact.type = 'contact';
-      delete contact.id;
-      upsert(`contact:${contact.resourceName}`, contact);
-      // console.log(`contact:${contact.resourceName}`);
-    });
+//     contacts.forEach(rec => {
+//       const contact = rec;
+//       contact.type = 'contact';
+//       delete contact.id;
+//       upsert(`contact:${contact.resourceName}`, contact, options.context);
+//       // console.log(`contact:${contact.resourceName}`);
+//     });
 
-    return contacts;
-  } catch (err) {
-    console.error(err);
-    throw err;
-  }
-}
+//     return contacts;
+//   } catch (err) {
+//     console.error(err);
+//     throw err;
+//   }
+// }
 
 async function createContact(options) {
   try {
     const contact = await contactCreate(options);
     // console.log(contact);
 
-    upsert(`contact:${contact.resourceName}`, contact);
+    // upsert(`contact:${contact.resourceName}`, contact, context);
     return contact;
   } catch (err) {
     console.error(err);
@@ -767,7 +767,7 @@ const functions = {
   remindCustomersTouchUp,
   createShortURL,
   getAppointmentsByPerson,
-  syncContacts,
+  // syncContacts,
   getCountCancelledAppointmentsByPerson,
   deleteContact,
   createWaitingEvent,

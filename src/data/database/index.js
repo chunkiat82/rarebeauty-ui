@@ -3,11 +3,7 @@ const couchbase = require('couchbase');
 const config = require('../../config.js');
 const tenantsConfig = require('../../api/keys/tenants.json');
 
-// const defaultBucketName = process.env.CB_BUCKET || 'default';
-// const defaultScopeName = process.env.CB_SCOPE || '_default';
-// const defaultCollectionName = process.env.CB_COLLECTION || '_default';
-// const defaultUsername = process.env.CB_USERNAME || '_default';
-// const defaultPassword = process.env.CB_PASSWORD || '_default';
+// this could be local, sohon or sohoa
 const clusterConnStr = config.couchbase.url;
 
 const clusterCache = {};
@@ -17,7 +13,6 @@ function findClusterFromCache(tenant) {
 }
 function findConfig(tenantName) {
   const tenant = tenantsConfig[tenantName];
-  // console.log('tenantName', tenantName);
 
   const {
     bucketName,
@@ -51,9 +46,11 @@ function findConfig(tenantName) {
 async function connect(context) {
   // console.error('all details', JSON.stringify(config.couchbase));
 
-  const { tenant } = context;
-  const cacheCluster = findClusterFromCache(tenant);
-  const databaseConfig = findConfig(tenant);
+  const { tenant: tenantName } = context;
+  const cacheCluster = findClusterFromCache(tenantName);
+  const databaseConfig = findConfig(tenantName);
+  // console.error('databaseConfig', JSON.stringify(databaseConfig));
+
   const {
     scopeName,
     bucketName,
@@ -68,7 +65,7 @@ async function connect(context) {
       username,
       password,
     });
-    clusterCache[tenant] = cluster;
+    clusterCache[tenantName] = cluster;
   } else {
     cluster = cacheCluster;
   }

@@ -1,7 +1,7 @@
 const { generateCalendarObj } = require('../utilities/jwt');
 
 module.exports = function create(options) {
-  const { calendarId, address } = options;
+  const { calendarId, address, selfIdentifier } = options;
 
   return new Promise(async (res, rej) => {
     const calendar = await generateCalendarObj();
@@ -9,7 +9,7 @@ module.exports = function create(options) {
       {
         calendarId,
         resource: {
-          id: 'anythingintheworld',
+          id: selfIdentifier || 'anythingintheworld',
           token: 'anythingbutme',
           type: 'web_hook',
           address,

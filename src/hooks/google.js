@@ -5,6 +5,7 @@
 import moment from 'moment';
 import api from './../api';
 import { get, remove, upsert } from '../data/database';
+// import { tenants } from '../api/keys/tenants.json';
 
 const { getSyncToken, setSyncToken } = require('../api/utilities/token');
 
@@ -27,25 +28,25 @@ function sleep(ms) {
   return new Promise(resolve => setTimeout(resolve, ms));
 }
 
-async function handleCancel(item) {
+async function handleCancel(item, context) {
   try {
     const eventId = item.id;
-    const response = await get(`event:${eventId}`);
+    const response = await get(`event:${eventId}`, context);
     const event = response;
     // console.log(event);
     const apptId = event.extendedProperties.shared.uuid;
     try {
-      await remove(`event:${eventId}`);
+      await remove(`event:${eventId}`, context);
     } catch (e) {
       console.error(`unable to remove event= ${eventId}`);
     }
     try {
-      await remove(`trans:${apptId}`);
+      await remove(`trans:${apptId}`, context);
     } catch (e) {
       console.error(`unable to remove transaction= ${apptId}`);
     }
     try {
-      await remove(`appt:${apptId}`);
+      await remove(`appt:${apptId}`, context);
     } catch (e) {
       console.error(`unable to remove appointment= ${apptId}`);
     }
@@ -54,8 +55,8 @@ async function handleCancel(item) {
   }
 }
 
-async function handleUpsert(item) {
-  await upsert(`event:${item.id}`, item);
+async function handleUpsert(item, context) {
+  await upsert(`event:${item.id}`, item, context);
 }
 
 async function updateTransactionOnTime(item) {
@@ -65,14 +66,14 @@ async function updateTransactionOnTime(item) {
 
   try {
     console.error(`uuid=${uuid}`);
-    transResponse = await get(`trans:${uuid}`);
+    transResponse = await get(`trans:${uuid}`, context);
     transaction = transResponse;
     transaction.apptDate = moment(item.start.dateTime, 'YYYY-MM-DDThh:mm:ssZ');
   } catch (err) {
     console.error('retrying to get transaction', err);
     await sleep(2000);
     try {
-      transResponse = await get(`trans:${uuid}`);
+      transResponse = await get(`trans:${uuid}`, context);
       transaction = transResponse;
       transaction.apptDate = moment(
         item.start.dateTime,
@@ -87,7 +88,7 @@ async function updateTransactionOnTime(item) {
   // If transaction is not null or undefined
   if (transaction) {
     try {
-      await upsert(`trans:${uuid}`, transaction);
+      await upsert(`trans:${uuid}`, transaction, context);
     } catch (upsertError) {
       console.error('upsert transaction', upsertError);
       throw upsertError;
@@ -97,21 +98,12 @@ async function updateTransactionOnTime(item) {
 
 export async function handleCalendarWebhook(headers) {
   console.error(`headers=${JSON.stringify(headers, null, 2)}`);
-  // console.log('-------------------------------------------------------');
-  // headers not used
-
+  // setting tenantName
+  const context = { tenant: headers['x-goog-resource-id'] || 'notenantfound' };
   try {
-    const configWatch = await get('config:watch');
     console.error(
       '-------------------------------------------------------0 START',
     );
-    // console.log(headers["x-goog-resource-id"]);
-    // console.log(configWatch.resourceId);
-    // console.log('-------------------------------------------------------');
-    if (headers['x-goog-resource-id'] !== configWatch.resourceId) {
-      console.error('need to check this ASAP');
-      return;
-    }
   } catch (configErr) {
     console.error('configErr', configErr);
     throw configErr;
@@ -126,7 +118,7 @@ export async function handleCalendarWebhook(headers) {
     try {
       // first call on the first run
       if (!nextPageToken || !nextSyncToken) {
-        syncToken = await getSyncToken(headers);
+        syncToken = await getSyncToken(calendarWatchResponseId, context);
       }
 
       response = await api({
@@ -134,6 +126,7 @@ export async function handleCalendarWebhook(headers) {
         syncToken,
         nextPageToken,
         nextSyncToken,
+        context,
       });
       // need to fix next pagetoken error
       const { items: events } = response;
@@ -180,13 +173,13 @@ export async function handleCalendarWebhook(headers) {
         }
 
         if (item.status === 'cancelled') {
-          handleCancel(item);
+          handleCancel(item, context);
         } else if (item.status === 'confirmed' || item.status === 'tentative') {
           // some massaging here
           try {
             populateStats(item);
-            await handleUpsert(item);
-            await updateTransactionOnTime(item);
+            await handleUpsert(item, context);
+            await updateTransactionOnTime(item, context);
           } catch (handleError) {
             console.error('Skipping with Error!!!!!!!!!! --- ', item);
           }
@@ -209,6 +202,7 @@ export async function handleCalendarWebhook(headers) {
         await setSyncToken({
           syncToken: nextSyncToken,
           lastUpdated: moment(),
+          context,
         });
         console.error('next Sync Token', nextSyncToken);
       }

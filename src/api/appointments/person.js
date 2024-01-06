@@ -29,7 +29,7 @@ export function cancelledByPerson(options) {
   // console.log(options);
   return new Promise(async (res, rej) => {
     const { id, context } = options;
-    const { tenantName } = context;
+    const { tenant: tenantName } = context;
     const collectionFullName =
       tenantName === 'legacy' ? 'default' : 'appointments.rarebeauty.default';
 
@@ -60,9 +60,8 @@ export function cancelledByPerson(options) {
 }
 
 export function byPerson(options) {
-  // console.log(options);
   const { context } = options;
-  const { tenantName } = context;
+  const { tenant: tenantName } = context;
   const collectionFullName =
     tenantName === 'legacy' ? 'default' : 'appointments.rarebeauty.default';
 
@@ -128,7 +127,7 @@ export function byPerson(options) {
 
 export function byPersonCount(options) {
   const { id, context } = options;
-  const { tenantName } = context;
+  const { tenant: tenantName } = context;
   const collectionFullName =
     tenantName === 'legacy' ? 'default' : 'appointments.rarebeauty.default';
 

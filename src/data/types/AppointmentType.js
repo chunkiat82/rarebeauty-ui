@@ -17,9 +17,9 @@ const AppointmentType = new ObjectType({
     },
     event: {
       type: EventType,
-      async resolve(obj /* , args */) {
+      async resolve(obj, _, context) {
         if (obj.eventId) {
-          const res = await get(`event:${obj.eventId}`);
+          const res = await get(`event:${obj.eventId}`, context);
           return res;
         }
         return obj.event;
@@ -27,9 +27,9 @@ const AppointmentType = new ObjectType({
     },
     transaction: {
       type: TransactionType,
-      async resolve(obj /* , args */) {
+      async resolve(obj, _, context) {
         if (obj.transId) {
-          const res = await get(`trans:${obj.transId}`);
+          const res = await get(`trans:${obj.transId}`, context);
 
           // fixing 2017 issues where there are no default deposit values
           if (!res.deposit) res.deposit = 0.0;

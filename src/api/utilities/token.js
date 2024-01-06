@@ -4,10 +4,12 @@ import { get, upsert } from '../../data/database';
 /**
  * return string nextSyncToken
  */
-export async function getSyncToken() {
+export async function getSyncToken(calendarWatchResponseId, context) {
   let syncToken = null;
   try {
-    const obj = await get('syncToken:calendar');
+    const obj = await get('syncToken:calendar', context);
+    console.log('calendarWatchResponseId', calendarWatchResponseId);
+    // future const obj = await get(`syncToken:calendar:${calendarWatchResponseId}`, context);
     syncToken = (obj && obj.syncToken) || '';
     console.error(`syncToken:${syncToken}`);
   } catch (err) {
@@ -18,9 +20,15 @@ export async function getSyncToken() {
 }
 
 export async function setSyncToken(options) {
-  const { syncToken } = options;
+  const { syncToken, context, calendarWatchResponseId } = options;
   try {
-    await upsert('syncToken:calendar', { syncToken, lastUpdated: moment() });
+    console.log('calendarWatchResponseId', calendarWatchResponseId);
+    await upsert(
+      'syncToken:calendar',
+      { syncToken, lastUpdated: moment() },
+      context,
+    );
+    // future await upsert(`syncToken:calendar:${calendarWatchResponseId}`, { syncToken, lastUpdated: moment() }, context);
   } catch (err) {
     console.error('setSyncToken', err);
     throw err;

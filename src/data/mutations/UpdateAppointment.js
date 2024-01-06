@@ -118,9 +118,13 @@ export default {
 
       // console.log(`services=${JSON.stringify(services, null ,2)}`);
 
-      upsert(`config:services`, {
-        services: astServices.getArray(),
-      });
+      upsert(
+        `config:services`,
+        {
+          services: astServices.getArray(),
+        },
+        context,
+      );
 
       const event = await api({
         action: 'patchEvent',
