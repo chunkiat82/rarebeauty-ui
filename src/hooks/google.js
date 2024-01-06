@@ -119,7 +119,7 @@ export async function handleCalendarWebhook(headers) {
     try {
       // first call on the first run
       if (!nextPageToken || !nextSyncToken) {
-        syncToken = await getSyncToken(calendarWatchResponseId, context);
+        syncToken = await getSyncToken(context);
       }
 
       response = await api({
