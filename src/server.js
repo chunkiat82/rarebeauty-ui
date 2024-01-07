@@ -37,6 +37,7 @@ function checkingUser(req, payload, done) {
 
 // this function has to be called after expressJwt check
 function checkPublicPrivateCookie(req, res, next) {
+  console.log('checkPublicPrivateCookie req.token', req.token);
   const token =
     req.token ||
     jwt.sign(
@@ -68,16 +69,19 @@ app.use(
     credentialsRequired: true,
     getToken: function fromHeaderOrQuerystring(req) {
       if (req.query && req.query.token) {
+        // console.log('i was here with query');
         req.token = req.query.token;
         return req.token;
       } else if (req.cookies.token) {
+        // console.log('i was here with cookies');
         req.token = req.cookies.token;
         return req.token;
       }
+      // console.log('i was here with nothing')
       return req.token;
     },
   }).unless({
-    path: ['/events/calendar', /\/general*/, /\/assets*/, /\/page*/, /\/p+/],
+    path: ['/events/calendar', /\/assets*/, /\/page*/, /\/p+/],
   }),
 );
 
