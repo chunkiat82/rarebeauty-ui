@@ -21,6 +21,7 @@ const ContextType = {
   fetch: PropTypes.func.isRequired,
   userAgent: PropTypes.string,
   ...ReduxProvider.childContextTypes,
+  user: PropTypes.any,
 };
 
 /**

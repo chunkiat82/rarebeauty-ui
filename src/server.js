@@ -5,7 +5,7 @@ import bodyParser from 'body-parser';
 import expressJwt from 'express-jwt';
 import jwt from 'jsonwebtoken';
 import PrettyError from 'pretty-error';
-import { reactMiddleware, reactErrorMiddleware } from './reactMiddleware';
+import { reactMiddleware } from './reactMiddleware';
 import config from './config';
 
 const __DEV__ = !(String(process.env.PRODUCTION) === 'true');
@@ -37,7 +37,7 @@ function checkingUser(req, payload, done) {
 
 // this function has to be called after expressJwt check
 function checkPublicPrivateCookie(req, res, next) {
-  console.log('checkPublicPrivateCookie req.token', req.token);
+  // console.log('checkPublicPrivateCookie req.token', req.token);
   const token =
     req.token ||
     jwt.sign(
@@ -59,7 +59,7 @@ function checkPublicPrivateCookie(req, res, next) {
     domain: __DEV__ ? 'localhost' : '.soho.sg',
     path: '/',
   });
-
+  // if (next) return next();
   return next();
 }
 
@@ -67,7 +67,7 @@ app.use(
   expressJwt({
     secret: checkingUser,
     credentialsRequired: true,
-    getToken: function fromHeaderOrQuerystring(req) {
+    getToken: function fromHeaderOrQuerystring(req, _res) {
       if (req.query && req.query.token) {
         // console.log('i was here with query');
         req.token = req.query.token;
@@ -77,31 +77,39 @@ app.use(
         req.token = req.cookies.token;
         return req.token;
       }
-      // console.log('i was here with nothing')
+      // console.log('i was here with nothing', req.originalUrl);
+      req.token = jwt.sign(
+        {
+          user: 'unknown',
+          page: req.originalUrl,
+          role: 'user',
+          tenant: 'legacy',
+        },
+        config.auth.jwt.secret,
+        { expiresIn: '6h' },
+      );
       return req.token;
     },
   }).unless({
-    path: ['/events/calendar', /\/assets*/, /\/page*/, /\/p+/],
+    path: ['/events/calendar', /\/assets*/],
   }),
 );
-
-// // after checking admin user
 
 app.use('*', checkPublicPrivateCookie);
 
 // for confirmation page or reservation page
-app.use('/general/*/:eventId', async (req, res, next) => {
+app.use('/general/*/:eventId', async (req, _res, next) => {
   const { eventId } = req.params;
   if (eventId === 'images') return;
   req.data = {
     workAddress: config.app.workAddress,
     eventId,
   };
-  reactMiddleware(req, res, next);
+  next();
 });
 
 // Error handler for express-jwt
-app.use(reactErrorMiddleware);
+// app.use(reactErrorMiddleware);
 
 app.use('*', reactMiddleware);
 

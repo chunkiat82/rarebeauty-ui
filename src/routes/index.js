@@ -50,7 +50,7 @@ const routes = {
       load: () => import(/* webpackChunkName: 'page' */ './page'),
     },
     {
-      path: '/',
+      path: '/home',
       load: () => import(/* webpackChunkName: 'home' */ './home'),
     },
     {
@@ -117,10 +117,19 @@ const routes = {
       load: () => import(/* webpackChunkName: 'login' */ './login'),
     },
 
-    // Wildcard routes, e.g. { path: '*', ... } (must go last)
     {
       path: '*',
-      load: () => import(/* webpackChunkName: 'not-found' */ './not-found'),
+      action: context => {
+        // console.log('context', context);
+        const userStore = context.store.getState('user');
+        if (
+          userStore &&
+          (userStore.user.user === 'admin' || userStore.user.user === 'legacy')
+        ) {
+          return { redirect: '/home' }; // <== request a redirect
+        }
+        return { redirect: '/page' }; // <== request a redirect
+      },
     },
   ],
 

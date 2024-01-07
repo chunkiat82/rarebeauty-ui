@@ -55,6 +55,7 @@ const context = {
   // store,
   store: configureStore(window.App.state, { history }),
   storeSubscription: null,
+  user: null,
 };
 
 // Switch off the native scroll restoration behavior and handle it manually

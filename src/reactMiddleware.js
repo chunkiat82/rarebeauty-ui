@@ -21,10 +21,7 @@ export const reactMiddleware = async (req, res, next) => {
     const { data: reqData } = req;
 
     let initialState = req.initialState || {
-      user:
-        req.payload && req.payload.foo && req.payload.foo.length > 0
-          ? { type: 'admin' }
-          : req.user || null,
+      user: req.user,
       loading: false,
     };
     initialState = { ...reqData, ...initialState };
