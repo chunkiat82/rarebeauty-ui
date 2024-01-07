@@ -98,6 +98,7 @@ app.use(
       } else if (req.headers && req.headers.authorization) {
         return req.headers.authorization; // base64Credentials;
       }
+
       return null;
     },
   }).unless({
@@ -137,9 +138,9 @@ app.use(
       req.auth.role === 'legacy' ||
       req.auth.page.includes('general') ||
       req.auth.page.includes('public')
-    )
+    ) {
       next();
-    else {
+    } else {
       res.status(401).send('Not Allowed Here');
       next();
     }
