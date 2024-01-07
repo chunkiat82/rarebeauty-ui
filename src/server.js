@@ -49,6 +49,15 @@ app.use((req, res, next) => {
     'https://rarebeauty.soho.sg',
   ];
   const origin = req.headers.origin;
+  if (
+    allowedOrigins.includes(
+      origin ||
+        (origin.indexOf('https://') === 0 && origin.indexOf('.soho.sg') > 0),
+    )
+  ) {
+    res.setHeader('Access-Control-Allow-Origin', origin);
+    res.setHeader('Access-Control-Allow-Credentials', true);
+  }
   if (allowedOrigins.includes(origin)) {
     res.setHeader('Access-Control-Allow-Origin', origin);
     res.setHeader('Access-Control-Allow-Credentials', true);
