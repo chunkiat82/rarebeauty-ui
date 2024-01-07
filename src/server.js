@@ -14,7 +14,6 @@ import cookieParser from 'cookie-parser';
 import bodyParser from 'body-parser';
 import expressJwt from 'express-jwt';
 import expressGraphQL from 'express-graphql';
-import jwt from 'jsonwebtoken';
 import PrettyError from 'pretty-error';
 import _httpErrorPages from 'http-error-pages';
 
@@ -42,24 +41,14 @@ app.use(bodyParser.json());
 
 /** very important CORS lines */
 app.use((req, res, next) => {
-  const allowedOrigins = [
-    'http://localhost:3000',
-    'https://appointments.soho.sg',
-    'https://rb.soho.sg',
-    'https://rarebeauty.soho.sg',
-  ];
+  const allowedOrigins = ['http://localhost:3000'];
   const origin = req.headers.origin;
-  console.log('origin', origin);
   if (
-    allowedOrigins.includes(
-      origin ||
-        (origin.indexOf('https://') === 0 && origin.indexOf('.soho.sg') > 0),
-    )
+    allowedOrigins.includes(origin) ||
+    (origin.indexOf('https://') === 0 && origin.indexOf('.soho.sg') > 0)
   ) {
     res.setHeader('Access-Control-Allow-Origin', origin);
     res.setHeader('Access-Control-Allow-Credentials', true);
-  } else {
-    console.log('i was here but failed');
   }
   res.header(
     'Access-Control-Allow-Headers',
