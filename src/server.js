@@ -83,8 +83,7 @@ app.use(
 
 // // after checking admin user
 
-app.use('/g*', checkPublicPrivateCookie);
-app.use('/p*', checkPublicPrivateCookie);
+app.use('*', checkPublicPrivateCookie);
 
 // for confirmation page or reservation page
 app.use('/general/*/:eventId', async (req, res, next) => {
