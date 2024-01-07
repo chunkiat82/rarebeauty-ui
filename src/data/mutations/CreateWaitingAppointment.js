@@ -98,7 +98,6 @@ export default {
         // console.log(`serviceId=${serviceId}`);
         astServices.getByKey(serviceId),
       );
-      // console.error('i was here');
       // console.error(services);
       // console.error(astServices.getArray());
 

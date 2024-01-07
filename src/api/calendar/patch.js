@@ -3,7 +3,7 @@ import { byPersonCount as getAppointmentsCountByPerson } from '../appointments/p
 
 const { generateCalendarObj } = require('../utilities/jwt');
 
-const APPOINTMENT_URL = 'https://appointments.soho.sg/appointment';
+const APPOINTMENT_URL = 'https://rarebeauty.soho.sg/appointment';
 const WHATSAPPURL = 'https://wa.me';
 
 async function patchHandler(options, event) {

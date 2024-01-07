@@ -47,6 +47,7 @@ app.use((req, res, next) => {
     'https://appointments.soho.sg',
     'https://rb.soho.sg',
     'https://rarebeauty.soho.sg',
+    'https://rarebeautysg.soho.sg',
   ];
   const origin = req.headers.origin;
   if (allowedOrigins.includes(origin)) {

@@ -100,7 +100,7 @@ async function updateTransactionOnTime(item) {
 export async function handleCalendarWebhook(headers) {
   console.error(`headers=${JSON.stringify(headers, null, 2)}`);
   // setting tenantName
-  const context = { tenant: headers['x-goog-resource-id'] || 'notenantfound' };
+  const context = { tenant: headers['x-goog-channel-id'] || 'notenantfound' };
   try {
     console.error(
       '-------------------------------------------------------0 START',
