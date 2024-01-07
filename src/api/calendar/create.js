@@ -3,7 +3,7 @@ import uuidv1 from 'uuid/v1';
 import { generateCalendarObj } from '../utilities/jwt';
 import { byPersonCount as getAppointmentsCountByPerson } from '../appointments/person';
 
-const APPOINTMENT_URL = 'https://appointments.soho.sg/appointment';
+const APPOINTMENT_URL = 'https://rarebeauty.soho.sg/appointment';
 const TEST_EMAIL = `test@soho.sg`;
 const WHATSAPPURL = 'https://wa.me';
 
