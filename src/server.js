@@ -41,12 +41,15 @@ app.use(bodyParser.json());
 
 /** very important CORS lines */
 app.use((req, res, next) => {
-  const allowedOrigins = ['http://localhost:3000'];
+  const allowedOrigins = [
+    'http://localhost:3000',
+    'https://appointments.soho.sg',
+    'https://rb.soho.sg',
+    'https://rarebeauty.soho.sg',
+    'https://rarebeautysg.soho.sg',
+  ];
   const origin = req.headers.origin;
-  if (
-    allowedOrigins.includes(origin) ||
-    (origin.indexOf('https://') === 0 && origin.indexOf('.soho.sg') > 0)
-  ) {
+  if (allowedOrigins.includes(origin)) {
     res.setHeader('Access-Control-Allow-Origin', origin);
     res.setHeader('Access-Control-Allow-Credentials', true);
   }
