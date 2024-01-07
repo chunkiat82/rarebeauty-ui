@@ -45,6 +45,7 @@ async function action({ fetch, params, store }) {
   if (customerId) {
     contact = await getContact(fetch)(resourceName);
   }
+
   hide(store)();
 
   if (!contacts && !services)

@@ -5,8 +5,6 @@ import bodyParser from 'body-parser';
 import expressJwt from 'express-jwt';
 import jwt from 'jsonwebtoken';
 import PrettyError from 'pretty-error';
-import _httpErrorPages from 'http-error-pages';
-// import ical from 'ical-generator';
 import { reactMiddleware, reactErrorMiddleware } from './reactMiddleware';
 import config from './config';
 
@@ -37,122 +35,32 @@ function checkingUser(req, payload, done) {
   done(null, secret);
 }
 
-/* bot denial */
-// app.use((req, res, next) => {
-//   if (req.headers.from === 'googlebot(at)googlebot.com') {
-//     return res.status(401).json({
-//       message: 'Unathorized Access',
-//     });
-//   }
-//   return next();
-// });
+function checkPublicPrivateCookie(req, res, next) {
+  const token =
+    req.cookies.token ||
+    jwt.sign(
+      {
+        user: 'unknown',
+        page: req.originalUrl,
+        role: 'user',
+        tenant: 'legacy',
+      },
+      config.auth.jwt.secret,
+      { expiresIn: '6h' },
+    );
+  req.token = token;
 
-app.use((req, res, next) => {
-  if (req.query.token) {
-    res.cookie('token', req.query.token, {
-      maxAge: 1000 * expiresIn,
-      sameSite: 'lax',
-      httpOnly: true,
-      secure: true,
-      domain: __DEV__ ? 'localhost' : '.soho.sg',
-      path: '/',
-    });
-    return next();
-  }
+  res.cookie('token', token, {
+    maxAge: 1000 * expiresIn,
+    sameSite: 'lax',
+    httpOnly: true,
+    secure: true,
+    domain: __DEV__ ? 'localhost' : '.soho.sg',
+    path: '/',
+  });
+
   return next();
-});
-
-app.use('/general/confirmation/:eventId', async (req, res, next) => {
-  const { eventId } = req.params;
-  if (eventId === 'images') return;
-
-  const token = jwt.sign(
-    {
-      user: 'unknown',
-      page: '/general/confirmation',
-      role: 'user',
-      tenant: 'itdepends',
-    },
-    config.auth.jwt.secret,
-    { expiresIn: '6h' },
-  );
-  req.token = token;
-
-  res.cookie('token', token, {
-    maxAge: 1000 * expiresIn,
-    sameSite: 'none',
-    httpOnly: true,
-    secure: true,
-    domain: __DEV__ ? 'localhost' : '.soho.sg',
-    path: '/',
-  });
-
-  req.data = {
-    workAddress: config.app.workAddress,
-    eventId,
-  };
-
-  reactMiddleware(req, res, next);
-});
-
-app.use('/general/reservation/:eventId', async (req, res, next) => {
-  const { eventId } = req.params;
-
-  if (eventId === 'images') return;
-
-  const token = jwt.sign(
-    {
-      user: 'unknown',
-      page: '/general/reservation',
-      role: 'user',
-      tenant: 'itdepends',
-    },
-    config.auth.jwt.secret,
-    { expiresIn: '6h' },
-  );
-  req.token = token;
-
-  res.cookie('token', token, {
-    maxAge: 1000 * expiresIn,
-    sameSite: 'none',
-    httpOnly: true,
-    secure: true,
-    domain: __DEV__ ? 'localhost' : '.soho.sg',
-    path: '/',
-  });
-
-  req.data = {
-    workAddress: config.app.workAddress,
-    eventId,
-  };
-
-  reactMiddleware(req, res, next);
-});
-
-app.use('/p*', async (req, res, next) => {
-  const token = jwt.sign(
-    {
-      user: 'unknown',
-      page: '/public',
-      role: 'user',
-      tenant: 'itdepends',
-    },
-    config.auth.jwt.secret,
-    { expiresIn: '6h' },
-  );
-  req.token = token;
-
-  res.cookie('token', token, {
-    maxAge: 1000 * expiresIn,
-    sameSite: 'none',
-    httpOnly: true,
-    secure: true,
-    domain: __DEV__ ? 'localhost' : '.soho.sg',
-    path: '/',
-  });
-
-  reactMiddleware(req, res, next);
-});
+}
 
 app.use(
   expressJwt({
@@ -166,13 +74,28 @@ app.use(
         req.token = req.cookies.token;
         return req.token;
       }
-      console.log('req.token', req.token);
       return req.token;
     },
   }).unless({
     path: ['/events/calendar', /\/general*/, /\/assets*/, /\/page*/, /\/p+/],
   }),
 );
+
+// // after checking admin user
+
+app.use('/g*', checkPublicPrivateCookie);
+app.use('/p*', checkPublicPrivateCookie);
+
+// for confirmation page or reservation page
+app.use('/general/*/:eventId', async (req, res, next) => {
+  const { eventId } = req.params;
+  if (eventId === 'images') return;
+  req.data = {
+    workAddress: config.app.workAddress,
+    eventId,
+  };
+  reactMiddleware(req, res, next);
+});
 
 // Error handler for express-jwt
 app.use(reactErrorMiddleware);

@@ -87,7 +87,7 @@ class Html extends React.Component {
                   `,
             }}
           />
-          <script
+          {/* <script
             dangerouslySetInnerHTML={{
               __html: `
                   if ('serviceWorker' in navigator) {
@@ -101,7 +101,7 @@ class Html extends React.Component {
                   }
                   `,
             }}
-          />
+          /> */}
         </body>
       </html>
     );

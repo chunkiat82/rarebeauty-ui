@@ -5,7 +5,7 @@ import ReactDOM from 'react-dom/server';
 import assets from './assets.json'; // eslint-disable-line import/no-unresolved
 import configureStore from './store/configureStore';
 import createFetch from './createFetch';
-import { setRuntimeVariable } from './actions/runtime';
+// import { setRuntimeVariable } from './actions/runtime';
 import router from './router';
 import config from './config';
 
@@ -104,8 +104,8 @@ export const reactErrorMiddleware = (err, req, res, next) => {
   //   // `clearCookie`, otherwise user can't use web-app until cookie expires
   //   return res.clearCookie('token');
   // }
-  console.log('User-agent', req.get('user-agent'));
-  console.log('err', err);
+  console.error('User-agent', req.get('user-agent'));
+  console.error('err', err);
   return next(err);
 };
 
