@@ -35,9 +35,10 @@ function checkingUser(req, payload, done) {
   done(null, secret);
 }
 
+// this function has to be called after expressJwt check
 function checkPublicPrivateCookie(req, res, next) {
   const token =
-    req.cookies.token ||
+    req.token ||
     jwt.sign(
       {
         user: 'unknown',
@@ -48,7 +49,6 @@ function checkPublicPrivateCookie(req, res, next) {
       config.auth.jwt.secret,
       { expiresIn: '6h' },
     );
-  req.token = token;
 
   res.cookie('token', token, {
     maxAge: 1000 * expiresIn,
