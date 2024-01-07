@@ -56,9 +56,10 @@ app.use((req, res, next) => {
         (origin.indexOf('https://') === 0 && origin.indexOf('.soho.sg') > 0),
     )
   ) {
-    console.log('i was here');
     res.setHeader('Access-Control-Allow-Origin', origin);
     res.setHeader('Access-Control-Allow-Credentials', true);
+  } else {
+    console.log('i was here but failed');
   }
   res.header(
     'Access-Control-Allow-Headers',
@@ -79,15 +80,6 @@ app.use((req, res, next) => {
     });
   }
   return next();
-});
-
-// to be deleted
-app.use('/getToken', (req, res) => {
-  const { user, role, tenant } = config.clients[req.query.client || 'client1'];
-  const token = jwt.sign({ user, role, tenant }, config.auth.jwt.secret, {
-    expiresIn: '1h',
-  });
-  res.send(`?token=${token}`);
 });
 
 app.use(
