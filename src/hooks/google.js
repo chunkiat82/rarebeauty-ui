@@ -60,7 +60,7 @@ async function handleUpsert(item, context) {
   await upsert(`event:${item.id}`, item, context);
 }
 
-async function updateTransactionOnTime(item) {
+async function updateTransactionOnTime(item, context) {
   const uuid = item.extendedProperties.shared.uuid;
   let transResponse = null;
   let transaction = null;
