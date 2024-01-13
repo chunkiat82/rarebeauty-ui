@@ -124,7 +124,7 @@ const routes = {
         const userStore = context.store.getState('user');
         if (
           userStore &&
-          (userStore.user.user === 'admin' || userStore.user.user === 'legacy')
+          (userStore.user.role === 'admin' || userStore.user.user === 'legacy')
         ) {
           return { redirect: '/home' }; // <== request a redirect
         }
