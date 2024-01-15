@@ -9,7 +9,13 @@ import { reactMiddleware } from './reactMiddleware';
 import config from './config';
 
 const __DEV__ = !(String(process.env.PRODUCTION) === 'true');
-const expiresIn = 60 * 60 * 24 * 180; // 180 days
+const expiresIn = 60 * 60 * 1; // hr
+const unknownUserJWT = page => ({
+  user: 'unknown',
+  page,
+  role: 'user',
+  tenant: 'rarebeauty',
+});
 const app = express();
 
 // Tell any CSS tooling (such as Material UI) to use all vendor prefixes if the
@@ -40,16 +46,9 @@ function checkPublicPrivateCookie(req, res, next) {
   // console.log('checkPublicPrivateCookie req.token', req.token);
   const token =
     req.token ||
-    jwt.sign(
-      {
-        user: 'unknown',
-        page: req.originalUrl,
-        role: 'user',
-        tenant: 'rarebeauty',
-      },
-      config.auth.jwt.secret,
-      { expiresIn: '6h' },
-    );
+    jwt.sign(unknownUserJWT(req.originalUrl), config.auth.jwt.secret, {
+      expiresIn: '1h',
+    });
 
   res.cookie('token', token, {
     maxAge: 1000 * expiresIn,
@@ -67,7 +66,7 @@ app.use(
   expressJwt({
     secret: checkingUser,
     credentialsRequired: true,
-    getToken: function fromHeaderOrQuerystring(req, _res) {
+    getToken: function fromHeaderOrQuerystring(req) {
       if (req.query && req.query.token) {
         // console.log('i was here with query');
         req.token = req.query.token;
@@ -79,14 +78,11 @@ app.use(
       }
       // console.log('i was here with nothing', req.originalUrl);
       req.token = jwt.sign(
-        {
-          user: 'unknown',
-          page: req.originalUrl,
-          role: 'user',
-          tenant: 'rarebeauty',
-        },
+        unknownUserJWT(req.originalUrl),
         config.auth.jwt.secret,
-        { expiresIn: '6h' },
+        {
+          expiresIn: '1h',
+        },
       );
       return req.token;
     },
