@@ -18,7 +18,7 @@ async function action({ store, fetch }) {
 
   const event = await getEvent(fetch)(eventId);
 
-  const startDateTime = moment(event.start.dateTime);
+  const startDateTime = moment(event.start);
   const address = workAddress;
 
   const src =
