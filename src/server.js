@@ -55,7 +55,7 @@ app.use((req, res, next) => {
   }
   res.header(
     'Access-Control-Allow-Headers',
-    'Origin, X-Requested-With, Content-Type, Accept, Authorization, *',
+    'Origin, X-Requested-With, Content-Type, Accept, Authorization, Originating-Url, *',
   );
   if (req.method === 'OPTIONS') {
     res.header('Access-Control-Allow-Methods', 'PUT, POST, PATCH, DELETE, GET');
@@ -123,12 +123,15 @@ app.use(
   (req, res, next) => {
     // type to be cleaned up
     // this mapping is found in rarebeauty-ui-sa server.js
+    // console.log("req.headers['Originating-Url']", req['headers']['originating-url']);
     if (
       req.auth.type === 'admin' ||
       req.auth.role === 'admin' ||
       req.auth.role === 'legacy' ||
       req.auth.page.includes('general') ||
-      req.auth.page.includes('public')
+      req.auth.page.includes('public') ||
+      (req.headers['originating-url'] &&
+        req.headers['originating-url'].includes('/p/')) // this needs to be fixed by better rules
     ) {
       next();
     } else {
