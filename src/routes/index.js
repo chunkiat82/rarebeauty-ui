@@ -4,7 +4,7 @@
 
 // The top-level (parent) route
 import ca from /* webpackChunkName: 'customer-appointments-list' */ './customer/appointments';
-import home from /* webpackChunkName: 'home' */ './home';
+// import home from /* webpackChunkName: 'home' */ './home';
 
 const routes = {
   path: '/',
@@ -51,14 +51,7 @@ const routes = {
     },
     {
       path: '/home',
-      action: context => {
-        const userStore = context.store.getState('user');
-        if (userStore && userStore.user.role !== 'admin') {
-          return { redirect: '/page' }; // <== request a redirect
-        }
-
-        return home(context);
-      },
+      load: () => import(/* webpackChunkName: 'home' */ './home'),
     },
     {
       path: '/tool',
