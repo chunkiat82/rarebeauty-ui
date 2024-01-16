@@ -81,7 +81,7 @@ const routes = {
       action: context => context.next(),
       children: [
         {
-          path: '/login',
+          path: '/login*',
           load: () =>
             import(/* webpackChunkName: 'customer-login' */ './customer/login'),
         },
@@ -90,16 +90,6 @@ const routes = {
           action: context => {
             const { url, store, params } = context;
             const { customerId } = params;
-            // console.log(`store.getState().user`, store.getState().user);
-            if (
-              store.getState().user &&
-              store.getState().user.type === 'admin'
-            ) {
-              // console.log('context.params.customerId', context.params.customerId);
-              return {
-                redirect: `/customer/${customerId}/createAppointment`,
-              };
-            }
             // console.log('redirect', `/p/login?url=${url}`);
             // console.log(`store`, store);
             if (store.customerId !== customerId) {

@@ -51,6 +51,7 @@ const context = {
   // Universal HTTP client // set in reactMiddleware from config.js
   fetch: createFetch(self.fetch, {
     baseUrl: window.App.apiUrl,
+    originatingUrl: window.location
   }),
   // store,
   store: configureStore(window.App.state, { history }),

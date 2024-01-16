@@ -9,7 +9,6 @@ import { reactMiddleware } from './reactMiddleware';
 import config from './config';
 
 const __DEV__ = !(String(process.env.PRODUCTION) === 'true');
-const expiresIn = 60 * 60 * 1; // hr
 const unknownUserJWT = page => ({
   user: 'unknown',
   page,
@@ -37,27 +36,26 @@ app.use(bodyParser.json());
 // -----------------------------------------------------------------------------
 function checkingUser(req, payload, done) {
   const secret = config.auth.jwt.secret;
-  req.payload = payload;
+  // req.payload = payload; //not sure if we can deprecate
+  req.auth = payload
   done(null, secret);
 }
 
 // this function has to be called after expressJwt check
 function checkPublicPrivateCookie(req, res, next) {
-  // console.log('checkPublicPrivateCookie req.token', req.token);
-  const token =
-    req.token ||
-    jwt.sign(unknownUserJWT(req.originalUrl), config.auth.jwt.secret, {
-      expiresIn: '1h',
-    });
+  
+  const token = req.token;
 
+  // so that cookie expire before JWT to renew one
   res.cookie('token', token, {
-    maxAge: 1000 * expiresIn,
+    expires: new Date(req.auth.exp*1000- 2000),
     sameSite: 'lax',
     httpOnly: true,
     secure: true,
     domain: __DEV__ ? 'localhost' : '.soho.sg',
     path: '/',
   });
+  
   // if (next) return next();
   return next();
 }
