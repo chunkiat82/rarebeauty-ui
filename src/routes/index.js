@@ -3,8 +3,8 @@
 /* eslint-disable global-require */
 
 // The top-level (parent) route
-
 import ca from /* webpackChunkName: 'customer-appointments-list' */ './customer/appointments';
+import home from /* webpackChunkName: 'home' */ './home';
 
 const routes = {
   path: '/',
@@ -51,7 +51,14 @@ const routes = {
     },
     {
       path: '/home',
-      load: () => import(/* webpackChunkName: 'home' */ './home'),
+      action: context => {
+        const userStore = context.store.getState('user');
+        if (userStore && userStore.user.role !== 'admin') {
+          return { redirect: '/page' }; // <== request a redirect
+        }
+
+        return home(context);
+      },
     },
     {
       path: '/tool',
@@ -88,16 +95,17 @@ const routes = {
         {
           path: '/customer/:customerId/appointments',
           action: context => {
+            // return aimport(/* webpackChunkName: 'customer-appointments-list' */ './customer/appointments')(context);
             const { url, store, params } = context;
             const { customerId } = params;
-            // console.log('redirect', `/p/login?url=${url}`);
+
             // console.log(`store`, store);
             if (store.customerId !== customerId) {
-              return { redirect: `/p/login?url=${url}` }; // route does not match (skip all /admin* routes)
-              // }
+              return { redirect: `/p/login?url=${url}` };
             }
+
+            // its so important to preload the page asynchrously
             return ca(context);
-            // return action(context);
           },
         },
       ],
