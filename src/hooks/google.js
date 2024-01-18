@@ -32,6 +32,7 @@ function sleep(ms) {
 async function handleCancel(item, context) {
   try {
     const eventId = item.id;
+    context.callingFunction = 'hook/google/handleCancel';
     const response = await get(`event:${eventId}`, context);
     const event = response;
     // console.log(event);
@@ -98,7 +99,8 @@ async function updateTransactionOnTime(item, context) {
 }
 
 export async function handleCalendarWebhook(headers) {
-  console.error(`headers=${JSON.stringify(headers, null, 2)}`);
+  // console.error(`headers=${JSON.stringify(headers, null, 2)}`);
+  console.error('webhook invoked');
   // setting tenantName
   const context = { tenant: headers['x-goog-channel-id'] || 'notenantfound' };
   try {
@@ -143,29 +145,29 @@ export async function handleCalendarWebhook(headers) {
       console.error(`Incoming Changed events (${events.length}):`);
 
       for (let eventIndex = 0; eventIndex < events.length; eventIndex += 1) {
-        const item = events[eventIndex];
+        const event = events[eventIndex];
 
         if (
-          item.summary &&
-          (item.summary.indexOf('-') === 0 || item.summary.indexOf('+') === 0)
+          event.summary &&
+          (event.summary.indexOf('-') === 0 || event.summary.indexOf('+') === 0)
         ) {
           // eslint-disable-next-line no-continue
           continue;
         }
 
-        console.error(JSON.stringify(item, null, 2));
+        console.error(JSON.stringify(event, null, 2));
 
         // if item is more than 7 days old return do nothing
-        if (item && item.start && item.start.dateTime) {
+        if (event && event.start && event.start.dateTime) {
           const apptDateMT = moment(
-            item.start.dateTime,
+            event.start.dateTime,
             'YYYY-MM-DDThh:mm:ssZ',
           );
           const currentMT = moment();
           const duration = moment.duration(currentMT.diff(apptDateMT));
           const days = duration.asDays();
           if (days > 7) {
-            console.error(`item more than 7 days wants changes =${item.id}`);
+            console.error(`item more than 7 days wants changes =${event.id}`);
             console.error('currentMT', currentMT.toString());
             console.error('apptDateMT', apptDateMT.toString());
             // eslint-disable-next-line no-continue
@@ -173,23 +175,26 @@ export async function handleCalendarWebhook(headers) {
           }
         }
 
-        if (item.status === 'cancelled') {
-          handleCancel(item, context);
-        } else if (item.status === 'confirmed' || item.status === 'tentative') {
+        if (event.status === 'cancelled') {
+          handleCancel(event, context);
+        } else if (
+          event.status === 'confirmed' ||
+          event.status === 'tentative'
+        ) {
           // some massaging here
           try {
-            populateStats(item);
-            await handleUpsert(item, context);
-            await updateTransactionOnTime(item, context);
+            populateStats(event);
+            await handleUpsert(event, context);
+            await updateTransactionOnTime(event, context);
           } catch (handleError) {
-            console.error('Skipping with Error!!!!!!!!!! --- ', item);
+            console.error('Skipping with Error!!!!!!!!!! --- ', event);
           }
         } else {
-          console.error(`unhandled status-${item.id}`);
+          console.error(`unhandled status-${event.id}`);
         }
 
         // temp logging // mostly cancel use case
-        const event = item;
+        // const event = eventItem;
         if (!event.start) {
           console.error(
             `event start date missing for - ${event.id} - ${event.status}`,

@@ -7,6 +7,7 @@ export async function getAppointment(id, context) {
     const appt = apptResponse;
     const { eventId, transId } = appt;
     // console.log(`appt1=${JSON.stringify(appt, null, 2)}`);
+    context.callingFunction = 'appointments/person';
     const eventResponse = await get(`event:${eventId}`, context);
     // console.log(`event=${JSON.stringify(appt, null, 2)}`);
 

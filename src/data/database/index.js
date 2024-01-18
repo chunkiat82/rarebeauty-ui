@@ -151,6 +151,7 @@ async function runOperation(operation, options, context) {
     res = await operation({ ...options, context });
   } catch (err) {
     console.error(`error runOperation=${JSON.stringify(err)}`);
+    console.error(`error context=${JSON.stringify(context.callingFunction)}`);
     res = null;
     // throw err;
   }

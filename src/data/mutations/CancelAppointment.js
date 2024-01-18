@@ -28,6 +28,7 @@ export default {
       const apptResponse = await get(`appt:${id}`, context);
       const { eventId } = apptResponse;
 
+      context.callingFunction = 'cancel/appointment';
       const event = await get(`event:${eventId}`, context);
       const transaction = await get(`trans:${id}`, context);
 

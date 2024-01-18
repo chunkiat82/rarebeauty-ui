@@ -19,6 +19,7 @@ const AppointmentType = new ObjectType({
       type: EventType,
       async resolve(obj, _, context) {
         if (obj.eventId) {
+          context.callingFunction = 'AppointmenType';
           const res = await get(`event:${obj.eventId}`, context);
           return res;
         }
