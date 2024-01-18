@@ -61,18 +61,26 @@ async function handleUpsert(item, context) {
   await upsert(`event:${item.id}`, item, context);
 }
 
+/**
+ *
+ * The retry is really weird to get transaction
+ *
+ * @param {*} item
+ * @param {*} context
+ */
 async function updateTransactionOnTime(item, context) {
   const uuid = item.extendedProperties.shared.uuid;
   let transResponse = null;
   let transaction = null;
 
   try {
-    console.error(`uuid=${uuid}`);
+    await sleep(2000);
     transResponse = await get(`trans:${uuid}`, context);
     transaction = transResponse;
     transaction.apptDate = moment(item.start.dateTime, 'YYYY-MM-DDThh:mm:ssZ');
   } catch (err) {
-    console.error('retrying to get transaction', err);
+    console.error(`uuid=${uuid}`);
+    console.error('retrying to get transaction');
     await sleep(2000);
     try {
       transResponse = await get(`trans:${uuid}`, context);
@@ -82,7 +90,7 @@ async function updateTransactionOnTime(item, context) {
         'YYYY-MM-DDThh:mm:ssZ',
       );
     } catch (innerErr) {
-      console.error('failed to get transaction', innerErr);
+      console.error('failed to get transaction');
       throw innerErr;
     }
   }
