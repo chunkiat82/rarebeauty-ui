@@ -155,7 +155,7 @@ export async function handleCalendarWebhook(headers) {
           continue;
         }
 
-        console.error(JSON.stringify(event, null, 2));
+        // console.error(JSON.stringify(event, null, 2));
 
         // if item is more than 7 days old return do nothing
         if (event && event.start && event.start.dateTime) {
