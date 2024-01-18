@@ -39,7 +39,8 @@ export default function createLogger() {
       formattedPayload = inspectObject(action);
     }
 
-    console.log(` * ${action.type}: ${formattedPayload}`); // eslint-disable-line no-console
+    // this is important log but we dont need any more
+    // console.log(` * ${action.type}: ${formattedPayload}`); // eslint-disable-line no-console
     return next(action);
   };
 }
