@@ -1,3 +1,5 @@
+/* eslint-disable no-underscore-dangle */
+
 import path from 'path';
 import express from 'express';
 import cookieParser from 'cookie-parser';
@@ -37,25 +39,27 @@ app.use(bodyParser.json());
 function checkingUser(req, payload, done) {
   const secret = config.auth.jwt.secret;
   // req.payload = payload; //not sure if we can deprecate
-  req.auth = payload
+  req.auth = payload;
   done(null, secret);
 }
 
 // this function has to be called after expressJwt check
 function checkPublicPrivateCookie(req, res, next) {
-  
   const token = req.token;
-
+  let expires = new Date(Date.now() + 24 * 3600 * 1000);
+  if (req.auth) {
+    expires = new Date(req.auth.exp * 1000 - 2000);
+  }
   // so that cookie expire before JWT to renew one
   res.cookie('token', token, {
-    expires: new Date(req.auth.exp*1000- 2000),
+    expires,
     sameSite: 'lax',
     httpOnly: true,
     secure: true,
     domain: __DEV__ ? 'localhost' : '.soho.sg',
     path: '/',
   });
-  
+
   // if (next) return next();
   return next();
 }
