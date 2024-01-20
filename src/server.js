@@ -66,7 +66,7 @@ app.use((req, res, next) => {
 
 /* bot denial */
 app.use((req, res, next) => {
-  if (req.headers.from.includes('bot')) {
+  if (req.headers.from === 'googlebot(at)googlebot.com') {
     return res.status(401).json({
       message: 'Unathorized Access',
     });
