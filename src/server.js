@@ -71,7 +71,7 @@ app.use((req, res, next) => {
       message: 'Unathorized Access',
     });
   }
-  console.log('req.headers.from', req.headers.from);
+  console.log('req.headers', req.headers);
   return next();
 });
 
