@@ -311,8 +311,7 @@ const clientConfig = {
       name: 'vendor',
       minChunks: module => /node_modules/.test(module.resource),
     }),
-
-    ...(isDebug
+    ...(false
       ? []
       : [
           // Decrease script evaluation time
