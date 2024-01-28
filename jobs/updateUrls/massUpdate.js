@@ -2,7 +2,8 @@ import cli from './tempCli';
 
 const contacts = require('./urlcontacts.json');
 
-const INCREMENT = 30;
+// 40 is good number, 50 failed
+const INCREMENT = 40;
 
 async function main(j) {
   const promises = [];
@@ -11,10 +12,7 @@ async function main(j) {
   // get contacts length
   // take 20 requests a minute then run again
   while (count < INCREMENT && i < contacts.length) {
-    if (
-      contacts[i].urls === null ||
-      contacts[i].urls.indexOf('appointments') > 0
-    ) {
+    if (contacts[i].urls === null || contacts[i].urls.indexOf('admin') < 0) {
       console.log('contact', contacts[i]);
       promises.push(
         cli({
@@ -28,6 +26,7 @@ async function main(j) {
     if (count === INCREMENT) {
       setTimeout(() => {
         main(j + INCREMENT);
+        console.log('current count=', j + INCREMENT);
       }, 61000);
       break;
     }

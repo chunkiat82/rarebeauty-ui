@@ -40,7 +40,7 @@ async function updateContact(
     defaultResource.urls = [
       {
         type: 'appointment',
-        value: `https://rarebeauty.soho.sg/customer/${
+        value: `https://rarebeauty.soho.sg/admin/customer/${
           resourceName.split('people/')[1]
         }/createAppointment`,
       },
