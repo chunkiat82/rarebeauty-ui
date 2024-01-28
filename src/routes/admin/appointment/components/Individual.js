@@ -30,8 +30,8 @@ import Toggle from 'material-ui/Toggle';
 import { Card, CardText } from 'material-ui/Card';
 // import Clipboard from 'react-clipboard.js';
 import s from './Appointment.css';
-import history from '../../../history';
-import Link from '../../../components/Link/Link';
+import history from '../../../../history';
+import Link from '../../../../components/Link/Link';
 
 const iconStyles = {
   marginRight: 24,
@@ -308,16 +308,9 @@ class Appointment extends React.Component {
             </Link>
             {` -  `}
             <Link
+              copy={this.props.copy}
               key={`/customer/${customerId}/appointments`}
               to={`/customer/${customerId}/appointments`}
-            >
-              List Appts
-            </Link>
-            {` -  `}
-            <Link
-              copy={this.props.copy}
-              key={`/p/customer/${customerId}/appointments`}
-              to={`/p/customer/${customerId}/appointments`}
             >
               Public List Appts
             </Link>

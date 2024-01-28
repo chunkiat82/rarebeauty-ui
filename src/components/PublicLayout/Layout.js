@@ -25,7 +25,9 @@ class Layout extends React.Component {
 
   render() {
     return (
-      <MuiThemeProvider muiTheme={getMuiTheme({ userAgent: this.props.userAgent })}>
+      <MuiThemeProvider
+        muiTheme={getMuiTheme({ userAgent: this.props.userAgent })}
+      >
         <div>
           <Header />
           {this.props.children}
@@ -34,35 +36,5 @@ class Layout extends React.Component {
     );
   }
 }
-
-// Layout.getInitialProps = async (ctx) => {
-//   console.log('test1');
-//   const headers = ctx.req ? ctx.req.headers : {}
-//   console.log('i got hereA');
-//   const userAgent = ctx.req ? ctx.req.headers['user-agent'] : navigator.userAgent
-//   console.log('i got here0');
-//   const props = {
-//     ...await (React.Component.getInitialProps ? React.Component.getInitialProps(ctx) : {})
-//   }
-//   console.log('i got here1');
-
-//   if (!process.browser) {
-//     console.log('i got here2');
-//     const app = (
-//       <MuiThemeProvider muiTheme={getMuiTheme({ userAgent })}>
-//         <div>
-//           <Header />
-//           {this.props.children}
-//         </div>
-//       </MuiThemeProvider>
-//     )
-//   }
-//   console.log('i got here3');
-//   return {
-//     headers,
-//     userAgent,
-//     ...props
-//   }
-// }
 
 export default withStyles(normalizeCss, s)(Layout);

@@ -9,7 +9,7 @@
 
 import React from 'react';
 import Tool from './Tool';
-import Layout from '../../components/Layout';
+import Layout from '../../../components/Layout';
 
 function listFreeSlots(fetch) {
   return async () => {

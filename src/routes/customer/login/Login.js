@@ -20,20 +20,20 @@ class Login extends React.Component {
     super(props);
     this.state = { mobile: '' };
 
-    this.registerEmail = this.registerEmail.bind(this);
+    this.checkMobile = this.checkMobile.bind(this);
     this.handleChange = this.handleChange.bind(this);
   }
 
-  registerEmail = e => {
+  checkMobile(e) {
     e.preventDefault();
     if (this.state.mobile.length < 8) {
       alert('Please enter correct mobile number');
     } else {
       this.props.submit(this.state.mobile).then(result => {
-        if (!result) alert('Please enter correct mobile number');
+        if (!result) alert('Invalid mobile number');
       });
     }
-  };
+  }
 
   handleChange(event) {
     this.setState({ mobile: event.target.value });
@@ -44,7 +44,7 @@ class Login extends React.Component {
       <div className={s.root}>
         <div className={s.container}>
           <br />
-          <form onSubmit={this.registerEmail}>
+          <form onSubmit={this.checkMobile}>
             <div className={s.formGroup}>
               <label className={s.label} htmlFor="mobile">
                 Your Mobile Number For Verification

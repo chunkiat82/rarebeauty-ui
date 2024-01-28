@@ -14,8 +14,9 @@ import Layout from '../../../components/PublicLayout';
 import MapAndMessage from '../common/mapAndMessage';
 import { getEvent, patchEvent } from '../common/functions';
 
-async function action({ store, fetch }) {
-  const { workAddress, eventId } = store.getState();
+async function action({ store, fetch, query }) {
+  const { eventId } = query;
+  const { workAddress } = store.getState();
 
   const address = workAddress;
   const src =

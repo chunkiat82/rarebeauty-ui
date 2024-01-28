@@ -1,7 +1,7 @@
 import React from 'react';
 import moment from 'moment';
 import Appointment from './components/Individual';
-import Layout from '../../components/Layout';
+import Layout from '../../../components/Layout';
 import {
   listContacts,
   getAppointment,
@@ -9,7 +9,7 @@ import {
   getServices,
   cancelAppointment,
   updateAppointment,
-} from './common/functions';
+} from '../common/functions';
 import CancelSection from './components/CancelSection';
 
 function show(store) {

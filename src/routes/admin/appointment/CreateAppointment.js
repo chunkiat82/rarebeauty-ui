@@ -1,6 +1,6 @@
 import React from 'react';
 import Appointment from './components/Individual';
-import Layout from '../../components/Layout';
+import Layout from '../../../components/Layout';
 
 import {
   queryPastAppointments,
@@ -9,7 +9,7 @@ import {
   listContacts,
   getServices,
   getContact,
-} from './common/functions';
+} from '../common/functions';
 
 function show(store) {
   return () => {

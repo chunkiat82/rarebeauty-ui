@@ -7,7 +7,7 @@ import AppointmentList from './ListAppointments';
 import {
   queryPastAppointments,
   getServices,
-} from '../../appointment/common/functions';
+} from '../../admin/common/functions';
 
 
 function show(store) {

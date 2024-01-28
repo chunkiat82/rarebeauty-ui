@@ -37,3 +37,4 @@ function createFetch(fetch: Fetch, { baseUrl, cookie, token }: Options) {
 ### Step 6 - NOT NEEDED NOW [20230218]
 
 Remember to use the CORS Plugin in Chrome
+

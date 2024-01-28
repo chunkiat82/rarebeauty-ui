@@ -15,7 +15,7 @@ import Dialog from 'material-ui/Dialog';
 import FlatButton from 'material-ui/FlatButton';
 import withStyles from 'isomorphic-style-loader/lib/withStyles';
 import s from './Appointment.css';
-import history from '../../../history';
+import history from '../../../../history';
 
 class AppointmentCancelSection extends React.Component {
   state = {

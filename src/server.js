@@ -95,17 +95,6 @@ app.use(
 
 app.use('*', checkPublicPrivateCookie);
 
-// for confirmation page or reservation page
-app.use('/general/*/:eventId', async (req, _res, next) => {
-  const { eventId } = req.params;
-  if (eventId === 'images') return;
-  req.data = {
-    workAddress: config.app.workAddress,
-    eventId,
-  };
-  next();
-});
-
 // Error handler for express-jwt
 // app.use(reactErrorMiddleware);
 

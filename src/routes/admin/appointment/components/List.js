@@ -16,8 +16,8 @@ import React from 'react';
 // import PropTypes from 'prop-types';
 import withStyles from 'isomorphic-style-loader/lib/withStyles';
 import s from './Appointment.css';
-import history from '../../../history';
-import Link from '../../../components/Link/Link';
+import history from '../../../../history';
+import Link from '../../../../components/Link/Link';
 
 const stylesRed = {
   color: 'red',

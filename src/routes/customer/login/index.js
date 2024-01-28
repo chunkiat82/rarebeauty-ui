@@ -5,7 +5,7 @@ import Login from './Login';
 import history from '../../../history';
 import {
   getContact,
-} from '../../appointment/common/functions';
+} from '../../admin/common/functions';
 
 
 function show(store) {
@@ -24,10 +24,10 @@ function hide(store) {
 async function action(context) {
   const { fetch, store, query } = context;  
   const { url } = query;
-
   async function checkValidCustomer(number) {
-    // hardcoded for /p/customer/customerId
-    const customerId = url.split('/')[3];
+    // hardcoded for /customer/c1019801061454220195/appointments
+    const customerId = url.split('/')[2];
+    // console.log('customerId',customerId);
 
     if (customerId && number) {
       const resourceName = `people/${customerId}`;
@@ -35,8 +35,7 @@ async function action(context) {
       const contact = await getContact(fetch)(resourceName);
       hide(store)();
       // console.log(contact.mobile.replace(/ /g,''));
-      if (contact && contact.mobile && contact.mobile.replace(/ /g,'').indexOf(number.replace(/ /g,'')) >= 0) {
-        // console.log('hit me');
+      if (contact && contact.mobile && contact.mobile.replace(/ /g,'').indexOf(number.replace(/ /g,'')) >= 0) {        
         store.customerId = customerId;
         history.push(url);
         return true;

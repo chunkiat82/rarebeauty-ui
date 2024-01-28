@@ -19,7 +19,7 @@ import IconButton from 'material-ui/IconButton';
 import Subheader from 'material-ui/Subheader';
 import StarBorder from 'material-ui/svg-icons/toggle/star-border';
 import s from './Home.css';
-import Link from '../../components/Link/Link';
+import Link from '../../../components/Link/Link';
 
 const styles = {
   root: {

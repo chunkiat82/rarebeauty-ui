@@ -9,7 +9,7 @@
 
 import React from 'react';
 import Home from './Home';
-import Layout from '../../components/Layout';
+import Layout from '../../../components/Layout/Layout';
 
 function loadToken(fetch) {
   return async () => {
@@ -39,28 +39,28 @@ function refreshContacts(fetch) {
 function generateTiles(fetch) {
   return [
     {
-      img: 'images/home/empty-calendar.png',
+      img: '../images/home/empty-calendar.png',
       title: 'Create Appointment',
       subTitle: 'With/Without Payments',
-      link: '/appointment/create',
+      link: '/admin/appointment/create',
     },
     {
-      img: 'images/home/calendar-appointments.png',
+      img: '../images/home/calendar-appointments.png',
       title: 'List Appointments',
       subTitle: 'Upcoming 20',
-      link: '/appointments',
+      link: '/admin/appointments',
     },
     {
-      img: 'images/home/tool.png',
+      img: '../images/home/tool.png',
       title: 'Tools',
       subTitle: 'Tools',
-      link: '/tool',
+      link: '/admin/tool',
     },
     {
-      img: 'images/home/phone.png',
+      img: '../images/home/phone.png',
       title: 'Refresh Contacts',
       subTitle: 'Refresh Contacts',
-      link: '/',
+      link: '/admin/home',
       onClick: async () => {
         refreshContacts(fetch)();
         alert('refreshed');

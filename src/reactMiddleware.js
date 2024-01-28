@@ -23,6 +23,7 @@ export const reactMiddleware = async (req, res, next) => {
     let initialState = req.initialState || {
       user: req.user,
       loading: false,
+      workAddress: config.app.workAddress, // to be dynamic
     };
     initialState = { ...reqData, ...initialState };
     const store = configureStore(initialState, {
@@ -71,6 +72,8 @@ export const reactMiddleware = async (req, res, next) => {
       </App>,
     );
     data.styles = [{ id: 'css', cssText: [...css].join('') }];
+    // console.log('assets', assets);
+    // console.log('route.chunks', route.chunks);
     data.scripts = [assets.vendor.js];
     if (route.chunks) {
       data.scripts.push(...route.chunks.map(chunk => assets[chunk].js));

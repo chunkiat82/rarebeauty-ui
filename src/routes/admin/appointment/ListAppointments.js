@@ -1,8 +1,8 @@
 import React from 'react';
-import Layout from '../../components/Layout';
+import Layout from '../../../components/Layout';
 import AppointmentList from './components/List';
 
-import { getServices } from './common/functions';
+import { getServices } from '../common/functions';
 
 function show(store) {
   return () => {
