@@ -43,8 +43,30 @@ function checkingUser(req, payload, done) {
   done(null, secret);
 }
 
+/**
+ * Refresh token for non-admin users or when there is no token
+ * @param {*} token
+ * @param {*} url
+ * @returns
+ */
+function refreshToken(token, url) {
+  if (token) {
+    const decoded = jwt.verify(token, config.auth.jwt.secret);
+    if (decoded && decoded.role === 'admin') {
+      return token;
+    }
+  }
+  return createToken(url);
+}
+
+function createToken(url) {
+  return jwt.sign(unknownUserJWT(url), config.auth.jwt.secret, {
+    expiresIn: '1h',
+  });
+}
+
 // this function has to be called after expressJwt check
-function checkPublicPrivateCookie(req, res, next) {
+function refreshCookie(req, res, next) {
   const token = req.token;
   let expires = new Date(Date.now() + 24 * 3600 * 1000);
   if (req.auth) {
@@ -70,22 +92,15 @@ app.use(
     credentialsRequired: true,
     getToken: function fromHeaderOrQuerystring(req) {
       if (req.query && req.query.token) {
-        // console.log('i was here with query');
-        req.token = req.query.token;
+        req.token = refreshToken(req.query.token, req.originalUrl);
         return req.token;
       } else if (req.cookies.token) {
         // console.log('i was here with cookies');
-        req.token = req.cookies.token;
+        req.token = refreshToken(req.cookies.token, req.originalUrl);
         return req.token;
       }
       // console.log('i was here with nothing', req.originalUrl);
-      req.token = jwt.sign(
-        unknownUserJWT(req.originalUrl),
-        config.auth.jwt.secret,
-        {
-          expiresIn: '1h',
-        },
-      );
+      req.token = createToken(req.originalUrl);
       return req.token;
     },
   }).unless({
@@ -93,7 +108,7 @@ app.use(
   }),
 );
 
-app.use('*', checkPublicPrivateCookie);
+app.use('*', refreshCookie);
 
 // Error handler for express-jwt
 // app.use(reactErrorMiddleware);
