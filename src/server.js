@@ -71,7 +71,7 @@ app.use((req, res, next) => {
       message: 'Unathorized Access',
     });
   }
-  console.log('req.headers', req.headers);
+  // console.log('req.headers', req.headers);
   return next();
 });
 
@@ -79,15 +79,19 @@ app.use(
   expressJwt({
     secret: (req, payload, done) => {
       req.auth = payload; // this is here because req.auth not populating by framework as promised
+      // console.log('req.auth', req.auth)
       done(null, config.auth.jwt.secret);
     },
     credentialsRequired: true,
     getToken: function fromHeaderOrQuerystring(req) {
       if (req.cookies.token) {
+        // console.log('token in cookies');
         return req.cookies.token;
       } else if (req.query && req.query.token) {
+        // console.log('token in query');
         return req.query.token;
       } else if (req.headers && req.headers.authorization) {
+        // console.log('token in authorization');
         return req.headers.authorization; // base64Credentials;
       }
 
@@ -124,15 +128,13 @@ app.use(
   (req, res, next) => {
     // type to be cleaned up
     // this mapping is found in rarebeauty-ui-sa server.js
-    // console.log("req.headers['Originating-Url']", req['headers']['originating-url']);
+    // this should be moved to a authorization server, mapping pages to token created
     if (
       req.auth.type === 'admin' ||
       req.auth.role === 'admin' ||
       req.auth.role === 'legacy' ||
       req.auth.page.includes('general') ||
-      req.auth.page.includes('public') ||
-      (req.headers['originating-url'] &&
-        req.headers['originating-url'].includes('/p/')) // this needs to be fixed by better rules
+      req.auth.page.includes('customer')
     ) {
       next();
     } else {
