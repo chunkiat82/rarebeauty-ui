@@ -13,8 +13,8 @@ import Layout from '../../../components/PublicLayout';
 import MapAndMessage from '../common/mapAndMessage';
 import { getEvent } from '../common/functions';
 
-async function action({ store, fetch, query }) {
-  const { eventId } = query;
+async function action({ store, fetch, params }) {
+  const { eventId } = params;
   const { workAddress } = store.getState();
 
   const address = workAddress;

@@ -60,6 +60,35 @@ const routes = {
       ],
     },
     {
+      path: '/appointment', // to be deprecated
+      action: context => {
+        const userStore = context.store.getState('user');
+        if (
+          userStore &&
+          (userStore.user.role === 'admin' || userStore.user.user === 'legacy')
+        ) {
+          return context.next();
+        }
+        return { redirect: '/page' }; // <== request a redirect
+      },
+      children: [
+        {
+          path: '/create',
+          load: () =>
+            import(
+              /* webpackChunkName: 'appointment-create' */ './admin/appointment/CreateAppointment'
+            ),
+        },
+        {
+          path: '/:id/edit',
+          load: () =>
+            import(
+              /* webpackChunkName: 'appointment-edit' */ './admin/appointment/EditAppointment'
+            ),
+        },
+      ],
+    },
+    {
       path: '/general',
       action: context => context.next(),
       children: [
