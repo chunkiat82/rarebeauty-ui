@@ -73,13 +73,6 @@ const routes = {
       },
       children: [
         {
-          path: '/create',
-          load: () =>
-            import(
-              /* webpackChunkName: 'appointment-create' */ './admin/appointment/CreateAppointment'
-            ),
-        },
-        {
           path: '/:id/edit',
           load: () =>
             import(
