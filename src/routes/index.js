@@ -151,6 +151,7 @@ const routes = {
       action: context => {
         console.error(
           'Page Not Found - Defaulted to Admin Home or Public Page',
+          context.path,
         );
         const userStore = context.store.getState('user');
         if (
