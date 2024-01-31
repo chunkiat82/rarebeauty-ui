@@ -19,10 +19,19 @@ async function action({ store, fetch, params }) {
   const { workAddress } = store.getState();
 
   const address = workAddress;
-  const src =
-    'https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d15954.921969560013!2d103.68922277989016!3d1.3379843862102117!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x31da0f91b8b821c7%3A0xc05561d22390b4e0!2sSingapore%20642649!5e0!3m2!1sen!2ssg!4v1593248847700!5m2!1sen!2ssg';
-
   const event = await getEvent(fetch)(eventId);
+
+  if (event && event.error) {
+    return {
+      chunks: ['general-confirmation'],
+      title: 'Rare Beauty Professional',
+      component: (
+        <Layout>
+          <MapAndMessage message={`Appointment Not Found!`} />
+        </Layout>
+      ),
+    };
+  }
   await patchEvent(fetch)(eventId, 'confirmed');
 
   return {
@@ -32,7 +41,6 @@ async function action({ store, fetch, params }) {
       <Layout>
         <MapAndMessage
           address={address}
-          src={src}
           message={`Appointment is confirmed! See you on ${moment(event.start)
             .tz('Asia/Singapore')
             .format('LLLL')}`}

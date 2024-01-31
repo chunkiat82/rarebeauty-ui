@@ -6,7 +6,7 @@ import s from './mapAndMessage.css';
 
 class MapAndMessage extends React.Component {
   static propTypes = {
-    address: PropTypes.string.isRequired,
+    address: PropTypes.string,
     message: PropTypes.string.isRequired,
     // src: PropTypes.string.isRequired,
     // eslint-disable-next-line react/require-default-props
@@ -25,7 +25,9 @@ class MapAndMessage extends React.Component {
             </center>
           </h2>
           <h3 className={s.textCenter}>{address}</h3>
-          <img src="https://rarebeautysg.s3.amazonaws.com/rb-map-400.png" />
+          {address && (
+            <img src="https://rarebeautysg.s3.amazonaws.com/rb-map-400.png" />
+          )}
         </div>
       </div>
     );
