@@ -152,6 +152,7 @@ app.use(
       tenant: req.auth.tenant,
       role: req.auth.role,
       user: req.auth.user,
+      userAgent: req.headers['user-agent'],
     },
   })),
 );
