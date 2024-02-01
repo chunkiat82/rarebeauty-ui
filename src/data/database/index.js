@@ -77,20 +77,13 @@ async function connect(context) {
 }
 
 async function getObject(options) {
-  const { context } = options;
-  const { collection } = await connect(options);
+  const { collection } = await connect(options.context);
   const { id } = options;
   return new Promise((res, rej) => {
     collection.get(id, (err, result) => {
       if (err) {
-        if (
-          !context.callingFunction === 'eventType' ||
-          !context.userAgent ===
-            'node-fetch/1.0 (+https://github.com/bitinn/node-fetch)'
-        ) {
-          console.error(`getObject err id=${options.id}`);
-          console.error(`getObject err`, err);
-        }
+        console.error(`Err getObject id=${options.id}`);
+        console.error(`getObject err`, err);
         rej(err);
       } else {
         res(result);
@@ -157,16 +150,9 @@ async function runOperation(operation, options, context) {
   try {
     res = await operation({ ...options, context });
   } catch (err) {
-    /* ignore errors during incoming webhook call from google, DB latency issue TO BE FIXED */
-    if (
-      !context.callingFunction === 'eventType' ||
-      !context.userAgent ===
-        'node-fetch/1.0 (+https://github.com/bitinn/node-fetch)'
-    ) {
-      console.error(`error runOperation=${JSON.stringify(err)}`);
-      console.error(`error context=${JSON.stringify(context.callingFunction)}`);
-      console.error(`error userAgent=${JSON.stringify(context.userAgent)}`);
-    }
+    console.error(`error runOperation=${JSON.stringify(err)}`);
+    console.error(`error context=${JSON.stringify(context.callingFunction)}`);
+    console.error(`error userAgent=${JSON.stringify(context.userAgent)}`);
     res = null;
     // throw err;
   }
