@@ -149,10 +149,11 @@ const routes = {
     {
       path: '*',
       action: context => {
-        console.error(
-          'Page Not Found - Defaulted to Admin Home or Public Page',
-          context.path,
-        );
+        context.path !== '/' &&
+          console.error(
+            'Page Not Found - Defaulted to Admin Home or Public Page',
+            context.path,
+          );
         const userStore = context.store.getState('user');
         if (
           userStore &&
@@ -165,9 +166,9 @@ const routes = {
     },
   ],
 
-  async action({ next }) {
+  async action(context) {
     // Execute each child route until one of them return the result
-    const route = await next();
+    const route = await context.next();
 
     // Provide default values for title, description etc.
     route.title = `${route.title || 'Untitled Page'}`;
