@@ -78,7 +78,7 @@ async function connect(context) {
 
 async function getObject(options) {
   const { context } = options;
-  const { collection } = await connect(options);
+  const { collection } = await connect(context);
   const { id } = options;
   return new Promise((res, rej) => {
     collection.get(id, (err, result) => {
