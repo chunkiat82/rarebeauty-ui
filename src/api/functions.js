@@ -136,14 +136,16 @@ async function informReservationToCustomer(options) {
 
     // creating shortURL
     try {
-      shortURL = await urlCreate({
+      const shortURLResponse = await urlCreate({
         longURL: `${reservationURL}${event.id}`,
       });
+      shortURL = JSON.parse(shortURLResponse).shortURL;
     } catch (urlError) {
       console.error('unable to create URL - trying again', urlError);
-      shortURL = await urlCreate({
+      const shortURLResponse = await urlCreate({
         longURL: `${reservationURL}${event.id}`,
       });
+      shortURL = JSON.parse(shortURLResponse).shortURL;
     }
 
     // to message if needed to be informed
@@ -168,9 +170,7 @@ async function informReservationToCustomer(options) {
 
         const message = `${
           updated ? 'Updated - ' : ''
-        }Your appt with Rare Beauty on ${startDate} at ${startTime} is reserved.\n\nClick ${
-          shortURL.id
-        } to view address/details`;
+        }Your appt with Rare Beauty on ${startDate} at ${startTime} is reserved.\n\nClick ${shortURL} to view address/details`;
 
         console.error(`message=${message}`);
 
@@ -188,7 +188,7 @@ async function informReservationToCustomer(options) {
         console.error(`informReservationToCustomer calendarUpdate failed`, err);
       }
     }
-    return shortURL.id;
+    return shortURL;
   } catch (err) {
     console.error(`informReservationToCustomer final step`, err);
     throw err;
@@ -318,10 +318,11 @@ async function remindCustomers(options) {
 
             let message = '';
             if (tomorrow) {
-              const shortURL = await urlCreate({
+              const shortURLResponse = await urlCreate({
                 longURL: `${confirmationURL}${event.id}`,
               });
-              message = `Click ${shortURL.id} to confirm your appt on ${startDate} ${startTime}.\n\nAny changes, msg to REPLY_MOBILE by 12pm!`;
+              let shortURL = JSON.parse(shortURLResponse).shortURL;
+              message = `Click ${shortURL} to confirm your appt on ${startDate} ${startTime}.\n\nAny changes, msg to REPLY_MOBILE by 12pm!`;
             } else {
               message = `<Reminder>Appt on ${startDate} ${startTime}.\n\nFor last minute cancellation, msg to REPLY_MOBILE.\n\nOtherwise see you later`;
             }

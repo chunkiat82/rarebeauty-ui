@@ -1,23 +1,21 @@
 /* eslint-disable camelcase */
 import rp from 'request-promise';
 
-const { bitly_token } = require('../keys/google.json');
+const { shorturl_token } = require('../keys/google.json');
 
 export default async function create(options) {
   const { longURL } = options;
-
-  const postOptions = {
-    method: 'POST',
-    headers: {
-      // eslint-disable-next-line camelcase
-      Authorization: `Bearer ${bitly_token}`,
-    },
-    uri: `https://api-ssl.bitly.com/v4/bitlinks`,
-    body: {
-      long_url: longURL,
-    },
-    json: true, // Automatically stringifies the body to JSON
+  const data = {
+    domain: 'soho.sg',
+    originalURL: longURL,
   };
-
-  return rp(postOptions);
+  return rp('https://api.short.io/links/public', {
+    method: 'post',
+    headers: {
+      accept: 'application/json',
+      'Content-Type': 'application/json',
+      authorization: shorturl_token,
+    },
+    body: JSON.stringify(data),
+  });
 }
