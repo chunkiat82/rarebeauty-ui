@@ -321,7 +321,7 @@ async function remindCustomers(options) {
               const shortURLResponse = await urlCreate({
                 longURL: `${confirmationURL}${event.id}`,
               });
-              let shortURL = JSON.parse(shortURLResponse).shortURL;
+              const shortURL = JSON.parse(shortURLResponse).shortURL;
               message = `Click ${shortURL} to confirm your appt on ${startDate} ${startTime}.\n\nAny changes, msg to REPLY_MOBILE by 12pm!`;
             } else {
               message = `<Reminder>Appt on ${startDate} ${startTime}.\n\nFor last minute cancellation, msg to REPLY_MOBILE.\n\nOtherwise see you later`;
@@ -464,7 +464,7 @@ async function watchCalendar(options) {
     address: webHookURL,
     selfIdentifier: options.tenant,
   });
-  console.log('finalOptions', finalOptions);
+  console.error('finalOptions', finalOptions);
   try {
     const response = await calendarWatch(finalOptions, context);
     // console.log(response);
@@ -491,7 +491,7 @@ async function stopWatchCalendar(options) {
     resourceId: response.resourceId,
     selfIdentifier: options.tenant,
   });
-  console.log('finalOptions', finalOptions);
+  console.error('finalOptions', finalOptions);
   try {
     const watchStopResponse = await calendarWatchStop(finalOptions);
     // console.log('stopped');
@@ -528,7 +528,9 @@ async function listCustomerAppointments(options) {
 }
 
 async function remindCustomersTouchUp(options) {
-  const { startDT, daysBefore } = options;
+  const { startDT, daysBefore, tenant } = options;
+
+  const context = { tenant };
 
   const daysBeforeFinal = daysBefore || 3; // default 3 days before end of touch up
   const daysBeforeTouchUpFinal = 14 - daysBeforeFinal; // 2 weeks for touchup period
@@ -561,7 +563,7 @@ async function remindCustomersTouchUp(options) {
     console.error(`Upcoming events Size: ${events.length}`);
 
     /* need to abstract this logic */
-    const response = await get(`config:services`);
+    const response = await get(`config:services`, context);
     const listOfServices = response.services;
     // const mapOfServices = convertToMap(listOfServices);
     const services = new AST(listOfServices, 'id');
@@ -583,6 +585,7 @@ async function remindCustomersTouchUp(options) {
         const { appointments } = await appointmentsByPerson({
           now: true,
           id: resourceName,
+          context,
         });
         // console.log(JSON.stringify(appointments, null ,2));
         // extractUnqiueServicesFromAppointmnets(appointments);
@@ -662,12 +665,14 @@ async function remindCustomersTouchUp(options) {
             }),
           );
 
+          // [TODO] this needs context too
           const toBePatchedEvent = await calendarGet({
             calendarId,
             eventId: event.id,
           });
 
           try {
+            // [TODO] this needs context too
             await calendarPatch({
               event: toBePatchedEvent,
               calendarId,
@@ -678,6 +683,7 @@ async function remindCustomersTouchUp(options) {
               'Patch Failed, Trying Again for event',
               toBePatchedEvent.summary,
             );
+            // [TODO] this needs context too
             await calendarPatch({
               event: toBePatchedEvent,
               calendarId,
