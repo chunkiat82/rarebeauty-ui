@@ -13,6 +13,7 @@ import express from 'express';
 import cookieParser from 'cookie-parser';
 import bodyParser from 'body-parser';
 import expressJwt from 'express-jwt';
+import jwt from 'jsonwebtoken';
 import expressGraphQL from 'express-graphql';
 import PrettyError from 'pretty-error';
 import _httpErrorPages from 'http-error-pages';
@@ -23,6 +24,13 @@ import { reactErrorMiddleware } from './reactMiddleware';
 import config from './config';
 
 const app = express();
+
+const unknownUserJWT = page => ({
+  user: 'unknown',
+  page,
+  role: 'user',
+  tenant: 'rarebeauty',
+});
 
 //
 // Tell any CSS tooling (such as Material UI) to use all vendor prefixes if the
@@ -71,7 +79,6 @@ app.use((req, res, next) => {
       message: 'Unathorized Access',
     });
   }
-  // console.log('req.headers', req.headers);
   return next();
 });
 
@@ -79,11 +86,20 @@ app.use(
   expressJwt({
     secret: (req, payload, done) => {
       req.auth = payload; // this is here because req.auth not populating by framework as promised
-      // console.log('req.auth', req.auth)
       done(null, config.auth.jwt.secret);
     },
     credentialsRequired: true,
     getToken: function fromHeaderOrQuerystring(req) {
+      if (req.headers['user-agent'].includes('node-fetch')) {
+        const token = jwt.sign(
+          unknownUserJWT('/customer'),
+          config.auth.jwt.secret,
+          {
+            expiresIn: '1h',
+          },
+        );
+        return token;
+      }
       if (req.cookies.token) {
         // console.log('token in cookies');
         return req.cookies.token;
