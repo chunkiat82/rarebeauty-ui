@@ -46,7 +46,7 @@ class AppointmentList extends React.Component {
           <p>
             {value.shortURL ? (
               <a
-                href={`http://${value.shortURL}`}
+                href={`${value.shortURL}`}
                 target="_blank"
                 rel="noopener noreferrer"
               >
@@ -80,24 +80,20 @@ class AppointmentList extends React.Component {
           </p>
           <p>
             <span style={whiteSpace}>
-              <ul style={{ padding: 0 }}>
+              <div style={{ padding: 0 }}>
                 {value.serviceIds.sort().map(serviceId => (
-                  <li key={serviceId}>
-                    {this.props.services.peekByKey(serviceId).service}
-                  </li>
+                  <div key={`${serviceId}`}>
+                    {' '}
+                    {this.props.services.peekByKey(serviceId)
+                      ? serviceId
+                      : 'null'}
+                  </div>
                 ))}
-              </ul>
+              </div>
             </span>
           </p>
           <p>
-            <span style={whiteSpace}>
-              $
-              {value.serviceIds.reduce(
-                (prevValue, serviceId) =>
-                  prevValue + this.props.services.peekByKey(serviceId).price,
-                0,
-              )}
-            </span>
+            <span style={whiteSpace} />
           </p>
         </TableRowColumn>
       </TableRow>

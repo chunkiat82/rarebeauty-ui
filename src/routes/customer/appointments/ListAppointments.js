@@ -43,7 +43,7 @@ class AppointmentList extends React.Component {
           <p>
             {value.event.shortURL ? (
               <a
-                href={`http://${value.event.shortURL}`}
+                href={`${value.event.shortURL}`}
                 target='_blank'
                 rel='noopener noreferrer'
               >

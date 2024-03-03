@@ -44,6 +44,17 @@ function checkingUser(req, payload, done) {
 }
 
 /**
+ *
+ * @param {*} url
+ * @returns
+ */
+function createToken(url) {
+  return jwt.sign(unknownUserJWT(url), config.auth.jwt.secret, {
+    expiresIn: '1h',
+  });
+}
+
+/**
  * Refresh token for non-admin users or when there is no token
  * @param {*} token
  * @param {*} url
@@ -57,12 +68,6 @@ function refreshToken(token, url) {
     }
   }
   return createToken(url);
-}
-
-function createToken(url) {
-  return jwt.sign(unknownUserJWT(url), config.auth.jwt.secret, {
-    expiresIn: '1h',
-  });
 }
 
 // this function has to be called after expressJwt check
@@ -104,7 +109,7 @@ app.use(
       return req.token;
     },
   }).unless({
-    path: ['/events/calendar', /\/assets*/],
+    path: ['/events/calendar', /\/assets*/, /\/customer*/],
   }),
 );
 
