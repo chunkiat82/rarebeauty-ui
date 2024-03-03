@@ -1,21 +1,19 @@
 /* eslint-disable camelcase */
 import rp from 'request-promise';
 
-const { shorturl_token } = require('../keys/google.json');
+const { sl_username, sl_password } = require('../keys/google.json');
 
 export default async function create(options) {
   const { longURL } = options;
   const data = {
-    domain: 'soho.sg',
-    originalURL: longURL,
+    username: sl_username,
+    password: sl_password,
+    action: 'shorturl',
+    format: 'simple',
+    url: longURL,
   };
-  return rp('https://api.short.io/links/public', {
-    method: 'post',
-    headers: {
-      accept: 'application/json',
-      'Content-Type': 'application/json',
-      authorization: shorturl_token,
-    },
-    body: JSON.stringify(data),
+  return rp('https://go.salon.sg/yourls-api.php', {
+    method: 'GET',
+    qs: data,
   });
 }

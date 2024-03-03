@@ -139,13 +139,13 @@ async function informReservationToCustomer(options) {
       const shortURLResponse = await urlCreate({
         longURL: `${reservationURL}${event.id}`,
       });
-      shortURL = JSON.parse(shortURLResponse).shortURL;
+      shortURL = shortURLResponse;
     } catch (urlError) {
       console.error('unable to create URL - trying again', urlError);
       const shortURLResponse = await urlCreate({
         longURL: `${reservationURL}${event.id}`,
       });
-      shortURL = JSON.parse(shortURLResponse).shortURL;
+      shortURL = shortURLResponse;
     }
 
     // to message if needed to be informed
@@ -321,7 +321,7 @@ async function remindCustomers(options) {
               const shortURLResponse = await urlCreate({
                 longURL: `${confirmationURL}${event.id}`,
               });
-              const shortURL = JSON.parse(shortURLResponse).shortURL;
+              const shortURL = shortURLResponse;
               message = `Click ${shortURL} to confirm your appt on ${startDate} ${startTime}.\n\nAny changes, msg to REPLY_MOBILE by 12pm!`;
             } else {
               message = `<Reminder>Appt on ${startDate} ${startTime}.\n\nFor last minute cancellation, msg to REPLY_MOBILE.\n\nOtherwise see you later`;
