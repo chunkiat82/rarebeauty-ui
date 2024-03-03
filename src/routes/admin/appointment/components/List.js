@@ -80,20 +80,24 @@ class AppointmentList extends React.Component {
           </p>
           <p>
             <span style={whiteSpace}>
-              <div style={{ padding: 0 }}>
+              <ul style={{ padding: 0 }}>
                 {value.serviceIds.sort().map(serviceId => (
-                  <div key={`${serviceId}`}>
-                    {' '}
-                    {this.props.services.peekByKey(serviceId)
-                      ? serviceId
-                      : 'null'}
-                  </div>
+                  <li key={serviceId}>
+                    {this.props.services.peekByKey(serviceId).service}
+                  </li>
                 ))}
-              </div>
+              </ul>
             </span>
           </p>
           <p>
-            <span style={whiteSpace} />
+            <span style={whiteSpace}>
+              $
+              {value.serviceIds.reduce(
+                (prevValue, serviceId) =>
+                  prevValue + this.props.services.peekByKey(serviceId).price,
+                0,
+              )}
+            </span>
           </p>
         </TableRowColumn>
       </TableRow>
