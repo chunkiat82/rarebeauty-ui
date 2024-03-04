@@ -97,6 +97,7 @@ app.use(
     credentialsRequired: true,
     getToken: function fromHeaderOrQuerystring(req) {
       if (req.query && req.query.token) {
+        // console.log('i was here with query');
         req.token = refreshToken(req.query.token, req.originalUrl);
         return req.token;
       } else if (req.cookies.token) {
@@ -109,7 +110,7 @@ app.use(
       return req.token;
     },
   }).unless({
-    path: ['/events/calendar', /\/assets*/, /\/customer*/],
+    path: ['/events/calendar', /\/assets*/],
   }),
 );
 
