@@ -90,16 +90,6 @@ app.use(
     },
     credentialsRequired: true,
     getToken: function fromHeaderOrQuerystring(req) {
-      if (req.headers['user-agent'].includes('node-fetch')) {
-        const token = jwt.sign(
-          unknownUserJWT('/customer'),
-          config.auth.jwt.secret,
-          {
-            expiresIn: '1h',
-          },
-        );
-        return token;
-      }
       if (req.cookies.token) {
         // console.log('token in cookies');
         return req.cookies.token;
@@ -109,6 +99,15 @@ app.use(
       } else if (req.headers && req.headers.authorization) {
         // console.log('token in authorization');
         return req.headers.authorization; // base64Credentials;
+      } else if (req.headers['user-agent'].includes('node-fetch')) {
+        const token = jwt.sign(
+          unknownUserJWT('/customer'),
+          config.auth.jwt.secret,
+          {
+            expiresIn: '1h',
+          },
+        );
+        return token;
       }
 
       return null;
