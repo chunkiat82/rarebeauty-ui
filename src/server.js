@@ -90,8 +90,7 @@ app.use(
     },
     credentialsRequired: true,
     getToken: function fromHeaderOrQuerystring(req) {
-      if (req.cookies.token) {
-        // console.log('token in cookies');
+      if (req.cookies.token && req.cookies.token !== 'undefined') {
         return req.cookies.token;
       } else if (req.query && req.query.token) {
         // console.log('token in query');
