@@ -141,11 +141,10 @@ async function informReservationToCustomer(options) {
       });
       shortURL = shortURLResponse;
     } catch (urlError) {
-      console.error('unable to create URL - trying again', urlError);
-      const shortURLResponse = await urlCreate({
-        longURL: `${reservationURL}${event.id}`,
-      });
-      shortURL = shortURLResponse;
+      console.error(
+        'unable to create URL - trying again - probably already exist',
+      );
+      shortURL = event.extendedProperties.shared.shortURL;
     }
 
     // to message if needed to be informed
