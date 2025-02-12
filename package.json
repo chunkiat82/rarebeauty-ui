@@ -20,7 +20,7 @@
     "cookie-parser": "^1.4.3",
     "core-js": "^2.4.1",
     "cors": "^2.8.5",
-    "couchbase": "^3.2.5",
+    "couchbase": "^4.4.5",
     "express": "^4.15.3",
     "express-graphql": "^0.6.6",
     "express-jwt": "^5.3.0",
