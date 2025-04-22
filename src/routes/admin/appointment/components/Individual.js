@@ -567,7 +567,7 @@ class Appointment extends React.Component {
 
               if (results.errors) {
                 this.setState({ error: 'Error In Creating Appointment' });
-                console.error('Error In Creating Appointment');
+                console.error(results.errors[0].message);
               } else {
                 this.setState({
                   name: '',

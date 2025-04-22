@@ -108,7 +108,11 @@ export function createAppointment(fetch) {
 
     const { data, errors } = await resp.json();
 
-    if (data.createAppointment.createdNewContact) {
+    if (
+      data &&
+      data.createAppointment &&
+      data.createAppointment.createdNewContact
+    ) {
       setTimeout(refreshContacts(fetch), 10000);
     }
 
