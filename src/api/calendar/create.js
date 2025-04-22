@@ -167,12 +167,16 @@ export default function create(options) {
         if (filteredEvents.length > 0) {
           console.error('------------Overlapping appointment 1---------------');
           console.error(JSON.stringify(events, null, 2));
-          rej({
-            error: 'Overlapping appointment',
-          });
-          return console.error(
-            '--------Overlapping appointment 2-------------------',
-          );
+          // Create a proper Error object
+          const error = new Error('Overlapping appointment');
+          error.details =
+            'There is already an appointment scheduled at this time';
+          error.events = filteredEvents.map(e => ({
+            summary: e.summary,
+            start: e.start,
+            end: e.end,
+          }));
+          return rej(error);
         }
       }
 
