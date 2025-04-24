@@ -256,13 +256,12 @@ export default {
       );
       await upsert(`trans:${uuid}`, transaction, context);
 
-      if (returnObj.createdNewContact) {
-        api({
-          action: 'updateContact',
-          resourceName: finalResourceName,
-          context,
-        });
-      }
+      api({
+        action: 'updateContact',
+        resourceName: finalResourceName,
+        context,
+      });
+
       return {
         id: uuid,
         event,
