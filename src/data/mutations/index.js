@@ -6,6 +6,7 @@ import updateAppointment from './UpdateAppointment';
 import cancelAppointment from './CancelAppointment';
 import updateEventStatus from './UpdateEventStatus';
 import refreshContacts from './RefreshContacts';
+import createContact from './CreateContact';
 
 const Mutation = new ObjectType({
   name: 'Mutation',
@@ -16,6 +17,7 @@ const Mutation = new ObjectType({
     cancelAppointment,
     updateEventStatus,
     refreshContacts,
+    createContact,
   }),
 });
 

@@ -44,6 +44,12 @@ async function updateContact(
           resourceName.split('people/')[1]
         }/createAppointment`,
       },
+      {
+        type: 'chat',
+        value: `https://chat.salon.sg?resourceName=${
+          resourceName.split('people/')[1]
+        }`,
+      },
     ];
   }
 
