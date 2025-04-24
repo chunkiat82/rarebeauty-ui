@@ -46,7 +46,7 @@ async function updateContact(
       },
       {
         type: 'chat',
-        value: `https://chat.salon.sg?resourceName=${
+        value: `https://chat.salon.sg?resourceNumber=${
           resourceName.split('people/')[1]
         }`,
       },
