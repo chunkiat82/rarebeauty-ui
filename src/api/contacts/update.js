@@ -2,11 +2,7 @@
 // babel-node cli --action=updateContact --verified=false --resourceName=people/YYY --mobile=XX
 const { generatePeopleObj } = require('../utilities/jwt');
 
-async function updateContact(
-  { resourceName, mobile, validPhone, appointmentUrl },
-  me,
-  cb,
-) {
+async function updateContact({ resourceName, mobile, validPhone }, me, cb) {
   const people = await generatePeopleObj();
 
   // console.error(`verified=${verified}` !== undefined ? verified : true);
@@ -35,23 +31,20 @@ async function updateContact(
     ];
   }
 
-  if (appointmentUrl || true) {
-    // possible
-    defaultResource.urls = [
-      {
-        type: 'appointment',
-        value: `https://rarebeauty.soho.sg/admin/customer/${
-          resourceName.split('people/')[1]
-        }/createAppointment`,
-      },
-      {
-        type: 'chat',
-        value: `https://chat.salon.sg?resourceNumber=${
-          resourceName.split('people/')[1]
-        }`,
-      },
-    ];
-  }
+  defaultResource.urls = [
+    {
+      type: 'appointment',
+      value: `https://rarebeauty.soho.sg/admin/customer/${
+        resourceName.split('people/')[1]
+      }/createAppointment`,
+    },
+    {
+      type: 'chat',
+      value: `https://chat.salon.sg?resourceNumber=${
+        resourceName.split('people/')[1]
+      }`,
+    },
+  ];
 
   people.people.updateContact(
     {
