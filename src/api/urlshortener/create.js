@@ -1,19 +1,20 @@
 /* eslint-disable camelcase */
-import rp from 'request-promise';
+const fetch = require('node-fetch');
 
-const { sl_username, sl_password } = require('../keys/google.json');
+// Use environment variables directly instead of loading from JSON
+const sl_username = process.env.SL_USERNAME || 'admin';
+const sl_password = process.env.SL_PASSWORD || 'soho!@#$';
 
-export default async function create(options) {
+module.exports = async function create(options) {
   const { longURL } = options;
-  const data = {
+  const params = new URLSearchParams({
     username: sl_username,
     password: sl_password,
     action: 'shorturl',
     format: 'simple',
     url: longURL,
-  };
-  return rp('https://go.salon.sg/yourls-api.php', {
-    method: 'GET',
-    qs: data,
   });
-}
+
+  const response = await fetch(`https://go.salon.sg/yourls-api.php?${params}`);
+  return response.text();
+};

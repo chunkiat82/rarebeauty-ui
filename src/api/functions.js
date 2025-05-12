@@ -1,44 +1,39 @@
 /* eslint-disable no-continue */
 /* eslint-disable no-await-in-loop */
 /* eslint-disable no-param-reassign */
-import jwt from 'jsonwebtoken';
-import moment from 'moment';
-import AST from 'auto-sorting-array';
-import config from '../config';
-import calendarList from './calendar/list';
-import calendarGet from './calendar/get';
-import calendarDelete from './calendar/delete';
-import calendarDelta from './calendar/delta';
-import contactLists from './contacts/list';
-import calendarListFree from './calendar/listFree';
+const jwt = require('jsonwebtoken');
+const moment = require('moment');
+const AST = require('auto-sorting-array');
+const config = require('../config');
+const calendarList = require('./calendar/list');
+const calendarGet = require('./calendar/get');
+const calendarDelete = require('./calendar/delete');
+const calendarDelta = require('./calendar/delta');
+const contactLists = require('./contacts/list');
+const calendarListFree = require('./calendar/listFree');
 
-import calendarCreate from './calendar/create';
-import waitingCalendarCreate from './calendar/createWaiting';
-import urlCreate from './urlshortener/create';
-import contactGet from './contacts/get';
-import contactCreate from './contacts/create';
-import contactUpdate from './contacts/update';
-import contactDelete from './contacts/delete';
-import contactSearch, {
-  warmup as contactSearchWarmup,
-} from './contacts/search';
+const calendarCreate = require('./calendar/create');
+const waitingCalendarCreate = require('./calendar/createWaiting');
+const urlCreate = require('./urlshortener/create');
+const contactGet = require('./contacts/get');
+const contactCreate = require('./contacts/create');
+const contactUpdate = require('./contacts/update');
+const contactDelete = require('./contacts/delete');
+const { default: contactSearch, warmup: contactSearchWarmup } = require('./contacts/search');
 
-import googleHook from '../../src/hooks/google';
+const googleHook = require('../../src/hooks/google');
 
-import {
-  byPerson as appointmentsByPerson,
-  cancelledByPerson as countCancelledAppointmentsByPerson,
-} from './appointments/person';
+const {
+  byPerson: appointmentsByPerson,
+  cancelledByPerson: countCancelledAppointmentsByPerson,
+} = require('./appointments/person');
 
-import { listTransactions as listTransactionsDB } from './transactions/list';
+const { listTransactions: listTransactionsDB } = require('./transactions/list');
 
-import calendarPatch from './calendar/patch';
-
+const calendarPatch = require('./calendar/patch');
 const calendarDayBefore = require('./calendar/dayBeforeEvents');
-
 const calendarWatch = require('./calendar/watch');
 const calendarWatchStop = require('./calendar/watch/stop');
-
 const { sendMessage: sms } = require('./utilities/sms');
 const { getSyncToken, setSyncToken } = require('./utilities/token');
 const configs = require('./utilities/configs');
@@ -816,34 +811,30 @@ async function handleGoogleHook() {
 
 const functions = {
   listEvents,
-  listDeltaEvents,
-  createEvent,
-  patchEvent,
   getEvent,
   cancelEvent,
-  informReservationToCustomer,
+  listDeltaEvents,
+  createEvent,
+  createWaitingEvent,
+  patchEvent,
   remindCustomers,
   listContacts,
   createContact,
   updateContact,
   getContact,
   searchContacts,
+  deleteContact,
   watchCalendar,
   stopWatchCalendar,
-  getSyncToken,
-  setSyncToken,
   generateJWT,
   listCustomerAppointments,
   remindCustomersTouchUp,
   createShortURL,
   getAppointmentsByPerson,
-  // syncContacts,
   getCountCancelledAppointmentsByPerson,
-  deleteContact,
-  createWaitingEvent,
   listTransactions,
   listFreeSlots,
   handleGoogleHook,
 };
 
-export default functions;
+module.exports = functions;

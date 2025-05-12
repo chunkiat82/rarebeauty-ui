@@ -1,7 +1,7 @@
-import moment from 'moment';
-import uuidv1 from 'uuid/v1';
-import { generateCalendarObj } from '../utilities/jwt';
-import { byPersonCount as getAppointmentsCountByPerson } from '../appointments/person';
+const { v1: uuidv1 } = require('uuid');
+const moment = require('moment');
+const { generateCalendarObj } = require('../utilities/jwt');
+const { byPersonCount: getAppointmentsCountByPerson } = require('../appointments/person');
 
 const TEST_EMAIL = `test@soho.sg`;
 const WHATSAPPURL = 'https://wa.me';
@@ -134,7 +134,7 @@ function createAppointment(calendar, options) {
   });
 }
 
-export default function create(options) {
+function create(options) {
   const { name, mobile, startDT, endDT, services, force } = options;
 
   // console.error(options);

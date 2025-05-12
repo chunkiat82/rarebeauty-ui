@@ -58,7 +58,7 @@ async function updateContact({ resourceName, mobile, validPhone }, me, cb) {
   );
 }
 
-export default async function update(options) {
+module.exports = async function update(options) {;
   const { resourceName } = options;
   const people = await generatePeopleObj();
 

@@ -7,25 +7,25 @@
  * LICENSE.txt file in the root directory of this source tree.
  */
 
-import {
-  GraphQLSchema as Schema,
-  GraphQLObjectType as ObjectType,
-} from 'graphql';
+const {
+  GraphQLSchema,
+  GraphQLObjectType
+} = require('graphql');
 
-import me from './queries/me.js';
-import contacts from './queries/contacts.js';
-import contact from './queries/contact.js';
-import event from './queries/event.js';
-import events from './queries/events.js';
-import appointment from './queries/appointment.js';
-import person from './queries/person.js';
-import services from './queries/services.js';
-import slots from './queries/slots.js';
+const me = require('./queries/me');
+const contacts = require('./queries/contacts');
+const contact = require('./queries/contact');
+const event = require('./queries/event');
+const events = require('./queries/events');
+const appointment = require('./queries/appointment');
+const person = require('./queries/person');
+const services = require('./queries/services');
+const slots = require('./queries/slots');
 
-import mutations from './mutations/index.js';
+const mutations = require('./mutations/index');
 
-const schema = new Schema({
-  query: new ObjectType({
+const schema = new GraphQLSchema({
+  query: new GraphQLObjectType({
     name: 'Query',
     fields: {
       me,
@@ -42,4 +42,4 @@ const schema = new Schema({
   mutation: mutations,
 });
 
-export default schema;
+module.exports = schema;

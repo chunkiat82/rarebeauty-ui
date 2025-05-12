@@ -1,10 +1,10 @@
-import moment from 'moment';
-import { get, upsert } from '../../data/database';
+const moment = require('moment');
+const { get, upsert } = require('../../data/database');
 
 /**
  * return string nextSyncToken
  */
-export async function getSyncToken(context) {
+async function getSyncToken(context) {
   let syncToken = null;
   try {
     const obj = await get('syncToken:calendar', context);
@@ -18,7 +18,7 @@ export async function getSyncToken(context) {
   return syncToken;
 }
 
-export async function setSyncToken(options) {
+async function setSyncToken(options) {
   const { syncToken, context } = options;
   try {
     await upsert(
@@ -33,7 +33,7 @@ export async function setSyncToken(options) {
   }
 }
 
-export default {
+module.exports = {
   getSyncToken,
   setSyncToken,
 };

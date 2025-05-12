@@ -2,13 +2,11 @@
 /* eslint-disable consistent-return */
 /* eslint-disable no-await-in-loop */
 /* eslint-disable no-param-reassign */
-// import Hashids from 'hashids';
-import moment from 'moment';
-import api from '../api/index.js';
-import { get, remove, upsert } from '../data/database/index.js';
-// import { tenants } from '../api/keys/tenants.json';
-
-import { getSyncToken, setSyncToken } from '../api/utilities/token.js';
+// const Hashids = require('hashids');
+const moment = require('moment');
+const api = require('../api/index');
+const { get, remove, upsert } = require('../data/database/index');
+const { getSyncToken, setSyncToken } = require('../api/utilities/token');
 
 // instead of scripting on kibana, i'm duplicating the content here,
 function populateStats(item) {
@@ -106,7 +104,7 @@ async function updateTransactionOnTime(item, context) {
   }
 }
 
-export async function handleCalendarWebhook(headers) {
+async function handleCalendarWebhook(headers) {
   // console.error(`headers=${JSON.stringify(headers, null, 2)}`);
   console.error('webhook invoked');
   // setting tenantName
@@ -232,4 +230,4 @@ export async function handleCalendarWebhook(headers) {
   // return events;
 }
 
-export default handleCalendarWebhook;
+module.exports = handleCalendarWebhook;

@@ -1,6 +1,6 @@
 const { generateCalendarObj } = require('../utilities/jwt');
 
-export default function get(options) {
+function get(options) {
   const { calendarId, eventId } = options;
   // console.error(`options`, options);
   return new Promise(async (res, rej) => {

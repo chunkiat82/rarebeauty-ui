@@ -1,24 +1,24 @@
-import {
-  GraphQLString as StringType,
-  GraphQLBoolean as BooleanType,
-} from 'graphql';
-import moment from 'moment';
-import AppointmentType from '../types/AppointmentType.js';
-import api from '../../api/index.js';
-import { get, upsert } from '../database.js';
+const {
+  GraphQLString,
+  GraphQLBoolean
+} = require('graphql');
+const moment = require('moment');
+const AppointmentType = require('../types/AppointmentType');
+const api = require('../../api/index');
+const { get, upsert } = require('../database');
 
-export default {
+module.exports = {
   type: AppointmentType,
   args: {
     id: {
-      type: StringType,
+      type: GraphQLString,
     },
     by: {
       // by customer or admin
-      type: StringType,
+      type: GraphQLString,
     },
     toBeInformed: {
-      type: BooleanType,
+      type: GraphQLBoolean,
     },
   },
   async resolve(_, args, context) {

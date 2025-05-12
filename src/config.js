@@ -8,7 +8,7 @@
  */
 
 /* eslint-disable max-len */
-const keys = require('./api/keys/google.json');
+// Use environment variables directly instead of trying to load JSON files
 
 if (process.env.BROWSER) {
   throw new Error(
@@ -29,11 +29,12 @@ const config = {
   },
   database: {
     couchbase: {
-      url: process.env.COUCHBASE_URL || 'couchbase://localhost',
-      bucket: process.env.COUCHBASE_BUCKET || 'rarebeauty',
-      username: process.env.COUCHBASE_USERNAME || 'Administrator',
-      password: process.env.COUCHBASE_PASSWORD || 'password',
+      url: process.env.CBURL || process.env.COUCHBASE_URL || 'couchbase://localhost',
+      bucket: process.env.CB_BUCKET || process.env.COUCHBASE_BUCKET || 'appointments_dev',
+      username: process.env.CB_USERNAME || process.env.COUCHBASE_USERNAME || 'rarebeauty',
+      password: process.env.CB_PASSWORD || process.env.COUCHBASE_PASSWORD || 'soho!@#$',
     },
+    url: process.env.CBURL || process.env.COUCHBASE_URL || 'couchbase://localhost',
   },
   google: {
     calendar: {

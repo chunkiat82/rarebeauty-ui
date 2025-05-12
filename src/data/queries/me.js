@@ -7,7 +7,7 @@
  * LICENSE.txt file in the root directory of this source tree.
  */
 
-import UserType from '../types/UserType.js';
+const UserType = require('../types/UserType');
 
 const me = {
   type: UserType,
@@ -21,4 +21,4 @@ const me = {
   },
 };
 
-export default me;
+module.exports = me;

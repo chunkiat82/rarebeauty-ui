@@ -1,21 +1,21 @@
-import {
-  GraphQLString as StringType,
-  GraphQLNonNull as NonNull,
-} from 'graphql';
-import ContactType from '../types/ContactType.js';
-import api from '../../api/index.js';
+const {
+  GraphQLString,
+  GraphQLNonNull
+} = require('graphql');
+const ContactType = require('../types/ContactType');
+const api = require('../../api/index');
 
-export default {
+module.exports = {
   type: ContactType,
   args: {
     first: {
-      type: new NonNull(StringType),
+      type: new GraphQLNonNull(GraphQLString),
     },
     last: {
-      type: StringType,
+      type: GraphQLString,
     },
     mobile: {
-      type: new NonNull(StringType),
+      type: new GraphQLNonNull(GraphQLString),
     },
   },
   async resolve(_, args, context) {

@@ -1,17 +1,17 @@
-import {
-  GraphQLObjectType as ObjectType,
-  GraphQLInt as IntType,
-  GraphQLNonNull as NonNull,
-  GraphQLString as StringType,
-} from 'graphql';
+const {
+  GraphQLObjectType,
+  GraphQLInt,
+  GraphQLNonNull,
+  GraphQLString
+} = require('graphql');
 
-const ResponseType = new ObjectType({
+const ResponseType = new GraphQLObjectType({
   name: 'Response',
   uniqueKey: 'id',
   fields: () => ({
-    id: { type: new NonNull(StringType) },
-    code: { type: IntType },
+    id: { type: new GraphQLNonNull(GraphQLString) },
+    code: { type: GraphQLInt },
   }),
 });
 
-export default ResponseType;
+module.exports = ResponseType;

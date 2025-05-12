@@ -1,5 +1,4 @@
 /**
- /**
  * React Starter Kit (https://www.reactstarterkit.com/)
  *
  * Copyright © 2014-present Kriasoft, LLC. All rights reserved.
@@ -8,27 +7,27 @@
  * LICENSE.txt file in the root directory of this source tree.
  */
 
-import { GraphQLList as List, GraphQLString as StringType } from 'graphql';
-// import fetch from 'isomorphic-fetch';
-import ContactType from '../types/ContactType.js';
-import api from '../../api/index.js';
+const { GraphQLList, GraphQLString } = require('graphql');
+// const fetch = require('isomorphic-fetch');
+const ContactType = require('../types/ContactType');
+const db = require('../../utils/db');
 
 const contacts = {
-  type: new List(ContactType),
+  type: new GraphQLList(ContactType),
   args: {
-    nameQuery: { type: StringType },
+    nameQuery: { type: GraphQLString },
   },
-  async resolve(_, args, context) {
+  async resolve(_, args) {
     const { nameQuery } = args;
 
     // If nameQuery is provided, use searchContacts
     if (nameQuery) {
-      return api({ action: 'searchContacts', query: nameQuery, context });
+      return await db.searchContacts(nameQuery);
     }
 
     // Otherwise, return all contacts
-    return api({ action: 'listContacts', context });
+    return await db.listContacts();
   },
 };
 
-export default contacts;
+module.exports = contacts;

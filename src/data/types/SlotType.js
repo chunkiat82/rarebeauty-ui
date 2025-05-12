@@ -7,44 +7,44 @@
  * LICENSE.txt file in the root directory of this source tree.
  */
 
-import {
-  GraphQLObjectType as ObjectType,
-  GraphQLString as StringType,
-  GraphQLInt as IntegerType,
-  GraphQLNonNull as NonNull,
-} from 'graphql';
+const {
+  GraphQLObjectType,
+  GraphQLString,
+  GraphQLInt,
+  GraphQLNonNull
+} = require('graphql');
 
 const FREE_TYPE = 'Free';
 
-const SlotType = new ObjectType({
+const SlotType = new GraphQLObjectType({
   name: 'Slot',
   fields: {
     start: {
-      type: new NonNull(StringType),
+      type: new GraphQLNonNull(GraphQLString),
       resolve(obj) {
         return obj.start;
       },
     },
     end: {
-      type: new NonNull(StringType),
+      type: new GraphQLNonNull(GraphQLString),
       resolve(obj) {
         return obj.end;
       },
     },
     durationInMinutes: {
-      type: new NonNull(IntegerType),
+      type: new GraphQLNonNull(GraphQLInt),
       resolve(obj) {
         return obj.durationInMinutes;
       },
     },
     type: {
-      type: new NonNull(StringType),
+      type: new GraphQLNonNull(GraphQLString),
       resolve() {
         return FREE_TYPE;
       },
     },
     amp: {
-      type: new NonNull(StringType),
+      type: new GraphQLNonNull(GraphQLString),
       resolve(obj) {
         return obj.amp;
       },
@@ -52,4 +52,4 @@ const SlotType = new ObjectType({
   },
 });
 
-export default SlotType;
+module.exports = SlotType;

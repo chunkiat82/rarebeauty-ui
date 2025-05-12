@@ -1,7 +1,7 @@
 const { generateCalendarObj } = require('../utilities/jwt');
 const moment = require('moment');
 
-export default function list(options) {
+function list(options) {
   // console.log(options);
   const {
     calendarId,
@@ -55,3 +55,5 @@ export default function list(options) {
     });
   });
 }
+
+module.exports = list;

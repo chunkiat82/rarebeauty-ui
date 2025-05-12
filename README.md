@@ -233,46 +233,128 @@ Made with ♥ by Konstantin Tarkus ([@koistya](https://twitter.com/koistya)) and
 [node]: https://nodejs.org
 [chat]: https://gitter.im/kriasoft/react-starter-kit
 
-# RareBeauty Backend Service
+# Rare Beauty Backend Service
 
-## Environment Variables and Security
+A Node.js backend service for Rare Beauty appointment management system.
 
-The service can be configured using environment variables or configuration files. For security best practices:
+## Features
 
-1. In development:
-   - Configuration can be loaded from JSON files in `src/api/keys/`
-   - Default values are used for non-critical settings
-   - Environment variables will override file-based configuration
+- Appointment management with Google Calendar integration
+- SMS notifications via Twilio
+- Couchbase database integration
+- GraphQL API
+- JWT authentication
 
-2. In production:
-   - Use environment variables for all sensitive information
-   - Do not commit API keys, secrets, or credentials to version control
-   - Move all configuration from JSON files to environment variables
+## Environment Configuration
 
-3. Required Environment Variables:
+The project now supports environment variable configuration via `.env` files:
+
+- `env.production` - Production environment variables
+- `env.local` - Local development environment variables
+
+### Using Environment Variables
+
+You can load the environment variables using one of the following methods:
+
+1. **Using the load-env.js script:**
+   ```bash
+   # For production
+   node -r ./load-env.js your-script.js
+
+   # For development
+   NODE_ENV=development node -r ./load-env.js your-script.js
    ```
-   # Critical in production
-   JWT_SECRET=your-jwt-secret
-   GOOGLE_PRIVATE_KEY=your-google-private-key
-   TWILIO_ACCOUNT_SID=your-twilio-sid
-   TWILIO_AUTH_TOKEN=your-twilio-token
 
-   # Optional with defaults
-   PORT=3004
-   NODE_ENV=production
-   ALLOWED_ORIGINS=https://your-domain.com
+2. **Copying to .env file:**
+   ```bash
+   # For production
+   cp env.production .env
+
+   # For development
+   cp env.local .env
    ```
 
-4. Configuration Files:
-   - `google.json`: Google Calendar API credentials
-   - `twilio.json`: Twilio SMS credentials
-   - `tenants.json`: Database configuration per tenant
+The environment configuration prioritizes:
+1. Environment variables set in the system
+2. Variables defined in the .env files
+3. Default values from the configuration files in src/api/keys/
 
-5. Security Recommendations:
-   - Use a secure secret manager in production
-   - Rotate credentials regularly
-   - Monitor for unauthorized access
-   - Keep dependencies updated
-   - Use HTTPS in production
+## CLI Commands
 
-See `env.example` for a complete list of available environment variables.
+The application includes a command-line interface for various operations:
+
+```bash
+# Run CLI commands with local environment
+npm run cli:local -- --action=listEvents
+
+# Run CLI commands with production environment
+npm run cli:prod -- --action=listEvents
+
+# Common CLI commands
+npm run cli:local -- --action=listEvents --start="2023-04-01" --end="2023-04-30"
+npm run cli:local -- --action=createEvent --start="2023-04-15T10:00:00" --duration=60 --services="Haircut" --mobile="+65XXXXXXXX"
+```
+
+## Server Commands
+
+```bash
+# Start the server with local environment
+npm run dev:local
+
+# Start the server with production environment 
+npm run dev:prod
+
+# Start the server (without environment loading)
+npm run dev
+```
+
+## Prerequisites
+
+- Node.js >= 20
+- Couchbase Server
+- Google Calendar API credentials
+- Twilio account credentials
+
+## Configuration
+
+Place your configuration files in `src/api/keys/`:
+- `google.json` - Google Calendar API credentials
+- `twilio.json` - Twilio SMS credentials
+- `tenants.json` - Database configuration
+- `server.json` - Server configuration
+
+## Development
+
+```bash
+# Install dependencies
+npm install
+
+# Run in development mode
+npm run dev
+
+# Run in production mode
+npm start
+
+# Lint code
+npm run lint
+
+# Fix linting issues
+npm run lint:fix
+```
+
+## Docker
+
+Build and run the container:
+
+```bash
+docker build -t rarebeauty-backend .
+docker run -p 3004:3004 rarebeauty-backend
+```
+
+## Environment Variables
+
+- `NODE_ENV` - Environment (development/production)
+- `PORT` - Server port (default: 3004)
+- `COUCHBASE_URL` - Couchbase server URL
+- `JWT_SECRET` - JWT signing secret
+- See `.env.example` for all available options

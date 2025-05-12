@@ -7,17 +7,17 @@
  * LICENSE.txt file in the root directory of this source tree.
  */
 
-import {
-  GraphQLObjectType as ObjectType,
-  GraphQLString as StringType,
-  GraphQLNonNull as NonNull,
-} from 'graphql';
+const {
+  GraphQLObjectType,
+  GraphQLString,
+  GraphQLNonNull
+} = require('graphql');
 
-const ContactType = new ObjectType({
+const ContactType = new GraphQLObjectType({
   name: 'Contact',
   fields: {
     name: {
-      type: new NonNull(StringType),
+      type: new GraphQLNonNull(GraphQLString),
       async resolve(obj /* , args */) {
         // console.log(obj);
         const selectedObj = (obj.names && obj.names[0]) || null;
@@ -27,7 +27,7 @@ const ContactType = new ObjectType({
       },
     },
     display: {
-      type: new NonNull(StringType),
+      type: new GraphQLNonNull(GraphQLString),
       async resolve(obj /* , args */) {
         // console.log(obj);
         const selectedObj = (obj.names && obj.names[0]) || null;
@@ -37,7 +37,7 @@ const ContactType = new ObjectType({
       },
     },
     mobile: {
-      type: new NonNull(StringType),
+      type: new GraphQLNonNull(GraphQLString),
       async resolve(obj /* , args */) {
         // console.log(obj);
         let selectedObj =
@@ -58,8 +58,8 @@ const ContactType = new ObjectType({
         return selectedObj.canonicalForm || selectedObj.value || selectedObj;
       },
     },
-    resourceName: { type: StringType },
+    resourceName: { type: GraphQLString },
   },
 });
 
-export default ContactType;
+module.exports = ContactType;

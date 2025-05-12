@@ -1,14 +1,13 @@
 const { google } = require('googleapis');
-const config = require('../config');
 const db = require('../utils/db');
 
 const calendar = google.calendar({
   version: 'v3',
   auth: new google.auth.GoogleAuth({
     credentials: {
-      client_id: config.google.calendar.clientId,
-      client_secret: config.google.calendar.clientSecret,
-      redirect_uri: config.google.calendar.redirectUri,
+      client_id: process.env.GOOGLE_CLIENT_ID,
+      client_secret: process.env.GOOGLE_CLIENT_SECRET,
+      redirect_uri: process.env.GOOGLE_REDIRECT_URI,
     },
     scopes: ['https://www.googleapis.com/auth/calendar'],
   }),
@@ -61,7 +60,7 @@ async function handleCalendarWebhook(headers) {
 async function processCalendarUpdates(channelId) {
   try {
     const events = await calendar.events.list({
-      calendarId: 'primary',
+      calendarId: process.env.GOOGLE_CALENDAR_ID || 'primary',
       timeMin: new Date().toISOString(),
       maxResults: 10,
       singleEvents: true,

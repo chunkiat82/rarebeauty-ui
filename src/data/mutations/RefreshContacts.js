@@ -1,12 +1,14 @@
-import { GraphQLString as StringType } from 'graphql';
-import ResponseType from '../types/ResponseType.js';
-import api from '../../api/index.js';
+const {
+  GraphQLString
+} = require('graphql');
+const ResponseType = require('../types/ResponseType');
+const api = require('../../api/index');
 
-export default {
+module.exports = {
   type: ResponseType,
   args: {
     refresh: {
-      type: StringType,
+      type: GraphQLString,
     },
   },
   async resolve(_, _args, context) {

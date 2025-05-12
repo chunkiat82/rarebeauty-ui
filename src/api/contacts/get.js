@@ -2,7 +2,7 @@
 // babel-node cli --action=updateContact --verified=false --resourceName=people/YYY --mobile=XX
 const { generatePeopleObj } = require('../utilities/jwt');
 
-export default async function get(options) {
+module.exports = async function get(options) {;
   const { resourceName } = options;
   const people = await generatePeopleObj();
 

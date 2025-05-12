@@ -1,4 +1,4 @@
-import moment from 'moment';
+const moment = require('moment');
 
 const { generateCalendarObj } = require('../utilities/jwt');
 
@@ -118,7 +118,7 @@ function convertBusyToFree(calendarId, response) {
   return splitfreeSlots(freeSlots);
 }
 
-export default function listFree(options) {
+function listFree(options) {
   // console.log(options);
   const { calendarId } = options;
 

@@ -2,7 +2,7 @@
 const { generatePeopleObj } = require('../utilities/jwt');
 
 // Send a warmup request with empty query to update the cache as recommended by Google
-export async function warmup() {
+async function warmup() {
   const people = await generatePeopleObj();
 
   return new Promise((resolve, reject) => {
@@ -25,7 +25,7 @@ export async function warmup() {
 }
 
 // Search contacts by name
-export default async function search(options) {
+async function search(options) {
   const { query } = options;
   const people = await generatePeopleObj();
 
@@ -74,3 +74,8 @@ export default async function search(options) {
     );
   });
 }
+
+module.exports = {
+  default: search,
+  warmup
+};

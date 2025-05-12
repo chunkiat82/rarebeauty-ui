@@ -7,26 +7,26 @@
  * LICENSE.txt file in the root directory of this source tree.
  */
 
-import {
-  GraphQLObjectType as ObjectType,
-  GraphQLString as StringType,
-  // GraphQLInt as IntegerType,
-  GraphQLNonNull as NonNull,
-  // GraphQLFloat as FloatType,
-  // GraphQLList as ListType,
-} from 'graphql';
+const {
+  GraphQLObjectType,
+  GraphQLString,
+  GraphQLInt,
+  GraphQLNonNull,
+  GraphQLFloat,
+  GraphQLList
+} = require('graphql');
 
-const EventStatusType = new ObjectType({
+const EventStatusType = new GraphQLObjectType({
   name: 'EventStatus',
   fields: {
     id: {
-      type: new NonNull(StringType),
+      type: new GraphQLNonNull(GraphQLString),
       resolve(obj) {
         return obj.id;
       },
     },
     status: {
-      type: new NonNull(StringType),
+      type: new GraphQLNonNull(GraphQLString),
       resolve(obj) {
         return obj.status;
       },
@@ -34,4 +34,4 @@ const EventStatusType = new ObjectType({
   },
 });
 
-export default EventStatusType;
+module.exports = EventStatusType;

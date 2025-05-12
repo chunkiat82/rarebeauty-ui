@@ -1,16 +1,16 @@
-import AST from 'auto-sorting-array';
-import {
-  //   GraphQLObjectType as ObjectType,
-  GraphQLString as StringType,
-  GraphQLInt as IntegerType,
-  GraphQLList as ListType,
-  GraphQLFloat as FloatType,
-  GraphQLBoolean as BooleanType,
-} from 'graphql';
-import moment from 'moment';
-import AppointmentType from '../types/AppointmentType.js';
-import api from '../../api/index.js';
-import { get, upsert } from '../database.js';
+const AST = require('auto-sorting-array');
+const {
+  GraphQLObjectType,
+  GraphQLString,
+  GraphQLInt,
+  GraphQLList,
+  GraphQLFloat,
+  GraphQLBoolean
+} = require('graphql');
+const moment = require('moment');
+const AppointmentType = require('../types/AppointmentType');
+const api = require('../../api/index');
+const { get, upsert } = require('../database');
 
 function createTransactionEntry(
   uuid,
@@ -50,47 +50,47 @@ function createTransactionEntry(
   return entryTemplate;
 }
 
-export default {
+module.exports = {
   type: AppointmentType,
   args: {
     name: {
-      type: StringType,
+      type: GraphQLString,
     },
     start: {
-      type: StringType,
+      type: GraphQLString,
     },
     mobile: {
-      type: StringType,
+      type: GraphQLString,
     },
     serviceIds: {
-      type: new ListType(StringType),
+      type: new GraphQLList(GraphQLString),
     },
     duration: {
-      type: IntegerType,
+      type: GraphQLInt,
     },
     resourceName: {
-      type: StringType,
+      type: GraphQLString,
     },
     totalAmount: {
-      type: FloatType,
+      type: GraphQLFloat,
     },
     additional: {
-      type: FloatType,
+      type: GraphQLFloat,
     },
     discount: {
-      type: FloatType,
+      type: GraphQLFloat,
     },
     toBeInformed: {
-      type: BooleanType,
+      type: GraphQLBoolean,
     },
     deposit: {
-      type: FloatType,
+      type: GraphQLFloat,
     },
     force: {
-      type: BooleanType,
+      type: GraphQLBoolean,
     },
     waitingList: {
-      type: BooleanType,
+      type: GraphQLBoolean,
     },
   },
   async resolve(_, args, context) {

@@ -1,6 +1,6 @@
 const { generateCalendarObj } = require('../utilities/jwt');
 
-export default async function getDelta(options) {
+module.exports = async function getDelta(options) {;
   return new Promise(async (res, rej) => {
     const { syncToken, nextPageToken, nextSyncToken } = options;
     const { calendarId } = options;

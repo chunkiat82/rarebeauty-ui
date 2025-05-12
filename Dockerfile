@@ -1,18 +1,27 @@
-FROM node:12
+# Use Node.js LTS version
+FROM node:20-slim
 
-# Set a working directory
+# Set timezone
+ENV TZ=Asia/Singapore
+RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
+
+# Create app directory
 WORKDIR /usr/src/app
 
-COPY ./build/package.json .
-COPY ./build/package-lock.json .
+# Install app dependencies
+COPY package*.json ./
+RUN npm ci --only=production
 
-# Install Node.js dependencies
-RUN npm install --production --no-progress
+# Copy app source
+COPY src/ ./src/
+COPY src/api/keys/ ./src/api/keys/
 
-# Copy application files
-COPY ./build .
+# Set environment variables
+ENV NODE_ENV=production
+ENV PORT=3002
 
-RUN cp /usr/share/zoneinfo/Asia/Singapore /etc/localtime
-RUN echo "Asia/Singapore" > /etc/timezone
+# Expose the application port
+EXPOSE 3002
 
-CMD [ "node", "server.js" ]
+# Start the application
+CMD [ "node", "src/index.js" ]

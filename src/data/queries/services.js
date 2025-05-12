@@ -1,5 +1,4 @@
 /**
- /**
  * React Starter Kit (https://www.reactstarterkit.com/)
  *
  * Copyright © 2014-present Kriasoft, LLC. All rights reserved.
@@ -8,15 +7,12 @@
  * LICENSE.txt file in the root directory of this source tree.
  */
 
-import {
-  GraphQLList as ListType,
-  // GraphQLString as StringType
-} from 'graphql';
-import ServiceType from '../types/ServiceType.js';
-import { get } from '../database.js';
+const { GraphQLList, GraphQLString } = require('graphql');
+const ServiceType = require('../types/ServiceType');
+const { get } = require('../database');
 
 const services = {
-  type: new ListType(ServiceType),
+  type: new GraphQLList(ServiceType),
   async resolve(_, _args, context) {
     const response = await get(`config:services`, context);
     const finalServices = response.services;
@@ -24,4 +20,4 @@ const services = {
   },
 };
 
-export default services;
+module.exports = services;

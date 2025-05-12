@@ -1,5 +1,4 @@
 /**
- /**
  * React Starter Kit (https://www.reactstarterkit.com/)
  *
  * Copyright © 2014-present Kriasoft, LLC. All rights reserved.
@@ -8,14 +7,14 @@
  * LICENSE.txt file in the root directory of this source tree.
  */
 
-import { GraphQLString as StringType } from 'graphql';
-import AppointmentType from '../types/AppointmentType.js';
-import { get } from '../database.js';
+const { GraphQLString } = require('graphql');
+const AppointmentType = require('../types/AppointmentType');
+const { get } = require('../database');
 
 const appointment = {
   type: AppointmentType,
   args: {
-    id: { type: StringType },
+    id: { type: GraphQLString },
   },
   async resolve(_, args, context) {
     // console.log('query appointment args', JSON.stringify(args));
@@ -27,4 +26,4 @@ const appointment = {
   },
 };
 
-export default appointment;
+module.exports = appointment;

@@ -7,93 +7,91 @@
  * LICENSE.txt file in the root directory of this source tree.
  */
 
-import {
-  GraphQLObjectType as ObjectType,
-  GraphQLString as StringType,
-  // GraphQLInt as IntegerType,
-  GraphQLNonNull as NonNull,
-  // GraphQLFloat as FloatType,
-  GraphQLBoolean as BooleanType,
-  GraphQLList as ListType,
-} from 'graphql';
+const {
+  GraphQLObjectType,
+  GraphQLString,
+  GraphQLNonNull,
+  GraphQLBoolean,
+  GraphQLList
+} = require('graphql');
 
-const EventType = new ObjectType({
+const EventType = new GraphQLObjectType({
   name: 'Event',
   fields: {
     id: {
-      type: new NonNull(StringType),
+      type: new GraphQLNonNull(GraphQLString),
       resolve(obj) {
         return obj.id;
       },
     },
     status: {
-      type: new NonNull(StringType),
+      type: new GraphQLNonNull(GraphQLString),
       resolve(obj) {
         return obj.status;
       },
     },
     resourceName: {
-      type: new NonNull(StringType),
+      type: new GraphQLNonNull(GraphQLString),
       resolve(obj) {
         return obj.extendedProperties.shared.resourceName;
       },
     },
     name: {
-      type: new NonNull(StringType),
+      type: new GraphQLNonNull(GraphQLString),
       resolve(obj) {
         return obj.attendees[0].displayName;
       },
     },
     mobile: {
-      type: new NonNull(StringType),
+      type: new GraphQLNonNull(GraphQLString),
       resolve(obj) {
         return obj.extendedProperties.shared.mobile;
       },
     },
     start: {
-      type: new NonNull(StringType),
+      type: new GraphQLNonNull(GraphQLString),
       resolve(obj) {
         return String(obj.start.dateTime);
       },
     },
     end: {
-      type: new NonNull(StringType),
+      type: new GraphQLNonNull(GraphQLString),
       resolve(obj) {
         return String(obj.end.dateTime);
       },
     },
     created: {
-      type: new NonNull(StringType),
+      type: new GraphQLNonNull(GraphQLString),
       resolve(obj) {
         return String(obj.created);
       },
     },
     serviceIds: {
-      type: new ListType(StringType),
+      type: new GraphQLList(GraphQLString),
       resolve(obj) {
         return obj.extendedProperties.shared.services.split(',');
       },
     },
     apptId: {
-      type: StringType,
+      type: GraphQLString,
       resolve(obj) {
         return obj.extendedProperties.shared.uuid;
       },
     },
     informed: {
-      type: BooleanType,
+      type: GraphQLBoolean,
       resolve(obj) {
         return obj.extendedProperties.shared.informed;
       },
     },
     confirmed: {
-      type: StringType,
+      type: GraphQLString,
       resolve(obj) {
         return obj.extendedProperties.shared.confirmed;
       },
     },
     shortURL: {
-      type: StringType,
+      type: GraphQLString,
       resolve(obj) {
         return obj.extendedProperties.shared.shortURL;
       },
@@ -101,4 +99,4 @@ const EventType = new ObjectType({
   },
 });
 
-export default EventType;
+module.exports = EventType;

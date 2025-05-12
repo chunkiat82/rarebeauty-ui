@@ -1,9 +1,14 @@
-export default {
+module.exports = {
   singleQuote: true,
   trailingComma: 'all',
   printWidth: 80,
   tabWidth: 2,
   semi: true,
   bracketSpacing: true,
-  arrowParens: 'avoid',
+  arrowParens: 'always',
+  endOfLine: 'lf',
+  useTabs: false,
+  quoteProps: 'as-needed',
+  jsxSingleQuote: false,
+  bracketSameLine: false,
 }; 

@@ -1,9 +1,17 @@
+// Load environment variables first
+require('./load-env');
+
 import moment from 'moment';
 import {
   argv
 } from 'yargs';
 import functions from './src/api/functions';
 
+// Configure timezone from environment
+if (process.env.TZ) {
+  moment.tz.setDefault(process.env.TZ);
+  console.log(`Using timezone: ${process.env.TZ}`);
+}
 
 function processArguments(argv) {
   const options = argv;
@@ -13,6 +21,9 @@ function processArguments(argv) {
   const services = String(argv.services).split(',');
   const mobile = String(argv.mobile);
   let action = functions.listEvents;
+  
+  // Apply tenant from environment if specified
+  const tenant = argv.tenant || process.env.CB_DEFAULT_TENANT || 'rarebeauty';
   
   if (functions[argv.action]) {
     action = functions[argv.action];
@@ -26,7 +37,9 @@ function processArguments(argv) {
     details: true,
     action,
     services,
-    mobile
+    mobile,
+    tenant,
+    context: { tenant }
   });
 }
 
@@ -39,6 +52,8 @@ export default async function main(argv) {
 
 async function main(argv) {
   try {
+    console.log(`Running in ${process.env.NODE_ENV || 'development'} mode`);
+    
     const options = processArguments(argv);
     // console.log(options);
     const results = await options.action(options);
@@ -64,6 +79,7 @@ async function main(argv) {
     process.exit();
   } catch (error) {
     console.log('main - ', error);
+    process.exit(1);
   }
 }
 
@@ -115,4 +131,5 @@ try {
   main(argv);
 } catch (err) {
   console.log(`running err=${JSON.stringify(err, null, 2)}`);
+  process.exit(1);
 }

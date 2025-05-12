@@ -7,42 +7,41 @@
  * LICENSE.txt file in the root directory of this source tree.
  */
 
-import {
-  GraphQLObjectType as ObjectType,
-  GraphQLString as StringType,
-  GraphQLInt as IntegerType,
-  GraphQLNonNull as NonNull,
-  GraphQLFloat as FloatType,
-  GraphQLBoolean as BooleanType,
-  // GraphQLList as ListType,
-} from 'graphql';
+const {
+  GraphQLObjectType,
+  GraphQLString,
+  GraphQLInt,
+  GraphQLNonNull,
+  GraphQLFloat,
+  GraphQLBoolean
+} = require('graphql');
 
-const ServiceType = new ObjectType({
+const ServiceType = new GraphQLObjectType({
   name: 'Service',
   fields: {
     id: {
-      type: new NonNull(StringType),
+      type: new GraphQLNonNull(GraphQLString),
     },
     service: {
-      type: new NonNull(StringType),
+      type: new GraphQLNonNull(GraphQLString),
     },
     price: {
-      type: new NonNull(FloatType),
+      type: new GraphQLNonNull(GraphQLFloat),
     },
     followUp: {
-      type: StringType,
+      type: GraphQLString,
     },
     count: {
-      type: IntegerType,
+      type: GraphQLInt,
       resolve(obj) {
         return obj.count || 1;
       },
     },
     duration: {
-      type: new NonNull(IntegerType),
+      type: new GraphQLNonNull(GraphQLInt),
     },
     enabled: {
-      type: BooleanType,
+      type: GraphQLBoolean,
       resolve(obj) {
         return obj.enabled;
       },
@@ -50,4 +49,4 @@ const ServiceType = new ObjectType({
   },
 });
 
-export default ServiceType;
+module.exports = ServiceType;

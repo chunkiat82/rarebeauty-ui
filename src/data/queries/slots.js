@@ -1,14 +1,14 @@
-import { GraphQLList as ListType, GraphQLString as StringType } from 'graphql';
-// import moment from 'moment';
-import SlotType from '../types/SlotType.js';
-import api from '../../api/index.js';
+const { GraphQLList, GraphQLString } = require('graphql');
+// const moment = require('moment');
+const SlotType = require('../types/SlotType');
+const api = require('../../api/index');
 
 const SLOT_TYPE = 'Free'; // currently not used
 
 const slots = {
-  type: new ListType(SlotType),
+  type: new GraphQLList(SlotType),
   args: {
-    id: { type: StringType },
+    id: { type: GraphQLString },
   },
   async resolve(_, _args, context) {
     const response = await api({
@@ -21,4 +21,4 @@ const slots = {
   },
 };
 
-export default slots;
+module.exports = slots;

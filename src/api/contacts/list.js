@@ -65,7 +65,7 @@ async function getContacts(previousList, pageToken) {
   });
 }
 
-export default async function list(options = { forceRefresh: false }) {
+module.exports = async function list(options = { forceRefresh: false }) {;
   const { forceRefresh } = options;
 
   return new Promise(async res => {

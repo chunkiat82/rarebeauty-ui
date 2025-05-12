@@ -1,7 +1,21 @@
-import moment from 'moment';
-import { get, query } from '../../data/database';
+const moment = require('moment');
+const { get, query } = require('../../data/database');
 
-export async function getAppointment(id, context) {
+// Helper function to get the fully qualified collection name using environment variables
+function getCollectionPath(tenantName) {
+  if (tenantName === 'legacy') {
+    return 'default';
+  }
+  
+  // Use environment variables directly
+  const bucketName = process.env.CB_BUCKET || 'appointments';
+  const scopeName = process.env.CB_SCOPE || tenantName;
+  const collectionName = process.env.CB_COLLECTION || 'default';
+  
+  return `\`${bucketName}\`.\`${scopeName}\`.\`${collectionName}\``;
+}
+
+async function getAppointment(id, context) {
   try {
     const apptResponse = await get(`appt:${id}`, context);
     const appt = apptResponse;
@@ -26,13 +40,12 @@ export async function getAppointment(id, context) {
 }
 
 // CREATE INDEX canceledAt_index ON `default`(canceledAt);
-export function cancelledByPerson(options) {
+function cancelledByPerson(options) {
   // console.log(options);
   return new Promise(async (res, rej) => {
     const { id, context } = options;
     const { tenant: tenantName } = context;
-    const collectionFullName =
-      tenantName === 'legacy' ? 'default' : 'appointments.rarebeauty.default';
+    const collectionFullName = getCollectionPath(tenantName);
 
     const queryString = `Select count(*) as totalCancelledLess36 from (
       select cancelHours
@@ -60,11 +73,10 @@ export function cancelledByPerson(options) {
   });
 }
 
-export function byPerson(options) {
+function byPerson(options) {
   const { context } = options;
   const { tenant: tenantName } = context;
-  const collectionFullName =
-    tenantName === 'legacy' ? 'default' : 'appointments.rarebeauty.default';
+  const collectionFullName = getCollectionPath(tenantName);
 
   return new Promise(async (res, rej) => {
     const { limit, id, now } = options;
@@ -126,11 +138,10 @@ export function byPerson(options) {
   });
 }
 
-export function byPersonCount(options) {
+function byPersonCount(options) {
   const { id, context } = options;
   const { tenant: tenantName } = context;
-  const collectionFullName =
-    tenantName === 'legacy' ? 'default' : 'appointments.rarebeauty.default';
+  const collectionFullName = getCollectionPath(tenantName);
 
   return new Promise(async (res, rej) => {
     try {
@@ -147,4 +158,9 @@ export function byPersonCount(options) {
   });
 }
 
-export default byPerson;
+module.exports = {
+  byPerson,
+  cancelledByPerson,
+  byPersonCount,
+  default: byPerson
+};

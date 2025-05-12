@@ -1,5 +1,5 @@
-// import moment from 'moment';
-import { get as getFromDB } from '../database';
+// const moment = require('moment');
+const { getFromDB } = require('../database');
 
 export async function get(id, context) {
   try {
@@ -26,6 +26,6 @@ export async function get(id, context) {
   }
 }
 
-export default {
+module.exports = {
   get,
 };

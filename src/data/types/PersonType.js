@@ -1,23 +1,23 @@
-import {
-  GraphQLObjectType as ObjectType,
-  GraphQLString as StringType,
-  GraphQLInt as IntType,
-  GraphQLNonNull as NonNull,
-  GraphQLList as ListType,
-} from 'graphql';
+const {
+  GraphQLObjectType,
+  GraphQLString,
+  GraphQLInt,
+  GraphQLNonNull,
+  GraphQLList
+} = require('graphql');
 
-import AppointmentType from '../AppointmentType.js';
-// import { get } from '../database.js';
+const AppointmentType = require('./AppointmentType');
+// const { get } = require('../database');
 
-const PersonType = new ObjectType({
+const PersonType = new GraphQLObjectType({
   name: 'Person',
   fields: {
-    id: { type: new NonNull(StringType) },
-    cancelCount: { type: new NonNull(IntType) },
-    appointments: { type: new ListType(AppointmentType) },
-    createdAt: { type: new NonNull(StringType) },
-    lastUpdated: { type: new NonNull(StringType) },
+    id: { type: new GraphQLNonNull(GraphQLString) },
+    cancelCount: { type: new GraphQLNonNull(GraphQLInt) },
+    appointments: { type: new GraphQLList(AppointmentType) },
+    createdAt: { type: new GraphQLNonNull(GraphQLString) },
+    lastUpdated: { type: new GraphQLNonNull(GraphQLString) },
   },
 });
 
-export default PersonType;
+module.exports = PersonType;

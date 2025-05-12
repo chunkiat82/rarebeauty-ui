@@ -1,15 +1,17 @@
 const Twilio = require('twilio');
-const twilioConfig = require('../keys/twilio.json');
 const configs = require('./configs');
 
-const defaultMobile = configs.get('mobile');
-const client = new Twilio(twilioConfig.accountSid, twilioConfig.authToken);
+const defaultMobile = process.env.WORK_MOBILE || configs.get('mobile');
+const client = new Twilio(
+  process.env.TWILIO_ACCOUNT_SID, 
+  process.env.TWILIO_AUTH_TOKEN
+);
 
-const FROM = twilioConfig.sender;
+const FROM = process.env.TWILIO_SENDER || 'RARE BEAUTY';
 const REPLY_MOBILE = defaultMobile;
 const TEST_MOBILE = defaultMobile;
 
-export function sendMessage(options) {
+function sendMessage(options) {
   const { test, message } = options;
   const finalMessage = message.replace('REPLY_MOBILE', REPLY_MOBILE);
   let { mobile } = options;
@@ -46,4 +48,4 @@ export function sendMessage(options) {
   return console.error(`invalid mobile number=${mobile}`);
 }
 
-export default sendMessage;
+module.exports = sendMessage;

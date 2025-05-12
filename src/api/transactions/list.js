@@ -1,14 +1,25 @@
 const { query } = require('../../data/database');
 const moment = require('moment');
 
-const collectionFullName =
-  process.env.CB_BUCKET && process.env.CB_SCOPE && process.env.CB_COLLECTION
-    ? `${process.env.CB_BUCKET}.${process.env.CB_SCOPE}.${process.env.CB_COLLECTION}`
-    : `default`;
+// Helper function to get the fully qualified collection name using environment variables
+function getCollectionPath(tenantName) {
+  if (tenantName === 'legacy') {
+    return 'default';
+  }
+  
+  // Use environment variables directly instead of tenantConfig
+  const bucketName = process.env.CB_BUCKET || 'appointments';
+  const scopeName = process.env.CB_SCOPE || tenantName;
+  const collectionName = process.env.CB_COLLECTION || 'default';
+  
+  return `\`${bucketName}\`.\`${scopeName}\`.\`${collectionName}\``;
+}
 
-export function listTransactions(options) {
+function listTransactions(options) {
   // console.log(options);
-  const { startDT, endDT } = options;
+  const { startDT, endDT, context } = options;
+  const tenantName = context?.tenant || 'rarebeauty';
+  const collectionFullName = getCollectionPath(tenantName);
 
   return new Promise(async (res, rej) => {
     const queryString = `select * from ${collectionFullName} doc where META(doc).id LIKE 'trans%' and apptDate > '${moment(
@@ -19,7 +30,7 @@ export function listTransactions(options) {
 
     try {
       //   console.log(queryString);
-      const idObjs = await query(queryString);
+      const idObjs = await query(queryString, context);
       res({
         results: idObjs,
       });
@@ -30,4 +41,7 @@ export function listTransactions(options) {
   });
 }
 
-export default listTransactions;
+module.exports = {
+  listTransactions,
+  default: listTransactions
+};

@@ -1,5 +1,5 @@
 /* eslint-disable no-unused-expressions */
-import { byPersonCount as getAppointmentsCountByPerson } from '../appointments/person';
+const { getAppointmentsCountByPerson: byPersonCount } = require('../appointments/person');;
 
 const { generateCalendarObj } = require('../utilities/jwt');
 
@@ -149,7 +149,7 @@ async function updateHandler(options, event) {
   });
 }
 
-export default function update(options) {
+function update(options) {
   const { calendarId, event } = options;
 
   if (!calendarId || !event) {

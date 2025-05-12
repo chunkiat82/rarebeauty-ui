@@ -1,15 +1,9 @@
 const db = require('./db');
 const logger = require('./logger');
-const tenantsConfig = require('../api/keys/tenants.json');
 
-async function testConnection(tenantName = 'rarebeauty') {
+async function testConnection(tenantName = 'rarebeauty_dev') {
   try {
-    const tenant = tenantsConfig[tenantName];
-    if (!tenant) {
-      throw new Error(`Tenant ${tenantName} not found in configuration`);
-    }
-
-    // Test connection
+    // No need to check tenant config, just directly connect using environment variables
     await db.connect(tenantName);
     logger.info('✓ Database connection successful');
 
@@ -32,8 +26,13 @@ async function testConnection(tenantName = 'rarebeauty') {
       throw new Error('Read data does not match written data');
     }
 
+    // Get database settings from environment variables
+    const bucketName = process.env.CB_BUCKET || 'appointments';
+    const scopeName = process.env.CB_SCOPE || tenantName;
+    const collectionName = process.env.CB_COLLECTION || 'default';
+
     // Test query operation
-    const queryResult = await db.query(`SELECT COUNT(*) as count FROM \`${tenant.database.bucketName}\`.\`${tenant.database.scopeName}\`.\`${tenant.database.collectionName}\``);
+    const queryResult = await db.query(`SELECT COUNT(*) as count FROM \`${bucketName}\`.\`${scopeName}\`.\`${collectionName}\``);
     logger.info('✓ Query operation successful');
     logger.info(`Total documents in collection: ${queryResult[0]?.count || 0}`);
 

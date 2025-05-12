@@ -5,13 +5,11 @@ const cors = require('cors');
 const { expressjwt: jwt } = require('express-jwt');
 const { createHandler } = require('graphql-http/lib/use/express');
 
-const schema = require('./graphql/schema');
+const schema = require('./data/schema');
 const { handleCalendarWebhook } = require('./webhooks/calendar');
 const { handleTwilioWebhook } = require('./webhooks/twilio');
-const config = require('./config');
 const db = require('./utils/db');
 const checkEnvironment = require('./utils/checkEnv');
-const { initializeTestData } = require('./utils/testData');
 const logger = require('./utils/logger');
 
 const app = express();
@@ -26,7 +24,6 @@ if (!checkEnvironment()) {
 async function initialize() {
   try {
     await db.connect();
-    await initializeTestData();
     logger.info('Database initialized successfully');
   } catch (err) {
     logger.error('Failed to initialize:', err);
@@ -45,7 +42,9 @@ app.use(bodyParser.json());
 // CORS configuration
 app.use(cors({
   origin: (origin, callback) => {
-    if (!origin || config.cors.allowedOrigins.includes(origin)) {
+    // Get allowed origins from environment variable
+    const allowedOrigins = (process.env.ALLOWED_ORIGINS || 'http://localhost:3000').split(',').filter(Boolean);
+    if (!origin || allowedOrigins.includes(origin)) {
       callback(null, true);
     } else {
       callback(new Error('Not allowed by CORS'));
@@ -80,7 +79,7 @@ const getToken = (req) => {
 
 app.use(
   jwt({
-    secret: config.auth.jwt.secret,
+    secret: process.env.JWT_SECRET || 'development-secret-key',
     algorithms: ['HS256'],
     credentialsRequired: true,
     getToken,
@@ -172,10 +171,10 @@ process.on('SIGTERM', async () => {
 });
 
 // Start server
-const port = config.server.port;
+const port = process.env.PORT || 3004;
 app.listen(port, () => {
   logger.info(`Server running at http://localhost:${port}/`);
-  logger.info(`Environment: ${config.server.env}`);
+  logger.info(`Environment: ${process.env.NODE_ENV || 'development'}`);
   if (process.env.NODE_ENV === 'development') {
     logger.info(`GraphQL IDE available at http://localhost:${port}/graphql`);
   }

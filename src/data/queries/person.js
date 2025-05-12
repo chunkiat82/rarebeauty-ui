@@ -1,13 +1,13 @@
-import { GraphQLString as StringType } from 'graphql';
-import PersonType from '../types/PersonType.js';
-import api from '../../api/index.js';
+const { GraphQLString } = require('graphql');
+const PersonType = require('../types/PersonType');
+const api = require('../../api/index');
 
 // hardcode for 3 now
 const person = {
   type: PersonType,
   args: {
-    id: { type: StringType },
-    limit: { type: StringType },
+    id: { type: GraphQLString },
+    limit: { type: GraphQLString },
   },
   async resolve(_, args, context) {
     // construct person
@@ -26,4 +26,4 @@ const person = {
   },
 };
 
-export default person;
+module.exports = person;

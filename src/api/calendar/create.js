@@ -1,7 +1,7 @@
-import moment from 'moment';
-import uuidv1 from 'uuid/v1';
-import { generateCalendarObj } from '../utilities/jwt';
-import { byPersonCount as getAppointmentsCountByPerson } from '../appointments/person';
+const moment = require('moment');
+const { v1: uuidv1 } = require('uuid');
+const { generateCalendarObj } = require('../utilities/jwt');
+const { byPersonCount: getAppointmentsCountByPerson } = require('../appointments/person');
 
 const APPOINTMENT_URL = 'https://rarebeauty.soho.sg/admin/appointment';
 const TEST_EMAIL = `test@soho.sg`;
@@ -139,7 +139,7 @@ function createAppointment(calendar, options) {
   });
 }
 
-export default function create(options) {
+function create(options) {
   const { name, mobile, startDT, endDT, services, force } = options;
 
   // console.error(options);

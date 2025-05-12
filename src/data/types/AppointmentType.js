@@ -1,19 +1,19 @@
-import {
-  GraphQLObjectType as ObjectType,
-  GraphQLString as StringType,
-  GraphQLNonNull as NonNull,
-  GraphQLBoolean as BooleanType,
-} from 'graphql';
+const {
+  GraphQLObjectType,
+  GraphQLString,
+  GraphQLNonNull,
+  GraphQLBoolean
+} = require('graphql');
 
-import EventType from '../types/EventType.js';
-import TransactionType from '../types/TransactionType.js';
-import { get } from '../database.js';
+const EventType = require('../types/EventType');
+const TransactionType = require('../types/TransactionType');
+const { get } = require('../database');
 
-const AppointmentType = new ObjectType({
+const AppointmentType = new GraphQLObjectType({
   name: 'Appointment',
   fields: {
     id: {
-      type: StringType,
+      type: GraphQLString,
     },
     event: {
       type: EventType,
@@ -39,11 +39,11 @@ const AppointmentType = new ObjectType({
         return obj.transaction;
       },
     },
-    // transactions: { type: new ListType(StringType) },
-    createdNewContact: { type: new NonNull(BooleanType) },
-    createdAt: { type: new NonNull(StringType) },
-    lastUpdated: { type: new NonNull(StringType) },
+    // transactions: { type: new GraphQLList(GraphQLString) },
+    createdNewContact: { type: new GraphQLNonNull(GraphQLBoolean) },
+    createdAt: { type: new GraphQLNonNull(GraphQLString) },
+    lastUpdated: { type: new GraphQLNonNull(GraphQLString) },
   },
 });
 
-export default AppointmentType;
+module.exports = AppointmentType;

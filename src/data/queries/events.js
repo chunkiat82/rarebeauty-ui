@@ -1,5 +1,4 @@
 /**
- /**
  * React Starter Kit (https://www.reactstarterkit.com/)
  *
  * Copyright © 2014-present Kriasoft, LLC. All rights reserved.
@@ -8,15 +7,15 @@
  * LICENSE.txt file in the root directory of this source tree.
  */
 
-import { GraphQLList as ListType, GraphQLString as StringType } from 'graphql';
-// import moment from 'moment';
-import EventType from '../types/EventType.js';
-import api from '../../api/index.js';
+const { GraphQLList, GraphQLString } = require('graphql');
+// const moment = require('moment');
+const EventType = require('../types/EventType');
+const api = require('../../api/index');
 
 const events = {
-  type: new ListType(EventType),
+  type: new GraphQLList(EventType),
   args: {
-    id: { type: StringType },
+    id: { type: GraphQLString },
   },
   // parent, args, contextValue, info
   async resolve(_, args, context) {
@@ -25,4 +24,4 @@ const events = {
   },
 };
 
-export default events;
+module.exports = events;

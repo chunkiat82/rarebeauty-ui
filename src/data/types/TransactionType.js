@@ -7,16 +7,25 @@
  * LICENSE.txt file in the root directory of this source tree.
  */
 
-import {
-  GraphQLObjectType as ObjectType,
-  GraphQLString as StringType,
-  GraphQLInt as IntegerType,
-  GraphQLNonNull as NonNull,
-  GraphQLFloat as FloatType,
-  GraphQLList as ListType,
-} from 'graphql';
+const {
+  GraphQLObjectType,
+  GraphQLString,
+  GraphQLInt,
+  GraphQLFloat,
+  GraphQLList,
+  GraphQLNonNull
+} = require('graphql');
 
-import ItemType from '../ItemType.js';
+// Define ItemType inline since it's a simple type
+const ItemType = new GraphQLObjectType({
+  name: 'Item',
+  fields: {
+    id: { type: new GraphQLNonNull(GraphQLString) },
+    name: { type: new GraphQLNonNull(GraphQLString) },
+    price: { type: new GraphQLNonNull(GraphQLFloat) },
+    quantity: { type: new GraphQLNonNull(GraphQLInt) },
+  },
+});
 
 // "totalAmount": 85,
 //     "services": 85,
@@ -24,37 +33,37 @@ import ItemType from '../ItemType.js';
 //     "discount": 0,
 //     "additional": 0,
 //     "createdAt": "2017-08-09T10:45:00+08:00"
-const TransactionType = new ObjectType({
+const TransactionType = new GraphQLObjectType({
   name: 'Transaction',
   fields: {
     id: {
-      type: new NonNull(StringType),
+      type: new GraphQLNonNull(GraphQLString),
     },
     items: {
-      type: new ListType(ItemType),
+      type: new GraphQLList(ItemType),
     },
     totalAmount: {
-      type: new NonNull(FloatType),
+      type: new GraphQLNonNull(GraphQLFloat),
     },
     service: {
-      type: new NonNull(FloatType),
+      type: new GraphQLNonNull(GraphQLFloat),
     },
     product: {
-      type: new NonNull(FloatType),
+      type: new GraphQLNonNull(GraphQLFloat),
     },
     discount: {
-      type: new NonNull(FloatType),
+      type: new GraphQLNonNull(GraphQLFloat),
     },
     additional: {
-      type: new NonNull(FloatType),
+      type: new GraphQLNonNull(GraphQLFloat),
     },
     createdAt: {
-      type: new NonNull(StringType),
+      type: new GraphQLNonNull(GraphQLString),
     },
     deposit: {
-      type: new NonNull(FloatType),
+      type: new GraphQLNonNull(GraphQLFloat),
     },
   },
 });
 
-export default TransactionType;
+module.exports = TransactionType;

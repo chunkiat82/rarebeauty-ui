@@ -1,9 +1,10 @@
 // const moment = require('moment');
 const getConfig = require('./configs').get;
-const key = require('../keys/google.json');
+// We'll use environment variables instead of directly requiring keys
 const { google } = require('googleapis');
 
-const WORK_EMAIL = getConfig('work_email');
+// Use environment variable
+const WORK_EMAIL = process.env.WORK_EMAIL || getConfig('work_email');
 
 // /* specifically for cache */
 // let moduleToken = null;
@@ -26,13 +27,17 @@ function generateJWT(subject = null) {
   //   }
   // }
 
+  // Use environment variables instead of key file
+  const clientEmail = process.env.GOOGLE_CLIENT_EMAIL;
+  const privateKey = process.env.GOOGLE_PRIVATE_KEY;
+
   // eslint-disable-next-line consistent-return
   return new Promise((res, rej) => {
     if (authClient !== null) return res(authClient);
     authClient = new google.auth.JWT(
-      key.client_email,
+      clientEmail,
       null,
-      key.private_key,
+      privateKey,
       [
         'https://www.googleapis.com/auth/contacts',
         'https://www.googleapis.com/auth/calendar',

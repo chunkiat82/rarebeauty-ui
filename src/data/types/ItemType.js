@@ -7,31 +7,31 @@
  * LICENSE.txt file in the root directory of this source tree.
  */
 
-import {
-  GraphQLObjectType as ObjectType,
-  GraphQLString as StringType,
-  GraphQLInt as IntegerType,
-  GraphQLNonNull as NonNull,
-  GraphQLFloat as FloatType,
-  GraphQLList as ListType,
-} from 'graphql';
+const {
+  GraphQLObjectType,
+  GraphQLString,
+  GraphQLInt,
+  GraphQLNonNull,
+  GraphQLFloat,
+  GraphQLList
+} = require('graphql');
 
-const ItemType = new ObjectType({
+const ItemType = new GraphQLObjectType({
   name: 'Item',
   fields: {
     id: {
-      type: new NonNull(StringType),
+      type: new GraphQLNonNull(StringType),
     },
     type: {
-      type: new NonNull(StringType),
+      type: new GraphQLNonNull(StringType),
     },
     name: {
-      type: new NonNull(StringType),
+      type: new GraphQLNonNull(StringType),
     },
     price: {
-      type: new NonNull(FloatType),
+      type: new GraphQLNonNull(FloatType),
     },
   },
 });
 
-export default ItemType;
+module.exports = ItemType;

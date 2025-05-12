@@ -1,10 +1,9 @@
 const twilio = require('twilio');
-const config = require('../config');
 const db = require('../utils/db');
 
 // Initialize Twilio client only if credentials are available
-const client = config.twilio.accountSid && config.twilio.authToken
-  ? twilio(config.twilio.accountSid, config.twilio.authToken)
+const client = process.env.TWILIO_ACCOUNT_SID && process.env.TWILIO_AUTH_TOKEN
+  ? twilio(process.env.TWILIO_ACCOUNT_SID, process.env.TWILIO_AUTH_TOKEN)
   : null;
 
 async function handleTwilioWebhook(req) {
@@ -15,7 +14,7 @@ async function handleTwilioWebhook(req) {
       const url = req.protocol + '://' + req.get('host') + req.originalUrl;
       
       const isValidRequest = twilio.validateRequest(
-        config.twilio.authToken,
+        process.env.TWILIO_AUTH_TOKEN,
         twilioSignature,
         url,
         req.body
@@ -109,7 +108,7 @@ async function handleIncomingMessage(from, body) {
       await client.messages.create({
         body: 'Thank you for contacting us. Our team will get back to you shortly.',
         to: from,
-        from: config.twilio.phoneNumber,
+        from: process.env.TWILIO_PHONE_NUMBER || process.env.TWILIO_SENDER,
       });
     }
   } catch (error) {

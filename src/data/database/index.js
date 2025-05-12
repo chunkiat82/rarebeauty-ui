@@ -1,35 +1,24 @@
 //ssh sohoa -L 18091:172.17.0.1:18091 -L 18092:172.17.0.1:18092 -L 18093:172.17.0.1:18093 -L 18094:172.17.0.1:18094 -L 8094:172.17.0.1:8094 -L 8092:172.17.0.1:8092 -L 8091:172.17.0.1:8091 -L 11207:172.17.0.1:11207  -L 11210:172.17.0.1:11210 -L 8093:172.17.0.1:8093 -L 11211:172.17.0.1:11211
 const couchbase = require('couchbase');
-const config = require('../../config.js');
-const tenantsConfig = require('../../api/keys/tenants.json');
 
-// this could be local, sohon or sohoa
-const clusterConnStr = config.couchbase.url;
+// Remove config import and use environment variables directly
+const clusterConnStr = process.env.CBURL || process.env.COUCHBASE_URL || 'couchbase://localhost';
 
 const clusterCache = {};
 
 function findClusterFromCache(tenant) {
   return clusterCache[tenant];
 }
+
 function findConfig(tenantName) {
-  const tenant = tenantsConfig[tenantName];
-
-  const {
-    bucketName,
-    scopeName,
-    collectionName,
-    username,
-    password,
-  } = tenant.database;
-
-  // if no tenant found
-
+  // Use environment variables directly
   return {
-    bucketName,
-    scopeName,
-    collectionName,
-    username,
-    password,
+    bucketName: process.env.CB_BUCKET || 'appointments_dev',
+    scopeName: process.env.CB_SCOPE || tenantName,
+    collectionName: process.env.CB_COLLECTION || 'default',
+    username: process.env.CB_USERNAME || 'rarebeautysg',
+    password: process.env.CB_PASSWORD || 'soho!@#$',
+    clusterConnStr: process.env.CBURL || process.env.COUCHBASE_URL || 'couchbase://localhost'
   };
 }
 
@@ -57,10 +46,12 @@ async function connect(context) {
     collectionName,
     username,
     password,
+    clusterConnStr
   } = databaseConfig;
   let cluster = null;
 
   if (!cacheCluster) {
+    console.log(`Connecting to Couchbase at ${clusterConnStr} with username ${username}`);
     cluster = await couchbase.connect(clusterConnStr, {
       username,
       password,
@@ -174,7 +165,7 @@ async function runOperation(operation, options, context) {
   return res;
 }
 
-export async function upsert(id, doc, context) {
+async function upsert(id, doc, context) {
   // console.log(id);
   // console.log(doc);
   const obj = await runOperation(
@@ -189,7 +180,7 @@ export async function upsert(id, doc, context) {
 }
 
 // couchbase response changed from value to content from 4 to 6.6
-export async function get(id, context) {
+async function get(id, context) {
   const obj = await runOperation(
     getObject,
     {
@@ -201,7 +192,7 @@ export async function get(id, context) {
   return obj.content;
 }
 
-export async function remove(id, context) {
+async function remove(id, context) {
   const obj = await runOperation(
     deleteObject,
     {
@@ -212,7 +203,7 @@ export async function remove(id, context) {
   return obj;
 }
 
-export async function query(queryString, context) {
+async function query(queryString, context) {
   // https://developer.couchbase.com/documentation/server/4.1/sdks/node-2.0/n1ql-queries.html
   const obj = await runOperation(
     queryOperation,
@@ -224,7 +215,7 @@ export async function query(queryString, context) {
   return obj;
 }
 
-export default {
+module.exports = {
   upsert,
   get,
   remove,

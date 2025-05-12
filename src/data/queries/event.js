@@ -1,5 +1,4 @@
 /**
- /**
  * React Starter Kit (https://www.reactstarterkit.com/)
  *
  * Copyright © 2014-present Kriasoft, LLC. All rights reserved.
@@ -8,14 +7,14 @@
  * LICENSE.txt file in the root directory of this source tree.
  */
 
-import { GraphQLString as StringType } from 'graphql';
-import EventType from '../types/EventType.js';
-import { get } from '../database.js';
+const { GraphQLString } = require('graphql');
+const EventType = require('../types/EventType');
+const { get } = require('../database');
 
 const events = {
   type: EventType,
   args: {
-    id: { type: StringType },
+    id: { type: GraphQLString },
   },
   async resolve(_, args, context) {
     context.callingFunction = 'eventType';
@@ -25,4 +24,4 @@ const events = {
   },
 };
 
-export default events;
+module.exports = events;

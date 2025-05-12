@@ -1,6 +1,6 @@
 const { generateCalendarObj } = require('../utilities/jwt');
 
-export default function deleteEvent(options) {
+function deleteEvent(options) {
   const { calendarId, eventId } = options;
   return new Promise(async (res, rej) => {
     const calendar = await generateCalendarObj();

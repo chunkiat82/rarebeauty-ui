@@ -1,6 +1,6 @@
-import moment from 'moment';
-// import { argv } from 'yargs';
-import functions from './functions.js';
+const moment = require('moment');
+// const { argv } = require('yargs');;
+const functions = require('./functions');
 
 // context is included in argv
 function processArguments(argv) {
@@ -19,7 +19,7 @@ function processArguments(argv) {
 }
 
 // eslint-disable-next-line no-shadow
-export default async function main(argv) {
+async function main(argv) {
   const { action, options } = processArguments(argv);
   try {
     const results = await action(options);
@@ -29,3 +29,5 @@ export default async function main(argv) {
     throw err;
   }
 }
+
+module.exports = main;

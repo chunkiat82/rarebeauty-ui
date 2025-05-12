@@ -1,16 +1,18 @@
-import { GraphQLString as StringType } from 'graphql';
-import moment from 'moment';
-import EventStatusType from '../types/EventStatusType.js';
-import api from '../../api/index.js';
+const {
+  GraphQLString
+} = require('graphql');
+const moment = require('moment');
+const EventStatusType = require('../types/EventStatusType');
+const api = require('../../api/index');
 
-export default {
+module.exports = {
   type: EventStatusType,
   args: {
     id: {
-      type: StringType,
+      type: GraphQLString,
     },
     status: {
-      type: StringType,
+      type: GraphQLString,
     },
   },
   async resolve(_, args, context) {

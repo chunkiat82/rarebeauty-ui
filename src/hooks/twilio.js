@@ -16,11 +16,16 @@
 */
 
 const Twilio = require('twilio');
-const keys = require('../api/keys/twilio.json');
+const twilioConfig = {
+  accountSid: process.env.TWILIO_ACCOUNT_SID,
+  authToken: process.env.TWILIO_AUTH_TOKEN,
+  sender: process.env.TWILIO_SENDER,
+  adminNumber: process.env.TWILIO_ADMIN_NUMBER
+};
 
-const client = new Twilio(keys.accountSid, keys.authToken);
+const client = new Twilio(twilioConfig.accountSid, twilioConfig.authToken);
 
-export function handleTwilioWebhook(req) {
+function handleTwilioWebhook(req) {
   console.log(req.body);
 
   const bodyOut = {
@@ -39,4 +44,4 @@ export function handleTwilioWebhook(req) {
     });
 }
 
-export default handleTwilioWebhook;
+module.exports = handleTwilioWebhook;

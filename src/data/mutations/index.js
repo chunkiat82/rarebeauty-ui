@@ -1,14 +1,16 @@
-import { GraphQLObjectType as ObjectType } from 'graphql';
+const {
+  GraphQLObjectType
+} = require('graphql');
 
-import createAppointment from '../CreateAppointment.js';
-import createWaitingAppointment from '../CreateWaitingAppointment.js';
-import updateAppointment from '../UpdateAppointment.js';
-import cancelAppointment from '../CancelAppointment.js';
-import updateEventStatus from '../UpdateEventStatus.js';
-import refreshContacts from '../RefreshContacts.js';
-import createContact from '../CreateContact.js';
+const createAppointment = require('./CreateAppointment');
+const createWaitingAppointment = require('./CreateWaitingAppointment');
+const updateAppointment = require('./UpdateAppointment');
+const cancelAppointment = require('./CancelAppointment');
+const updateEventStatus = require('./UpdateEventStatus');
+const refreshContacts = require('./RefreshContacts');
+const createContact = require('./CreateContact');
 
-const Mutation = new ObjectType({
+const Mutation = new GraphQLObjectType({
   name: 'Mutation',
   fields: () => ({
     createAppointment,
@@ -21,4 +23,4 @@ const Mutation = new ObjectType({
   }),
 });
 
-export default Mutation;
+module.exports = Mutation;

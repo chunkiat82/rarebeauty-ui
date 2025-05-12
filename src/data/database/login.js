@@ -1,5 +1,5 @@
-import moment from 'moment';
-import { upsert } from '../database';
+const moment = require('moment');
+const { upsert } = require('../database');
 
 export async function logLogin(username, payload) {
   await upsert(
@@ -8,6 +8,6 @@ export async function logLogin(username, payload) {
   );
 }
 
-export default {
+module.exports = {
   logLogin,
 };

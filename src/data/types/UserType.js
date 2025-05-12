@@ -7,19 +7,19 @@
  * LICENSE.txt file in the root directory of this source tree.
  */
 
-import {
-  GraphQLObjectType as ObjectType,
-  GraphQLID as ID,
-  GraphQLString as StringType,
-  GraphQLNonNull as NonNull,
-} from 'graphql';
+const {
+  GraphQLObjectType,
+  GraphQLID,
+  GraphQLString,
+  GraphQLNonNull
+} = require('graphql');
 
-const UserType = new ObjectType({
+const UserType = new GraphQLObjectType({
   name: 'User',
   fields: {
-    id: { type: new NonNull(ID) },
-    email: { type: StringType },
+    id: { type: new GraphQLNonNull(GraphQLID) },
+    email: { type: GraphQLString },
   },
 });
 
-export default UserType;
+module.exports = UserType;

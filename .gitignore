@@ -59,6 +59,8 @@ src/api/keys/tenants.json
 .env.*
 !.env.example
 env.example
+env.production
+env.local
 
 # Optional npm cache directory
 .npm
