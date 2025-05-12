@@ -17,12 +17,29 @@ const contact = {
   type: ContactType,
   args: {
     id: { type: StringType },
+    nameQuery: { type: StringType },
   },
   async resolve(_, args, context) {
-    const { id } = args;
-    const item = await api({ action: 'getContact', resourceName: id, context });
+    const { id, nameQuery } = args;
 
-    // console.log(item);
+    // If nameQuery is provided, use searchContacts
+    if (nameQuery) {
+      // Use the searchContacts functionality to find contacts by name
+      const items = await api({
+        action: 'searchContacts',
+        query: nameQuery,
+        context,
+      });
+
+      // Return the best match (first result)
+      if (items && items.length > 0) {
+        return items[0];
+      }
+      return null;
+    }
+
+    // Existing functionality - search by resourceName
+    const item = await api({ action: 'getContact', resourceName: id, context });
     return item;
   },
 };

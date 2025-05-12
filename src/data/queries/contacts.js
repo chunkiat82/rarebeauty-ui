@@ -8,16 +8,26 @@
  * LICENSE.txt file in the root directory of this source tree.
  */
 
-import { GraphQLList as List } from 'graphql';
+import { GraphQLList as List, GraphQLString as StringType } from 'graphql';
 // import fetch from 'isomorphic-fetch';
 import ContactType from '../types/ContactType';
 import api from '../../api';
 
 const contacts = {
   type: new List(ContactType),
-  async resolve() {
-    const data = await api({ action: 'listContacts' });
-    return data;
+  args: {
+    nameQuery: { type: StringType },
+  },
+  async resolve(_, args, context) {
+    const { nameQuery } = args;
+
+    // If nameQuery is provided, use searchContacts
+    if (nameQuery) {
+      return api({ action: 'searchContacts', query: nameQuery, context });
+    }
+
+    // Otherwise, return all contacts
+    return api({ action: 'listContacts', context });
   },
 };
 

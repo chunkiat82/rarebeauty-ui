@@ -19,6 +19,9 @@ import contactGet from './contacts/get';
 import contactCreate from './contacts/create';
 import contactUpdate from './contacts/update';
 import contactDelete from './contacts/delete';
+import contactSearch, {
+  warmup as contactSearchWarmup,
+} from './contacts/search';
 
 import googleHook from '../../src/hooks/google';
 
@@ -445,6 +448,57 @@ async function getContact(options) {
   }
 }
 
+async function searchContacts(options) {
+  try {
+    const { query } = options;
+
+    // First send a warmup request with empty query as recommended by Google's People API
+    // to ensure the cache is up to date
+    await contactSearchWarmup();
+
+    // Then perform the actual search
+    const contacts = await contactSearch({ query });
+
+    return contacts;
+  } catch (err) {
+    console.error('searchContacts error:', err);
+
+    // Fallback to listing and filtering contacts if the search API fails
+    try {
+      const contacts = await listContacts();
+      // Simple fuzzy search - convert everything to lowercase and check for includes
+      const filteredContacts = contacts.filter(
+        contact =>
+          contact.name &&
+          contact.name.toLowerCase().includes(options.query.toLowerCase()),
+      );
+
+      // Sort by relevance - exact matches first, then startsWith, then includes
+      filteredContacts.sort((a, b) => {
+        const aName = a.name.toLowerCase();
+        const bName = b.name.toLowerCase();
+        const query = options.query.toLowerCase();
+
+        // Exact match gets highest priority
+        if (aName === query && bName !== query) return -1;
+        if (bName === query && aName !== query) return 1;
+
+        // Starts with gets second priority
+        if (aName.startsWith(query) && !bName.startsWith(query)) return -1;
+        if (bName.startsWith(query) && !aName.startsWith(query)) return 1;
+
+        // Default to alphabetical sort
+        return aName.localeCompare(bName);
+      });
+
+      return filteredContacts;
+    } catch (fallbackErr) {
+      console.error('searchContacts fallback error:', fallbackErr);
+      throw fallbackErr;
+    }
+  }
+}
+
 async function deleteContact(options) {
   try {
     const contact = await contactDelete(options);
@@ -773,6 +827,7 @@ const functions = {
   createContact,
   updateContact,
   getContact,
+  searchContacts,
   watchCalendar,
   stopWatchCalendar,
   getSyncToken,
