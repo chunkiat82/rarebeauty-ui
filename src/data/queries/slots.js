@@ -1,7 +1,7 @@
 import { GraphQLList as ListType, GraphQLString as StringType } from 'graphql';
 // import moment from 'moment';
-import SlotType from '../types/SlotType';
-import api from '../../api';
+import SlotType from '../types/SlotType.js';
+import api from '../../api/index.js';
 
 const SLOT_TYPE = 'Free'; // currently not used
 

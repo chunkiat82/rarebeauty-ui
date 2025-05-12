@@ -12,8 +12,8 @@ import {
   GraphQLList as ListType,
   // GraphQLString as StringType
 } from 'graphql';
-import ServiceType from '../types/ServiceType';
-import { get } from '../database';
+import ServiceType from '../types/ServiceType.js';
+import { get } from '../database.js';
 
 const services = {
   type: new ListType(ServiceType),

@@ -12,17 +12,17 @@ import {
   GraphQLObjectType as ObjectType,
 } from 'graphql';
 
-import me from './queries/me';
-import contacts from './queries/contacts';
-import contact from './queries/contact';
-import event from './queries/event';
-import events from './queries/events';
-import appointment from './queries/appointment';
-import person from './queries/person';
-import services from './queries/services';
-import slots from './queries/slots';
+import me from './queries/me.js';
+import contacts from './queries/contacts.js';
+import contact from './queries/contact.js';
+import event from './queries/event.js';
+import events from './queries/events.js';
+import appointment from './queries/appointment.js';
+import person from './queries/person.js';
+import services from './queries/services.js';
+import slots from './queries/slots.js';
 
-import mutations from './mutations';
+import mutations from './mutations/index.js';
 
 const schema = new Schema({
   query: new ObjectType({

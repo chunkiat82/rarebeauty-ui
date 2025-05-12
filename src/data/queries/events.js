@@ -10,8 +10,8 @@
 
 import { GraphQLList as ListType, GraphQLString as StringType } from 'graphql';
 // import moment from 'moment';
-import EventType from '../types/EventType';
-import api from '../../api';
+import EventType from '../types/EventType.js';
+import api from '../../api/index.js';
 
 const events = {
   type: new ListType(EventType),

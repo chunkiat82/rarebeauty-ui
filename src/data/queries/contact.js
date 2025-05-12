@@ -10,8 +10,8 @@
 
 import { GraphQLString as StringType } from 'graphql';
 // import fetch from 'isomorphic-fetch';
-import ContactType from '../types/ContactType';
-import api from '../../api';
+import ContactType from '../types/ContactType.js';
+import api from '../../api/index.js';
 
 const contact = {
   type: ContactType,

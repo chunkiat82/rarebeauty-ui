@@ -1,6 +1,6 @@
 import moment from 'moment';
 // import { argv } from 'yargs';
-import functions from './functions';
+import functions from './functions.js';
 
 // context is included in argv
 function processArguments(argv) {

@@ -9,8 +9,8 @@
  */
 
 import { GraphQLString as StringType } from 'graphql';
-import AppointmentType from '../types/AppointmentType';
-import { get } from '../database';
+import AppointmentType from '../types/AppointmentType.js';
+import { get } from '../database.js';
 
 const appointment = {
   type: AppointmentType,

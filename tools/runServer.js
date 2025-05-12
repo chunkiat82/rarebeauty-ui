@@ -9,7 +9,7 @@
 
 import path from 'path';
 import cp from 'child_process';
-import webpackConfig from './webpack.config';
+import webpackConfig from './webpack.config.js';
 
 // Should match the text string used in `src/server.js/server.listen(...)`
 const RUNNING_REGEXP = /The server is running at http:\/\/(.*?)\//;
@@ -45,7 +45,7 @@ function runServer() {
       server.kill('SIGTERM');
     }
 
-    server = cp.spawn('node', [serverPath], {
+    server = cp.spawn('node', ['--experimental-import-meta-resolve', serverPath], {
       env: Object.assign({ NODE_ENV: 'development' }, process.env),
       silent: false,
     });

@@ -8,12 +8,18 @@ build
 
 # Runtime data
 database.sqlite
+pids
+*.pid
+*.seed
+*.pid.lock
 
 # Test coverage
 coverage
 .nyc_output
 
 # Logs
+logs
+*.log
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
@@ -28,6 +34,12 @@ yarn-error.log*
 
 # Misc
 .DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
 
 # keys
 **/keys/**
@@ -38,3 +50,21 @@ data/default
 data/*.couch*
 data/@2i/**
 jobs/*/*.json
+
+# Sensitive configuration
+src/api/keys/google.json
+src/api/keys/twilio.json
+src/api/keys/tenants.json
+.env
+.env.*
+!.env.example
+env.example
+
+# Optional npm cache directory
+.npm
+
+# Optional eslint cache
+.eslintcache
+
+# Build output
+dist/

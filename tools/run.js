@@ -31,17 +31,28 @@ function run(fn, options) {
   });
 }
 
-if (require.main === module && process.argv.length > 2) {
-  // eslint-disable-next-line no-underscore-dangle
-  delete require.cache[__filename];
+// Check if this module is being run directly
+import { fileURLToPath } from 'url';
+import { dirname } from 'path';
 
-  // eslint-disable-next-line global-require, import/no-dynamic-require
-  const module = require(`./${process.argv[2]}.js`).default;
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = dirname(__filename);
 
-  run(module).catch(err => {
+// Dynamic import for ESM
+if (import.meta.url === `file://${__filename}` && process.argv.length > 2) {
+  const modulePath = `./${process.argv[2]}.js`;
+  
+  try {
+    const module = await import(modulePath);
+    run(module).catch(err => {
+      console.error(err.stack);
+      process.exit(1);
+    });
+  } catch (err) {
+    console.error(`Failed to import module: ${modulePath}`);
     console.error(err.stack);
     process.exit(1);
-  });
+  }
 }
 
 export default run;

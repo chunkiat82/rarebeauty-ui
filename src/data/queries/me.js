@@ -7,7 +7,7 @@
  * LICENSE.txt file in the root directory of this source tree.
  */
 
-import UserType from '../types/UserType';
+import UserType from '../types/UserType.js';
 
 const me = {
   type: UserType,

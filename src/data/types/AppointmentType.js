@@ -5,9 +5,9 @@ import {
   GraphQLBoolean as BooleanType,
 } from 'graphql';
 
-import EventType from '../types/EventType';
-import TransactionType from '../types/TransactionType';
-import { get } from '../database';
+import EventType from '../types/EventType.js';
+import TransactionType from '../types/TransactionType.js';
+import { get } from '../database.js';
 
 const AppointmentType = new ObjectType({
   name: 'Appointment',

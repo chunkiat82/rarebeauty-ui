@@ -16,56 +16,46 @@ if (process.env.BROWSER) {
   );
 }
 
-module.exports = {
-  // Node.js app
-  port: process.env.PORT || 3000,
-
-  // API Gateway
-  api: {
-    // API URL to be used in the client-side code
-    clientUrl: process.env.API_CLIENT_URL || '',
-    // API URL to be used in the server-side code
-    serverUrl:
-      process.env.API_SERVER_URL ||
-      `http://localhost:${process.env.PORT || 3000}`,
+const config = {
+  server: {
+    port: process.env.PORT || 3004,
+    env: process.env.NODE_ENV || 'development',
   },
-
-  // Database
-  // databaseUrl: process.env.DATABASE_URL || 'sqlite:database.sqlite',
-
-  // Couchbase
-  couchbase: {
-    url: process.env.PRODUCTION
-      ? process.env.CBURL || `couchbase://172.17.0.1/`
-      : `couchbase://127.0.0.1/`,
-    queryUrl: process.env.PRODUCTION
-      ? process.env.CBQURL || `'http://172.17.0.1:8093/'`
-      : `'http://127.0.0.1:8093/'`,
-  },
-
-  // Web analytics
-  analytics: {
-    // https://analytics.google.com/
-    googleTrackingId: process.env.GOOGLE_TRACKING_ID, // UA-XXXXX-X
-  },
-
-  // Authentication
   auth: {
-    jwt: { secret: process.env.JWT_SECRET || 'SOHO Systems And Networks' },
-
-    google: {
-      id:
-        process.env.GOOGLE_CLIENT_ID ||
-        '251410730550-ahcg0ou5mgfhl8hlui1urru7jn5s12km.apps.googleusercontent.com',
-      secret: process.env.GOOGLE_CLIENT_SECRET || 'Y8yR9yZAhm9jQ8FKAL8QIEcd',
+    jwt: {
+      secret: process.env.JWT_SECRET || 'your-secret-key-here',
+      expiresIn: '1h',
     },
   },
-  clients: keys.clients,
-  app: {
-    oldWorkAddress: keys.old_work_address,
-    workAddress: keys.work_address,
-    workDomain: keys.domain,
-    workCalendar: keys.calendarName,
-    customerURL: keys.customerURL,
+  database: {
+    couchbase: {
+      url: process.env.COUCHBASE_URL || 'couchbase://localhost',
+      bucket: process.env.COUCHBASE_BUCKET || 'rarebeauty',
+      username: process.env.COUCHBASE_USERNAME || 'Administrator',
+      password: process.env.COUCHBASE_PASSWORD || 'password',
+    },
+  },
+  google: {
+    calendar: {
+      clientId: process.env.GOOGLE_CLIENT_ID,
+      clientSecret: process.env.GOOGLE_CLIENT_SECRET,
+      redirectUri: process.env.GOOGLE_REDIRECT_URI,
+    },
+  },
+  twilio: {
+    accountSid: process.env.TWILIO_ACCOUNT_SID,
+    authToken: process.env.TWILIO_AUTH_TOKEN,
+    phoneNumber: process.env.TWILIO_PHONE_NUMBER,
+  },
+  cors: {
+    allowedOrigins: [
+      'http://localhost:3000',
+      'https://appointments.soho.sg',
+      'https://rb.soho.sg',
+      'https://rarebeauty.soho.sg',
+      'https://rarebeautysg.soho.sg',
+    ],
   },
 };
+
+module.exports = config;

@@ -232,3 +232,47 @@ Made with ♥ by Konstantin Tarkus ([@koistya](https://twitter.com/koistya)) and
 [demo]: http://demo.reactstarterkit.com
 [node]: https://nodejs.org
 [chat]: https://gitter.im/kriasoft/react-starter-kit
+
+# RareBeauty Backend Service
+
+## Environment Variables and Security
+
+The service can be configured using environment variables or configuration files. For security best practices:
+
+1. In development:
+   - Configuration can be loaded from JSON files in `src/api/keys/`
+   - Default values are used for non-critical settings
+   - Environment variables will override file-based configuration
+
+2. In production:
+   - Use environment variables for all sensitive information
+   - Do not commit API keys, secrets, or credentials to version control
+   - Move all configuration from JSON files to environment variables
+
+3. Required Environment Variables:
+   ```
+   # Critical in production
+   JWT_SECRET=your-jwt-secret
+   GOOGLE_PRIVATE_KEY=your-google-private-key
+   TWILIO_ACCOUNT_SID=your-twilio-sid
+   TWILIO_AUTH_TOKEN=your-twilio-token
+
+   # Optional with defaults
+   PORT=3004
+   NODE_ENV=production
+   ALLOWED_ORIGINS=https://your-domain.com
+   ```
+
+4. Configuration Files:
+   - `google.json`: Google Calendar API credentials
+   - `twilio.json`: Twilio SMS credentials
+   - `tenants.json`: Database configuration per tenant
+
+5. Security Recommendations:
+   - Use a secure secret manager in production
+   - Rotate credentials regularly
+   - Monitor for unauthorized access
+   - Keep dependencies updated
+   - Use HTTPS in production
+
+See `env.example` for a complete list of available environment variables.

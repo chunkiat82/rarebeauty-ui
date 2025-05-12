@@ -4,11 +4,11 @@
 /* eslint-disable no-param-reassign */
 // import Hashids from 'hashids';
 import moment from 'moment';
-import api from './../api';
-import { get, remove, upsert } from '../data/database';
+import api from '../api/index.js';
+import { get, remove, upsert } from '../data/database/index.js';
 // import { tenants } from '../api/keys/tenants.json';
 
-const { getSyncToken, setSyncToken } = require('../api/utilities/token');
+import { getSyncToken, setSyncToken } from '../api/utilities/token.js';
 
 // instead of scripting on kibana, i'm duplicating the content here,
 function populateStats(item) {

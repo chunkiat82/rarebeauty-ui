@@ -2,8 +2,8 @@ import {
   GraphQLString as StringType,
   GraphQLNonNull as NonNull,
 } from 'graphql';
-import ContactType from '../types/ContactType';
-import api from '../../api';
+import ContactType from '../types/ContactType.js';
+import api from '../../api/index.js';
 
 export default {
   type: ContactType,

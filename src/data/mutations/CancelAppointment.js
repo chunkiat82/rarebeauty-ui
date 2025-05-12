@@ -3,9 +3,9 @@ import {
   GraphQLBoolean as BooleanType,
 } from 'graphql';
 import moment from 'moment';
-import AppointmentType from '../types/AppointmentType';
-import api from '../../api';
-import { get, upsert } from '../database';
+import AppointmentType from '../types/AppointmentType.js';
+import api from '../../api/index.js';
+import { get, upsert } from '../database.js';
 
 export default {
   type: AppointmentType,

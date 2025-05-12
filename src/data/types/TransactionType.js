@@ -16,7 +16,7 @@ import {
   GraphQLList as ListType,
 } from 'graphql';
 
-import ItemType from './ItemType';
+import ItemType from '../ItemType.js';
 
 // "totalAmount": 85,
 //     "services": 85,

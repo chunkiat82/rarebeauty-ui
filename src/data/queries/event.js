@@ -9,8 +9,8 @@
  */
 
 import { GraphQLString as StringType } from 'graphql';
-import EventType from '../types/EventType';
-import { get } from '../database';
+import EventType from '../types/EventType.js';
+import { get } from '../database.js';
 
 const events = {
   type: EventType,

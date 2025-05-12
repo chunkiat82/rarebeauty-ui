@@ -1,6 +1,6 @@
 import { GraphQLString as StringType } from 'graphql';
-import ResponseType from '../types/ResponseType';
-import api from '../../api';
+import ResponseType from '../types/ResponseType.js';
+import api from '../../api/index.js';
 
 export default {
   type: ResponseType,

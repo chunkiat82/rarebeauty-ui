@@ -1,4 +1,4 @@
-module.exports = {
+export default {
   // Modules can be explicitly auto-mocked using jest.mock(moduleName).
   // https://facebook.github.io/jest/docs/en/configuration.html#automock-boolean
   automock: false, // [boolean]
@@ -29,10 +29,14 @@ module.exports = {
   ],
 
   // https://facebook.github.io/jest/docs/en/configuration.html#coveragedirectory-string
-  coverageDirectory: '<rootDir>/coverage', // [string]
+  coverageDirectory: 'coverage', // [string]
 
   // coveragePathIgnorePatterns: // [array<string>]
+  coveragePathIgnorePatterns: ['/node_modules/'],
+
   // coverageReporters: [], // [array<string>]
+  coverageReporters: ['json', 'text', 'lcov', 'clover'],
+
   // coverageThreshold: {}, // [object]
 
   globals: {
@@ -44,7 +48,7 @@ module.exports = {
 
   // The default extensions Jest will look for.
   // https://facebook.github.io/jest/docs/en/configuration.html#modulefileextensions-array-string
-  moduleFileExtensions: ['js', 'json', 'jsx', 'node'],
+  moduleFileExtensions: ['js', 'jsx', 'json', 'node'],
 
   // moduleDirectories: // [array<string>]
 
@@ -67,27 +71,47 @@ module.exports = {
   // resetModules: // [boolean]
   // resolver: // [string]
   // rootDir: // [string]
-  // roots: // [array<string>]
+  roots: ['<rootDir>/src', '<rootDir>/tools'],
+
   // setupFiles: // [array]
   // setupTestFrameworkScriptFile: // [string]
   // snapshotSerializers: // [array<string>]
   // testEnvironment: // [string]
+  testEnvironment: 'node',
+
   // testMatch: // [array<string>]
+  testMatch: [
+    '<rootDir>/src/**/__tests__/**/*.js',
+    '<rootDir>/src/**/*.{spec,test}.js',
+  ],
+
   // testPathIgnorePatterns: // [array<string>]
+  testPathIgnorePatterns: ['/node_modules/'],
+
   // testRegex: // [string]
+  testRegex: '(/__tests__/.*|(\\.|/)(test|spec))\\.(jsx?|tsx?)$',
+
   // testResultsProcessor: // [string]
   // testRunner: // [string]
   // testURL: // [string]
   // timers: // [string]
 
   transform: {
-    '\\.jsx?$': 'babel-jest',
-    '\\.(jpe?g|png|gif|eot|otf|webp|svg|ttf|woff|woff2|mp4|webm|wav|mp3|m4a|aac|oga)$':
-      '<rootDir>/jest/fileTransformer.js',
+    '^.+\\.(js|jsx|mjs)$': 'babel-jest',
   },
 
   // transformIgnorePatterns: // [array<string>]
+  transformIgnorePatterns: [
+    '/node_modules/(?!(@babel/runtime)/)',
+  ],
+
   // unmockedModulePathPatterns: // [array<string>]
 
-  verbose: true, // [boolean]
+  verbose: false, // [boolean]
+
+  // Add support for ESM
+  extensionsToTreatAsEsm: ['.js', '.mjs', '.jsx'],
+
+  // Options that will be passed to the testEnvironment
+  testEnvironmentOptions: {},
 };

@@ -7,32 +7,54 @@
  * LICENSE.txt file in the root directory of this source tree.
  */
 
-import cp from 'child_process';
-import run from './run';
-import clean from './clean';
-import copy from './copy';
-import bundle from './bundle';
-import render from './render';
-import pkg from '../package.json';
+import { copyFile, makeDir, copyDir, cleanDir } from './lib/fs.js';
+import pkg from '../package.json' with { type: 'json' };
 
 /**
  * Compiles the project from source files into a distributable
  * format and copies it to the output (build) folder.
  */
 async function build() {
-  await run(clean);
-  await run(copy);
-  await run(bundle);
+  // Clean the build directory
+  await cleanDir('build/*', {
+    nosort: true,
+    dot: true,
+    ignore: ['build/.git'],
+  });
 
-  if (process.argv.includes('--static')) {
-    await run(render);
-  }
+  // Create build directory
+  await makeDir('build');
 
-  if (process.argv.includes('--docker')) {
-    cp.spawnSync('docker', ['build', '-t', pkg.name, '.'], {
-      stdio: 'inherit',
-    });
-  }
+  // Copy package files
+  await Promise.all([
+    copyFile('package.json', 'build/package.json'),
+    copyFile('package-lock.json', 'build/package-lock.json'),
+    copyFile('LICENSE.txt', 'build/LICENSE.txt'),
+  ]);
+
+  // Copy source files
+  await copyDir('src', 'build/src');
+
+  // Create a production package.json
+  const prodPackage = {
+    name: pkg.name,
+    version: pkg.version,
+    private: true,
+    engines: pkg.engines,
+    dependencies: pkg.dependencies,
+    type: 'module',
+    scripts: {
+      start: 'node src/server.js'
+    }
+  };
+
+  await copyFile(
+    'package.json',
+    'build/package.json',
+    JSON.stringify(prodPackage, null, 2)
+  );
+
+  console.info('Build completed successfully!');
 }
 
 export default build;

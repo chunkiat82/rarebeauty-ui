@@ -6,8 +6,8 @@ import {
   GraphQLList as ListType,
 } from 'graphql';
 
-import AppointmentType from './AppointmentType';
-// import { get } from '../database';
+import AppointmentType from '../AppointmentType.js';
+// import { get } from '../database.js';
 
 const PersonType = new ObjectType({
   name: 'Person',

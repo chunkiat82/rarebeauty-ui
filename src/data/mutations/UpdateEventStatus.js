@@ -1,7 +1,7 @@
 import { GraphQLString as StringType } from 'graphql';
 import moment from 'moment';
-import EventStatusType from '../types/EventStatusType';
-import api from '../../api';
+import EventStatusType from '../types/EventStatusType.js';
+import api from '../../api/index.js';
 
 export default {
   type: EventStatusType,
