@@ -15,6 +15,9 @@ require('./load-env');
 // Get command line arguments except for the first two (node and script name)
 const args = process.argv.slice(2);
 
+// Set a flag to prevent cli.js from loading the environment again
+process.env.ENV_ALREADY_LOADED = 'true';
+
 // Start the CLI script with environment variables
 const cli = spawn(
   'node', 

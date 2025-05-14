@@ -1,5 +1,7 @@
 // Load environment variables first
-require('./load-env');
+if (!process.env.ENV_ALREADY_LOADED) {
+  require('./load-env');
+}
 
 // Verify environment loading
 const isProd = process.env.NODE_ENV === 'production' || process.env.PRODUCTION === 'true';
