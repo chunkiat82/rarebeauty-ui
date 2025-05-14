@@ -1,7 +1,7 @@
 /**
  * Comprehensive DB connection test
  */
-require('./load-env'); // Load environment variables
+require('../load-env'); // Load environment variables
 const couchbase = require('couchbase');
 
 // Escape special characters in strings for logging

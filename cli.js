@@ -1,11 +1,18 @@
 // Load environment variables first
 require('./load-env');
 
-import moment from 'moment';
-import {
-  argv
-} from 'yargs';
-import functions from './src/api/functions';
+// Verify environment loading
+const isProd = process.env.NODE_ENV === 'production' || process.env.PRODUCTION === 'true';
+const envFile = isProd ? 'env.production' : 'env.local';
+console.log(`Using environment from: ${envFile}`);
+console.log('Database connection settings:');
+console.log('- CBURL:', process.env.CBURL);
+console.log('- CB_BUCKET:', process.env.CB_BUCKET);
+console.log('- CB_USERNAME:', process.env.CB_USERNAME);
+
+const moment = require('moment-timezone');
+const yargs = require('yargs');
+const functions = require('./src/api/functions');
 
 // Configure timezone from environment
 if (process.env.TZ) {
@@ -15,11 +22,12 @@ if (process.env.TZ) {
 
 function processArguments(argv) {
   const options = argv;
-  const startDT = moment(argv.start);
+  // Default to current date if no start date provided
+  const startDT = argv.start ? moment(argv.start) : moment();
   let endDT = argv.end ? moment(argv.end) : null;
   endDT = argv.duration ? moment(startDT).add(argv.duration, 'minutes') : endDT;
-  const services = String(argv.services).split(',');
-  const mobile = String(argv.mobile);
+  const services = String(argv.services || '').split(',');
+  const mobile = String(argv.mobile || '');
   let action = functions.listEvents;
   
   // Apply tenant from environment if specified
@@ -43,8 +51,8 @@ function processArguments(argv) {
   });
 }
 
-// eslint-disable-next-line no-shadow
-export default async function main(argv) {
+// Change to CommonJS export
+function mainExport(argv) {
   const options = processArguments(argv);
   //const results = await options.action(options);
   return results;
@@ -128,8 +136,11 @@ function println(events) {
 }
 
 try {
-  main(argv);
+  main(yargs.argv);
 } catch (err) {
   console.log(`running err=${JSON.stringify(err, null, 2)}`);
   process.exit(1);
 }
+
+// Export the main function
+module.exports = mainExport;

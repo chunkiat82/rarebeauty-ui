@@ -3,9 +3,9 @@
  * Run with: node test-shorturl.js
  */
 
-require('./load-env'); // Load environment variables
+require('../load-env'); // Load environment variables
 const fetch = require('node-fetch');
-const logger = require('./src/utils/logger');
+const logger = require('../src/utils/logger');
 
 // URL to shorten
 const testURL = 'https://www.soho.sg/test-' + Date.now();

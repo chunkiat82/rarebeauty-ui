@@ -3,7 +3,7 @@
 /* eslint-disable no-param-reassign */
 const jwt = require('jsonwebtoken');
 const moment = require('moment');
-const AST = require('auto-sorting-array');
+const AutoSortingArray = require('auto-sorting-array').default;
 const calendarList = require('./calendar/list');
 const calendarGet = require('./calendar/get');
 const calendarDelete = require('./calendar/delete');
@@ -638,9 +638,13 @@ async function remindCustomersTouchUp(options) {
 
     /* need to abstract this logic */
     const response = await get(`config:services`, context);
+    if (!response) {
+      console.error('Could not retrieve services configuration. Aborting touch-up reminders.');
+      return [];
+    }
     const listOfServices = response.services;
     // const mapOfServices = convertToMap(listOfServices);
-    const services = new AST(listOfServices, 'id');
+    const services = new AutoSortingArray(listOfServices, 'id');
 
     // console.log(JSON.stringify(events, null ,2));
     for (let loopIndex = 0; loopIndex < events.length; loopIndex += 1) {

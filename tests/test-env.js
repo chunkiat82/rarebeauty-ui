@@ -3,7 +3,7 @@
  */
 
 // Load environment variables
-require('./load-env');
+require('../load-env');
 
 console.log('===== Environment Variable Test =====');
 console.log(`NODE_ENV: ${process.env.NODE_ENV || '(not set)'}`);

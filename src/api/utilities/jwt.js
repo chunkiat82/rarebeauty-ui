@@ -28,7 +28,28 @@ function generateJWT(subject = null) {
 
   // Use environment variables instead of key file
   const clientEmail = process.env.GOOGLE_CLIENT_EMAIL;
-  const privateKey = process.env.GOOGLE_PRIVATE_KEY;
+  // Process private key: handle escape sequences and remove quotes
+  let privateKey = process.env.GOOGLE_PRIVATE_KEY;
+  
+  // Check if we need to process the private key
+  if (privateKey) {
+    // Remove surrounding quotes if present
+    if ((privateKey.startsWith('"') && privateKey.endsWith('"')) || 
+        (privateKey.startsWith("'") && privateKey.endsWith("'"))) {
+      privateKey = privateKey.substring(1, privateKey.length - 1);
+    }
+    
+    // Replace literal "\n" with actual newlines if needed
+    if (privateKey.includes('\\n')) {
+      privateKey = privateKey.replace(/\\n/g, '\n');
+    }
+  }
+
+  // Debug info for troubleshooting
+  console.log('Google auth settings:');
+  console.log('- Client email:', clientEmail);
+  console.log('- Private key set:', privateKey ? 'Yes (length: ' + privateKey.length + ')' : 'No');
+  console.log('- Work email (subject):', subject || WORK_EMAIL);
 
   // eslint-disable-next-line consistent-return
   return new Promise((res, rej) => {

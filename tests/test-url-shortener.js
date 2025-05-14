@@ -3,9 +3,9 @@
  * Run with: node test-url-shortener.js
  */
 
-require('./load-env');
-const createShortURL = require('./src/api/urlshortener/create');
-const logger = require('./src/utils/logger');
+require('../load-env');
+const createShortURL = require('../src/api/urlshortener/create');
+const logger = require('../src/utils/logger');
 
 // Test URL to shorten - a longer URL with special characters
 const timestamp = Date.now();

@@ -27,32 +27,46 @@ if (!fs.existsSync(envPath)) {
   // Parse with dotenv
   const envConfig = dotenv.parse(envFileContent);
   
-  // Custom handling for special characters
-  const specialVars = ['CB_PASSWORD'];
+  // List of variables that might have quoted values that need special handling
+  const specialVars = ['CB_PASSWORD', 'JWT_SECRET', 'GOOGLE_PRIVATE_KEY', 'SL_PASSWORD'];
   
-  // Add environment variables to process.env, respecting command line values
-  for (const key in envConfig) {
-    // Don't override existing environment variables from command line
-    if (originalEnvVars[key] !== undefined) {
-      continue;
+  // Process line by line to handle quotes properly
+  envFileContent.split('\n').forEach(line => {
+    // Skip comments and empty lines
+    if (!line || line.trim().startsWith('#') || !line.includes('=')) {
+      return;
     }
     
-    // Apply custom handling for variables that might contain special characters
-    if (specialVars.includes(key)) {
-      // Extract the raw value from the file content
-      const regexPattern = new RegExp(`${key}=(.*)$`, 'm');
-      const match = envFileContent.match(regexPattern);
-      
-      if (match && match[1]) {
-        const rawValue = match[1].trim();
-        process.env[key] = rawValue;
-      } else {
-        process.env[key] = envConfig[key];
-      }
-    } else {
-      process.env[key] = envConfig[key];
+    // Extract key and value
+    const [key, ...valueParts] = line.split('=');
+    const trimmedKey = key.trim();
+    
+    // Skip if already set from command line
+    if (originalEnvVars[trimmedKey] !== undefined) {
+      return;
     }
-  }
+    
+    // Get the raw value part (re-join in case value contains = characters)
+    let value = valueParts.join('=').trim();
+    
+    // Handle quoted values by removing surrounding quotes
+    if ((value.startsWith('"') && value.endsWith('"')) || 
+        (value.startsWith("'") && value.endsWith("'"))) {
+      value = value.substring(1, value.length - 1);
+    }
+    
+    // Set the environment variable
+    process.env[trimmedKey] = value;
+  });
   
   console.log(`Loaded environment variables from ${envFile}`);
+  
+  // Extra debug for database variables
+  if (process.env.DEBUG) {
+    console.log('Database connection variables:');
+    console.log('- CBURL:', process.env.CBURL);
+    console.log('- CB_BUCKET:', process.env.CB_BUCKET);
+    console.log('- CB_USERNAME:', process.env.CB_USERNAME);
+    console.log('- CB_PASSWORD: [hidden]');
+  }
 } 

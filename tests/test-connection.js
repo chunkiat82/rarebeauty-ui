@@ -3,7 +3,7 @@
  * Run with: node test-connection.js
  */
 
-require('./load-env'); // Load environment variables
+require('../load-env'); // Load environment variables
 const couchbase = require('couchbase');
 
 async function tryConnection(url, username, password, bucket, description) {

@@ -3,9 +3,9 @@
  * This script tests the basic database connection without any complex queries
  */
 
-require('./load-env'); // Load environment variables
-const db = require('./src/utils/db');
-const logger = require('./src/utils/logger');
+require('../load-env'); // Load environment variables
+const db = require('../src/utils/db');
+const logger = require('../src/utils/logger');
 
 async function verifyDatabaseConnection() {
   try {
