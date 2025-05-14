@@ -15,6 +15,11 @@
     "cli": "node cli.js",
     "cli:local": "NODE_ENV=development node cli-with-env.js",
     "cli:prod": "NODE_ENV=production node cli-with-env.js",
+    "test": "node tests/test-ast.js && node tests/test-env.js",
+    "test:db": "node tests/test-connection.js",
+    "test:env": "node tests/test-env.js",
+    "test:url": "node tests/test-url-shortener.js",
+    "test:ast": "node tests/test-ast.js",
     "lint": "eslint .",
     "lint:fix": "eslint . --fix"
   },

@@ -233,144 +233,106 @@ Made with ♥ by Konstantin Tarkus ([@koistya](https://twitter.com/koistya)) and
 [node]: https://nodejs.org
 [chat]: https://gitter.im/kriasoft/react-starter-kit
 
-# Rare Beauty Backend Service
+# Rare Beauty Salon Backend
 
-A Node.js backend service for Rare Beauty appointment management system.
+A backend service for managing appointments, services, and customer information for the Rare Beauty Salon.
 
 ## Features
 
-- Appointment management with Google Calendar integration
-- SMS notifications via Twilio
-- Couchbase database integration
-- GraphQL API
-- JWT authentication
+- Google Calendar integration for appointment management
+- Couchbase database for data storage
+- URL shortener for appointment links
+- SMS notifications for appointment reminders
+- Customer contact management
+- Service management with pricing and follow-up services
 
-## Environment Configuration
+## Getting Started
 
-The project now supports environment variable configuration via `.env` files:
+### Prerequisites
 
-- `env.production` - Production environment variables
-- `env.local` - Local development environment variables
-
-### Using Environment Variables
-
-You can load the environment variables using one of the following methods:
-
-1. **Using the load-env.js script:**
-   ```bash
-   # For production
-   node -r ./load-env.js your-script.js
-
-   # For development
-   NODE_ENV=development node -r ./load-env.js your-script.js
-   ```
-
-2. **Copying to .env file:**
-   ```bash
-   # For production
-   cp env.production .env
-
-   # For development
-   cp env.local .env
-   ```
-
-The environment configuration prioritizes:
-1. Environment variables set in the system
-2. Variables defined in the .env files
-3. Default values defined in the application code
-
-## CLI Commands
-
-The application includes a command-line interface for various operations:
-
-```bash
-# Run CLI commands with local environment
-npm run cli:local -- --action=listEvents
-
-# Run CLI commands with production environment
-npm run cli:prod -- --action=listEvents
-
-# Common CLI commands
-npm run cli:local -- --action=listEvents --start="2023-04-01" --end="2023-04-30"
-npm run cli:local -- --action=createEvent --start="2023-04-15T10:00:00" --duration=60 --services="Haircut" --mobile="+65XXXXXXXX"
-```
-
-## Server Commands
-
-```bash
-# Start the server with local environment
-npm run dev:local
-
-# Start the server with production environment 
-npm run dev:prod
-
-# Start the server (without environment loading)
-npm run dev
-```
-
-## Prerequisites
-
-- Node.js >= 20
+- Node.js 20 or later
 - Couchbase Server
-- Google Calendar API credentials
-- Twilio account credentials
+- Google API credentials (for Calendar and People API)
 
-## Configuration
+### Installation
 
-All configuration is done through environment variables in the `env.local` or `env.production` files. 
-The following key environment variables need to be set:
-
-- Database configuration:
-  - `CBURL` - Couchbase server URL
-  - `CB_BUCKET` - Couchbase bucket name
-  - `CB_SCOPE` - Couchbase scope
-  - `CB_USERNAME` - Couchbase username
-  - `CB_PASSWORD` - Couchbase password
-
-- Google Calendar:
-  - `GOOGLE_CALENDAR_ID` - Google Calendar ID
-  - `GOOGLE_PRIVATE_KEY` - Google service account private key
-  - `GOOGLE_CLIENT_EMAIL` - Google service account email
-
-- Twilio:
-  - `TWILIO_ACCOUNT_SID` - Twilio account SID
-  - `TWILIO_AUTH_TOKEN` - Twilio auth token
-  - `TWILIO_SENDER` - Twilio sender name/number
-
-See `env.local` for all available configuration options.
-
-## Development
-
+1. Clone the repository
 ```bash
-# Install dependencies
+git clone https://github.com/yourusername/rarebeauty-ui-backend.git
+cd rarebeauty-ui-backend
+```
+
+2. Install dependencies
+```bash
 npm install
-
-# Run in development mode
-npm run dev
-
-# Run in production mode
-npm start
-
-# Lint code
-npm run lint
-
-# Fix linting issues
-npm run lint:fix
 ```
 
-## Docker
+3. Create environment files
 
-Build and run the container:
+Create either `env.local` for development or `env.production` for production with the following variables:
+
+```
+NODE_ENV=development
+CBURL=couchbase://localhost/
+CB_BUCKET=appointments_dev
+CB_USERNAME=rarebeautysg
+CB_PASSWORD=your_password
+GOOGLE_CALENDAR_ID=your_calendar_id
+GOOGLE_CLIENT_EMAIL=serviceaccount@your-project.iam.gserviceaccount.com
+GOOGLE_PRIVATE_KEY="-----BEGIN PRIVATE KEY-----\nYour Private Key\n-----END PRIVATE KEY-----\n"
+```
+
+### Running the Application
+
+Development mode:
+```bash
+npm run dev:local
+```
+
+Production mode:
+```bash
+npm run dev:prod
+```
+
+## Command Line Interface
+
+The application includes a CLI for various operations:
 
 ```bash
-docker build -t rarebeauty-backend .
-docker run -p 3004:3004 rarebeauty-backend
+# Run CLI in development mode
+npm run cli:local -- --action=listEvents --details
+
+# Run CLI in production mode 
+npm run cli:prod -- --action=remindCustomersTouchUp --daysBefore=7 --details
 ```
+
+## Tests
+
+The project includes various tests located in the `tests` directory.
+
+### Running Tests
+
+```bash
+# Run basic tests
+npm test
+
+# Run specific test categories
+npm run test:db     # Database connection tests
+npm run test:env    # Environment variable tests
+npm run test:url    # URL shortener tests
+npm run test:ast    # AutoSortingArray utility tests
+```
+
+For more details on available tests, see the [tests/README.md](tests/README.md) file.
 
 ## Environment Variables
 
-- `NODE_ENV` - Environment (development/production)
-- `PORT` - Server port (default: 3004)
-- `COUCHBASE_URL` - Couchbase server URL
-- `JWT_SECRET` - JWT signing secret
-- See `.env.example` for all available options
+The application uses a custom environment loading script that reads variables from:
+- `env.local` for development
+- `env.production` for production
+
+See `load-env.js` for implementation details.
+
+## License
+
+This project is licensed under the MIT License - see the LICENSE file for details.
