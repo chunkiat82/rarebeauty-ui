@@ -185,3 +185,5 @@ function create(options) {
     }
   });
 }
+
+module.exports = create;

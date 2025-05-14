@@ -1,10 +1,9 @@
 // const moment = require('moment');
-const getConfig = require('./configs').get;
 // We'll use environment variables instead of directly requiring keys
 const { google } = require('googleapis');
 
-// Use environment variable
-const WORK_EMAIL = process.env.WORK_EMAIL || getConfig('work_email');
+// Use environment variable directly
+const WORK_EMAIL = process.env.WORK_EMAIL;
 
 // /* specifically for cache */
 // let moduleToken = null;

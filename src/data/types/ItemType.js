@@ -20,16 +20,20 @@ const ItemType = new GraphQLObjectType({
   name: 'Item',
   fields: {
     id: {
-      type: new GraphQLNonNull(StringType),
+      type: new GraphQLNonNull(GraphQLString),
     },
     type: {
-      type: new GraphQLNonNull(StringType),
+      type: new GraphQLNonNull(GraphQLString),
     },
     name: {
-      type: new GraphQLNonNull(StringType),
+      type: new GraphQLNonNull(GraphQLString),
     },
     price: {
-      type: new GraphQLNonNull(FloatType),
+      type: new GraphQLNonNull(GraphQLFloat),
+    },
+    quantity: {
+      type: GraphQLInt,
+      resolve: (obj) => (obj.quantity !== undefined ? obj.quantity : 1),
     },
   },
 });

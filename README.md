@@ -277,7 +277,7 @@ You can load the environment variables using one of the following methods:
 The environment configuration prioritizes:
 1. Environment variables set in the system
 2. Variables defined in the .env files
-3. Default values from the configuration files in src/api/keys/
+3. Default values defined in the application code
 
 ## CLI Commands
 
@@ -317,11 +317,27 @@ npm run dev
 
 ## Configuration
 
-Place your configuration files in `src/api/keys/`:
-- `google.json` - Google Calendar API credentials
-- `twilio.json` - Twilio SMS credentials
-- `tenants.json` - Database configuration
-- `server.json` - Server configuration
+All configuration is done through environment variables in the `env.local` or `env.production` files. 
+The following key environment variables need to be set:
+
+- Database configuration:
+  - `CBURL` - Couchbase server URL
+  - `CB_BUCKET` - Couchbase bucket name
+  - `CB_SCOPE` - Couchbase scope
+  - `CB_USERNAME` - Couchbase username
+  - `CB_PASSWORD` - Couchbase password
+
+- Google Calendar:
+  - `GOOGLE_CALENDAR_ID` - Google Calendar ID
+  - `GOOGLE_PRIVATE_KEY` - Google service account private key
+  - `GOOGLE_CLIENT_EMAIL` - Google service account email
+
+- Twilio:
+  - `TWILIO_ACCOUNT_SID` - Twilio account SID
+  - `TWILIO_AUTH_TOKEN` - Twilio auth token
+  - `TWILIO_SENDER` - Twilio sender name/number
+
+See `env.local` for all available configuration options.
 
 ## Development
 

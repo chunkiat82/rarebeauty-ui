@@ -16,16 +16,8 @@ const {
   GraphQLNonNull
 } = require('graphql');
 
-// Define ItemType inline since it's a simple type
-const ItemType = new GraphQLObjectType({
-  name: 'Item',
-  fields: {
-    id: { type: new GraphQLNonNull(GraphQLString) },
-    name: { type: new GraphQLNonNull(GraphQLString) },
-    price: { type: new GraphQLNonNull(GraphQLFloat) },
-    quantity: { type: new GraphQLNonNull(GraphQLInt) },
-  },
-});
+// Import ItemType instead of redefining it
+const ItemType = require('./ItemType');
 
 // "totalAmount": 85,
 //     "services": 85,

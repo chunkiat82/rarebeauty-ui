@@ -1,8 +1,6 @@
-const fs = require('fs');
-const path = require('path');
 const logger = require('./logger');
 
-// Separate critical and optional environment variables
+// Define required environment variables
 const requiredEnvVars = {
   // Critical in production only
   JWT_SECRET: { description: 'Secret key for JWT authentication', critical: true },
@@ -15,57 +13,33 @@ const requiredEnvVars = {
   NODE_ENV: { description: 'Environment (default: development)', critical: false },
   ALLOWED_ORIGINS: { description: 'Comma-separated list of allowed CORS origins', critical: false },
   
-  // Google Calendar optional configs (can be loaded from file)
-  GOOGLE_PROJECT_ID: 'Google Calendar project ID',
-  GOOGLE_CLIENT_EMAIL: 'Google Calendar client email',
-  GOOGLE_CALENDAR_ID: 'Google Calendar ID',
+  // Google Calendar optional configs
+  GOOGLE_PROJECT_ID: { description: 'Google Calendar project ID', critical: false },
+  GOOGLE_CLIENT_EMAIL: { description: 'Google Calendar client email', critical: false },
+  GOOGLE_CALENDAR_ID: { description: 'Google Calendar ID', critical: false },
   
   // Business information (optional in development)
   WORK_ADDRESS: { description: 'Business address', critical: false },
   WORK_EMAIL: { description: 'Business email', critical: false },
   WORK_MOBILE: { description: 'Business mobile number', critical: false },
   
-  // Database configuration (can be loaded from file)
-  COUCHBASE_URL: { description: 'Couchbase server URL', critical: false },
-  COUCHBASE_BUCKET: { description: 'Couchbase bucket name', critical: false },
-  COUCHBASE_USERNAME: { description: 'Couchbase username', critical: false },
-  COUCHBASE_PASSWORD: { description: 'Couchbase password', critical: false }
+  // Database configuration
+  CBURL: { description: 'Couchbase server URL', critical: false },
+  CB_BUCKET: { description: 'Couchbase bucket name', critical: false },
+  CB_USERNAME: { description: 'Couchbase username', critical: false },
+  CB_PASSWORD: { description: 'Couchbase password', critical: false },
+  CB_SCOPE: { description: 'Couchbase scope', critical: false },
+  CB_COLLECTION: { description: 'Couchbase collection', critical: false }
 };
 
 function checkEnvironment() {
   const isDevelopment = process.env.NODE_ENV === 'development';
   const missing = [];
   const usingDefaults = [];
-  const usingFiles = [];
-
-  // Check if config files exist
-  const serverConfigExists = fs.existsSync(path.join(__dirname, '../api/keys/server.json'));
-  const googleConfigExists = fs.existsSync(path.join(__dirname, '../api/keys/google.json'));
-  const twilioConfigExists = fs.existsSync(path.join(__dirname, '../api/keys/twilio.json'));
-  const tenantsConfigExists = fs.existsSync(path.join(__dirname, '../api/keys/tenants.json'));
-
-  // Load server config if it exists
-  let serverConfig = null;
-  if (serverConfigExists) {
-    try {
-      serverConfig = JSON.parse(fs.readFileSync(path.join(__dirname, '../api/keys/server.json'), 'utf8'));
-    } catch (error) {
-      logger.warn('Failed to parse server.json:', error);
-    }
-  }
 
   for (const [key, config] of Object.entries(requiredEnvVars)) {
     if (!process.env[key]) {
-      // Check if the missing var can be found in config files
-      if (serverConfig && serverConfig[key]) {
-        usingFiles.push(`${key} (using server.json)`);
-      } else if (key.startsWith('GOOGLE_') && googleConfigExists) {
-        usingFiles.push(`${key} (using google.json)`);
-      } else if (key.startsWith('TWILIO_') && twilioConfigExists) {
-        usingFiles.push(`${key} (using twilio.json)`);
-      } else if (key.startsWith('COUCHBASE_') && tenantsConfigExists) {
-        usingFiles.push(`${key} (using tenants.json)`);
-      } else if (!config.critical || isDevelopment) {
+      if (!config.critical || isDevelopment) {
         usingDefaults.push(`${key} (${config.description})`);
       } else {
         missing.push(`${key} (${config.description})`);
@@ -85,15 +59,6 @@ function checkEnvironment() {
     usingDefaults.forEach(item => logger.info(`   - ${item}`));
     if (!isDevelopment) {
       logger.warn('   Please set these in production!');
-    }
-  }
-
-  // Log variables from config files
-  if (usingFiles.length > 0) {
-    logger.info('\nℹ️  Using configuration files for:');
-    usingFiles.forEach(item => logger.info(`   - ${item}`));
-    if (!isDevelopment) {
-      logger.warn('   Consider moving these to environment variables in production!');
     }
   }
 

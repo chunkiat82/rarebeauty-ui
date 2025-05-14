@@ -13,6 +13,9 @@ const dotenv = require('dotenv');
 const isProd = process.env.NODE_ENV === 'production' || process.env.PRODUCTION === 'true';
 const envFile = isProd ? 'env.production' : 'env.local';
 
+// Save original environment variables that were set by command line
+const originalEnvVars = { ...process.env };
+
 // Check if env file exists
 const envPath = path.resolve(process.cwd(), envFile);
 if (!fs.existsSync(envPath)) {
@@ -27,8 +30,13 @@ if (!fs.existsSync(envPath)) {
   // Custom handling for special characters
   const specialVars = ['CB_PASSWORD'];
   
-  // Add environment variables to process.env
+  // Add environment variables to process.env, respecting command line values
   for (const key in envConfig) {
+    // Don't override existing environment variables from command line
+    if (originalEnvVars[key] !== undefined) {
+      continue;
+    }
+    
     // Apply custom handling for variables that might contain special characters
     if (specialVars.includes(key)) {
       // Extract the raw value from the file content

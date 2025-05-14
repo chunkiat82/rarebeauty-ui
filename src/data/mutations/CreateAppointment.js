@@ -1,4 +1,4 @@
-const AST = require('auto-sorting-array');
+const AST = require('auto-sorting-array').default;
 const {
   GraphQLObjectType,
   GraphQLString,

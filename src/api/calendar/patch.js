@@ -164,3 +164,5 @@ function patch(options) {
 
   return patchHandler(options, event);
 }
+
+module.exports = patch;

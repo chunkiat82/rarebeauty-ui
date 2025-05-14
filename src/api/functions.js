@@ -4,7 +4,6 @@
 const jwt = require('jsonwebtoken');
 const moment = require('moment');
 const AST = require('auto-sorting-array');
-const config = require('../config');
 const calendarList = require('./calendar/list');
 const calendarGet = require('./calendar/get');
 const calendarDelete = require('./calendar/delete');
@@ -36,16 +35,15 @@ const calendarWatch = require('./calendar/watch');
 const calendarWatchStop = require('./calendar/watch/stop');
 const { sendMessage: sms } = require('./utilities/sms');
 const { getSyncToken, setSyncToken } = require('./utilities/token');
-const configs = require('./utilities/configs');
 const { get, upsert } = require('../data/database');
 
 const NO_MOBILE_NUMBER = '00000000';
-const calendarId = configs.get('calendar_id');
-const waitingListCalendarId = configs.get('waitinglist_calendar_id');
+const calendarId = process.env.GOOGLE_CALENDAR_ID;
+const waitingListCalendarId = process.env.GOOGLE_WAITINGLIST_CALENDAR_ID;
 
-const confirmationURL = configs.get('confirmationURL');
-const reservationURL = configs.get('reservationURL');
-const webHookURL = configs.get('webHookURL');
+const confirmationURL = process.env.CONFIRMATION_URL;
+const reservationURL = process.env.RESERVATION_URL;
+const webHookURL = process.env.GOOGLE_WEBHOOK_URL;
 // const webHookId = configs.get('webHookId');
 
 const TOUCHUP_SERVICES = ['service:4-2024', 'service:5-2024', 'service:6-2024'];
@@ -130,19 +128,47 @@ async function informReservationToCustomer(options) {
   try {
     // if event not in cache
     if (!event) event = await calendarGet(finalOptions);
-    // console.log(event);
+    
+    // Debug: Log event ID and reservation URL to identify the issue
+    console.error(`Debug - Event ID: ${event.id || 'undefined'}`);
+    console.error(`Debug - Reservation URL: ${reservationURL || 'undefined'}`);
+    
+    // Fix the issue with null being prepended to event.id
+    // First check if event.id has 'null' prefix and remove it if present
+    let cleanEventId = event.id;
+    if (event.id && event.id.startsWith('null')) {
+      cleanEventId = event.id.substring(4); // Remove 'null' prefix
+      console.error(`Debug - Found null prefix in event ID, cleaned to: ${cleanEventId}`);
+    }
+    
+    const longURL = cleanEventId ? `${reservationURL}${cleanEventId}` : null;
+    console.error(`Debug - Long URL to be shortened: ${longURL || 'null'}`);
 
     // creating shortURL
     try {
+      // Only create short URL if longURL is valid
+      if (!longURL) {
+        throw new Error('Cannot create short URL: event ID or reservation URL is missing');
+      }
+      
       const shortURLResponse = await urlCreate({
-        longURL: `${reservationURL}${event.id}`,
+        longURL: longURL,
       });
       shortURL = shortURLResponse;
     } catch (urlError) {
       console.error(
         'unable to create URL - trying again - probably already exist',
+        urlError,
       );
-      shortURL = event.extendedProperties.shared.shortURL;
+      
+      // Only try to access extendedProperties if they exist
+      if (event.extendedProperties && 
+          event.extendedProperties.shared && 
+          event.extendedProperties.shared.shortURL) {
+        shortURL = event.extendedProperties.shared.shortURL;
+      } else {
+        console.error('No shortURL in event.extendedProperties.shared');
+      }
     }
 
     // to message if needed to be informed
@@ -557,7 +583,7 @@ async function generateJWT(options) {
         username: options.username || 'baduser',
       },
     },
-    config.auth.jwt.secret,
+    process.env.JWT_SECRET,
     {
       expiresIn: '365d',
     },

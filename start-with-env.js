@@ -12,6 +12,29 @@ const path = require('path');
 // Load environment variables
 require('./load-env');
 
+// Print important environment variables at startup
+console.log('\n============ ENVIRONMENT VARIABLES LOADED ============');
+const importantVars = [
+  'NODE_ENV', 'PORT', 'ALLOWED_ORIGINS', 'JWT_SECRET', 
+  'CBURL', 'CB_BUCKET', 'CB_SCOPE', 'CB_COLLECTION', 'CB_USERNAME',
+  'TWILIO_ACCOUNT_SID', 'TWILIO_SENDER',
+  'GOOGLE_CALENDAR_ID', 'GOOGLE_WAITINGLIST_CALENDAR_ID', 'GOOGLE_WEBHOOK_URL',
+  'CONFIRMATION_URL', 'RESERVATION_URL', 'CUSTOMER_URL',
+  'WORK_MOBILE', 'WORK_EMAIL'
+];
+
+importantVars.forEach(key => {
+  const value = process.env[key];
+  // Mask sensitive values
+  if (key.includes('SECRET') || key.includes('PASSWORD') || key.includes('KEY') || 
+      key.includes('TOKEN') || key.includes('SID')) {
+    console.log(`${key}: ${value ? '***' : 'undefined'}`);
+  } else {
+    console.log(`${key}: ${value || 'undefined'}`);
+  }
+});
+console.log('=====================================================\n');
+
 // Start the application
 const nodemon = spawn(
   'nodemon', 

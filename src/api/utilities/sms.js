@@ -1,17 +1,37 @@
 const Twilio = require('twilio');
-const configs = require('./configs');
+const logger = require('../../utils/logger');
 
-const defaultMobile = process.env.WORK_MOBILE || configs.get('mobile');
-const client = new Twilio(
-  process.env.TWILIO_ACCOUNT_SID, 
-  process.env.TWILIO_AUTH_TOKEN
-);
+// Use environment variable directly
+const defaultMobile = process.env.WORK_MOBILE;
 
-const FROM = process.env.TWILIO_SENDER || 'RARE BEAUTY';
+// Make Twilio client optional
+let client = null;
+try {
+  const twilioAccountSid = process.env.TWILIO_ACCOUNT_SID;
+  const twilioAuthToken = process.env.TWILIO_AUTH_TOKEN;
+  
+  if (twilioAccountSid && twilioAuthToken) {
+    client = new Twilio(twilioAccountSid, twilioAuthToken);
+    logger.info('Twilio client initialized');
+  } else {
+    logger.warn('Twilio credentials missing, SMS features will be disabled');
+  }
+} catch (err) {
+  logger.error('Failed to initialize Twilio client:', err);
+}
+
+// Use environment variable without fallback
+const FROM = process.env.TWILIO_SENDER;
 const REPLY_MOBILE = defaultMobile;
 const TEST_MOBILE = defaultMobile;
 
 function sendMessage(options) {
+  // If Twilio client is not initialized, log the message and return
+  if (!client) {
+    logger.warn('SMS not sent (Twilio disabled):', options.message);
+    return Promise.resolve({ status: 'disabled' });
+  }
+
   const { test, message } = options;
   const finalMessage = message.replace('REPLY_MOBILE', REPLY_MOBILE);
   let { mobile } = options;
@@ -45,7 +65,9 @@ function sendMessage(options) {
       from: FROM,
     });
   }
-  return console.error(`invalid mobile number=${mobile}`);
+  return Promise.reject(new Error(`invalid mobile number=${mobile}`));
 }
 
-module.exports = sendMessage;
+module.exports = {
+  sendMessage
+};
