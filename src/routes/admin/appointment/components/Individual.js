@@ -259,7 +259,8 @@ class Appointment extends React.Component {
     });
   };
   handleSliderChange = (_event, value) => this.setState({ duration: value });
-  handleDepositChange = (_eevent, value) => this.setState({ deposit: value });
+  handleDepositChange = (_eevent, value) =>
+    this.setState({ deposit: parseFloat(value) || 0 });
   handleDateChange = (_something, dateChosen) =>
     this.setState({ startDate: dateChosen });
   handleTimeChange = (_something, timeChosen) =>
@@ -272,24 +273,28 @@ class Appointment extends React.Component {
   };
   handleUpdateMobile = mobileInput =>
     this.setState({ mobileInput, resourceName: '' });
-  handleDiscountChange = (_event, newDiscount) =>
+  handleDiscountChange = (_event, newDiscount) => {
+    const discountValue = parseFloat(newDiscount) || 0;
     this.setState({
-      discount: newDiscount,
+      discount: discountValue,
       totalAmount: this.calculateTotal(
         this.state.serviceIds,
         this.state.additional,
-        newDiscount,
+        discountValue,
       ),
     });
-  handleAdditionalChange = (_event, newAdditional) =>
+  };
+  handleAdditionalChange = (_event, newAdditional) => {
+    const additionalValue = parseFloat(newAdditional) || 0;
     this.setState({
-      additional: newAdditional,
+      additional: additionalValue,
       totalAmount: this.calculateTotal(
         this.state.serviceIds,
-        newAdditional,
+        additionalValue,
         this.state.discount,
       ),
     });
+  };
   handleCloseCard = () => {
     this.setState({ expanded: false });
   };
